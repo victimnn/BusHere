@@ -24,14 +24,14 @@ function SearchBar(){
   //TODO: tem que mudar esse form, ta bem feio e foi feito pelo gemini, porem funciona
   return (
     <form onSubmit={handleSearch} className="d-flex align-items-center gap-0">
+      <button type="submit" className="btn btn-primary m-1"><i class="fa-solid fa-magnifying-glass"></i></button>
       <input
         type="text"
-        className="form-control me-2"
+        className="form-control"
         placeholder="Pesquisar..."
         value={searchTerm}
         onChange={handleInputChange}
       />
-      <button type="submit" className="btn btn-primary">Pesquisar</button>
     </form>
   )
 }

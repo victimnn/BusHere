@@ -22,13 +22,23 @@ module.exports = (pool) => {
   // Ele retorna:
   // user_id, token, user
   router.post('/register', (req, res) => {
-    const requiredFields = ['full_name', 'cpf', 'email', 'password_hash', 'address_street', 'address_number', 'address_city', 'cep'];
+    // Define os campos obrigatórios, incluindo 'password' (a senha em texto puro)
+    const requiredFields = ['full_name', 'cpf', 'email', 'password', 'address_street', 'address_number', 'address_city', 'cep'];
+
+    // Passa por cada um dos campos obrigatórios e verifica se existe ANTES de qualquer operação com eles
+    for (const field of requiredFields) {
+      if (!req.body[field]) {
+        return res.status(400).json({ error: `Missing required field: ${field}`, request: req.body });
+      }
+    }
+
+
+    // Cria o objeto user com os dados, exceto a senha em texto puro
     const { full_name, cpf, email, password, address_street, address_number, address_complement, address_city, cep } = req.body;
     const user = {
       full_name,
       cpf,
       email,
-      password,
       address_street,
       address_number,
       address_complement,
@@ -36,22 +46,9 @@ module.exports = (pool) => {
       cep
     };
 
-    // Adiciona o hash da senha
-    user.password_hash = bcrypt.hashSync(user.password, bcryptSalt);
-
-    // Apaga a senha do objeto antes de enviar para o banco de dados
-    // Isso é importante para não enviar a senha em texto claro pro DB
-    delete user.password; // não pode usar password=undifined, pq se não da erro
-
-    // Passa por cada uma das chaves obrigatorias e verifica se existe
-    
-
-    for (const field of requiredFields) {
-      if (!user[field]) { // se não existe da erro
-        return res.status(400).json({ error: `Missing required field: ${field}`, request: req.body });
-      }
-    }
-
+    // Adiciona o hash da senha - AGORA a variável 'password' (do req.body) tem garantia de existir
+    const password_hash = bcrypt.hashSync(password, bcryptSalt); // Usa a variável 'password' diretamente
+    user.password_hash = password_hash; // Atribui o hash ao objeto user
 
     // Verifica se o CPF é do tamanho certo e se é valido (usando a formula do CPF)
     if (!validateCPF(user.cpf)) {
@@ -93,23 +90,24 @@ module.exports = (pool) => {
   // Ele retorna:
   // user_id, token, user
   router.post('/login', (req, res) => {
-    const { email, password } = req.body;
 
-    // Adiciona o hash da senha
-    const password_hash = bcrypt.hashSync(password, bcryptSalt);
+    const requiredFields = ['email', 'password'];
 
-    const requiredFields = ['email', 'password_hash'];
-    const user = {
-      email,
-      password_hash
-    };
-
-    // Verifica os campos obrigatorios
+    // Passa por cada um dos campos obrigatórios e verifica se existe ANTES de qualquer operação com eles
     for (const field of requiredFields) {
-      if (!user[field]) {
+      if (!req.body[field]) {
         return res.status(400).json({ error: `Missing required field: ${field}`, request: req.body });
       }
     }
+
+    const { email, password } = req.body;
+    const user = {
+      email,
+      password
+    };
+
+    // Adiciona o hash da senha
+    user.password_hash = bcrypt.hashSync(user.password, bcryptSalt);
 
     pool.query('SELECT * FROM Users WHERE email = ?', [user.email], (error, results) => {
       if (error) {
@@ -215,13 +213,19 @@ module.exports = (pool) => {
   // message
   router.post("/change-password", extractToken, (req, res) => {
     const token = req.token;
+    const requiredFields = ['old_password', 'new_password'];
+
+    // Passa por cada um dos campos obrigatórios e verifica se existe ANTES de qualquer operação com eles
+    for (const field of requiredFields) {
+      if (!req.body[field]) {
+        return res.status(400).json({ error: `Missing required field: ${field}`, request: req.body });
+      }
+    }
+
     const { old_password, new_password } = req.body;
 
     if (!token){
       return res.status(401).json({ error: 'Token not provided' });
-    }
-    if (!old_password || !new_password) {
-      return res.status(400).json({ error: 'Missing required fields' });
     }
 
     // Verifica se o token existe no banco de dados
@@ -235,7 +239,7 @@ module.exports = (pool) => {
       const { user_id } = results[0];
 
       // Verifica se o usuario existe
-      pool.query("SELECT * FROM Users WHERE token = ?", [user_id], (error, results) => {
+      pool.query("SELECT * FROM Users WHERE user_id = ?", [user_id], (error, results) => {
         if (error) {
           return res.status(500).json({ error: 'Error fetching user' });
         }

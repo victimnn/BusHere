@@ -1,5 +1,3 @@
-const crypto = require('crypto');
-
 function exampleFunction(){
     return 2 + 2
 }

@@ -207,6 +207,67 @@ module.exports = (pool) => {
     });
   });
 
+  // Rota de mudança de senha
+  // O usuário deve fornecer o token no cabeçalho Authorization
+  // E os seguintes campos:
+  // old_password, new_password
+  // Ele retorna:
+  // message
+  router.post("/change-password", extractToken, (req, res) => {
+    const token = req.token;
+    const { old_password, new_password } = req.body;
+
+    if (!token){
+      return res.status(401).json({ error: 'Token not provided' });
+    }
+    if (!old_password || !new_password) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Verifica se o token existe no banco de dados
+    pool.query('SELECT * FROM TokensLogin WHERE token = ?', [token], (error, results) => {
+      if (error) {
+        return res.status(500).json({ error: 'Error fetching token' });
+      }
+      if (results.length === 0) {
+        return res.status(404).json({ error: 'Token not found' });
+      }
+      const { user_id } = results[0];
+
+      // Verifica se o usuario existe
+      pool.query("SELECT * FROM Users WHERE token = ?", [user_id], (error, results) => {
+        if (error) {
+          return res.status(500).json({ error: 'Error fetching user' });
+        }
+        if (results.length === 0) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+        const user = results[0];
+
+        // Verifica se a senha antiga está correta
+        if (!bcrypt.compareSync(old_password, user.password_hash)) {
+          return res.status(401).json({ error: 'Wrong old password' });
+        }
+
+        // Faz o hash da nova senha
+        const new_password_hash = bcrypt.hashSync(new_password, bcryptSalt);
+
+        // Atualiza a senha no banco de dados
+        pool.query("UPDATE Users SET password_hash = ? WHERE user_id = ?", [new_password_hash, user_id], (error, results) => {
+          if (error) {
+            return res.status(500).json({ error: 'Error updating password' });
+          }
+          if (results.affectedRows === 0) {
+            return res.status(404).json({ error: 'User not found' });
+          }
+          res.json({ message: 'Password changed successfully' });
+        });
+      });
+    });
+
+  });
+
+
   router.get('/:id', (req, res) => {
 
   });

@@ -1,6 +1,6 @@
 //Funcionalidade principal
 const express = require("express");
-const mysql = require("mysql2");
+const mysql = require("mysql2/promise");
 
 //Coisas do Express
 const bodyParser = require("body-parser");

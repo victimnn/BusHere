@@ -13,7 +13,7 @@ module.exports = (pool) => {
   const router = express.Router();
 
   router.get('/', (req, res) => {
-    res.json({ message: "Auth route" });
+    res.json({ message: "Rota de Autorização" });
   });
 
   // Rota de registro de usuário
@@ -28,7 +28,7 @@ module.exports = (pool) => {
     // Passa por cada um dos campos obrigatórios e verifica se existe ANTES de qualquer operação com eles
     for (const field of requiredFields) {
       if (!req.body[field]) {
-        return res.status(400).json({ error: `Missing required field: ${field}`, request: req.body });
+        return res.status(400).json({ error: `Campo obrigatorio faltando: ${field}`, request: req.body });
       }
     }
 
@@ -77,7 +77,7 @@ module.exports = (pool) => {
 
       if (userFetchResults.length === 0) {
           // Não deveria acontecer se a inserção foi bem sucedida, mas é uma boa prática verificar
-        return res.status(500).json({ error: 'User data not found after creation' });
+        return res.status(500).json({ error: 'Informações não encontradas após criação' });
       }
       const createdUser = userFetchResults[0];
 
@@ -90,14 +90,14 @@ module.exports = (pool) => {
 
     } catch (error) {
       console.error('Error in register route:', error);
-        // Adicionar tratamento para erros de duplicidade (email, cpf)
-        if (error.code === 'ER_DUP_ENTRY') {
-          let field = 'unknown';
-          if (error.message.includes('cpf')) field = 'CPF';
-          else if (error.message.includes('email')) field = 'email';
-          return res.status(409).json({ error: `${field} already registered` }); // 409 Conflict
-        }
-      return res.status(500).json({ error: 'Error inserting user or token' });
+      // Adicionar tratamento para erros de duplicidade (email, cpf)
+      if (error.code === 'ER_DUP_ENTRY') {
+        let field = 'unknown';
+        if (error.message.includes('cpf')) field = 'CPF';
+        else if (error.message.includes('email')) field = 'email';
+        return res.status(409).json({ error: `${field} already registered` }); // 409 Conflict
+      }
+      return res.status(500).json({ error: 'Erro inserindo Usuario ou Token' });
     }
   });
 
@@ -119,7 +119,7 @@ module.exports = (pool) => {
     // Passa por cada um dos campos obrigatórios e verifica se existe ANTES de qualquer operação com eles
     for (const field of requiredFields) {
       if (!req.body[field]) {
-        return res.status(400).json({ error: `Missing required field: ${field}`, request: req.body });
+        return res.status(400).json({ error: `Campo obrigatorio faltando: ${field}`, request: req.body });
       }
     }
 
@@ -134,7 +134,7 @@ module.exports = (pool) => {
       const [userResults] = await pool.query('SELECT * FROM Users WHERE email = ?', [email]); // Usa await
 
       if (userResults.length === 0) {
-        return res.status(404).json({ error: 'User not found' }); // Ou 'Invalid credentials' por segurança
+        return res.status(404).json({ error: 'Usuario não encontrado' }); // Ou 'Invalid credentials' por segurança
       }
       const user = userResults[0];
 
@@ -142,7 +142,7 @@ module.exports = (pool) => {
       // O bcrypt.compareSync compara a senha em texto claro com o hash, é essencial pois
       // o hash é gerado de forma diferente a cada vez
       if (!bcrypt.compareSync(password, user.password_hash)) { // Usa a senha em texto puro e o hash do DB
-        return res.status(401).json({ error: 'Invalid password' }); // Ou 'Invalid credentials' por segurança
+        return res.status(401).json({ error: 'Senha invalida' }); // Ou 'Invalid credentials' por segurança
       }
 
       // Cria um token para o usuario e coloca no BD
@@ -156,15 +156,15 @@ module.exports = (pool) => {
       delete userResponse.password_hash;
 
       res.json({
-        message: "User logged in successfully",
+        message: "Usuario logado com sucesso",
         token: token,
         user_id: user.user_id,
         user: userResponse // Retorna o objeto sem o hash
       });
 
     } catch (error) {
-      console.error('Error in login route:', error); // Log do erro
-      res.status(500).json({ error: 'An internal server error occurred' }); // Retorna erro genérico
+      console.error('Erro na rota de Login', error); // Log do erro
+      res.status(500).json({ error: 'Um erro interno aconteceu' }); // Retorna erro genérico
     }
   });
 
@@ -183,10 +183,10 @@ module.exports = (pool) => {
       if (tokenResults.affectedRows === 0) {
         return res.status(401).json({ error: 'Token not found' });
       }
-      res.json({ message: 'User logged out successfully' });
+      res.json({ message: 'Usuario Deslogado' });
     } catch (error) {
-      console.error('Error in logout route:', error); // Log do erro
-      return res.status(500).json({ error: 'An internal server error occurred' }); // Retorna erro genérico
+      console.error('Erro na rota de Log-out', error); // Log do erro
+      return res.status(500).json({ error: "Um erro interno aconteceu" }); // Retorna erro genérico
     }
   });
 
@@ -202,7 +202,7 @@ module.exports = (pool) => {
       const [tokenResults] = await pool.query('SELECT * FROM TokensLogin WHERE token = ?', [token]);
 
       if (tokenResults.length === 0) {
-        return res.status(404).json({ error: 'Token not found or expired' }); // Mensagem mais informativa
+        return res.status(404).json({ error: 'Token não encontrado ou expirado' }); // Mensagem mais informativa
       }
 
       // Se o token existe, pega o user_id e busca o usuario no banco de dados
@@ -219,7 +219,7 @@ module.exports = (pool) => {
 
     } catch (error) {
       console.error('Error in /me route:', error); // Log do erro para debug
-      res.status(500).json({ error: 'An internal server error occurred' }); // Retorna um erro genérico
+      res.status(500).json({ error: "Um erro interno aconteceu" }); // Retorna um erro genérico
     }
   });
 
@@ -236,7 +236,7 @@ module.exports = (pool) => {
     // Passa por cada um dos campos obrigatórios e verifica se existe ANTES de qualquer operação com eles
     for (const field of requiredFields) {
       if (!req.body[field]) {
-        return res.status(400).json({ error: `Missing required field: ${field}`, request: req.body });
+        return res.status(400).json({ error: `Campo obrigatorio faltando: ${field}`, request: req.body });
       }
     }
 
@@ -247,7 +247,7 @@ module.exports = (pool) => {
       const [tokenResults] = await pool.query('SELECT * FROM TokensLogin WHERE token = ?', [token]);
 
       if (tokenResults.length === 0) {
-        return res.status(404).json({ error: 'Token not found or expired' });
+        return res.status(404).json({ error: 'Token não encontrado ou expirado' });
       }
       const { user_id } = tokenResults[0]; 
 
@@ -274,7 +274,7 @@ module.exports = (pool) => {
       if (updateResults.affectedRows === 0) {
         // Isso não deveria acontecer se o user_id foi encontrado na busca anterior,
         // mas é uma verificação de segurança.
-        return res.status(404).json({ error: 'User not found for update' });
+        return res.status(404).json({ error: 'Usuario não encontrado for update' });
       }
 
       // Se tudo deu certo, retorna a mensagem de sucesso
@@ -283,7 +283,7 @@ module.exports = (pool) => {
     } catch (error) {
       // Captura qualquer erro que ocorra nas operações assíncronas (consultas ao DB)
       console.error('Error in change password route:', error); // Log do erro para debug
-      res.status(500).json({ error: 'An internal server error occurred' }); // Retorna um erro genérico para o cliente
+      res.status(500).json({ error: "Um erro interno aconteceu" }); // Retorna um erro genérico para o cliente
     }
   });
 

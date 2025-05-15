@@ -82,7 +82,7 @@ module.exports = (pool) => {
       const createdUser = userFetchResults[0];
 
       res.json({
-        message: "User registered successfully",
+        message: "Usuario registrado com sucesso",
         token: token,
         user_id: user_id,
         user: createdUser // Retorna os dados do usuário buscados sem o hash
@@ -95,7 +95,7 @@ module.exports = (pool) => {
         let field = 'unknown';
         if (error.message.includes('cpf')) field = 'CPF';
         else if (error.message.includes('email')) field = 'email';
-        return res.status(409).json({ error: `${field} already registered` }); // 409 Conflict
+        return res.status(409).json({ error: `${field} Já registrado` }); // 409 Conflict
       }
       return res.status(500).json({ error: 'Erro inserindo Usuario ou Token' });
     }

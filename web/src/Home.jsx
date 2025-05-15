@@ -12,14 +12,15 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 function GraficoPizza() {
   const data = {
-    labels: ["A", "B", "C"], // Nomes dos dados
+    labels: ["A", "B", "C", "D"], // Nomes dos dados
     datasets: [{
         label: "Grafico legal",
-        data: [300, 50, 100], // Valores dos dados
+        data: [Math.random(),Math.random(),Math.random(),Math.random(),], // Valores dos dados
         backgroundColor: [
-          "rgb(255, 99, 133)",
-          "rgb(54, 163, 235)",
+          "rgb(203, 99, 255)",
           "rgb(255, 207, 86)",
+          "rgb(198, 18, 18)",
+          "rgb(42, 76, 247)",
         ],
     }],
   }

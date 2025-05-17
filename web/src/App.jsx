@@ -4,6 +4,7 @@ import { useState, useEffect, useRef} from 'react'
 
 import PopUpComponent from "../components/PopUpComponent";
 import Home from "./Home";
+import Passangers from "./Passangers";
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 
@@ -21,11 +22,12 @@ function App() {
 
           <main className="flex-grow-1"> {/* A main ocupará o espaço restante */}
             <Header 
-              pageName={"nomePagina"}/>
+              pageName={"Giraldi"}/>
 
             <div className="py-4">
               <Routes>
                 <Route path="/" index element={<Home />} />
+                <Route path="/passengers" index element={<Passangers />} />
               </Routes>
             </div>
           </main>

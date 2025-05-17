@@ -59,11 +59,11 @@ function Home(){
   
     return (
       <main>
-        <h1>Home legal 👍</h1> 
+        <h1>Home</h1> 
   
         <button
           onClick={() => {
-            popUpRef.current.show(GraficoPizza); // Chama a função show do PopUpComponent
+            popUpRef.current.show(GraficoPizza, {}, "Grafico de Pizza"); // Chama a função show do PopUpComponent
           }}
           className="btn btn-primary"
         >

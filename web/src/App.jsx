@@ -27,7 +27,7 @@ function App() {
             <div className="py-4">
               <Routes>
                 <Route path="/" index element={<Home />} />
-                <Route path="/passengers" index element={<Passangers />} />
+                <Route path="/passengers" element={<Passangers />} />
               </Routes>
             </div>
           </main>

@@ -1,37 +1,39 @@
 import React from 'react'
-import { useState, useEffect, useCallback } from 'react';
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import '../styles/SearchBar.css';
 
-
-function SearchBar(){
+function SearchBar() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
 
-
   const handleSearch = (e) => {
-    e.preventDefault(); // Evita o comportamento padrão do formulário
+    e.preventDefault();
     if (searchTerm.trim() !== "") {
-      navigate(`/search/${searchTerm}`); // Navega para a rota de pesquisa com o termo
-      e.target.reset(); // Limpa o formulário após a pesquisa
+      navigate(`/search/${searchTerm}`);
+      setSearchTerm(""); //
     }
   }
 
   const handleInputChange = (e) => {
-    setSearchTerm(e.target.value); // Atualiza o estado com o valor do input
+    setSearchTerm(e.target.value);
   } 
 
-  //TODO: tem que mudar esse form, ta bem feio e foi feito pelo gemini, porem funciona
   return (
-    <form onSubmit={handleSearch} className="d-flex align-items-center gap-0">
-      <button type="submit" className="btn btn-primary m-1"><i class="fa-solid fa-magnifying-glass"></i></button>
-      <input
-        type="text"
-        className="form-control"
-        placeholder="Pesquisar..."
-        value={searchTerm}
-        onChange={handleInputChange}
-      />
+    <form onSubmit={handleSearch} className="search-form d-flex position-relative">
+      <div className="input-group search-input-group shadow-sm">
+        <input
+          type="text"
+          className="form-control search-input border-0"
+          placeholder="O que você está procurando?"
+          aria-label="Search"
+          value={searchTerm}
+          onChange={handleInputChange}
+        />
+        <button className="btn search-button d-flex align-items-center justify-content-center" type="submit">
+          <i className="fa-solid fa-magnifying-glass search-icon"></i>
+        </button>
+      </div>
     </form>
   )
 }

@@ -3,8 +3,14 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { useState, useEffect, useRef} from 'react'
 
 import PopUpComponent from "../components/PopUpComponent";
-import Home from "./Home";
-import Passangers from "./Passangers";
+import Home from "./pages/Home";
+import Passangers from "./pages/Passangers";
+import Buses from "./pages/Buses";
+import RoutesPage from "./pages/RoutesPage";
+import Points from "./pages/Points";
+import Reports from "./pages/Reports";
+import Settings from "./pages/Settings";
+
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 
@@ -28,6 +34,11 @@ function App() {
               <Routes>
                 <Route path="/" index element={<Home />} />
                 <Route path="/passengers" element={<Passangers />} />
+                <Route path="/buses" element={<Buses />} />
+                <Route path="/routes" element={<RoutesPage />} />
+                <Route path="/points" element={<Points />} />
+                <Route path="/reports" element={<Reports />} />
+                <Route path="/settings" element={<Settings />} />
               </Routes>
             </div>
           </main>

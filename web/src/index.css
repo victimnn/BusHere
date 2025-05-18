@@ -1,3 +1,50 @@
+:root {
+  /* Primary colors */
+  --bs-primary: #12BE4D;           /* Base green */
+  --bs-primary-light: #5CE98B;     /* Light green */
+  --bs-primary-dark: #0E8F3A;      /* Darker green */
+  --bs-primary-contrast: #ffffff;  /* Text on primary */
+
+  /* Secondary colors (neutral gray scale) */
+  --bs-secondary: #6c757d;         /* Medium gray */
+  --bs-secondary-light: #ced4da;   /* Light gray */
+  --bs-secondary-dark: #343a40;    /* Dark gray */
+
+  /* Accent colors (complementary to green) */
+  --bs-accent: #FF6B6B;            /* Coral red (complement) */
+  --bs-accent-light: #FF9E9E;      /* Light coral */
+  --bs-accent-dark: #C94444;       /* Dark coral */
+
+  /* Analogous colors */
+  --bs-analogous-1: #12BEA0;       /* Teal-green */
+  --bs-analogous-2: #12BE18;       /* Lime-green */
+
+  /* Feedback colors */
+  --bs-success: #12BE4D;
+  --bs-info: #1E90FF;              /* Blue info */
+  --bs-warning: #FFC107;           /* Yellow warning */
+  --bs-danger: #E74C3C;            /* Red danger */
+
+  /* Neutral colors */
+  --bs-light: #f8f9fa;
+  --bs-dark: #212529;
+
+  /* Text colors */
+  --bs-text-primary: #12BE4D;
+  --bs-text-secondary: #6c757d;
+  --bs-text-muted: #adb5bd;
+
+  /* Background colors */
+  --bs-bg-light: #ffffff;
+  --bs-bg-medium: #f8f9fa;
+  --bs-bg-dark: #e9ecef;
+
+  /* Border colors */
+  --bs-border-color: #dee2e6;
+  --bs-border-radius: 0.375rem;
+}
+
+
 #root {
   /*max-width: 1280px; */
   margin: 0 auto;

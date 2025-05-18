@@ -1,48 +1,52 @@
-// src/styles/custom.scss (ou onde você preferir criar seu arquivo Sass)
+// src/styles/custom.scss
 
-// 1. Sobrescreva as variáveis padrão do Bootstrap aqui
-// Antes de importar o Bootstrap!
-
-$primary: #388E3C; 
-$secondary: #6c757d; 
-$success: #28a745; 
+// 1. Sobrescreva variáveis antes de importar Bootstrap via `@use`
+$primary: #12BE4D;
+$secondary: #A9A9A9;
+$success: #28a745;
 $info: #0dcaf0;
 $warning: #ffc107;
 $danger: #dc3545;
 
 $light: #f8f9fa;
-$dark: #212529;
+$dark: #313131;
 $white: #ffffff;
 $body-bg: $light;
 $body-color: $dark;
 $font-family-base: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
-//cores extras (roubadas do Bootstrap)
-$blue:    #0d6efd !default;
+$blue:    #0D90E1  !default;
 $indigo:  #6610f2 !default;
 $purple:  #6f42c1 !default;
 $pink:    #d63384 !default;
 $red:     #dc3545 !default;
 $orange:  #fd7e14 !default;
-$yellow:  #ffc107 !default;
+$yellow:  #E1E10D  !default;
 $green:   #198754 !default;
 $teal:    #20c997 !default;
 $cyan:    #0dcaf0 !default;
-
 $gray:    #6c757d !default;
 
-// "carregar" as cores
-//@include color-create-utility($blue, "blue");
+// 2. Use o Bootstrap SCSS (precisa do includePaths configurado no Vite)
+@use "bootstrap" with (
+  $primary: $primary,
+  $secondary: $secondary,
+  $success: $success,
+  $info: $info,
+  $warning: $warning,
+  $danger: $danger,
+  $light: $light,
+  $dark: $dark,
+  $white: $white,
+  $body-bg: $body-bg,
+  $body-color: $body-color,
+  $font-family-base: $font-family-base
+);
 
-
-// 2. Importe o Bootstrap aqui
-@import "../node_modules/bootstrap/scss/bootstrap";
-
-// 3. Importe os Bootstrap Icons aqui
+// 3. Importar Bootstrap Icons (isso pode ficar no seu HTML ou ser importado no JS, mas se quiser via SCSS):
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 
-// 4. Adicione seu CSS personalizado aqui
-// Exemplo:
+// // 4. Estilos personalizados
 // body {
 //   background-color: $primary;
 //   color: $secondary;

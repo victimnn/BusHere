@@ -10,13 +10,9 @@ import RoutesPage from "./pages/RoutesPage";
 import Points from "./pages/Points";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
-
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
-
-import "./index.css";
-import "../styles/SideBar.css";
-
+import SearchPage from "./pages/SearchPage";
 
 function App() {
   return (
@@ -39,6 +35,8 @@ function App() {
                 <Route path="/points" element={<Points />} />
                 <Route path="/reports" element={<Reports />} />
                 <Route path="/settings" element={<Settings />} />
+
+                <Route path="/search/:searchTerm" element={<SearchPage   />} />
               </Routes>
             </div>
           </main>

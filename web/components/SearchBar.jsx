@@ -22,21 +22,24 @@ function SearchBar() {
 
   
   return (
+    <div className="search-bar-container">
     <form onSubmit={handleSearch} className="search-form d-flex position-relative">
-      <div className="input-group search-input-group shadow-sm">
+      <div className="input-group shadow-sm border rounded-pill overflow-hidden">
         <input
           type="text"
-          className="form-control search-input border-0"
-          placeholder="O que você está procurando?"
+          className="form-control border-0 bg-light px-3"
+          placeholder="Pesquisar..."
           aria-label="Search"
           value={searchTerm}
           onChange={handleInputChange}
         />
-        <button className="btn search-button d-flex align-items-center justify-content-center" type="submit">
+        <button 
+        className="btn border-start bg-light px-3 d-flex align-items-center" type="submit">
           <i className="fa-solid fa-magnifying-glass search-icon"></i>
         </button>
       </div>
     </form>
+    </div>
   )
 }
 

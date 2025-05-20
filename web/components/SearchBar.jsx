@@ -56,8 +56,8 @@ function SearchBar() {
   } 
 
   return (
-    <div className="search-bar-container">
-    <form onSubmit={handleSearch} className="search-form d-flex position-relative">
+    <div className="search-bar-container w-100 d-flex justify-content-center">
+    <form onSubmit={handleSearch} className="search-form d-flex position-relative w-50 mx-auto">
       <div className="input-group shadow-sm border rounded-pill overflow-hidden">
         <input
           type="text"

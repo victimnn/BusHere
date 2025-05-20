@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useLocation } from "react-router-dom";
 
 
 function SideButton({name, icon, href = "#", isOpen = false, style = {}}){
+    const location = useLocation();
+    const isActive = location.pathname === (href.startsWith('/') ? href : `/${href}`);
+    
     const spanStyle = {
         opacity: isOpen ? 1 : 0,
         transition: "opacity 0.3s ease-in-out",
@@ -11,9 +15,18 @@ function SideButton({name, icon, href = "#", isOpen = false, style = {}}){
         width: 0, //Para não afetar o layout
     }
     return (
-    <Link to={href} className="d-flex align-items-center p-2 rounded text-decoration-none text-dark sidebar-button w-100 border-10 border-bottom  " style={style}>
-        <i className={`bi bi-${icon} fs-1`} />
-        <span style={spanStyle} className="sidebar-button-text fw-bold ms-2">{name}</span>
+    <Link
+        to={href} 
+        className={`sidebar-button d-flex align-items-center p-2 rounded text-decoration-none w-100 border-10 border-bottom ${isActive ? 'active' : 'text-dark'}`}
+        style={style}
+    >
+        <i className={`bi bi-${icon} fs-1 ms-2 ${isActive ? 'text-primary' : 'text-dark'}`} />
+        <span 
+        style={spanStyle} 
+        className={`sidebar-button-text fw-bold ms-2 ${isActive ? 'text-primary' : 'text-dark'}`}
+        > 
+          {name}
+        </span>
     </Link>
     );
 }

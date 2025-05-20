@@ -43,12 +43,14 @@ const pool = mysql.createPool({
 // Importando as rotas
 const userRoutes = require("./userRoutes")(pool);
 const authRoutes = require("./authRoutes")(pool);
+const searchRoutes = require("./searchRoutes")(pool);
 //const XXXXRoutes = require("./XXXX")(pool);
 //const YYYYRoutes = require("./YYYY")(pool);
 
 // Usando as rotas
 app.use("/users", userRoutes);
 app.use("/auth", authRoutes);
+app.use("/", searchRoutes);
 //app.use("/XXXX", XXXXRoutes);
 //app.use("/YYYY", YYYYRoutes);
 

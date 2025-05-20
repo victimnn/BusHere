@@ -21,7 +21,7 @@ function SideButton({name, icon, href = "#", isOpen = false, style = {}}){
 
 function SideBar() {
     const [isHovered, setIsHovered] = useState(false);
-    const sidebarWidth = isHovered ? "195px" : "80px"; // Largura do sidebar
+    const sidebarWidth = isHovered ? "200px" : "80px"; // Largura do sidebar
 
     return (
       <aside

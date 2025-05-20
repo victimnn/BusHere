@@ -38,8 +38,6 @@ const api = {
         // Exemplo: se for 401 Unauthorized, você pode redirecionar para a página de login
         if (response.status === 401) {
           console.error('Unauthorized: Redirecionando para login...');
-          window.location.href = '/login'; // Exemplo de redirecionamento
-          window.localStorage.removeItem('authToken'); // Remove o token
         }
         throw error;
       }

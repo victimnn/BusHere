@@ -1,8 +1,9 @@
 function getBearerToken() {
-  return localStorage.getItem('authToken'); // Token de autenticação armazenado no localStorage
+    const token = localStorage.getItem('token');
+    return token ? `Bearer ${token}` : null;
 }
 
-const API_BASE_URL = process.env.API_URL || 'http://localhost:3000'; // URL base da API
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 const api = {
   _request: async (method, url, data = null, options = {}) => {

@@ -15,7 +15,7 @@ const fetchAutocompleteSuggestions = async (term) => {
   }
 };
 
-function SuggestionModal({ suggestions, onSuggestionClick }) {
+function SuggestionModal({ suggestions, onSuggestionClick, icons }) {
   return (
     <div className="card position-absolute w-100 mt-2" style={{ top: '100%', zIndex: 1000 }}>
       <ul className="list-group list-group-flush">
@@ -26,6 +26,7 @@ function SuggestionModal({ suggestions, onSuggestionClick }) {
             onClick={() => onSuggestionClick(suggestion)}
             style={{ cursor: 'pointer' }}
           >
+            <i className={icons[suggestion.itemType]}></i>
             {suggestion.search_text}
           </li>
         ))}
@@ -40,6 +41,13 @@ function SearchBar() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState(params.searchTerm || ""); // Inicializa o estado com o termo de pesquisa
   const [suggestions, setSuggestions] = useState([]); // Estado para armazenar as sugestões
+
+  const icons = {
+    "User": "bi bi-person",
+    "Bus": "bi bi-bus-front-fill",
+    "Route": "bi bi-bus-front-fill",  
+    "Stop": "bi bi-geo-alt-fill",
+  }
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -105,6 +113,7 @@ function SearchBar() {
           <SuggestionModal
             suggestions={suggestions}
             onSuggestionClick={handleSuggestionClick}
+            icons={icons}
           />
         )}
 

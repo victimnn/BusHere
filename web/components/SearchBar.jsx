@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from 'react-router-dom';
 import autoComplete from '../src/api/autocomplete';
 
+
 const fetchAutocompleteSuggestions = async (term) => {
   try {
     const response = await autoComplete(term);
@@ -13,6 +14,26 @@ const fetchAutocompleteSuggestions = async (term) => {
     return []; // Retorna um array vazio em caso de erro
   }
 };
+
+function SuggestionModal({ suggestions, onSuggestionClick }) {
+  return (
+    <div className="card position-absolute w-100 mt-2" style={{ top: '100%', zIndex: 1000 }}>
+      <ul className="list-group list-group-flush">
+        {suggestions.map((suggestion, index) => (
+          <li
+            key={index}
+            className="list-group-item list-group-item-action"
+            onClick={() => onSuggestionClick(suggestion)}
+            style={{ cursor: 'pointer' }}
+          >
+            {suggestion.search_text}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 
 function SearchBar() {
   const params = useParams(); // Obtém o termo de pesquisa da URL
@@ -55,6 +76,13 @@ function SearchBar() {
     setSearchTerm(e.target.value);
   } 
 
+  const handleSuggestionClick = (suggestion) => {
+    const suggestionText = suggestion.search_text 
+    setSearchTerm(suggestionText); // Atualiza o termo de pesquisa com a sugestão clicada
+    setSuggestions([]); // Limpa as sugestões após clicar em uma
+    navigate(`/search/${suggestionText}`); // Navega para a rota de pesquisa com a sugestão
+  }
+
   return (
     <div className="search-bar-container w-100 d-flex justify-content-center">
     <form onSubmit={handleSearch} className="search-form d-flex position-relative w-50 mx-auto">
@@ -67,12 +95,19 @@ function SearchBar() {
           value={searchTerm}
           onChange={handleInputChange}
         />
-        <p>{JSON.stringify(suggestions)}</p>
         <button 
         className="btn border-start bg-light px-3 d-flex align-items-center" type="submit">
           <i className="fa-solid fa-magnifying-glass search-icon"></i>
         </button>
       </div>
+
+        {suggestions.length > 0 && (
+          <SuggestionModal
+            suggestions={suggestions}
+            onSuggestionClick={handleSuggestionClick}
+          />
+        )}
+
     </form>
     </div>
   )

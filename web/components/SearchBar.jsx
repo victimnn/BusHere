@@ -26,7 +26,7 @@ function SuggestionModal({ suggestions, onSuggestionClick, icons }) {
             onClick={() => onSuggestionClick(suggestion)}
             style={{ cursor: 'pointer' }}
           >
-            <i className={icons[suggestion.itemType]}></i>
+            <i className={[icons[suggestion.item_type] + " me-2"|| "bi bi-question-diamond-fill me-4"]}></i>
             {suggestion.search_text}
           </li>
         ))}

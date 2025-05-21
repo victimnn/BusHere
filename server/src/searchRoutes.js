@@ -15,7 +15,7 @@ module.exports = (pool) => {
 
     try {
       const sanitizedSearch = search.trim().toLowerCase()
-      const [rows, fields] = await pool.query("SELECT * FROM searchIndex WHERE MATCH (search_text) AGAINST (? IN BOOLEAN MODE) LIMIT 5;",[search])
+      const [rows, fields] = await pool.query("SELECT * FROM searchIndex WHERE MATCH (search_text) AGAINST (? IN BOOLEAN MODE) LIMIT 5;",[sanitizedSearch])
       if(rows.length === 0) {
         return res.status(200).json([]);
       }

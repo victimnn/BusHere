@@ -41,7 +41,6 @@ function SearchBar() {
   const [searchTerm, setSearchTerm] = useState(params.searchTerm || ""); // Inicializa o estado com o termo de pesquisa
   const [suggestions, setSuggestions] = useState([]); // Estado para armazenar as sugestões
 
-
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       async function getSuggestions() {
@@ -68,6 +67,7 @@ function SearchBar() {
     e.preventDefault();  // Evita o comportamento padrão do formulário
     if (searchTerm.trim() !== "") {   
       navigate(`/search/${searchTerm}`); // Navega para a rota de pesquisa com o termo
+      setSuggestions([]); // Limpa as sugestões após a pesquisa
       setSearchTerm(""); 
     }
   }

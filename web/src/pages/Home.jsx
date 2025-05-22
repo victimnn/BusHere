@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import PopUpComponent from "../../components/PopUpComponent";
+import PopUpComponent from "../components/PopUpComponent";
 
 //coisas do chartJS
 // graficos de pizza

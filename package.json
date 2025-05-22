@@ -1,0 +1,12 @@
+{
+    "name": "monorepo-setup",
+    "version": "1.0.0",
+    "description": "Script de setup do monorepo (raiz)",
+    "main": "index.js",
+    "scripts": {
+      "setup": "echo Iniciando o setup global... && cd web && npm install && cd .. && echo. && echo Copiando .env.example para .env nas pastas de projeto... && copy .\\web\\.env.example .\\web\\.env && echo .\\web\\.env copiado. && copy .\\server\\.env.example .\\server\\.env && echo .\\server\\.env copiado. && echo. && echo Executando setup do servidor... && cd server && npm run setup && cd .. && echo. && echo Setup global concluido com sucesso!"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+  }

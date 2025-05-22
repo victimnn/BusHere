@@ -1,3 +1,4 @@
 mobile/.env
 server/.env
 web/.env
+/node_modules

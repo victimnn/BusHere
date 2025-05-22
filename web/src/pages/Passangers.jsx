@@ -1,6 +1,33 @@
 import { useRef } from "react";
 import PopUpComponent from "../../components/PopUpComponent";
 
+import React from 'react';
+
+const Tabela = ({ header, body }) => {
+  return (
+    <table className="table table-striped table-bordered">
+      <thead>
+        <tr>
+          {header.map((item, index) => (
+            <th key={index}>{item}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {body.map((row, rowIndex) => (
+          <tr key={rowIndex}>
+            {row.map((item, colIndex) => (
+              <td key={colIndex}>{item}</td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+export default Tabela;
+
 function PopUpContent() {
   return (
     <div className="p-3 bg-blue">

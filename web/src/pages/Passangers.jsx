@@ -1,46 +1,27 @@
 import { useRef } from "react";
 import PopUpComponent from "../components/PopUpComponent";
+import Table from "../components/Table";
 
 import React from 'react';
 
-const obterDadosDeUsuariosTeste = () => {
-  return [
-    { user_id: 1, full_name: "João Silva", cpf: "12345678901", },
-    { user_id: 2, full_name: "Maria Oliveira", cpf: "23456789012", },
-    { user_id: 3, full_name: "Pedro Santos", cpf: "34567890123", },
-    { user_id: 4, full_name: "Ana Costa", cpf: "45678901234", },
-    { user_id: 5, full_name: "Lucas Pereira", cpf: "56789012345", },
-    { user_id: 6, full_name: "Juliana Almeida", cpf: "67890123456", },
-    { user_id: 7, full_name: "Ricardo Lima", cpf: "78901234567", },
-    { user_id: 8, full_name: "Fernanda Rocha", cpf: "89012345678", },
-    { user_id: 9, full_name: "Gabriel Martins", cpf: "90123456789", },
-    { user_id: 10, full_name: "Larissa Ferreira", cpf: "01234567890", }
-  ]
-}
+// dados de exemplo
+const passengersData = [
+  { id: 1, nome: "Victor Ramos", cpf: "123.456.789-00", telefone: "(11) 99999-8888" },
+  { id: 2, nome: "Renan Andrade", cpf: "987.654.321-00", telefone: "(11) 99999-7777" },
+  { id: 3, nome: "Luiz Souza", cpf: "456.789.123-00", telefone: "(11) 99999-6666" },
+  { id: 4, nome: "Sarah Porsch", cpf: "123.456.789-00", telefone: "(11) 99999-8888" },
+  { id: 5, nome: "Marcelo Henrique", cpf: "987.654.321-00", telefone: "(11) 99999-7777" },
+  { id: 6, nome: "Rubens Carlos", cpf: "456.789.123-00", telefone: "(11) 99999-6666" },
+];
 
+// header da tabela
+const tableHeaders = [
+  { id: "id", label: "ID", sortable: true },
+  { id: "nome", label: "Nome", sortable: true },
+  { id: "cpf", label: "CPF", sortable: true },
+  { id: "telefone", label: "Telefone", sortable: false }
+];
 
-function Tabela({ header, body }){
-  return (
-    <table className="table table-hover table-striped">
-      <thead>
-        <tr>
-          {header.map((item, index) => (
-            <th key={index}>{item}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody className="table-group-divider">
-        {body.map((row, rowIndex) => (
-          <tr key={rowIndex}>
-            {row.map((item, colIndex) => (
-              <td key={colIndex}>{item}</td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-};
 
 function PopUpContent() {
   return (
@@ -54,6 +35,12 @@ function PopUpContent() {
 function Passangers(){
     const popUpRef = useRef(null); // Referência para o componente PopUpComponent
   
+    // Handler para quando uma linha for clicada
+    const handleRowClick = (passenger) => {
+      console.log("Passageiro selecionado:", passenger);
+      // da abrir um popup com detalhes do passageiro aqui
+    };
+
     return (
       <main className="flex-column justify-content-center align-items-center">
         <h1>Passageiros</h1> 
@@ -66,17 +53,14 @@ function Passangers(){
         >
           Abrir PopUp
         </button>
-          
-        {/* texto com a cor secundaria */}
-        <p className="text-secondary">Texto com a cor secundaria</p> 
 
-        <Tabela style={{ marginTop: "auto" }}
-          header={ ["ID", "Nome", "CPF"] }
-          body={obterDadosDeUsuariosTeste().map((usuario) => [
-            usuario.user_id,
-            usuario.full_name,
-            usuario.cpf
-          ])}
+        <Table 
+        headers={tableHeaders} // header da tabela
+        data={passengersData} // dados a serem exibidos na tabela
+        itemsPerPage={5} // número de itens por página
+        searchable={true} // permite pesquisa na tabela
+        className="table-bordered" // classe opcional para estilização
+        onRowClick={handleRowClick} // passa a função de clique da linha
         />
   
         <PopUpComponent 

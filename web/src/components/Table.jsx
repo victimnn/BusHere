@@ -107,28 +107,28 @@ return (
             {searchable && (
                 <div className="search-bar-container d-flex justify-content-end mb-1">
                     <div className="search-form d-flex position-relative w-20">
-                    <div className="input-group shadow-sm border rounded-pill overflow-hidden">
-                        <input
-                            type="text"
-                            className="form-control border-0 bg-light px-3"
-                            placeholder="Pesquisar..."
-                            aria-label="Search"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                        <button 
-                            className="btn border-start bg-light px-3 d-flex align-items-center" 
-                            type="submit">
-                            <i className="fa-solid fa-magnifying-glass search-icon"></i>
-                        </button>
-                        {searchTerm && (
-                            <button 
-                            className="btn btn-outline-secondary" 
-                            type="button"
-                            onClick={() => setSearchTerm('')}
-                            >
-                            <i className="bi bi-x"></i>
-                            </button>
+                        <div className="input-group shadow-sm border rounded-pill overflow-hidden">
+                            <input
+                                type="text"
+                                className="form-control border-0 bg-light px-3"
+                                placeholder="Pesquisar..."
+                                aria-label="Search"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                                <button 
+                                className="btn border-start bg-light px-3 d-flex align-items-center" 
+                                type="submit">
+                                <i className="fa-solid fa-magnifying-glass search-icon"></i>
+                                </button>
+                            {searchTerm && (
+                                <button 
+                                    className="btn border-start bg-light px-3 d-flex align-items-center" 
+                                    type="button"
+                                    onClick={() => setSearchTerm('')}
+                                >
+                                    <i className="bi bi-x"></i>
+                                </button>
                         )}
                     </div>
                     </div>

@@ -1,6 +1,3 @@
--- Down
-DROP TABLE IF EXISTS TokensLogin; -- Add semicolon here!
-
 -- Up
 CREATE TABLE TokensLogin (
     token_id INT AUTO_INCREMENT PRIMARY KEY, -- ID único para cada token

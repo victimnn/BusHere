@@ -1,10 +1,5 @@
--- Down
--- Remove todos os triggers relacionados à tabela Passageiros, caso existam
-DROP TRIGGER IF EXISTS after_passageiros_insert_add_to_search_index;
-DROP TRIGGER IF EXISTS after_passageiros_update_update_search_index;
-DROP TRIGGER IF EXISTS after_passageiros_delete_remove_from_search_index;
 
---Up
+-- Up
 -- Triggers para manter a tabela searchIndex atualizada com dados de Passageiros
 
 -- Trigger para INSERT: Adiciona um novo passageiro ao índice de busca

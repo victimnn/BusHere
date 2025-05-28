@@ -1,19 +1,19 @@
 {
-    "name": "bus-here",
-    "version": "1.0.0",
-    "description": "Script de setup para o nosso TCC (raiz)",
-    "main": "index.js",
-    "scripts": {
-        "setup": "echo Instalando dependencias na raiz... && npm install && echo Iniciando o setup global... && cd web && npm install && cd .. && echo. && echo Copiando .env.example para .env nas pastas de projeto... && copy .\\web\\.env.example .\\web\\.env && echo .\\web\\.env copiado. && copy .\\server\\.env.example .\\server\\.env && echo .\\server\\.env copiado. && echo. && echo Executando setup do servidor... && cd server && npm run setup && cd .. && echo. && echo Setup global concluido com sucesso!",
-        "start": "concurrently --names \"W,S,BROWSER\" --prefix-colors \"green,blue,magenta\" \"npm run start --prefix web\" \"npm run start --prefix server\" \"start http://localhost:5173/\""
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "devDependencies": {
-        "concurrently": "^8.2.2"
-    },
-    "dependencies": {
-        "mysql2": "^3.14.1"
-    }
+  "name": "bus-here",
+  "version": "1.0.0",
+  "description": "Script de setup para o nosso TCC (raiz)",
+  "main": "index.js",
+  "scripts": {
+    "setup": "echo Instalando dependencias na raiz... && npm install && echo Iniciando o setup global... && cd web && npm install && cd .. && echo. && echo Copiando .env.example para .env nas pastas de projeto... && copy .\\web\\.env.example .\\web\\.env && echo .\\web\\.env copiado. && copy .\\server\\.env.example .\\server\\.env && echo .\\server\\.env copiado. && echo. && echo Executando setup do servidor... && cd server && npm install && npm run setup && cd .. && echo. && echo Setup global concluido com sucesso!",
+    "start": "concurrently --names \"W,S,BROWSER\" --prefix-colors \"green,blue,magenta\" \"npm run start --prefix web\" \"npm run start --prefix server\" \"start http://localhost:5173/\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "mysql2": "^3.14.1"
+  }
 }

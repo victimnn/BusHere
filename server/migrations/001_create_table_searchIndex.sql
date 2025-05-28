@@ -1,6 +1,3 @@
--- Down
-DROP TABLE IF EXISTS searchIndex; -- Add semicolon here!
-
 -- Up
 CREATE TABLE searchIndex (
     index_id INT AUTO_INCREMENT PRIMARY KEY, -- ID único para cada entrada no índice de busca

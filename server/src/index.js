@@ -44,6 +44,7 @@ const pool = mysql.createPool({
 const userRoutes = require("./userRoutes")(pool);
 const authRoutes = require("./authRoutes")(pool);
 const searchRoutes = require("./searchRoutes")(pool);
+const passangerRoutes = require("./passangerRoutes")(pool);
 //const XXXXRoutes = require("./XXXX")(pool);
 //const YYYYRoutes = require("./YYYY")(pool);
 
@@ -51,6 +52,7 @@ const searchRoutes = require("./searchRoutes")(pool);
 app.use("/users", userRoutes);
 app.use("/auth", authRoutes);
 app.use("/", searchRoutes);
+app.use("/passengers", passangerRoutes);
 //app.use("/XXXX", XXXXRoutes);
 //app.use("/YYYY", YYYYRoutes);
 

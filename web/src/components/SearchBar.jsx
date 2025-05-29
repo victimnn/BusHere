@@ -105,7 +105,7 @@ function SearchBar() {
         />
         <button 
         className="btn border-start bg-light px-3 d-flex align-items-center" type="submit">
-          <i className="fa-solid fa-magnifying-glass search-icon"></i>
+          <i className="fa-solid fa-magnifying-glass search-icon text-primary"></i>
         </button>
       </div>
 

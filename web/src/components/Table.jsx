@@ -97,8 +97,8 @@ function Table({
   const getSortDirectionIndicator = (key) => {
     if (sortConfig.key !== key) return '';
     return sortConfig.direction === 'asc' 
-    ? <i className="bi bi-arrow-up"></i> 
-    : <i className="bi bi-arrow-down"></i>;
+    ? <i className="bi bi-arrow-up text-secondary"></i> 
+    : <i className="bi bi-arrow-down text-secondary"></i>;
   };
 
 return (
@@ -119,7 +119,7 @@ return (
                                 <button 
                                 className="btn border-start bg-light px-3 d-flex align-items-center" 
                                 type="submit">
-                                <i className="fa-solid fa-magnifying-glass search-icon"></i>
+                                <i className="fa-solid fa-magnifying-glass search-icon text-primary"></i>
                                 </button>
                             {searchTerm && (
                                 <button 
@@ -167,7 +167,7 @@ return (
                 ) : (
                     <tr>
                         <td colSpan={headers.length} className="text-center py-4">
-                            No data available
+                            Sem dados para exibir.
                         </td>
                     </tr>
                 )}
@@ -189,16 +189,16 @@ return (
                     </li> */}
                     <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
                         <button 
-                            className="page-link" 
+                            className="page-link bg-primary text-white" 
                             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                             disabled={currentPage === 1}
                         >
-                            &lt;
+                            <strong>&lt;</strong>
                         </button>
                     </li>
                     
                     {/* Page indicator */}
-                    <li className="page-item active">
+                    <li className="page-item">
                         <span className="page-link">
                             {currentPage} de {totalPages}
                         </span>
@@ -206,11 +206,11 @@ return (
                     
                     <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
                         <button 
-                            className="page-link" 
+                            className="page-link bg-primary text-white" 
                             onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                             disabled={currentPage === totalPages}
                         >
-                            &gt;
+                            <strong>&gt;</strong>
                         </button>
                     </li>
                     {/* <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>

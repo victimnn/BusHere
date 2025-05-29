@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 
 /**
  * componente da tabela com funcionalidades de ordenação, paginação e pesquisa
- * @param {Object} props - propiedades do componente
- * @param {Array} props.headers - array do header da tabela, cada objeto deve conter:
- * @param {Array} props.data - array de dados a serem exibidos na tabela
+ * @param {Object} props - propriedades do componente
+ * @param {Array<Object>} props.headers - array do header da tabela, cada objeto deve conter:
+ * @param {Array<Object>} props.data - array de dados a serem exibidos na tabela
  * @param {Number} props.itemsPerPage - itens por página (default 10)
- * @param {Boolean} props.searchable - bglh pra add funcionalidade de pesquisa (default true)
+ * @param {boolean} props.searchable - bglh pra add funcionalidade de pesquisa (default true) // 'boolean' minúsculo é mais comum
  * @param {String} props.className - add class css pra estilizar a tabela
  * @param {Function} props.onRowClick - função chamada quando uma linha é clicada, recebe o objeto da linha como parâmetro
  * @returns {JSX.Element} componente da tabela renderizado

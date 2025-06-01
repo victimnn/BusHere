@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import '../../styles/PassengerForm.css'; // Importação do arquivo CSS
+import '../../../styles/PassengerForm.scss'; // Importação do arquivo CSS
 
 /**
  * Componente de formulário para criação e edição de passageiros
@@ -54,7 +54,7 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
       [name]: value
     }));
     
-    // Valida o campo apenas se o usuário já começou a digitar algo
+    // Valida o campo so se o usuário já começou a digitar algo
     if (value) {
       const errorMsg = validateField(name, value);
       setErrors(prev => ({
@@ -136,7 +136,7 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
     }
   };
     return (
-    <div className="card shadow-sm border-0">
+    <div className="card border-0 shadow-sm">
       <div className="card-header bg-primary bg-gradient text-white">
         <h5 className="mb-0">
           <i className="bi bi-person-vcard me-2"></i>
@@ -222,7 +222,7 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
           </button>
           <button 
             type="submit" 
-            className="btn btn-primary btn-lg px-4"
+            className="btn btn-primary text-white btn-lg px-4"
           >
             <i className={`bi ${initialData ? 'bi-pencil-square' : 'bi-plus-circle'} me-2`}></i>
             {initialData ? 'Atualizar' : 'Cadastrar'}

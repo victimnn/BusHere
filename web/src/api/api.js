@@ -62,6 +62,39 @@ const api = {
   put: (url, data, options) => api._request('PUT', url, data, options),
   patch: (url, data, options) => api._request('PATCH', url, data, options),
   delete: (url, options) => api._request('DELETE', url, null, options),
+
+  // Funções específicas para passageiros
+  passengers: {
+    // Listar todos os passageiros (com suporte à paginação e busca)
+    list: (page = 1, limit = 10, search = '') => {
+      const queryParams = new URLSearchParams();
+      queryParams.append('page', page);
+      queryParams.append('limit', limit);
+      if (search) queryParams.append('search', search);
+      
+      return api.get(`/passengers?${queryParams.toString()}`);
+    },
+    
+    // Obter detalhes de um passageiro específico pelo ID
+    getById: (id) => {
+      return api.get(`/passengers/${id}`);
+    },
+    
+    // Criar novo passageiro
+    create: (passengerData) => {
+      return api.post('/passengers', passengerData);
+    },
+    
+    // Atualizar dados de um passageiro existente
+    update: (id, passengerData) => {
+      return api.put(`/passengers/${id}`, passengerData);
+    },
+    
+    // Excluir passageiro
+    delete: (id) => {
+      return api.delete(`/passengers/${id}`);
+    }
+  }
 };
 
 export default api;

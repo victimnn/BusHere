@@ -3,6 +3,7 @@ import PopUpComponent from "../components/PopUpComponent";
 import PassengerForm from "../components/PassengerForm";
 import Table from "../components/Table";
 import api from "../api/api";
+import './Passangers.css';
 
 import React from 'react';
 
@@ -17,32 +18,80 @@ const tableHeaders = [
 function PassengerDetails({ passenger, onEdit, onDelete }) {
   return (
     <div className="p-3">
-      <h2>Detalhes do Passageiro</h2>
-      {passenger && (
-        <div>
-          <div className="mb-4">
-            <p><strong>ID:</strong> {passenger.id}</p>
-            <p><strong>Nome:</strong> {passenger.nome}</p>
-            <p><strong>CPF:</strong> {passenger.cpf}</p>
-            <p><strong>Telefone:</strong> {passenger.telefone || "Não informado"}</p>
-          </div>
-          
-          <div className="d-flex justify-content-end gap-2">
-            <button 
-              className="btn btn-danger" 
-              onClick={() => onDelete(passenger.id)}
-            >
-              <i className="bi bi-trash me-1"></i> Excluir
-            </button>
-            <button 
-              className="btn btn-primary" 
-              onClick={() => onEdit(passenger)}
-            >
-              <i className="bi bi-pencil me-1"></i> Editar
-            </button>
+      <div className="card border-0 shadow-sm passenger-detail-card">
+        <div className="card-header bg-light py-3">
+          <div className="d-flex align-items-center">
+            <div className="passenger-avatar bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style={{width: '48px', height: '48px'}}>
+              <i className="bi bi-person-fill fs-4"></i>
+            </div>
+            <h5 className="mb-0 fw-semibold">Detalhes do Passageiro</h5>
           </div>
         </div>
-      )}
+        {passenger && (
+          <div className="card-body p-4">
+            <div className="mb-4">
+              <div className="row g-3">
+                <div className="col-12">
+                  <div className="detail-item d-flex align-items-center p-2 rounded bg-light">
+                    <i className="bi bi-hash text-primary me-3 fs-5"></i>
+                    <div>
+                      <small className="text-muted d-block">ID</small>
+                      <span className="fw-medium">{passenger.id}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="col-12">
+                  <div className="detail-item d-flex align-items-center p-2 rounded bg-light">
+                    <i className="bi bi-person text-primary me-3 fs-5"></i>
+                    <div>
+                      <small className="text-muted d-block">Nome</small>
+                      <span className="fw-medium">{passenger.nome}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="col-12">
+                  <div className="detail-item d-flex align-items-center p-2 rounded bg-light">
+                    <i className="bi bi-card-text text-primary me-3 fs-5"></i>
+                    <div>
+                      <small className="text-muted d-block">CPF</small>
+                      <span className="fw-medium">{passenger.cpf}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="col-12">
+                  <div className="detail-item d-flex align-items-center p-2 rounded bg-light">
+                    <i className="bi bi-telephone text-primary me-3 fs-5"></i>
+                    <div>
+                      <small className="text-muted d-block">Telefone</small>
+                      <span className="fw-medium">{passenger.telefone || "Não informado"}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <hr className="my-4" />
+            
+            <div className="d-flex justify-content-end gap-3">
+              <button 
+                className="btn btn-outline-danger btn-lg px-4" 
+                onClick={() => onDelete(passenger.id)}
+              >
+                <i className="bi bi-trash me-2"></i> Excluir
+              </button>
+              <button 
+                className="btn btn-primary btn-lg px-4" 
+                onClick={() => onEdit(passenger)}
+              >
+                <i className="bi bi-pencil-square me-2"></i> Editar
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -161,44 +210,66 @@ function Passangers(){
         {}, 
         `Passageiro: ${passenger.nome}`
       );
-    };
-
-    return (
+    };    return (
       <main className="container p-3">
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h1>Passageiros</h1>
-          
-          <button
-            onClick={handleCreatePassenger}
-            className="btn btn-primary"
-          >
-            <i className="bi bi-plus-circle me-1"></i> Novo Passageiro
-          </button>
-        </div>
-        
-        {error && (
-          <div className="alert alert-danger mb-4" role="alert">
-            <i className="bi bi-exclamation-triangle me-2"></i>
-            {error}
-          </div>
-        )}
-        
-        {isLoading ? (
-          <div className="d-flex justify-content-center my-5">
-            <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">Carregando...</span>
+        <div className="card border-0 shadow-sm mb-4">
+          <div className="card-header bg-white py-3">
+            <div className="d-flex justify-content-between align-items-center">
+              <div className="d-flex align-items-center">
+                <div className="bg-primary text-white rounded-circle p-2 me-3">
+                  <i className="bi bi-people-fill fs-5"></i>
+                </div>
+                <h1 className="h3 mb-0 fw-semibold">Passageiros</h1>
+              </div>
+              
+              <button
+                onClick={handleCreatePassenger}
+                className="btn btn-primary d-flex align-items-center"
+              >
+                <i className="bi bi-plus-circle me-2"></i>
+                <span>Novo Passageiro</span>
+              </button>
             </div>
           </div>
-        ) : (
-          <Table 
-            headers={tableHeaders}
-            data={passengers}
-            itemsPerPage={10}
-            searchable={true}
-            className="table-striped table-hover shadow-sm"
-            onRowClick={handleRowClick}
-          />
-        )}
+          
+          <div className="card-body p-3">
+            {error && (
+              <div className="alert alert-danger d-flex align-items-center mb-4" role="alert">
+                <i className="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                <div>{error}</div>
+              </div>
+            )}
+            
+            {isLoading ? (
+              <div className="d-flex flex-column justify-content-center align-items-center my-5 py-5">
+                <div className="spinner-border text-primary mb-3" role="status" style={{width: '3rem', height: '3rem'}}>
+                  <span className="visually-hidden">Carregando...</span>
+                </div>
+                <p className="text-muted">Carregando passageiros...</p>
+              </div>
+            ) : (
+              <div className="table-responsive">
+                <Table 
+                  headers={tableHeaders}
+                  data={passengers}
+                  itemsPerPage={10}
+                  searchable={true}
+                  className="table-striped table-hover"
+                  onRowClick={handleRowClick}
+                />
+              </div>
+            )}          </div>
+        </div>
+        
+        <div className="card border-0 bg-light shadow-sm mt-4 p-3">
+          <div className="d-flex align-items-center">
+            <i className="bi bi-info-circle-fill text-primary me-3 fs-4"></i>
+            <p className="mb-0 text-muted">
+              <strong>Dica:</strong> Clique em uma linha da tabela para ver os detalhes completos do passageiro.
+              Para adicionar um novo passageiro, clique no botão "Novo Passageiro".
+            </p>
+          </div>
+        </div>
   
         <PopUpComponent 
           ref={popUpRef}

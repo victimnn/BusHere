@@ -75,7 +75,11 @@ $input-bg: $bg-medium;
 $input-border-color: $text-muted;
 $input-focus-border-color: $primary;
 $input-focus-box-shadow: none;
-$btn-transition: all 0.2s ease;
+$btn-sb-transition: all 0.2s ease;
+
+// Transições para botões e elementos interativos
+$btn-transition: all 0.2s ease-in-out;
+$avatar-size: 40px; // Tamanho do avatar, se necessário
 
 
 // 2. Use o Bootstrap SCSS (precisa do includePaths configurado no Vite)
@@ -114,6 +118,8 @@ $btn-transition: all 0.2s ease;
   $input-border-color: $input-border-color,
   $input-focus-border-color: $input-focus-border-color,
   $input-focus-box-shadow: $input-focus-box-shadow,
+
+  // Estilos adicionais
   $btn-transition: $btn-transition,
 
   $box-shadow-sm: $box-shadow-sm
@@ -123,7 +129,7 @@ $btn-transition: all 0.2s ease;
 // Adicione ao final do arquivo após o @use "bootstrap"
 //searchBar
 .input-group {
-  transition: $btn-transition;
+  transition: $btn-sb-transition;
   
   &:hover {
     border-color: $primary !important;
@@ -133,7 +139,7 @@ $btn-transition: all 0.2s ease;
 
 //sideButtons
 .sidebar-button, .sidebar-button i {
-  transition: $btn-transition;
+  transition: $btn-sb-transition;
   
   &:hover {
     i {
@@ -148,26 +154,78 @@ $btn-transition: all 0.2s ease;
   }
 }
 
+//buttons
+.btn {
+  transition: $btn-transition;
+
+  &:hover {
+    color: $primary-contrast !important;
+  }
+
+  &.btn-primary {
+    background-color: $primary !important;
+    color: $light !important;
+
+    &:hover {
+      background-color: $analogous-2 !important;
+      color: $dark !important;
+    }
+  }
+}
+
+//table
+.card {
+  margin-bottom: 1rem;
+}
+
+.avatar {
+  width: $avatar-size;
+  height: $avatar-size;
+}
+
+.detail-item {
+  padding: 8px;
+  border-left: 2px solid transparent;
+  transition: $btn-transition;
+  
+  &:hover {
+    background-color: $bg-medium;
+    border-left: 2px solid $primary;
+
+    i {
+      size: 110%;
+    }
+  }
+}
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  
+  thead th {
+    background-color: $bg-medium;
+    border-bottom: 1px solid $primary-light;
+    color: $primary-dark;
+    font-weight: 600;
+    font-size: 0.8rem;
+  }
+  
+  tbody {
+    tr {
+      cursor: pointer;
+      
+      &:hover {
+        background-color: rgba(18, 190, 77, 0.05);
+      }
+    }
+  }
+}
+
+/* Linhas alternadas */
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: $bg-medium;
+}
+
+
 // 3. Importar Bootstrap Icons
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
-
-// Seus estilos personalizados podem vir aqui, usando as variáveis definidas acima
-// Exemplo:
-// .meu-componente-primario {
-//   background-color: $primary-light; // Usando sua variável personalizada
-//   color: $primary-dark;            // Usando sua variável personalizada
-// }
-
-// .meu-componente-destaque {
-//   background-color: $accent;
-//   color: $primary-contrast; // Assumindo que o texto sobre $accent deve ser branco
-//   border: 1px solid $analogous-1;
-// }
-
-// .texto-principal {
-//   color: $text-primary;
-// }
-
-// .fundo-alternativo {
-//   background-color: $bg-medium;
-// }

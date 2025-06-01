@@ -62,7 +62,7 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
         [name]: errorMsg
       }));
     } else {
-      // Limpa o erro quando o usuário apaga o conteúdo
+      // Limpa o erro quando o usuário apaga td
       setErrors(prev => ({
         ...prev,
         [name]: null

@@ -36,7 +36,7 @@ function Passangers(){
         console.error("Erro ao buscar passageiros:", err);
         setError("Não foi possível carregar os passageiros. Tente novamente mais tarde.");
         
-        // Usando dados mockados em caso de erro ou durante desenvolvimento
+        // Usando dados mockados em caso de erro no bd
         setPassengers([
           { id: 1, nome: "Victor Ramos", cpf: "123.456.789-00", telefone: "(11) 99999-8888" },
           { id: 2, nome: "Renan Andrade", cpf: "987.654.321-00", telefone: "(11) 99999-7777" },
@@ -50,7 +50,7 @@ function Passangers(){
       }
     };
     
-    // Efeito para carregar os passageiros quando o componente for montado
+    // para carregar os passageiros quando o componente for montado
     useEffect(() => {
       fetchPassengers();
     }, [currentPage, searchTerm]); // Recarrega quando mudar a página ou o termo de busca
@@ -135,8 +135,8 @@ function Passangers(){
           <div className="card-header bg-white py-3">
             <div className="d-flex justify-content-between align-items-center">
               <div className="d-flex align-items-center">
-                <div className="bg-primary text-white rounded-circle p-2 me-3">
-                  <i className="bi bi-people-fill fs-5"></i>
+                <div className="text-primary rounded-circle p-2 me-3">
+                  <i className="bi bi-people-fill fs-3"></i>
                 </div>
                 <h1 className="h3 mb-0 fw-semibold">Passageiros</h1>
               </div>

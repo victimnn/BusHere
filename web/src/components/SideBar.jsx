@@ -20,10 +20,10 @@ function SideButton({name, icon, href = "#", isOpen = false, style = {}}){
         className={`sidebar-button d-flex align-items-center p-2 rounded text-decoration-none w-100 border-10 border-bottom ${isActive ? 'active' : 'text-dark'}`}
         style={style}
     >
-        <i className={`bi bi-${icon} fs-1 ms-2 ${isActive ? 'text-primary' : 'text-dark'}`} />
+        <i className={`bi bi-${icon} fs-1 ms-2 ${isActive ? 'text-primary' : 'text-secondary'}`} />
         <span 
         style={spanStyle} 
-        className={`sidebar-button-text fw-bold ms-2 ${isActive ? 'text-primary' : 'text-dark'}`}
+        className={`sidebar-button-text fw-bold ms-2 ${isActive ? 'text-primary' : 'text-secondary'}`}
         > 
           {name}
         </span>

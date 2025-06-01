@@ -1,9 +1,9 @@
 import { useRef, useState, useEffect } from "react";
 import PopUpComponent from "../components/PopUpComponent";
-import PassengerForm from "../components/PassengerForm";
+import PassengerForm from "../components/passengers/PassengerForm";
+import PassengerDetails from "../components/passengers/PassengerDetails";
 import Table from "../components/Table";
 import api from "../api/api";
-import './Passangers.css';
 
 import React from 'react';
 
@@ -14,87 +14,6 @@ const tableHeaders = [
   { id: "cpf", label: "CPF", sortable: true },
   { id: "telefone", label: "Telefone", sortable: false }
 ];
-
-function PassengerDetails({ passenger, onEdit, onDelete }) {
-  return (
-    <div className="p-3">
-      <div className="card border-0 shadow-sm passenger-detail-card">
-        <div className="card-header bg-light py-3">
-          <div className="d-flex align-items-center">
-            <div className="passenger-avatar bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style={{width: '48px', height: '48px'}}>
-              <i className="bi bi-person-fill fs-4"></i>
-            </div>
-            <h5 className="mb-0 fw-semibold">Detalhes do Passageiro</h5>
-          </div>
-        </div>
-        {passenger && (
-          <div className="card-body p-4">
-            <div className="mb-4">
-              <div className="row g-3">
-                <div className="col-12">
-                  <div className="detail-item d-flex align-items-center p-2 rounded bg-light">
-                    <i className="bi bi-hash text-primary me-3 fs-5"></i>
-                    <div>
-                      <small className="text-muted d-block">ID</small>
-                      <span className="fw-medium">{passenger.id}</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="col-12">
-                  <div className="detail-item d-flex align-items-center p-2 rounded bg-light">
-                    <i className="bi bi-person text-primary me-3 fs-5"></i>
-                    <div>
-                      <small className="text-muted d-block">Nome</small>
-                      <span className="fw-medium">{passenger.nome}</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="col-12">
-                  <div className="detail-item d-flex align-items-center p-2 rounded bg-light">
-                    <i className="bi bi-card-text text-primary me-3 fs-5"></i>
-                    <div>
-                      <small className="text-muted d-block">CPF</small>
-                      <span className="fw-medium">{passenger.cpf}</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="col-12">
-                  <div className="detail-item d-flex align-items-center p-2 rounded bg-light">
-                    <i className="bi bi-telephone text-primary me-3 fs-5"></i>
-                    <div>
-                      <small className="text-muted d-block">Telefone</small>
-                      <span className="fw-medium">{passenger.telefone || "Não informado"}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <hr className="my-4" />
-            
-            <div className="d-flex justify-content-end gap-3">
-              <button 
-                className="btn btn-outline-danger btn-lg px-4" 
-                onClick={() => onDelete(passenger.id)}
-              >
-                <i className="bi bi-trash me-2"></i> Excluir
-              </button>
-              <button 
-                className="btn btn-primary btn-lg px-4" 
-                onClick={() => onEdit(passenger)}
-              >
-                <i className="bi bi-pencil-square me-2"></i> Editar
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
 function Passangers(){
     const popUpRef = useRef(null); // Referência para o componente PopUpComponent
@@ -224,7 +143,7 @@ function Passangers(){
               
               <button
                 onClick={handleCreatePassenger}
-                className="btn btn-primary d-flex align-items-center"
+                className="btn btn-primary btn-lg d-flex align-items-center"
               >
                 <i className="bi bi-plus-circle me-2"></i>
                 <span>Novo Passageiro</span>

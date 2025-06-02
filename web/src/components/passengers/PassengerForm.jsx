@@ -14,7 +14,8 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
   const [formData, setFormData] = useState({
     nome: '',
     cpf: '',
-    telefone: ''
+    telefone: '',
+    email: ''
   });
   
   const [errors, setErrors] = useState({});
@@ -25,7 +26,8 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
       setFormData({
         nome: initialData.nome || '',
         cpf: initialData.cpf || '',
-        telefone: initialData.telefone || ''
+        telefone: initialData.telefone || '',
+        email: initialData.email || ''
       });
     }
   }, [initialData]);
@@ -40,6 +42,10 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
         return null;
       case 'telefone':
         if (value && !value.match(/^\(\d{2}\) \d{5}-\d{4}$/)) return 'Formato: (00) 00000-0000';
+        return null;
+      case 'email':
+        if (!value.trim()) return 'E-mail é obrigatório';
+        if (!/^\S+@\S+\.\S+$/.test(value)) return 'E-mail inválido';
         return null;
       default:
         return null;
@@ -164,6 +170,27 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
             {errors.nome && <div className="invalid-feedback">{errors.nome}</div>}
           </div>
         </div>
+        {/* Campo de e-mail */}
+        <div className="mb-4">
+          <label htmlFor="email" className="form-label fw-semibold">
+            <i className="bi bi-envelope-fill me-2 text-primary"></i>E-mail
+          </label>
+          <div className="input-group">
+            <span className="input-group-text bg-light">
+              <i className="bi bi-envelope"></i>
+            </span>
+            <input
+              type="email"
+              className={`form-control form-control-lg ${errors.email ? 'is-invalid' : ''}`}
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="email@exemplo.com"
+            />
+            {errors.email && <div className="invalid-feedback">{errors.email}</div>}
+          </div>
+        </div>
         
         <div className="mb-4">
           <label htmlFor="cpf" className="form-label fw-semibold">
@@ -237,7 +264,8 @@ PassengerForm.propTypes = {
   initialData: PropTypes.shape({
     nome: PropTypes.string,
     cpf: PropTypes.string,
-    telefone: PropTypes.string
+    telefone: PropTypes.string,
+    email: PropTypes.string
   }),
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired

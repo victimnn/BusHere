@@ -63,11 +63,16 @@ function Passangers(){
       }
     };
     
+    // Função para remover formatação de CPF e telefone
+    const removeFormatting = (value) => {
+      if (!value) return value;
+      return value.replace(/\D/g, '');
+    };
+    
     // para carregar os passageiros quando o componente for montado
     useEffect(() => {
       fetchPassengers();
-    }, [currentPage, searchTerm]); // Recarrega quando mudar a página ou o termo de busca
-      // Handler para criar um novo passageiro
+    }, [currentPage, searchTerm]); // Recarrega quando mudar a página ou o termo de busca    // Handler para criar um novo passageiro
     const handleCreatePassenger = () => {
       popUpRef.current.show(
         ({ close }) => (
@@ -77,18 +82,18 @@ function Passangers(){
                 // Adaptar os dados do frontend para o formato esperado pelo backend
                 const backendData = {
                   nome_completo: formData.nome,
-                  cpf: formData.cpf,
-                  telefone: formData.telefone,
+                  cpf: removeFormatting(formData.cpf), // Remove pontos e traço
+                  telefone: removeFormatting(formData.telefone), // Remove parênteses, espaço e traço
                   email: formData.email || '',
                   // Hash temporário apenas para testes
                   senha_hash: 'temp_hash_' + Date.now(), 
                   // Valores mínimos obrigatórios para o banco de dados
                   logradouro: 'Endereço não informado',
-                  numero_endereco: '0',
+                  numero_endereco: '1', // Número genérico ao invés de 0
                   bairro: 'Não informado',
                   cidade: 'Não informada',
                   uf: 'XX',
-                  cep: '00000-000'
+                  cep: '00000000' // Sem traço
                 };
                 
                 console.log('Enviando dados para criação:', backendData);
@@ -106,8 +111,7 @@ function Passangers(){
         {}, 
         "Novo Passageiro"
       );
-    };
-      // Handler para editar um passageiro
+    };    // Handler para editar um passageiro
     const handleEditPassenger = (passenger) => {
       popUpRef.current.show(
         ({ close }) => (
@@ -118,8 +122,8 @@ function Passangers(){
                 // Adaptar os dados do frontend para o formato esperado pelo backend
                 const backendData = {
                   nome_completo: formData.nome,
-                  cpf: formData.cpf,
-                  telefone: formData.telefone,
+                  cpf: removeFormatting(formData.cpf), // Remove pontos e traço
+                  telefone: removeFormatting(formData.telefone), // Remove parênteses, espaço e traço
                   email: formData.email || ''
                 };
                 
@@ -139,14 +143,13 @@ function Passangers(){
         `Editar Passageiro: ${passenger.nome}`
       );
     };
-    
-    // Handler para excluir um passageiro
+      // Handler para excluir um passageiro
     const handleDeletePassenger = async (id) => {
       if (confirm("Tem certeza que deseja excluir este passageiro?")) {
         try {
           await api.passengers.delete(id);
           fetchPassengers(); // Recarrega a lista
-          popUpRef.current.close(); // Fecha o popup se estiver aberto
+          popUpRef.current.hide(); // Fecha o popup se estiver aberto
         } catch (err) {
           console.error("Erro ao excluir passageiro:", err);
           alert("Erro ao excluir passageiro: " + (err.message || "Tente novamente mais tarde"));

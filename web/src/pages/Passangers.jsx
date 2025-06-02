@@ -50,14 +50,14 @@ function Passangers(){
         setError("Não foi possível carregar os passageiros. Tente novamente mais tarde.");
         
         // Usando dados mockados em caso de erro no bd
-        setPassengers([
-          { id: 1, nome: "Victor Ramos", cpf: "123.456.789-00", telefone: "(11) 99999-8888" },
-          { id: 2, nome: "Renan Andrade", cpf: "987.654.321-00", telefone: "(11) 99999-7777" },
-          { id: 3, nome: "Luiz Souza", cpf: "456.789.123-00", telefone: "(11) 99999-6666" },
-          { id: 4, nome: "Sarah Porsch", cpf: "123.456.789-00", telefone: "(11) 99999-8888" },
-          { id: 5, nome: "Marcelo Henrique", cpf: "987.654.321-00", telefone: "(11) 99999-7777" },
-          { id: 6, nome: "Rubens Carlos", cpf: "456.789.123-00", telefone: "(11) 99999-6666" },
-        ]);
+        // setPassengers([
+        //   { id: 1, nome: "Victor Ramos", cpf: "123.456.789-00", telefone: "(11) 99999-8888" },
+        //   { id: 2, nome: "Renan Andrade", cpf: "987.654.321-00", telefone: "(11) 99999-7777" },
+        //   { id: 3, nome: "Luiz Souza", cpf: "456.789.123-00", telefone: "(11) 99999-6666" },
+        //   { id: 4, nome: "Sarah Porsch", cpf: "123.456.789-00", telefone: "(11) 99999-8888" },
+        //   { id: 5, nome: "Marcelo Henrique", cpf: "987.654.321-00", telefone: "(11) 99999-7777" },
+        //   { id: 6, nome: "Rubens Carlos", cpf: "456.789.123-00", telefone: "(11) 99999-6666" },
+        // ]);
       } finally {
         setIsLoading(false);
       }

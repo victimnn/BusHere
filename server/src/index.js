@@ -11,7 +11,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 //Constantes
-const PORT = process.env.PORT || 10000 
+const PORT = process.env.PORT || 3000
 
 //Inicialização do servidor
 const app = express();

@@ -12,6 +12,7 @@ const tableHeaders = [
   { id: "id", label: "ID", sortable: true },
   { id: "nome", label: "Nome", sortable: true },
   { id: "cpf", label: "CPF", sortable: true },
+  { id: "email", label: "E-mail", sortable: true },
   { id: "telefone", label: "Telefone", sortable: false }
 ];
 
@@ -35,8 +36,8 @@ function Passangers(){
             id: passenger.passageiro_id,
             nome: passenger.nome_completo,
             cpf: passenger.cpf,
-            telefone: passenger.telefone,
-            email: passenger.email
+            email: passenger.email,
+            telefone: passenger.telefone
           }));
         }
         
@@ -96,7 +97,7 @@ function Passangers(){
                   cep: '00000000' // Sem traço
                 };
                 
-                console.log('Enviando dados para criação:', backendData);
+                console.log('Enviando dados:', backendData);
                 await api.passengers.create(backendData);
                 close();
                 fetchPassengers(); // Recarrega a lista
@@ -123,8 +124,8 @@ function Passangers(){
                 const backendData = {
                   nome_completo: formData.nome,
                   cpf: removeFormatting(formData.cpf), // Remove pontos e traço
-                  telefone: removeFormatting(formData.telefone), // Remove parênteses, espaço e traço
-                  email: formData.email || ''
+                  email: formData.email,
+                  telefone: removeFormatting(formData.telefone) // Remove parênteses, espaço e traço
                 };
                 
                 console.log('Enviando dados para atualização:', backendData);

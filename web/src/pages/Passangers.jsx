@@ -22,16 +22,29 @@ function Passangers(){
     const [error, setError] = useState(null); // Estado para armazenar erros
     const [currentPage, setCurrentPage] = useState(1); // Controle de paginação
     const [searchTerm, setSearchTerm] = useState(''); // Termo de busca
-    
-    // Função para buscar os passageiros do servidor
+      // Função para buscar os passageiros do servidor
     const fetchPassengers = async () => {
       try {
         setIsLoading(true);
         const response = await api.passengers.list(currentPage, 10, searchTerm);
         
-        // Assumindo que a API retorna { data: [...passengers], total: number }
-        setPassengers(Array.isArray(response) ? response : response.data || []);
+        // Adaptar os dados do servidor para o formato esperado pelo frontend
+        let passengersData = [];
+        if (response && response.data && Array.isArray(response.data)) {
+          passengersData = response.data.map(passenger => ({
+            id: passenger.passageiro_id,
+            nome: passenger.nome_completo,
+            cpf: passenger.cpf,
+            telefone: passenger.telefone,
+            email: passenger.email
+          }));
+        }
+        
+        setPassengers(passengersData);
         setError(null);
+        
+        console.log('Dados recebidos da API:', response);
+        console.log('Dados transformados:', passengersData);
       } catch (err) {
         console.error("Erro ao buscar passageiros:", err);
         setError("Não foi possível carregar os passageiros. Tente novamente mais tarde.");
@@ -54,15 +67,32 @@ function Passangers(){
     useEffect(() => {
       fetchPassengers();
     }, [currentPage, searchTerm]); // Recarrega quando mudar a página ou o termo de busca
-    
-    // Handler para criar um novo passageiro
+      // Handler para criar um novo passageiro
     const handleCreatePassenger = () => {
       popUpRef.current.show(
         ({ close }) => (
           <PassengerForm 
             onSubmit={async (formData) => {
               try {
-                await api.passengers.create(formData);
+                // Adaptar os dados do frontend para o formato esperado pelo backend
+                const backendData = {
+                  nome_completo: formData.nome,
+                  cpf: formData.cpf,
+                  telefone: formData.telefone,
+                  email: formData.email || '',
+                  // Hash temporário apenas para testes
+                  senha_hash: 'temp_hash_' + Date.now(), 
+                  // Valores mínimos obrigatórios para o banco de dados
+                  logradouro: 'Endereço não informado',
+                  numero_endereco: '0',
+                  bairro: 'Não informado',
+                  cidade: 'Não informada',
+                  uf: 'XX',
+                  cep: '00000-000'
+                };
+                
+                console.log('Enviando dados para criação:', backendData);
+                await api.passengers.create(backendData);
                 close();
                 fetchPassengers(); // Recarrega a lista
               } catch (err) {
@@ -77,8 +107,7 @@ function Passangers(){
         "Novo Passageiro"
       );
     };
-    
-    // Handler para editar um passageiro
+      // Handler para editar um passageiro
     const handleEditPassenger = (passenger) => {
       popUpRef.current.show(
         ({ close }) => (
@@ -86,7 +115,16 @@ function Passangers(){
             initialData={passenger}
             onSubmit={async (formData) => {
               try {
-                await api.passengers.update(passenger.id, formData);
+                // Adaptar os dados do frontend para o formato esperado pelo backend
+                const backendData = {
+                  nome_completo: formData.nome,
+                  cpf: formData.cpf,
+                  telefone: formData.telefone,
+                  email: formData.email || ''
+                };
+                
+                console.log('Enviando dados para atualização:', backendData);
+                await api.passengers.update(passenger.id, backendData);
                 close();
                 fetchPassengers(); // Recarrega a lista
               } catch (err) {

@@ -16,17 +16,17 @@ INSERT INTO Passageiros (
     notificacoes_json,
     configuracoes_json
 ) VALUES (
-    'João da Silva Sauro',
-    '12345678901',
-    'joao.sauro@example.com',
+    'Victor Gabriel Prado Ramos',
+    '51590010135',
+    'victor.ramos@bushere.com',
     'hashed_password_abc123',
     '19999990001',
-    '1990-05-15',
+    '2008-06-19',
     'Rua das Palmeiras',
     '123',
     'Apto 10A',
     'Centro',
-    'Amparo',
+    'Jaguariúna',
     'SP',
     '13900000',
     '{"email_enabled": true, "sms_enabled": true, "push_enabled": false}',
@@ -50,9 +50,9 @@ INSERT INTO Passageiros (
     notificacoes_json,
     configuracoes_json
 ) VALUES (
-    'Maria Oliveira Pires',
+    'Leticia Aparecida Moraes Fructoso',
     '98765432109',
-    'maria.opires@example.com',
+    'llett.moraes@euteamo.com',
     'hashed_password_xyz456',
     '19988880002',
     '1985-11-20',
@@ -82,9 +82,9 @@ INSERT INTO Passageiros (
     cep
     -- tipo_passageiro_id, rota_id, status_pagamento_id, notificacoes_json, configuracoes_json podem usar DEFAULT
 ) VALUES (
-    'Carlos Alberto Souza',
+    'Rubens Castaldelli Carlos',
     '11122233344',
-    'carlos.asouza@example.com',
+    'rubao@palmeiras.com',
     'hashed_password_123xyz',
     '19977770003',
     '2000-01-30',

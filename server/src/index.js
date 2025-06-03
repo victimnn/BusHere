@@ -11,7 +11,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 //Constantes
-const PORT = process.env.PORT || 10000 
+const PORT = process.env.PORT || 3000
 
 //Inicialização do servidor
 const app = express();
@@ -44,17 +44,18 @@ const pool = mysql.createPool({
 const userRoutes = require("./userRoutes")(pool);
 const authRoutes = require("./authRoutes")(pool);
 const searchRoutes = require("./searchRoutes")(pool);
-const passangerRoutes = require("./passangerRoutes")(pool);
+const passengerRoutes = require("./passengerRoutes")(pool);
 //const XXXXRoutes = require("./XXXX")(pool);
 //const YYYYRoutes = require("./YYYY")(pool);
 
 // Usando as rotas
-app.use("/users", userRoutes);
-app.use("/auth", authRoutes);
-app.use("/", searchRoutes);
-app.use("/passengers", passangerRoutes);
-//app.use("/XXXX", XXXXRoutes);
-//app.use("/YYYY", YYYYRoutes);
+// Adicionando prefixo /api em todas as rotas
+app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api", searchRoutes); // Rota raiz da API
+app.use("/api/passengers", passengerRoutes);
+//app.use("/api/XXXX", XXXXRoutes);
+//app.use("/api/YYYY", YYYYRoutes);
 
 // Printa no console o IP, método e URL de cada requisição
 app.use((req, res, next) => {

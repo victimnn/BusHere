@@ -52,6 +52,14 @@ function validateCPF(cpf) {
     return true;
 }
 
+function formatCPF(cpfNaoFormatado) {
+  // Remove qualquer coisa que não seja dígito
+  const cpfLimpo = cpfNaoFormatado.replace(/\D/g, '');
+
+  // Aplica a máscara do CPF (###.###.###-##)
+  return cpfLimpo.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+}
+
 function generateToken64() {
   try {
     const crypto = require('crypto');
@@ -110,6 +118,7 @@ module.exports = {
     exampleFunction,
     validateCPF,
     generateToken64,
+    formatCPF,
     extractToken,
     // Add other helper functions here
 };

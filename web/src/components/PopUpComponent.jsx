@@ -8,23 +8,28 @@ const PopUpComponent = forwardRef((props, ref) => {
   const [content, setContent] = useState(null); // Armazena o Componente (tipo/função)
   const [contentProps, setContentProps] = useState({}); // Armazena as props para o Componente
   const [title, setTitle] = useState(''); // Novo estado para armazenar o título
-
   const hide = useCallback(() => {
     setIsVisible(false);
     // Opcional: remover classes do body para limpar o estado do modal do Bootstrap
     document.body.classList.remove('modal-open');
   }, []);
-
   // Modificado para receber o título como parâmetro
   const show = useCallback((ContentComponent, componentProps = {}, modalTitle = '') => {
-    setContent(() => ContentComponent); // Armazena a referência do componente
+    // Verifica se ContentComponent é uma função e passa hide como parâmetro close
+    if (typeof ContentComponent === 'function') {
+      const renderedContent = ContentComponent({ close: hide });
+      setContent(() => () => renderedContent); // Armazena um renderizador para o conteúdo pré-renderizado
+    } else {
+      setContent(() => ContentComponent); // Armazena a referência do componente diretamente
+    }
+    
     setContentProps(componentProps); // Armazena as props
     setTitle(modalTitle); // Define o título do modal
     setIsVisible(true); // Torna o modal visível
 
     // Adicionar classe ao body para desativar scroll de fundo (comportamento padrão do Bootstrap)
     document.body.classList.add('modal-open');
-  }, []);
+  }, [hide]);
 
   // Expõe as funções show e hide através da ref passada pelo componente pai
   useImperativeHandle(ref, () => ({
@@ -56,10 +61,9 @@ const PopUpComponent = forwardRef((props, ref) => {
             {/* Adicionado o título do modal */}
             {title && <h5 className="modal-title" id="myBootstrapModalLabel">{title}</h5>}
             <button type="button" className="btn-close" aria-label="Close" onClick={hide}></button>
-          </div>
-          {/* O conteúdo do modal é renderizado aqui */}
+          </div>          {/* O conteúdo do modal é renderizado aqui */}
           <div className="modal-body">
-            {content ? React.createElement(content, { ...contentProps, onClose: hide }) : null}
+            {content ? React.createElement(content, { ...contentProps }) : null}
           </div>
         </div>
       </div>

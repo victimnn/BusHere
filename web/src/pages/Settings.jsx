@@ -29,7 +29,9 @@ function Settings(){
         {/* texto com a cor secundaria */}
         <p className="text-secondary">Texto com a cor secundaria</p> 
 
-
+        {/* por enquanto printa o .env inteiro */}
+        <pre>{JSON.stringify(import.meta.env, null, 2)}</pre>
+        {/* Componente PopUpComponent */}
   
         <PopUpComponent 
           ref={popUpRef}

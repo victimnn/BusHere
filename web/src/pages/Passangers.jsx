@@ -65,7 +65,7 @@ function Passangers(){
         setIsLoading(false);
       }
     };
-    
+    //
     // para carregar os passageiros quando o componente for montado
     useEffect(() => {
       fetchPassengers();

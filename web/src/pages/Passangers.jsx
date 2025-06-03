@@ -5,6 +5,8 @@ import PassengerDetails from "../components/passengers/PassengerDetails";
 import Table from "../components/Table";
 import api from "../api/api";
 
+import { formatCPF, formatPhoneNumber, removeFormatting } from "../utils/formatters"; // Função para formatar CPF
+
 import React from 'react';
 
 // header da tabela
@@ -35,9 +37,9 @@ function Passangers(){
           passengersData = response.data.map(passenger => ({
             id: passenger.passageiro_id,
             nome: passenger.nome_completo,
-            cpf: passenger.cpf,
+            cpf: formatCPF(passenger.cpf),
             email: passenger.email,
-            telefone: passenger.telefone
+            telefone: formatPhoneNumber(passenger.telefone)
           }));
         }
         
@@ -62,12 +64,6 @@ function Passangers(){
       } finally {
         setIsLoading(false);
       }
-    };
-    
-    // Função para remover formatação de CPF e telefone
-    const removeFormatting = (value) => {
-      if (!value) return value;
-      return value.replace(/\D/g, '');
     };
     
     // para carregar os passageiros quando o componente for montado

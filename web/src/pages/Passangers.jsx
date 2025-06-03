@@ -70,6 +70,7 @@ function Passangers(){
     useEffect(() => {
       fetchPassengers();
     }, [currentPage, searchTerm]); // Recarrega quando mudar a página ou o termo de busca    // Handler para criar um novo passageiro
+
     const handleCreatePassenger = () => {
       popUpRef.current.show(
         ({ close }) => (
@@ -109,6 +110,7 @@ function Passangers(){
         "Novo Passageiro"
       );
     };    // Handler para editar um passageiro
+
     const handleEditPassenger = (passenger) => {
       popUpRef.current.show(
         ({ close }) => (
@@ -167,7 +169,9 @@ function Passangers(){
         {}, 
         `Passageiro: ${passenger.nome}`
       );
-    };    return (
+    };
+
+    return (
       <main className="container p-3">
         <div className="card border-0 shadow-sm mb-4">
           <div className="card-header bg-white py-3">
@@ -213,10 +217,12 @@ function Passangers(){
                   searchable={true}
                   className="table-striped table-hover"
                   onRowClick={handleRowClick}
-                />
+                  />
               </div>
-            )}          </div>
-        </div>
+            )}          
+          </div>
+          
+      </div>
         
         <div className="card border-0 bg-light shadow-sm mt-4 p-3">
           <div className="d-flex align-items-center">

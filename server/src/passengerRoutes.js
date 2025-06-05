@@ -130,8 +130,9 @@ module.exports = (pool) => {
 
       if (existingRows.length > 0) {
         let field = 'unknown';
-        if (existingRows[0].cpf === cpf) field = 'CPF';
-        else if (existingRows[0].email === email) field = 'email';
+        if (existingRows[0].cpf === cpf){ field = 'CPF' }
+        if (existingRows[0].email === email) { field = 'email' };
+
         return res.status(409).json({ error: `${field} já cadastrado` });
       }
 
@@ -190,7 +191,7 @@ module.exports = (pool) => {
 
       if (cpf || email) {
         const [existingCpfEmailRows] = await pool.execute(
-          'SELECT passageiro_id FROM Passageiros WHERE (cpf = ? OR email = ?) AND passageiro_id != ?',
+          'SELECT passageiro_id, cpf, email FROM Passageiros WHERE (cpf = ? OR email = ?) AND passageiro_id != ?',
           [cpf, email, id]
         );
 

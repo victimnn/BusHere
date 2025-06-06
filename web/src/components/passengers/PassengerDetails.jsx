@@ -16,7 +16,7 @@ function PassengerDetails({ passenger, onEdit, onDelete }) {
           <div className="card-body p-4">
             <div className="mb-4">
               <div className="row g-3">
-                <div className="col-12">
+                {/* <div className="col-12">
                   <div className="detail-item d-flex align-items-center p-2 rounded bg-light">
                     <i className="bi bi-hash text-primary me-3 fs-5"></i>
                     <div>
@@ -24,7 +24,7 @@ function PassengerDetails({ passenger, onEdit, onDelete }) {
                       <span className="fw-medium">{passenger.id}</span>
                     </div>
                   </div>
-                </div>
+                </div> */}
                 
                 <div className="col-12">
                   <div className="detail-item d-flex align-items-center p-2 rounded bg-light">
@@ -42,6 +42,16 @@ function PassengerDetails({ passenger, onEdit, onDelete }) {
                     <div>
                       <small className="text-muted d-block">CPF</small>
                       <span className="fw-medium">{passenger.cpf}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-12">
+                  <div className="detail-item d-flex align-items-center p-2 rounded bg-light">
+                    <i className="bi bi-envelope text-primary me-3 fs-5"></i>
+                    <div>
+                      <small className="text-muted d-block">E-Mail</small>
+                      <span className="fw-medium">{passenger.email}</span>
                     </div>
                   </div>
                 </div>

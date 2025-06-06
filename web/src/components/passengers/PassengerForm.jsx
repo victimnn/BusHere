@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import '../../../styles/PassengerForm.scss'; // Importação do arquivo CSS
+import '../../../styles/PassengerForm.scss'; // Importação do arquivo SCSS
 
 /**
  * Componente de formulário para criação e edição de passageiros
@@ -142,13 +142,8 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
     }
   };
     return (
-    <div className="card border-0 shadow-sm">
-      <div className="card-header bg-primary bg-gradient text-white">
-        <h5 className="mb-0">
-          <i className="bi bi-person-vcard me-2"></i>
-          {initialData ? 'Editar Passageiro' : 'Novo Passageiro'}
-        </h5>
-      </div>
+    <div className="card border-0">
+      
       <form onSubmit={handleSubmit} className="card-body p-4">
         <div className="mb-4">
           <label htmlFor="nome" className="form-label fw-semibold">

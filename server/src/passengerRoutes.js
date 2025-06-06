@@ -1,387 +1,286 @@
-// Implementação das rotas de passageiros
 const express = require('express');
 
-// Exportando as rotas com o pool de conexões
 module.exports = (pool) => {
-    const router = express.Router();
+  const router = express.Router();
 
-    /**
-     * @route GET /passengers
-     * @desc Obtém uma lista de passageiros com paginação e filtros opcionais
-     * @access Public (temporário, idealmente deveria ser Private com autenticação)
-     */
-    router.get('/', async (req, res) => {
-        try {
-            const { page = 1, limit = 10, search = '' } = req.query;
-            const offset = (parseInt(page) - 1) * parseInt(limit);
-            
-            let query = 'SELECT passageiro_id, nome_completo, cpf, email, telefone FROM Passageiros';
-            let countQuery = 'SELECT COUNT(*) as total FROM Passageiros';
-            let params = [];
-            let countParams = [];
-            
-            if (search) {
-                query += ' WHERE nome_completo LIKE ? OR cpf LIKE ? OR email LIKE ? OR telefone LIKE ?';
-                countQuery += ' WHERE nome_completo LIKE ? OR cpf LIKE ? OR email LIKE ? OR telefone LIKE ?';
-                
-                const searchPattern = `%${search}%`;
-                params = [searchPattern, searchPattern, searchPattern, searchPattern];
-                countParams = [searchPattern, searchPattern, searchPattern, searchPattern];
-            }
-            
-            query += ' ORDER BY passageiro_id LIMIT ? OFFSET ?';
-            params.push(parseInt(limit), offset);
-            
-            const [rows] = await pool.execute(query, params);
-            const [countRows] = await pool.execute(countQuery, countParams);
-            
-            const totalPassengers = countRows[0].total;
-            const totalPages = Math.ceil(totalPassengers / limit);
-            
-            res.json({
-                data: rows,
-                total: totalPassengers,
-                page: parseInt(page),
-                limit: parseInt(limit),
-                totalPages
-            });
-        } catch (error) {
-            console.error('Erro ao buscar passageiros:', error);
-            res.status(500).json({ 
-                error: 'Erro ao buscar passageiros',
-                details: process.env.NODE_ENV === 'development' ? error.message : undefined
-            });
-        }
+  // Rota para obter uma lista de passageiros com paginação e filtros opcionais
+  // Retorna:
+  // data: array de passageiros, total: total de passageiros, page: página atual, limit: limite por página, totalPages: total de páginas
+  router.get('/', async (req, res) => {
+    try {
+      const { page = 1, limit = 10, search = '' } = req.query;
+      const offset = (parseInt(page) - 1) * parseInt(limit);
+
+      let params = [];
+      let whereClause = '';
+
+      if (search) {
+        whereClause = ' WHERE nome_completo LIKE ? OR cpf LIKE ? OR email LIKE ? OR telefone LIKE ?';
+        const searchPattern = `%${search}%`;
+        params = [searchPattern, searchPattern, searchPattern, searchPattern];
+      }
+
+      // Single query to fetch data and total count using a window function
+      const [rows] = await pool.execute(
+        `SELECT 
+          passageiro_id, 
+          nome_completo, 
+          cpf, 
+          email, 
+          telefone,
+          COUNT(*) OVER() as total_passengers_found
+        FROM Passageiros
+        ${whereClause}
+        ORDER BY passageiro_id LIMIT ? OFFSET ?`,
+        [...params, parseInt(limit), offset]
+      );
+
+      const totalPassengers = rows.length > 0 ? rows[0].total_passengers_found : 0;
+      const totalPages = Math.ceil(totalPassengers / limit);
+
+      res.json({
+        data: rows.map(({ total_passengers_found, ...rest }) => rest), // Remove the total_passengers_found from each row
+        total: totalPassengers,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        totalPages
+      });
+    } catch (error) {
+      console.error('Erro ao buscar passageiros:', error);
+      res.status(500).json({ error: 'Erro ao buscar passageiros' });
+    }
+  });
+
+  // Rota para obter detalhes de um passageiro específico
+  // O usuário deve fornecer o 'id' do passageiro nos parâmetros da rota
+  // Retorna:
+  // Um objeto de passageiro com todos os detalhes
+  router.get('/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const [rows] = await pool.execute(
+        `SELECT passageiro_id, nome_completo, cpf, email, telefone, data_nascimento,
+        logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
+        data_criacao, data_atualizacao, ativo
+        FROM Passageiros WHERE passageiro_id = ?`,
+        [id]
+      );
+
+      if (rows.length === 0) {
+        return res.status(404).json({ error: 'Passageiro não encontrado' });
+      }
+
+      res.json(rows[0]);
+    } catch (error) {
+      console.error('Erro ao buscar detalhes do passageiro:', error);
+      res.status(500).json({ error: 'Erro ao buscar detalhes do passageiro' });
+    }
+  });
+
+  // Rota para criar um novo passageiro
+  // O usuário deve fornecer os seguintes campos no corpo da requisição:
+  // nome_completo, cpf, email, senha_hash, telefone, data_nascimento, logradouro,
+  // numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
+  // tipo_passageiro_id, rota_id, status_pagamento_id, notificacoes_json, configuracoes_json, ativo
+  // Retorna:
+  // O objeto do passageiro recém-criado
+  router.post('/', async (req, res) => {
+    const requiredFields = ['nome_completo', 'cpf', 'email', 'senha_hash', 'logradouro', 'numero_endereco', 'bairro', 'cidade', 'uf', 'cep'];
+
+    for (const field of requiredFields) {
+      if (!req.body[field]) {
+        return res.status(400).json({ error: `Campo obrigatório faltando: ${field}`, request: req.body });
+      }
+    }
+
+    const {
+      nome_completo, cpf, email, senha_hash, telefone, data_nascimento,
+      logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
+      tipo_passageiro_id, rota_id, status_pagamento_id, notificacoes_json, configuracoes_json, ativo
+    } = req.body;
+
+    const newPassengerData = {
+      nome_completo,
+      cpf,
+      email,
+      senha_hash,
+      telefone: telefone || null,
+      data_nascimento: data_nascimento || null,
+      logradouro,
+      numero_endereco,
+      complemento_endereco: complemento_endereco || null,
+      bairro,
+      cidade,
+      uf,
+      cep,
+      tipo_passageiro_id: tipo_passageiro_id || null,
+      rota_id: rota_id || null,
+      status_pagamento_id: status_pagamento_id || null,
+      notificacoes_json: notificacoes_json || '{}',
+      configuracoes_json: configuracoes_json || '{}',
+      ativo: ativo !== undefined ? ativo : true
+    };
+
+    try {
+      const [existingRows] = await pool.execute(
+        'SELECT passageiro_id FROM Passageiros WHERE cpf = ? OR email = ?',
+        [cpf, email]
+      );
+
+      if (existingRows.length > 0) {
+        let field = 'unknown';
+        if (existingRows[0].cpf === cpf){ field = 'CPF' }
+        if (existingRows[0].email === email) { field = 'email' };
+
+        return res.status(409).json({ error: `${field} já cadastrado` });
+      }
+
+      const [result] = await pool.query('INSERT INTO Passageiros SET ?', newPassengerData);
+
+      const [newPassenger] = await pool.execute(
+        `SELECT passageiro_id, nome_completo, cpf, email, telefone, data_nascimento,
+        logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
+        tipo_passageiro_id, rota_id, status_pagamento_id, data_criacao, data_atualizacao, ativo
+        FROM Passageiros WHERE passageiro_id = ?`,
+        [result.insertId]
+      );
+
+      res.status(201).json(newPassenger[0]);
+    } catch (error) {
+      console.error('Erro ao criar passageiro:', error);
+      res.status(500).json({ error: 'Erro ao criar passageiro' });
+    }
+  });
+
+  // Rota para atualizar um passageiro existente
+  // O usuário deve fornecer o 'id' do passageiro nos parâmetros da rota
+  // E os campos a serem atualizados no corpo da requisição
+  // Retorna:
+  // O objeto do passageiro atualizado
+  router.put('/:id', async (req, res) => {
+    const { id } = req.params;
+    const {
+      nome_completo, cpf, email, senha_hash, telefone, data_nascimento,
+      logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
+      tipo_passageiro_id, rota_id, status_pagamento_id, notificacoes_json, configuracoes_json, ativo
+    } = req.body;
+
+    const updatedPassengerData = {
+      nome_completo, cpf, email, senha_hash, telefone, data_nascimento,
+      logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
+      tipo_passageiro_id, rota_id, status_pagamento_id, notificacoes_json, configuracoes_json, ativo
+    };
+
+    // Remove campos undefined para que o SET ? não tente atualizá-los com 'undefined'
+    Object.keys(updatedPassengerData).forEach(key => {
+      if (updatedPassengerData[key] === undefined) {
+        delete updatedPassengerData[key];
+      }
     });
 
-    /**
-     * @route GET /passengers/:id
-     * @desc Obtém detalhes de um passageiro específico
-     * @access Public (temporário, idealmente deveria ser Private com autenticação)
-     */
-    router.get('/:id', async (req, res) => {
-        try {
-            const { id } = req.params;
-            
-            const [rows] = await pool.execute(
-                `SELECT passageiro_id, nome_completo, cpf, email, telefone, data_nascimento, 
-                logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
-                data_criacao, data_atualizacao, ativo
-                FROM Passageiros WHERE passageiro_id = ?`, 
-                [id]
-            );
-            
-            if (rows.length === 0) {
-                return res.status(404).json({ error: 'Passageiro não encontrado' });
-            }
-            
-            res.json(rows[0]);
-        } catch (error) {
-            console.error('Erro ao buscar detalhes do passageiro:', error);
-            res.status(500).json({ error: 'Erro ao buscar detalhes do passageiro' });
+    try {
+      const [existingRows] = await pool.execute(
+        'SELECT passageiro_id FROM Passageiros WHERE passageiro_id = ?',
+        [id]
+      );
+
+      if (existingRows.length === 0) {
+        return res.status(404).json({ error: 'Passageiro não encontrado' });
+      }
+
+      if (cpf || email) {
+        const [existingCpfEmailRows] = await pool.execute(
+          'SELECT passageiro_id, cpf, email FROM Passageiros WHERE (cpf = ? OR email = ?) AND passageiro_id != ?',
+          [cpf, email, id]
+        );
+
+        if (existingCpfEmailRows.length > 0) {
+          let field = 'unknown';
+          if (existingCpfEmailRows[0].cpf === cpf) field = 'CPF';
+          else if (existingCpfEmailRows[0].email === email) field = 'email';
+          return res.status(409).json({ error: `${field} já está sendo usado por outro passageiro` });
         }
-    });
+      }
 
-    /**
-     * @route POST /passengers
-     * @desc Cria um novo passageiro
-     * @access Public (temporário, idealmente deveria ser Private com autenticação)
-     */
-    router.post('/', async (req, res) => {
-        try {
-            const { 
-                nome_completo, 
-                cpf, 
-                email, 
-                senha_hash, 
-                telefone, 
-                data_nascimento, 
-                logradouro,
-                numero_endereco,
-                complemento_endereco,
-                bairro,
-                cidade,
-                uf,
-                cep,
-                tipo_passageiro_id,
-                rota_id,
-                status_pagamento_id,
-                notificacoes_json,
-                configuracoes_json,
-                ativo
-            } = req.body;
-            
-            // Validação básica
-            if (!nome_completo || !cpf || !email || !senha_hash) {
-                return res.status(400).json({ error: 'Nome completo, CPF, e-mail e senha são obrigatórios' });
-            }
-            
-            // Verificar se o CPF ou e-mail já estão cadastrados
-            const [existingRows] = await pool.execute(
-                'SELECT passageiro_id FROM Passageiros WHERE cpf = ? OR email = ?',
-                [cpf, email]
-            );
-            
-            if (existingRows.length > 0) {
-                return res.status(400).json({ error: 'CPF ou e-mail já cadastrados' });
-            }
-            
-            const [result] = await pool.execute(
-                `INSERT INTO Passageiros 
-                (nome_completo, cpf, email, senha_hash, telefone, data_nascimento, 
-                logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
-                tipo_passageiro_id, rota_id, status_pagamento_id, 
-                notificacoes_json, configuracoes_json, ativo)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [
-                    nome_completo, cpf, email, senha_hash, telefone || null, data_nascimento || null,
-                    logradouro, numero_endereco, complemento_endereco || null, bairro, cidade, uf, cep,
-                    tipo_passageiro_id || null, rota_id || null, status_pagamento_id || null,
-                    notificacoes_json || '{}', configuracoes_json || '{}', ativo !== undefined ? ativo : true
-                ]
-            );
-            
-            const [newPassenger] = await pool.execute(
-                `SELECT passageiro_id, nome_completo, cpf, email, telefone, data_nascimento, 
-                logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
-                tipo_passageiro_id, rota_id, status_pagamento_id, data_criacao, data_atualizacao, ativo
-                FROM Passageiros WHERE passageiro_id = ?`,
-                [result.insertId]
-            );
-            
-            res.status(201).json(newPassenger[0]);
-        } catch (error) {
-            console.error('Erro ao criar passageiro:', error);
-            res.status(500).json({ error: 'Erro ao criar passageiro' });
-        }
-    });
+      if (Object.keys(updatedPassengerData).length > 0) {
+        await pool.query('UPDATE Passageiros SET ? WHERE passageiro_id = ?', [updatedPassengerData, id]);
+      } else {
+        return res.status(400).json({ error: 'Nenhum campo para atualizar fornecido' });
+      }
 
-    /**
-     * @route PUT /passengers/:id
-     * @desc Atualiza um passageiro existente
-     * @access Public (temporário, idealmente deveria ser Private com autenticação)
-     */
-    router.put('/:id', async (req, res) => {
-        try {
-            const { id } = req.params;
-            const { 
-                nome_completo, 
-                cpf, 
-                email, 
-                senha_hash, 
-                telefone, 
-                data_nascimento, 
-                logradouro,
-                numero_endereco,
-                complemento_endereco,
-                bairro,
-                cidade,
-                uf,
-                cep,
-                tipo_passageiro_id,
-                rota_id,
-                status_pagamento_id,
-                notificacoes_json,
-                configuracoes_json,
-                ativo
-            } = req.body;
-            
-            // Validação básica
-            if (!nome_completo || !cpf || !email) {
-                return res.status(400).json({ error: 'Nome completo, CPF e e-mail são obrigatórios' });
-            }
-            
-            // Verificar se o passageiro existe
-            const [existingRows] = await pool.execute(
-                'SELECT passageiro_id FROM Passageiros WHERE passageiro_id = ?',
-                [id]
-            );
-            
-            if (existingRows.length === 0) {
-                return res.status(404).json({ error: 'Passageiro não encontrado' });
-            }
-            
-            // Verificar se o CPF ou email já está em uso por outro passageiro
-            const [existingCpfEmailRows] = await pool.execute(
-                'SELECT passageiro_id FROM Passageiros WHERE (cpf = ? OR email = ?) AND passageiro_id != ?',
-                [cpf, email, id]
-            );
-            
-            if (existingCpfEmailRows.length > 0) {
-                return res.status(400).json({ error: 'CPF ou e-mail já está sendo usado por outro passageiro' });
-            }
-            
-            // Construir a consulta SQL update de forma dinâmica
-            // Para incluir apenas os campos que foram fornecidos
-            let updateFields = [];
-            let updateParams = [];
+      const [updatedRows] = await pool.execute(
+        `SELECT passageiro_id, nome_completo, cpf, email, telefone, data_nascimento,
+        logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
+        tipo_passageiro_id, rota_id, status_pagamento_id, data_criacao, data_atualizacao, ativo
+        FROM Passageiros WHERE passageiro_id = ?`,
+        [id]
+      );
 
-            // Adicionar campos condicionalmente
-            if (nome_completo) {
-                updateFields.push('nome_completo = ?');
-                updateParams.push(nome_completo);
-            }
-            if (cpf) {
-                updateFields.push('cpf = ?');
-                updateParams.push(cpf);
-            }
-            if (email) {
-                updateFields.push('email = ?');
-                updateParams.push(email);
-            }
-            if (senha_hash) {
-                updateFields.push('senha_hash = ?');
-                updateParams.push(senha_hash);
-            }
-            if (telefone !== undefined) {
-                updateFields.push('telefone = ?');
-                updateParams.push(telefone);
-            }
-            if (data_nascimento !== undefined) {
-                updateFields.push('data_nascimento = ?');
-                updateParams.push(data_nascimento);
-            }
-            if (logradouro) {
-                updateFields.push('logradouro = ?');
-                updateParams.push(logradouro);
-            }
-            if (numero_endereco) {
-                updateFields.push('numero_endereco = ?');
-                updateParams.push(numero_endereco);
-            }
-            if (complemento_endereco !== undefined) {
-                updateFields.push('complemento_endereco = ?');
-                updateParams.push(complemento_endereco);
-            }
-            if (bairro) {
-                updateFields.push('bairro = ?');
-                updateParams.push(bairro);
-            }
-            if (cidade) {
-                updateFields.push('cidade = ?');
-                updateParams.push(cidade);
-            }
-            if (uf) {
-                updateFields.push('uf = ?');
-                updateParams.push(uf);
-            }
-            if (cep) {
-                updateFields.push('cep = ?');
-                updateParams.push(cep);
-            }
-            if (tipo_passageiro_id !== undefined) {
-                updateFields.push('tipo_passageiro_id = ?');
-                updateParams.push(tipo_passageiro_id);
-            }
-            if (rota_id !== undefined) {
-                updateFields.push('rota_id = ?');
-                updateParams.push(rota_id);
-            }
-            if (status_pagamento_id !== undefined) {
-                updateFields.push('status_pagamento_id = ?');
-                updateParams.push(status_pagamento_id);
-            }
-            if (notificacoes_json) {
-                updateFields.push('notificacoes_json = ?');
-                updateParams.push(notificacoes_json);
-            }
-            if (configuracoes_json) {
-                updateFields.push('configuracoes_json = ?');
-                updateParams.push(configuracoes_json);
-            }
-            if (ativo !== undefined) {
-                updateFields.push('ativo = ?');
-                updateParams.push(ativo);
-            }
+      res.json(updatedRows[0]);
+    } catch (error) {
+      console.error('Erro ao atualizar passageiro:', error);
+      res.status(500).json({ error: 'Erro ao atualizar passageiro' });
+    }
+  });
 
-            // Adicionar o ID do passageiro como último parâmetro
-            updateParams.push(id);
+  // Rota para excluir um passageiro
+  // O usuário deve fornecer o 'id' do passageiro nos parâmetros da rota
+  // Retorna:
+  // message: mensagem de sucesso, id: o ID do passageiro excluído
+  router.delete('/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
 
-            // Executar a atualização apenas se houver campos para atualizar
-            if (updateFields.length > 0) {
-                await pool.execute(
-                    `UPDATE Passageiros SET ${updateFields.join(', ')} WHERE passageiro_id = ?`,
-                    updateParams
-                );
-            }
-            
-            // Retornar o passageiro atualizado
-            const [updatedRows] = await pool.execute(
-                `SELECT passageiro_id, nome_completo, cpf, email, telefone, data_nascimento, 
-                logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
-                tipo_passageiro_id, rota_id, status_pagamento_id, data_criacao, data_atualizacao, ativo
-                FROM Passageiros WHERE passageiro_id = ?`,
-                [id]
-            );
-            
-            res.json(updatedRows[0]);
-        } catch (error) {
-            console.error('Erro ao atualizar passageiro:', error);
-            res.status(500).json({ error: 'Erro ao atualizar passageiro' });
-        }
-    });
+      const [existingRows] = await pool.execute(
+        'SELECT passageiro_id FROM Passageiros WHERE passageiro_id = ?',
+        [id]
+      );
 
-    /**
-     * @route DELETE /passengers/:id
-     * @desc Exclui um passageiro
-     * @access Public (temporário, idealmente deveria ser Private com autenticação)
-     */
-    router.delete('/:id', async (req, res) => {
-        try {
-            const { id } = req.params;
-            
-            // Verificar se o passageiro existe
-            const [existingRows] = await pool.execute(
-                'SELECT passageiro_id FROM Passageiros WHERE passageiro_id = ?',
-                [id]
-            );
-            
-            if (existingRows.length === 0) {
-                return res.status(404).json({ error: 'Passageiro não encontrado' });
-            }
-            
-            await pool.execute('DELETE FROM Passageiros WHERE passageiro_id = ?', [id]);
-            
-            res.json({ message: 'Passageiro excluído com sucesso', id });
-        } catch (error) {
-            console.error('Erro ao excluir passageiro:', error);
-            res.status(500).json({ error: 'Erro ao excluir passageiro' });
-        }
-    });
+      if (existingRows.length === 0) {
+        return res.status(404).json({ error: 'Passageiro não encontrado' });
+      }
 
-    /**
-     * @route GET /passengers/search
-     * @desc Pesquisa de passageiros usando FULLTEXT search através da tabela searchIndex
-     * @access Public (temporário, idealmente deveria ser Private com autenticação)
-     */
-    router.get('/search', async (req, res) => {
-        try {
-            const { query } = req.query;
-            
-            if (!query || query.trim() === '') {
-                return res.status(400).json({ error: 'Termo de busca é obrigatório' });
-            }
-            
-            // Usando a tabela searchIndex com FULLTEXT search
-            const [rows] = await pool.execute(
-                `SELECT p.* FROM Passageiros p
-                INNER JOIN searchIndex s ON p.passageiro_id = s.item_id
-                WHERE s.item_type = 'Passageiro'
-                AND MATCH(s.search_text) AGAINST(? IN BOOLEAN MODE)
-                ORDER BY p.passageiro_id`,
-                [query]
-            );
-            
-            res.json({
-                data: rows,
-                count: rows.length,
-                query
-            });
-        } catch (error) {
-            console.error('Erro ao pesquisar passageiros:', error);
-            res.status(500).json({ error: 'Erro ao pesquisar passageiros' });
-        }
-    });
+      await pool.execute('DELETE FROM Passageiros WHERE passageiro_id = ?', [id]);
 
-    return router;
-}
+      res.json({ message: 'Passageiro excluído com sucesso', id });
+    } catch (error) {
+      console.error('Erro ao excluir passageiro:', error);
+      res.status(500).json({ error: 'Erro ao excluir passageiro' });
+    }
+  });
+
+  // Rota de pesquisa de passageiros usando FULLTEXT search através da tabela searchIndex
+  // O usuário deve fornecer o 'query' (termo de busca) nos parâmetros da query
+  // Retorna:
+  // data: array de passageiros encontrados, count: número de resultados, query: termo de busca
+  router.get('/search', async (req, res) => {
+    try {
+      const { query } = req.query;
+
+      if (!query || query.trim() === '') {
+        return res.status(400).json({ error: 'Termo de busca é obrigatório' });
+      }
+
+      const [rows] = await pool.execute(
+        `SELECT p.* FROM Passageiros p
+        INNER JOIN searchIndex s ON p.passageiro_id = s.item_id
+        WHERE s.item_type = 'Passageiro'
+        AND MATCH(s.search_text) AGAINST(? IN BOOLEAN MODE)
+        ORDER BY p.passageiro_id`,
+        [query]
+      );
+
+      res.json({
+        data: rows,
+        count: rows.length,
+        query
+      });
+    } catch (error) {
+      console.error('Erro ao pesquisar passageiros:', error);
+      res.status(500).json({ error: 'Erro ao pesquisar passageiros' });
+    }
+  });
+
+  return router;
+};

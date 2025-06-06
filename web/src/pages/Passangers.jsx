@@ -107,7 +107,10 @@ function Passangers(){
           />
         ), 
         {}, 
-        "Novo Passageiro"
+        <h3 className="mb-0 text-primary">
+          <i className="bi bi-person-vcard me-2"></i>
+          Novo Passageiro
+        </h3>
       );
     };    // Handler para editar um passageiro
 
@@ -139,7 +142,10 @@ function Passangers(){
           />
         ), 
         {}, 
-        `Editar Passageiro: ${passenger.nome}`
+        <h3 className="mb-0 text-primary">
+          <i className="bi bi-person-vcard me-2"></i>
+          Editar Passageiro
+        </h3>
       );
     };
       // Handler para excluir um passageiro

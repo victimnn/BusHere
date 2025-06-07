@@ -7,12 +7,12 @@ import Home from "./pages/Home";
 import Passangers from "./pages/Passangers";
 import Buses from "./pages/Buses";
 import RoutesPage from "./pages/RoutesPage";
-import Points from "./pages/Points";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
+import SearchPage from "./pages/SearchPage";
+import Stops from "./pages/Stops";
 import SideBar from "./components/SideBar";
 import Header from "./components/Header";
-import SearchPage from "./pages/SearchPage";
 
 function App() {
   return (
@@ -32,7 +32,7 @@ function App() {
                 <Route path="/passengers" element={<Passangers />} />
                 <Route path="/buses" element={<Buses />} />
                 <Route path="/routes" element={<RoutesPage />} />
-                <Route path="/points" element={<Points />} />
+                <Route path="/stops" element={<Stops />} />
                 <Route path="/reports" element={<Reports />} />
                 <Route path="/settings" element={<Settings />} />
 

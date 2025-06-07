@@ -10,7 +10,7 @@ function PopUpContent() {
   );
 }
 
-function Points(){
+function Stops(){
     const popUpRef = useRef(null); // Referência para o componente PopUpComponent
   
     return (
@@ -38,4 +38,4 @@ function Points(){
     )
   }
 
-export default Points
+export default Stops

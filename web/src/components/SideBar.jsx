@@ -65,20 +65,20 @@ function SideBar() {
         />
         <SideButton
           name="Onibus"
-          icon="bus-front-fill"
+          icon="bus-front"
           href="buses"
           isOpen={isHovered}
         />
         <SideButton
           name="Rotas"
-          icon="signpost-split-fill"
+          icon="signpost-split"
           href="routes"
           isOpen={isHovered}
         />
         <SideButton
           name="Pontos"
-          icon="geo-alt-fill"
-          href="points"
+          icon="geo-alt"
+          href="stops"
           isOpen={isHovered}
         />
         <SideButton
@@ -89,7 +89,7 @@ function SideBar() {
         />
         <SideButton
           name="Configurações"
-          icon="gear-fill"
+          icon="gear"
           href="settings"
           isOpen={isHovered}
           style={{marginTop: "auto"}}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import api from '../../api/api';
 import '../../../styles/PassengerForm.scss'; // Importação do arquivo SCSS
 
 /**
@@ -15,23 +16,46 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
     nome: '',
     cpf: '',
     telefone: '',
-    email: ''
+    email: '',
+    tipo_passageiro: ''
   });
   
   const [errors, setErrors] = useState({});
-  
-  // Carrega os dados iniciais se disponíveis (para edição)
+  const [tiposPassageiro, setTiposPassageiro] = useState([]);
+    // Carrega os dados iniciais se disponíveis (para edição)
   useEffect(() => {
     if (initialData) {
       setFormData({
         nome: initialData.nome || '',
         cpf: initialData.cpf || '',
         telefone: initialData.telefone || '',
-        email: initialData.email || ''
+        email: initialData.email || '',
+        tipo_passageiro: initialData.tipo_passageiro || initialData.tipo_passageiro_id || ''
       });
     }
   }, [initialData]);
-    // Validação em tempo real
+
+  // Carrega os tipos de passageiro do banco de dados
+  useEffect(() => {
+    const fetchTiposPassageiro = async () => {
+      try {
+        const response = await api.passengers.getTypes();
+        if (response && response.data) {
+          setTiposPassageiro(response.data);
+        }
+      } catch (error) {
+        console.error('Erro ao carregar tipos de passageiro:', error);
+        // Se não conseguir carregar, usa valores padrão
+        setTiposPassageiro([
+          { tipo_passageiro_id: 1, nome: 'Estudante', descricao: 'Passageiro estudante' },
+          { tipo_passageiro_id: 2, nome: 'Corporativo', descricao: 'Passageiro corporativo' }
+        ]);
+      }
+    };
+
+    fetchTiposPassageiro();
+  }, []);
+  // Validação em tempo real
   const validateField = (name, value) => {
     switch(name) {
       case 'nome':
@@ -39,6 +63,9 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
       case 'cpf':
         if (!value.trim()) return 'CPF é obrigatório';
         if (!value.match(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)) return 'CPF inválido';
+        // Validação adicional do CPF (dígitos verificadores)
+        const cpfDigits = value.replace(/\D/g, '');
+        if (!isValidCPF(cpfDigits)) return 'CPF inválido';
         return null;
       case 'telefone':
         if (value && !value.match(/^\(\d{2}\) \d{5}-\d{4}$/)) return 'Formato: (00) 00000-0000';
@@ -47,9 +74,33 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
         if (!value.trim()) return 'E-mail é obrigatório';
         if (!/^\S+@\S+\.\S+$/.test(value)) return 'E-mail inválido';
         return null;
+      case 'tipo_passageiro':
+        if (!value) return 'Tipo de passageiro é obrigatório';
+        return null;
       default:
         return null;
     }
+  };
+
+  // Função para validar CPF
+  const isValidCPF = (cpf) => {
+    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+    
+    let sum = 0;
+    for (let i = 0; i < 9; i++) {
+      sum += parseInt(cpf.charAt(i)) * (10 - i);
+    }
+    let remainder = (sum * 10) % 11;
+    if (remainder === 10 || remainder === 11) remainder = 0;
+    if (remainder !== parseInt(cpf.charAt(9))) return false;
+    
+    sum = 0;
+    for (let i = 0; i < 10; i++) {
+      sum += parseInt(cpf.charAt(i)) * (11 - i);
+    }
+    remainder = (sum * 10) % 11;
+    if (remainder === 10 || remainder === 11) remainder = 0;
+    return remainder === parseInt(cpf.charAt(10));
   };
 
   // Manipulador de alteração nos campos com validação
@@ -59,8 +110,7 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
       ...prev,
       [name]: value
     }));
-    
-    // Valida o campo so se o usuário já começou a digitar algo
+      // Valida o campo somente se o usuário já começou a digitar algo
     if (value) {
       const errorMsg = validateField(name, value);
       setErrors(prev => ({
@@ -68,7 +118,7 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
         [name]: errorMsg
       }));
     } else {
-      // Limpa o erro quando o usuário apaga td
+      // Limpa o erro quando o usuário apaga tudo
       setErrors(prev => ({
         ...prev,
         [name]: null
@@ -230,6 +280,33 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
             {errors.telefone && <div className="invalid-feedback">{errors.telefone}</div>}
           </div>
         </div>
+
+        <div className="mb-4">
+          <label htmlFor="tipo_passageiro" className="form-label fw-semibold">
+            <i className="bi bi-person-badge-fill me-2 text-primary"></i>Tipo de Passageiro
+          </label>
+          <div className="input-group">
+            <span className="input-group-text bg-light">
+              <i className="bi bi-tag"></i>
+            </span>
+            <select
+              className={`form-control form-control-lg ${errors.tipo_passageiro ? 'is-invalid' : ''}`}
+              id="tipo_passageiro"
+              name="tipo_passageiro"
+              value={formData.tipo_passageiro}
+              onChange={handleChange}
+            >
+              <option value="">Selecione o tipo de passageiro</option>
+              {tiposPassageiro.map((tipo) => (
+                <option key={tipo.tipo_passageiro_id} value={tipo.tipo_passageiro_id}>
+                  {tipo.nome}
+                </option>
+              ))}
+            </select>
+            {errors.tipo_passageiro && <div className="invalid-feedback">{errors.tipo_passageiro}</div>}
+          </div>
+        </div>
+
         
         <hr className="my-4" />
         
@@ -260,7 +337,9 @@ PassengerForm.propTypes = {
     nome: PropTypes.string,
     cpf: PropTypes.string,
     telefone: PropTypes.string,
-    email: PropTypes.string
+    email: PropTypes.string,
+    tipo_passageiro: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    tipo_passageiro_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
   }),
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired

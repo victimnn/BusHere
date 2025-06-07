@@ -93,6 +93,11 @@ const api = {
     // Excluir passageiro
     delete: (id) => {
       return api.delete(`/passengers/${id}`);
+    },
+
+    // Buscar tipos de passageiro
+    getTypes: () => {
+      return api.get('/passengers/tipos');
     }
   }
 };

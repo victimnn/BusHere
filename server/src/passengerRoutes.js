@@ -23,11 +23,12 @@ module.exports = (pool) => {
       // Single query to fetch data and total count using a window function
       const [rows] = await pool.execute(
         `SELECT 
-          passageiro_id, 
+          passageiro_id,
           nome_completo, 
           cpf, 
           email, 
           telefone,
+          tipo_passageiro_id,
           COUNT(*) OVER() as total_passengers_found
         FROM Passageiros
         ${whereClause}
@@ -44,10 +45,31 @@ module.exports = (pool) => {
         page: parseInt(page),
         limit: parseInt(limit),
         totalPages
-      });
-    } catch (error) {
+      });    } catch (error) {
       console.error('Erro ao buscar passageiros:', error);
       res.status(500).json({ error: 'Erro ao buscar passageiros' });
+    }
+  });
+  // Rota para buscar tipos de passageiro
+  // Retorna:
+  // data: array de tipos de passageiro disponíveis
+  router.get('/tipos', async (req, res) => {
+    try {
+      console.log('Tentando buscar tipos de passageiro...');
+      const [rows] = await pool.execute(
+        `SELECT tipo_passageiro_id, nome, descricao 
+        FROM TipoPassageiro 
+        ORDER BY nome`
+      );
+      
+      console.log('Tipos encontrados:', rows);
+
+      res.json({
+        data: rows
+      });
+    } catch (error) {
+      console.error('Erro ao buscar tipos de passageiro:', error);
+      res.status(500).json({ error: 'Erro ao buscar tipos de passageiro', details: error.message });
     }
   });
 
@@ -60,8 +82,9 @@ module.exports = (pool) => {
       const { id } = req.params;
 
       const [rows] = await pool.execute(
-        `SELECT passageiro_id, nome_completo, cpf, email, telefone, data_nascimento,
+        `SELECT passageiro_id, nome_completo, cpf, email, telefone, data_nascimento, pcd,
         logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
+        tipo_passageiro_id,
         data_criacao, data_atualizacao, ativo
         FROM Passageiros WHERE passageiro_id = ?`,
         [id]
@@ -86,7 +109,7 @@ module.exports = (pool) => {
   // Retorna:
   // O objeto do passageiro recém-criado
   router.post('/', async (req, res) => {
-    const requiredFields = ['nome_completo', 'cpf', 'email', 'senha_hash', 'logradouro', 'numero_endereco', 'bairro', 'cidade', 'uf', 'cep'];
+    const requiredFields = ['nome_completo', 'cpf', 'email', 'senha_hash', 'logradouro', 'numero_endereco', 'bairro', 'cidade', 'uf', 'cep', 'tipo_passageiro_id'];
 
     for (const field of requiredFields) {
       if (!req.body[field]) {
@@ -95,7 +118,7 @@ module.exports = (pool) => {
     }
 
     const {
-      nome_completo, cpf, email, senha_hash, telefone, data_nascimento,
+      nome_completo, cpf, email, senha_hash, telefone, data_nascimento, pcd,
       logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
       tipo_passageiro_id, rota_id, status_pagamento_id, notificacoes_json, configuracoes_json, ativo
     } = req.body;
@@ -107,6 +130,7 @@ module.exports = (pool) => {
       senha_hash,
       telefone: telefone || null,
       data_nascimento: data_nascimento || null,
+      pcd: pcd || false,
       logradouro,
       numero_endereco,
       complemento_endereco: complemento_endereco || null,
@@ -122,9 +146,8 @@ module.exports = (pool) => {
       ativo: ativo !== undefined ? ativo : true
     };
 
-    try {
-      const [existingRows] = await pool.execute(
-        'SELECT passageiro_id FROM Passageiros WHERE cpf = ? OR email = ?',
+    try {      const [existingRows] = await pool.execute(
+        'SELECT passageiro_id, cpf, email FROM Passageiros WHERE cpf = ? OR email = ?',
         [cpf, email]
       );
 
@@ -139,7 +162,7 @@ module.exports = (pool) => {
       const [result] = await pool.query('INSERT INTO Passageiros SET ?', newPassengerData);
 
       const [newPassenger] = await pool.execute(
-        `SELECT passageiro_id, nome_completo, cpf, email, telefone, data_nascimento,
+        `SELECT passageiro_id, nome_completo, cpf, email, telefone, data_nascimento, pcd,
         logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
         tipo_passageiro_id, rota_id, status_pagamento_id, data_criacao, data_atualizacao, ativo
         FROM Passageiros WHERE passageiro_id = ?`,
@@ -161,13 +184,13 @@ module.exports = (pool) => {
   router.put('/:id', async (req, res) => {
     const { id } = req.params;
     const {
-      nome_completo, cpf, email, senha_hash, telefone, data_nascimento,
+      nome_completo, cpf, email, senha_hash, telefone, data_nascimento, pcd,
       logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
       tipo_passageiro_id, rota_id, status_pagamento_id, notificacoes_json, configuracoes_json, ativo
     } = req.body;
 
     const updatedPassengerData = {
-      nome_completo, cpf, email, senha_hash, telefone, data_nascimento,
+      nome_completo, cpf, email, senha_hash, telefone, data_nascimento, pcd,
       logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
       tipo_passageiro_id, rota_id, status_pagamento_id, notificacoes_json, configuracoes_json, ativo
     };
@@ -210,7 +233,7 @@ module.exports = (pool) => {
       }
 
       const [updatedRows] = await pool.execute(
-        `SELECT passageiro_id, nome_completo, cpf, email, telefone, data_nascimento,
+        `SELECT passageiro_id, nome_completo, cpf, email, telefone, data_nascimento, pcd,
         logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
         tipo_passageiro_id, rota_id, status_pagamento_id, data_criacao, data_atualizacao, ativo
         FROM Passageiros WHERE passageiro_id = ?`,
@@ -275,8 +298,7 @@ module.exports = (pool) => {
         data: rows,
         count: rows.length,
         query
-      });
-    } catch (error) {
+      });    } catch (error) {
       console.error('Erro ao pesquisar passageiros:', error);
       res.status(500).json({ error: 'Erro ao pesquisar passageiros' });
     }

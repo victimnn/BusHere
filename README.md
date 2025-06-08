@@ -319,10 +319,10 @@ Este projeto foi desenvolvido como Trabalho de Conclusão de Curso (TCC).
 
 ## 👥 Equipe de Desenvolvimento
 
-- **Victor Ramos** - Desenvolvimento Full Stack, Banco de Dados, Documentaçãoe e Design
-- **Renan Andrade** - Desenvolvimento Full Stack/Mobile
+- **Victor Ramos** - Desenvolvimento Full Stack, Banco de Dados, Documentação e Design
+- **Renan Andrade** - Desenvolvimento Full Stack e Mobile
 - **Luiz Souza** - Desenvolvimento FrontEnd e Design
-- **Sarah Porsch** - Documentação e Design
+- **Sarah Porsch** - Documentação
 - **Marcelo Camillo** - Documentação e Banco de Dados
 
 ---

@@ -72,7 +72,7 @@ Antes de iniciar, certifique-se de ter instalado:
 
 ### 1. Clone o Repositório
 ```bash
-git clone https://github.com/seu-usuario/bushere.git
+git clone https://github.com/TCC-JB-02-2025/tcc.git
 cd bushere
 ```
 

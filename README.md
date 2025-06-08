@@ -6,7 +6,7 @@
 [![MySQL](https://img.shields.io/badge/MySQL-8.0%2B-orange.svg)](https://www.mysql.com/)
 [![React Native](https://img.shields.io/badge/React%20Native-Expo-purple.svg)](https://expo.dev/)
 
-O **BusHere!** é um sistema completo de gestão de transporte público desenvolvido como Trabalho de Conclusão de Curso (TCC). O projeto inclui uma aplicação web para administração, um aplicativo móvel para passageiros e uma API robusta para integração de dados.
+O **BusHere!** é um sistema completo de gestão de transporte público desenvolvido como Trabalho de Conclusão de Curso (TCC) da ETEC João Belarmino do Centro Paula Souza. O projeto inclui uma aplicação web para administração, um aplicativo móvel para passageiros e uma API robusta para integração de dados.
 
 ## 📋 Sumário
 

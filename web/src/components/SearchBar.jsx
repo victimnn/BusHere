@@ -16,6 +16,16 @@ const fetchAutocompleteSuggestions = async (term) => {
 };
 
 function SuggestionModal({ suggestions, onSuggestionClick, icons }) {
+  const itemTypeToText = (v) => {
+    const types = {
+      "Passenger": "Passageiro",
+      "Bus": "Ônibus",
+      "Route": "Rota",
+      "Stop": "Parada"
+    };
+    return types[v] || "Desconhecido";
+  }
+
   return (
     <div className="card position-absolute w-100 mt-2" style={{ top: '100%', zIndex: 1000 }}>
       <ul className="list-group list-group-flush">
@@ -27,7 +37,7 @@ function SuggestionModal({ suggestions, onSuggestionClick, icons }) {
             style={{ cursor: 'pointer' }}
           >
             <i className={[icons[suggestion.item_type] + " me-2"|| "bi bi-question-diamond-fill me-4"]}></i>
-            {suggestion.search_text}
+            <b>{suggestion.search_text}</b> em <b>{itemTypeToText(suggestion.item_type)}</b>
           </li>
         ))}
       </ul>
@@ -43,7 +53,7 @@ function SearchBar() {
   const [suggestions, setSuggestions] = useState([]); // Estado para armazenar as sugestões
 
   const icons = {
-    "User": "bi bi-person",
+    "Passenger": "bi bi-person",
     "Bus": "bi bi-bus-front-fill",
     "Route": "bi bi-bus-front-fill",  
     "Stop": "bi bi-geo-alt-fill",

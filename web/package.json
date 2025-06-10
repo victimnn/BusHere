@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@faker-js/faker": "^9.8.0",
     "bootstrap": "^5.3.5",
     "bootstrap-icons": "^1.12.1",
     "chart.js": "^4.4.9",

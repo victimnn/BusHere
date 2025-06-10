@@ -8,17 +8,21 @@ module.exports = (pool) => {
   // data: array de passageiros, total: total de passageiros, page: página atual, limit: limite por página, totalPages: total de páginas
   router.get('/', async (req, res) => {
     try {
-      const { page = 1, limit = 10, search = '' } = req.query;
+      const { page = 1, limit = 0, search = '' } = req.query;
       const offset = (parseInt(page) - 1) * parseInt(limit);
 
       let params = [];
       let whereClause = '';
+      let limitClause = '';
 
       if (search) {
         whereClause = ' WHERE nome_completo LIKE ? OR cpf LIKE ? OR email LIKE ? OR telefone LIKE ?';
         const searchPattern = `%${search}%`;
         params = [searchPattern, searchPattern, searchPattern, searchPattern];
       }
+      
+      //TODO() fazer um if para verificar se o limite é maior que 0 e fazer o limitClause
+      limitClause = "LIMIT ? OFFSET ?"; //temporario
 
       // Single query to fetch data and total count using a window function
       const [rows] = await pool.execute(
@@ -32,7 +36,7 @@ module.exports = (pool) => {
           COUNT(*) OVER() as total_passengers_found
         FROM Passageiros
         ${whereClause}
-        ORDER BY passageiro_id LIMIT ? OFFSET ?`,
+        ORDER BY passageiro_id ${limitClause}`,
         [...params, parseInt(limit), offset]
       );
 

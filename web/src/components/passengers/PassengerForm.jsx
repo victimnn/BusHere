@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import api from '../../api/api';
+import { validateCPF, validateEmail, validatePhoneNumber } from '../../utils/validators';
+import { formatCPF, formatPhoneNumber } from '../../utils/formatters';
 import '../../../styles/PassengerForm.scss'; // Importação do arquivo SCSS
+
+//import o faker.js
+import { faker } from '@faker-js/faker';
 
 /**
  * Componente de formulário para criação e edição de passageiros
@@ -11,6 +16,43 @@ import '../../../styles/PassengerForm.scss'; // Importação do arquivo SCSS
  * @param {Function} props.onCancel - Função chamada ao cancelar
  * @returns {JSX.Element}
  */
+
+
+
+function createFakeData() {
+  function generateValidCPF() {
+    function calculateDigit(cpfPart) {
+        let sum = 0;
+        let multiplier = cpfPart.length + 1;
+        for (let i = 0; i < cpfPart.length; i++) {
+            sum += parseInt(cpfPart[i]) * multiplier;
+            multiplier--;
+        }
+        const remainder = sum % 11;
+        return remainder < 2 ? 0 : 11 - remainder;
+    }
+    let cpfNumbers = [];
+    for (let i = 0; i < 9; i++) {
+        cpfNumbers.push(Math.floor(Math.random() * 10));
+    }
+    let cpfBase = cpfNumbers.join('');
+    const firstDigit = calculateDigit(cpfBase);
+    cpfBase += firstDigit;
+    const secondDigit = calculateDigit(cpfBase);
+    cpfBase += secondDigit; 
+    return cpfBase.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+  }
+
+  return {
+    nome: faker.person.fullName(),
+    cpf: generateValidCPF(),
+    telefone: formatPhoneNumber(faker.string.numeric(11)), // Gera um número de telefone fictício
+    email: faker.internet.email(),
+    tipo_passageiro: faker.helpers.arrayElement(['1', '2'])
+  }
+
+
+}
 function PassengerForm({ initialData, onSubmit, onCancel }) {
   const [formData, setFormData] = useState({
     nome: '',
@@ -60,47 +102,28 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
     switch(name) {
       case 'nome':
         return !value.trim() ? 'Nome é obrigatório' : null;
+      
       case 'cpf':
         if (!value.trim()) return 'CPF é obrigatório';
-        if (!value.match(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)) return 'CPF inválido';
-        // Validação adicional do CPF (dígitos verificadores)
-        const cpfDigits = value.replace(/\D/g, '');
-        if (!isValidCPF(cpfDigits)) return 'CPF inválido';
+        if (!validateCPF(value)) return 'CPF inválido';
         return null;
+      
       case 'telefone':
-        if (value && !value.match(/^\(\d{2}\) \d{5}-\d{4}$/)) return 'Formato: (00) 00000-0000';
+        if (value && !validatePhoneNumber(value)) return 'Formato: (00) 00000-0000';
         return null;
+      
       case 'email':
         if (!value.trim()) return 'E-mail é obrigatório';
-        if (!/^\S+@\S+\.\S+$/.test(value)) return 'E-mail inválido';
+        if (!validateEmail(value)) return 'E-mail inválido';
         return null;
+      
       case 'tipo_passageiro':
         if (!value) return 'Tipo de passageiro é obrigatório';
         return null;
+      
       default:
         return null;
     }
-  };
-
-  // Função para validar CPF
-  const isValidCPF = (cpf) => {
-    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
-    
-    let sum = 0;
-    for (let i = 0; i < 9; i++) {
-      sum += parseInt(cpf.charAt(i)) * (10 - i);
-    }
-    let remainder = (sum * 10) % 11;
-    if (remainder === 10 || remainder === 11) remainder = 0;
-    if (remainder !== parseInt(cpf.charAt(9))) return false;
-    
-    sum = 0;
-    for (let i = 0; i < 10; i++) {
-      sum += parseInt(cpf.charAt(i)) * (11 - i);
-    }
-    remainder = (sum * 10) % 11;
-    if (remainder === 10 || remainder === 11) remainder = 0;
-    return remainder === parseInt(cpf.charAt(10));
   };
 
   // Manipulador de alteração nos campos com validação
@@ -124,23 +147,6 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
         [name]: null
       }));
     }
-  };
-  
-  // Formatação de CPF: 000.000.000-00
-  const formatCpf = (value) => {
-    const digits = value.replace(/\D/g, '');
-    if (digits.length <= 3) return digits;
-    if (digits.length <= 6) return `${digits.slice(0, 3)}.${digits.slice(3)}`;
-    if (digits.length <= 9) return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
-    return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9, 11)}`;
-  };
-  
-  // Formatação de telefone: (00) 00000-0000
-  const formatTelefone = (value) => {
-    const digits = value.replace(/\D/g, '');
-    if (digits.length <= 2) return `(${digits}`;
-    if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
-    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`;
   };
   
   // Manipulador especial para campos formatados com validação
@@ -251,7 +257,7 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
               id="cpf"
               name="cpf"
               value={formData.cpf}
-              onChange={(e) => handleFormattedChange(e, formatCpf)}
+              onChange={(e) => handleFormattedChange(e, formatCPF)}
               placeholder="000.000.000-00"
               maxLength={14}
             />
@@ -273,7 +279,7 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
               id="telefone"
               name="telefone"
               value={formData.telefone}
-              onChange={(e) => handleFormattedChange(e, formatTelefone)}
+              onChange={(e) => handleFormattedChange(e, formatPhoneNumber)}
               placeholder="(00) 00000-0000"
               maxLength={15}
             />
@@ -324,7 +330,20 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
             className="btn btn-primary text-white btn-lg px-4"
           >
             <i className={`bi ${initialData ? 'bi-pencil-square' : 'bi-plus-circle'} me-2`}></i>
-            {initialData ? 'Atualizar' : 'Cadastrar'}
+            {initialData ? 'Atualizar' : 'Cadastrar'} 
+          </button>
+          
+          {/* botão para prencher com dados do faker.js */}
+          <button
+            type="button"
+            className="btn btn-secondary btn-lg px-4"
+            onClick={() => {
+              setFormData(createFakeData());
+              setErrors({}); // Limpa os erros ao preencher com dados fictícios
+            }
+            }
+          >
+            Preencher com faker
           </button>
         </div>
       </form>

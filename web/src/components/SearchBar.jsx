@@ -23,7 +23,7 @@ function SuggestionModal({ suggestions, onSuggestionClick, icons }) {
       "Route": "Rota",
       "Stop": "Parada"
     };
-    return types[v] || "Desconhecido";
+    return types[v] || `Indefinido: "${v}"`; // Retorna o tipo ou um texto padrão se não encontrado
   }
 
   return (

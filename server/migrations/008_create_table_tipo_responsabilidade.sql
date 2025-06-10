@@ -2,7 +2,6 @@
 DROP TABLE IF EXISTS TipoResponsabilidade;
 
 -- Up
-
 CREATE TABLE TipoResponsabilidade (
     tipo_responsabilidade_id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(50) NOT NULL UNIQUE,

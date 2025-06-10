@@ -6,7 +6,7 @@ CREATE TABLE TokensLogin (
     creation_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data e hora de criação do token
     expiration_timestamp TIMESTAMP NOT NULL DEFAULT '1970-01-01 00:00:01', -- Data e hora de expiração do token
 
-    -- Chave estrangeira referenciando a tabela Passageiros
+    -- Chave estrangeira referenciando a tabela Passageiro
     FOREIGN KEY (passageiro_id) REFERENCES Passageiros(passageiro_id) ON DELETE CASCADE,
 
     -- Índice para buscas mais rápidas

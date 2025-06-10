@@ -9,11 +9,11 @@ module.exports = (pool) => {
   router.get('/', async (req, res) => {
     try {
       const { page = 1, limit = 0, search = '' } = req.query;
-      const offset = (parseInt(page) - 1) * parseInt(limit);
+      const offset = (parseInt(page) - 1) * parseInt(limit) ?? 0;
 
       let params = [];
-      let whereClause = '';
-      let limitClause = '';
+      let whereClause = "";
+      let limitClause = "";
 
       if (search) {
         whereClause = ' WHERE nome_completo LIKE ? OR cpf LIKE ? OR email LIKE ? OR telefone LIKE ?';
@@ -21,8 +21,16 @@ module.exports = (pool) => {
         params = [searchPattern, searchPattern, searchPattern, searchPattern];
       }
       
-      //TODO() fazer um if para verificar se o limite é maior que 0 e fazer o limitClause
-      limitClause = "LIMIT ? OFFSET ?"; //temporario
+      if (limit && limit > 0) {
+        limitClause = "LIMIT ?";
+        params.push(parseInt(limit));
+      }
+
+      if( offset && offset > 0) {
+        limitClause += " OFFSET ?";
+        params.push(offset);
+      } 
+
 
       // Single query to fetch data and total count using a window function
       const [rows] = await pool.execute(
@@ -37,7 +45,7 @@ module.exports = (pool) => {
         FROM Passageiros
         ${whereClause}
         ORDER BY passageiro_id ${limitClause}`,
-        [...params, parseInt(limit), offset]
+        params
       );
 
       const totalPassengers = rows.length > 0 ? rows[0].total_passengers_found : 0;
@@ -49,7 +57,8 @@ module.exports = (pool) => {
         page: parseInt(page),
         limit: parseInt(limit),
         totalPages
-      });    } catch (error) {
+      });    
+    } catch (error) {
       console.error('Erro ao buscar passageiros:', error);
       res.status(500).json({ error: 'Erro ao buscar passageiros' });
     }

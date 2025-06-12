@@ -54,7 +54,17 @@ function Stops(){
     const [mapCenter, setMapCenter] = useState([-22.698, -47.009]);
 
     const popUpRef = useRef(null); // Referência para o componente PopUpComponent
-  
+
+    function Test(){
+      return (
+        <button className="btn btn-primary" onClick={() => {
+          popUpRef.current.show(()=>(<h2> aaa </h2>), {} , "success");
+        }}>
+          g
+        </button>
+      );
+    }
+
     //id,nome,cep,cordenadas,rotas,endereco,status
     const tableHeaders = [
       {id: "id",label: "ID", sortable: true},
@@ -65,21 +75,11 @@ function Stops(){
       {id: "address", label: "Endereço", sortable: false},
       {id: "status", label: "Status", sortable: true}
     ]
-
-    const routesView = () => {
-      return (
-        TableSeeMoreButton({
-          popUpRef: popUpRef,
-          popUpComponent: StopsRoutesPopUp,
-          componentProps: { routes: ["Rota 1", "Rota 2", "Rota 3"] }
-        })
-      );
-    }
-
+  
     const tableData = [
-      { id: 1, name: "Ponto A", cep: "12345-678", coordinates: "[-22.698, -47.009]", routesView: routesView(), address: "Rua A, 123", status: "Ativo", routes : ["Rota 1", "Rota 2"] },
-      { id: 2, name: "Ponto B", cep: "23456-789", coordinates: "[-22.700, -47.010]", routesView: "Rota 3", address: "Rua B, 456", status: "Inativo", routes : ["Rota 3"] },
-      { id: 3, name: "Ponto C", cep: "34567-890", coordinates: "[-22.702, -47.012]", routesView: "Rota 4, Rota 5", address: "Rua C, 789", status: "Ativo", routes : ["Rota 4", "Rota 5"] },
+      { id: 1, name: "Ponto A", cep: "12345-678", coordinates: "[-22.698, -47.009]", routesView: "Rota 1, Rota 2", address: "Rua A, 123", status: "Ativo" },
+      { id: 2, name: "Ponto B", cep: "23456-789", coordinates: "[-22.700, -47.010]", routesView: "Rota 3", address: "Rua B, 456", status: "Inativo" },
+      { id: 3, name: "Ponto C", cep: "34567-890", coordinates: "[-22.702, -47.012]", routesView: "Rota 4, Rota 5", address: "Rua C, 789", status: "Ativo" },
     ]
 
     const handleRowClick = (rowData) => {
@@ -116,6 +116,7 @@ function Stops(){
           onRowClick={handleRowClick}
         />
 
+        <Test />
         
         <PopUpComponent 
           ref={popUpRef}

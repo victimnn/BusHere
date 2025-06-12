@@ -82,6 +82,35 @@ $btn-transition: all 0.2s ease-in-out;
 $avatar-size: 40px; // Tamanho do avatar, se necessário
 
 
+$theme-colors: (
+  "primary": $primary,
+  "secondary": $secondary,
+  "success": $success,
+  "info": $info,
+  "warning": $warning,
+  "danger": $danger,
+  "light": $light,
+  "dark": $dark,
+
+  "white": $white,
+  "primary-light": $primary-light,
+  "primary-dark": $primary-dark,
+
+  "secondary-light": $secondary-light,
+  "secondary-dark": $secondary-dark,
+  
+  "accent": $accent,
+  "accent-light": $accent-light,
+  "accent-dark": $accent-dark,
+
+  "analogous-1": $analogous-1,
+  "analogous-2": $analogous-2,
+
+
+
+
+);
+
 // 2. Use o Bootstrap SCSS (precisa do includePaths configurado no Vite)
 @use "bootstrap" with (
   $primary: $primary,
@@ -122,7 +151,9 @@ $avatar-size: 40px; // Tamanho do avatar, se necessário
   // Estilos adicionais
   $btn-transition: $btn-transition,
 
-  $box-shadow-sm: $box-shadow-sm
+  $box-shadow-sm: $box-shadow-sm,
+
+  $theme-colors: $theme-colors
 );
 
 

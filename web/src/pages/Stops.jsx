@@ -7,7 +7,7 @@ function MajorStops() {
     <>
       <StopsContainer />
       <div className="d-flex flex-row bg-primary">
-          {/* botoes */}
+          {/* <button className="btn"></button><button className="btn"></button><button className="btn"></button> */}
       </div>
     </>
   );
@@ -15,9 +15,13 @@ function MajorStops() {
 
 function StopsContainer({ stops }) {
   return (
-    <div className="d-flex flex-column m-3 w-100 h-100" >
-        <h2> StopsContainer </h2>
+    <div className="d-flex flex-column m-3 w-100 h-100" style={{ overflowY: "scroll" }}>
+        {/* <h2> StopsContainer </h2> */}
 
+        <StopComponent />
+        <StopComponent />
+        <StopComponent />
+        <StopComponent />
         <StopComponent />
         <StopComponent />
         <StopComponent />
@@ -30,9 +34,9 @@ function StopComponent({ name, passengers, routeAmount}) {
   passengers = Math.ceil(Math.random()*40)
   routeAmount = Math.ceil(Math.random()*10)
   return (
-      <div className="d-flex flex-row">
-        <h4>{name}</h4>
-      </div>
+    <div className="d-flex flex-row border border-secondary rounded-3 m-1 p-1">
+      <h4>{name}</h4>
+    </div>
   );
 }
 
@@ -51,8 +55,8 @@ function Stops(){
     const popUpRef = useRef(null); // Referência para o componente PopUpComponent
   
     return (
-      <main>
-        <div className="d-flex flex-row m-3 w-100 h-100">
+      <main style={{ height: '100vh' }} className="d-flex flex-column">
+        <div className="d-flex flex-row m-3 w-100 h-50" style={{ overflowY: 'hidden', background:"red", maxHeight: '30%' }}>
           <MapComponent 
             className="w-100 h-100 rounded-3"
             center={mapCenter}

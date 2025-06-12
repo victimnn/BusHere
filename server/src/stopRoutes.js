@@ -129,15 +129,78 @@ module.exports = (pool) => {
       console.error(error);
       return res.status(500).json({ error: "Erro ao adicionar ponto no banco de dados" });
     }
-
-
-
-
-    
-
-
-
   });
+
+  // Rota para atualizar um ponto existente
+  router.put("/:id", async (req, res) => {
+    const pontoId = req.params.id;
+    if (!pontoId) {
+      return res.status(400).json({ error: "O parâmetro 'id' é obrigatório" });
+    }
+    if (isNaN(pontoId)) {
+      return res.status(400).json({ error: "O parâmetro 'id' deve ser um número" });
+    }
+
+    // Campos para atualização
+    const { nome, coordinates, logradouro, numero_endereco, bairro, cidade, uf, cep, referencia } = req.body;
+    const updates = {
+      nome,
+      logradouro,
+      numero_endereco,
+      bairro,
+      cidade,
+      uf,
+      cep,
+      referencia
+    };
+    // Verifica se as coordenadas foram fornecidas
+    if (coordinates) {
+      if (!Array.isArray(coordinates) || coordinates.length !== 2 ||
+          typeof coordinates[0] !== 'number' || typeof coordinates[1] !== 'number') {
+        return res.status(400).json({ error: "O campo 'coordinates' deve ser um array com dois números (latitude e longitude)" });
+      }
+      const [latitude, longitude] = coordinates;
+      if( latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
+        return res.status(400).json({ error: "As coordenadas devem estar dentro dos limites válidos: latitude entre -90 e 90, longitude entre -180 e 180" });
+      }
+      updates.latitude = latitude;
+      updates.longitude = longitude;
+    }
+
+    // apaga os campos nao fornecidos
+    for (const key in updates) {
+      if (updates[key] === undefined || updates[key] === null) {
+        delete updates[key];
+      }
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({ error: "Nenhum campo para atualizar foi fornecido" });
+    }
+
+    // Atualização no banco de dados
+    try {
+      const updateFields = Object.keys(updates).map(field => `${field} = ?`).join(', ');
+      const updateValues = Object.values(updates);
+      updateValues.push(pontoId); // Adiciona o ID do ponto ao final
+
+      const [result] = await pool.query(
+        `UPDATE Pontos SET ${updateFields} WHERE ponto_id = ?`,
+        updateValues
+      );
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Ponto não encontrado" });
+      }
+      return res.status(200).json({ message: "Ponto atualizado com sucesso", ponto_id: pontoId, ...updates });      
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Erro ao atualizar ponto no banco de dados" });
+    }
+  });
+
+
+
 
 
 

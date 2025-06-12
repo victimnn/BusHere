@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import PopUpComponent from "../components/PopUpComponent";
 import MapComponent from "../components/MapComponent";
 
+
 function PopUpContent() {
   return (
     <div>
@@ -13,7 +14,12 @@ function PopUpContent() {
 
 function Stops(){
     //TODO(): Isso é para teste
-    const [size, setSize] = useState(32); // Estado para o tamanho do ícone
+    const [markers, setMarkers] = useState([{ position: [-22.698, -47.009], popupContent: (<PopUpComponent/>), color: 'red', size: 32 }]);
+
+    const [polylines, setPolylines] = useState([{ positions: [[-22.698, -47.009], [-22.700, -47.010]], color: 'blue' }]);
+    const [mapCenter, setMapCenter] = useState([-22.698, -47.009]);
+
+
     const handleMapClick = (latlng) => {
       alert(`Você clicou em: ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`);
     }
@@ -38,10 +44,10 @@ function Stops(){
         
         <MapComponent 
           className="w-100 h-100 rounded-3"
-          center={[-22.698, -47.009]}
+          center={mapCenter}
           zoom={13}
-          markers={[{ position: [-22.698, -47.009], popupContent: (<PopUpComponent/>), color: 'red', size: size }]}
-          polylines={[{ positions: [[-22.698, -47.009], [-22.700, -47.010]], color: 'blue' }]}
+          markers={markers}
+          polylines={polylines}
           onMapClick={handleMapClick} // Passa a função de clique no mapa
         />
         

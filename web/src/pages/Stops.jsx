@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import PopUpComponent from "../components/PopUpComponent";
 import MapComponent from "../components/MapComponent";
+import Table from "../components/Table";
 
 function MajorStops() {
   return (
@@ -29,7 +30,8 @@ function StopsContainer({ stops }) {
     </div>
   )
 }
-function StopComponent({ name, passengers, routeAmount}) {
+
+function StopComponent({ name="", passengers="", routeAmount=""}) {
   name = "teste"
   passengers = Math.ceil(Math.random()*40)
   routeAmount = Math.ceil(Math.random()*10)
@@ -51,13 +53,44 @@ function Stops(){
     const [polylines, setPolylines] = useState([{ positions: [[-22.698, -47.009], [-22.700, -47.010]], color: 'blue' }]);
     const [mapCenter, setMapCenter] = useState([-22.698, -47.009]);
 
+    const popUpRef = useRef(null); // Referência para o componente PopUpComponent
+  
+    //id,nome,cep,cordenadas,rotas,endereco,status
+    const tableHeaders = [
+      {id: "id",label: "ID", sortable: true},
+      {id: "name", label: "Nome", sortable: true},
+      {id: "cep", label: "CEP", sortable: false},
+      {id: "coordinates", label: "Cordenadas", sortable: false},
+      {id: "routesView", label: "Rotas", sortable: false}, 
+      {id: "address", label: "Endereço", sortable: false},
+      {id: "status", label: "Status", sortable: true}
+    ]
+
+    const routesView = () => {
+      return (
+        TableSeeMoreButton({
+          popUpRef: popUpRef,
+          popUpComponent: StopsRoutesPopUp,
+          componentProps: { routes: ["Rota 1", "Rota 2", "Rota 3"] }
+        })
+      );
+    }
+
+    const tableData = [
+      { id: 1, name: "Ponto A", cep: "12345-678", coordinates: "[-22.698, -47.009]", routesView: routesView(), address: "Rua A, 123", status: "Ativo", routes : ["Rota 1", "Rota 2"] },
+      { id: 2, name: "Ponto B", cep: "23456-789", coordinates: "[-22.700, -47.010]", routesView: "Rota 3", address: "Rua B, 456", status: "Inativo", routes : ["Rota 3"] },
+      { id: 3, name: "Ponto C", cep: "34567-890", coordinates: "[-22.702, -47.012]", routesView: "Rota 4, Rota 5", address: "Rua C, 789", status: "Ativo", routes : ["Rota 4", "Rota 5"] },
+    ]
+
+    const handleRowClick = (rowData) => {
+      // Exemplo de ação ao clicar na linha da tabela
+      console.log("Você clicou na linha:",rowData);
+    }
 
     const handleMapClick = (latlng) => {
       alert(`Você clicou em: ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`);
     }
 
-    const popUpRef = useRef(null); // Referência para o componente PopUpComponent
-  
     return (
       <main style={{ height: '100vh', maxWidth: "100%", overflowX: 'hidden' }} className="d-flex flex-column">
         <div className="d-flex flex-row m-3 w-100 h-50 gap-4" style={{ overflowY: 'hidden', /*background:"red",*/ maxHeight: '30%' }}>
@@ -73,6 +106,15 @@ function Stops(){
           <MajorStops />
         </div>
         
+
+        <Table 
+          headers={tableHeaders}
+          data={tableData}
+          itemsPerPage={5}
+          searchable={true}
+          className="table-striped table-hover"
+          onRowClick={handleRowClick}
+        />
 
         
         <PopUpComponent 

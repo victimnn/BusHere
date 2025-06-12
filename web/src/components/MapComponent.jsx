@@ -24,7 +24,7 @@ function getColoredIcon(color = 'blue', size = 32) {
   });
 }
 
-function MapComponent({ center, zoom = 13, markers = [], polylines = [], onMapClick = null, className = '' }) {
+function MapComponent({ center, zoom = 13, markers = [], polylines = [], onMapClick = null, onMarkerClick = null, className = '' }) {
 
   return (
     <div className={`map-container-wrapper ${className}`}> {/* Um wrapper para controlar o tamanho */}
@@ -36,9 +36,13 @@ function MapComponent({ center, zoom = 13, markers = [], polylines = [], onMapCl
         {/* For each markers */}
         {markers.map((marker, index) => (
           <Marker
-            key={marker.id || index} // Use um ID único se disponível, senão o índice
-            position={marker.position} // Assume que cada marcador tem uma propriedade 'position'
-            icon={getColoredIcon(marker.color, marker.size)} // Passe a cor desejada em marker.color
+            key={marker.id || index} 
+            position={marker.position} 
+            icon={getColoredIcon(marker.color, marker.size)} 
+            eventHandlers={ 
+              // Se tem onMarkerClick, adiciona o handler de clique
+              onMarkerClick ? { click: (e) => onMarkerClick(marker, e),} : undefined
+            }
           >
             {marker.popupContent && <Popup>{marker.popupContent}</Popup> /* Se o marcador tiver conteúdo de popup, exibe */}
           </Marker>

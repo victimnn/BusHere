@@ -2,13 +2,37 @@ import { useRef, useState } from "react";
 import PopUpComponent from "../components/PopUpComponent";
 import MapComponent from "../components/MapComponent";
 
-
-function PopUpContent() {
+function MajorStops() {
   return (
-    <div>
-      <h2>Conteúdo do PopUp</h2>
-      <p>Este é o conteúdo do PopUp.</p>
+    <>
+      <StopsContainer />
+      <div className="d-flex flex-row bg-primary">
+          {/* botoes */}
+      </div>
+    </>
+  );
+}
+
+function StopsContainer({ stops }) {
+  return (
+    <div className="d-flex flex-column m-3 w-100 h-100" >
+        <h2> StopsContainer </h2>
+
+        <StopComponent />
+        <StopComponent />
+        <StopComponent />
+        <StopComponent />
     </div>
+  )
+}
+function StopComponent({ name, passengers, routeAmount}) {
+  name = "teste"
+  passengers = Math.ceil(Math.random()*40)
+  routeAmount = Math.ceil(Math.random()*10)
+  return (
+      <div className="d-flex flex-row">
+        <h4>{name}</h4>
+      </div>
   );
 }
 
@@ -28,28 +52,20 @@ function Stops(){
   
     return (
       <main>
-        <h1>Pontos</h1> 
-    
-        <button
-          onClick={() => {
-            popUpRef.current.show(PopUpContent, {}, "PopUp dos pontos"); // Chama a função show do PopUpComponent, sempre 3 parametos
-          }}
-          className="btn btn-primary"
-        >
-          Abrir PopUp
-        </button>
-          
-        {/* texto com a cor secundaria */}
-        <p className="text-secondary">Texto com a cor secundaria</p> 
+        <div className="d-flex flex-row m-3 w-100 h-100">
+          <MapComponent 
+            className="w-100 h-100 rounded-3"
+            center={mapCenter}
+            zoom={13}
+            markers={markers}
+            polylines={polylines}
+            onMapClick={handleMapClick} // Passa a função de clique no mapa
+          />
+
+          <MajorStops />
+        </div>
         
-        <MapComponent 
-          className="w-100 h-100 rounded-3"
-          center={mapCenter}
-          zoom={13}
-          markers={markers}
-          polylines={polylines}
-          onMapClick={handleMapClick} // Passa a função de clique no mapa
-        />
+
         
         <PopUpComponent 
           ref={popUpRef}

@@ -199,10 +199,57 @@ module.exports = (pool) => {
     }
   });
 
+  // Rota para deletar um ponto
+  router.delete("/:id", async (req, res) => {
+    const pontoId = req.params.id;
+    if (!pontoId) {
+      return res.status(400).json({ error: "O parâmetro 'id' é obrigatório" });
+    }
+    if (isNaN(pontoId)) {
+      return res.status(400).json({ error: "O parâmetro 'id' deve ser um número" });
+    }
 
+    try {
+      const [result] = await pool.query("DELETE FROM Pontos WHERE ponto_id = ?", [pontoId]);
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Ponto não encontrado" });
+      }
+      return res.status(200).json({ message: "Ponto deletado com sucesso" });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Erro ao deletar ponto no banco de dados" });
+    }
+  });
 
+  // Rota para ativar ou desativar um ponto
+  router.patch("/:id/status", async (req, res) => {
+    const pontoId = req.params.id;
+    if (!pontoId) {
+      return res.status(400).json({ error: "O parâmetro 'id' é obrigatório" });
+    }
+    if (isNaN(pontoId)) {
+      return res.status(400).json({ error: "O parâmetro 'id' deve ser um número" });
+    }
 
+    const { ativo } = req.body;
+    if (typeof ativo !== 'boolean') {
+      return res.status(400).json({ error: "O campo 'ativo' deve ser um booleano" });
+    }
 
+    try {
+      const [result] = await pool.query("UPDATE Pontos SET ativo = ? WHERE ponto_id = ?", [ativo, pontoId]);
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "Ponto não encontrado" });
+      }
+      return res.status(200).json({ message: `Ponto ${ativo ? 'ativado' : 'desativado'} com sucesso`, ponto_id: pontoId, ativo });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Erro ao atualizar status do ponto no banco de dados" });
+    }
+  });
 
+  // TODO(): Rota para buscar rotas associadas a um ponto
+
+  // TODO(): Rota para buscar passageiros associados a um ponto
   return router;
 }

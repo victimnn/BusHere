@@ -7,10 +7,10 @@ AFTER INSERT ON Pontos
 FOR EACH ROW
 BEGIN
     -- NEW é a nova linha adicionada à tabela Pontos
-    -- NEW.nome_ponto e NEW.ponto_id são os valores da nova linha
+    -- NEW.nome e NEW.ponto_id são os valores da nova linha
     -- 'Ponto' é o tipo de item constante indicando que é uma Ponto
     INSERT INTO searchIndex (search_text, item_type, item_id)
-    VALUES (NEW.nome_ponto, 'Ponto', NEW.ponto_id);
+    VALUES (NEW.nome, 'Ponto', NEW.ponto_id);
 END;
 
 -- Trigger para UPDATE: Atualiza o índice de busca quando o nome da Ponto muda
@@ -20,10 +20,10 @@ AFTER UPDATE ON Pontos
 FOR EACH ROW
 BEGIN
     -- Verifica se o nome (o texto pesquisável) realmente mudou
-    IF OLD.nome_ponto <> NEW.nome_ponto THEN
+    IF OLD.nome <> NEW.nome THEN
         -- Encontra a entrada correspondente em searchIndex e atualiza seu search_text
         UPDATE searchIndex
-        SET search_text = NEW.nome_ponto
+        SET search_text = NEW.nome
         WHERE item_type = 'Ponto' AND item_id = NEW.ponto_id;
     END IF;
 END;

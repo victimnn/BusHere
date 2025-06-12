@@ -45,6 +45,7 @@ const userRoutes = require("./userRoutes")(pool);
 const authRoutes = require("./authRoutes")(pool);
 const searchRoutes = require("./searchRoutes")(pool);
 const passengerRoutes = require("./passengerRoutes")(pool);
+const stopRoutes = require("./stopRoutes")(pool);
 //const XXXXRoutes = require("./XXXX")(pool);
 //const YYYYRoutes = require("./YYYY")(pool);
 
@@ -54,6 +55,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api", searchRoutes); // Rota raiz da API
 app.use("/api/passengers", passengerRoutes);
+app.use("/api/stops", stopRoutes);
 //app.use("/api/XXXX", XXXXRoutes);
 //app.use("/api/YYYY", YYYYRoutes);
 

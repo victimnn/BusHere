@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS Pontos;
 -- Tabela para pontos de parada
 CREATE TABLE Pontos (
     ponto_id INT AUTO_INCREMENT PRIMARY KEY,
-    nome_ponto VARCHAR(255) NOT NULL,
+    nome VARCHAR(255) NOT NULL,
     latitude DECIMAL(10,8) NOT NULL,
     longitude DECIMAL(11,8) NOT NULL,
     logradouro VARCHAR(255),
@@ -19,6 +19,6 @@ CREATE TABLE Pontos (
     atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     ativo BOOLEAN DEFAULT TRUE,
 
-    INDEX idx_ponto_nome (nome_ponto),
+    INDEX idx_nome (nome),
     INDEX idx_ponto_localizacao (latitude, longitude)
 );

@@ -68,14 +68,14 @@ module.exports = (pool) => {
   // data: array de tipos de passageiro disponíveis
   router.get('/tipos', async (req, res) => {
     try {
-      console.log('Tentando buscar tipos de passageiro...');
+      //console.log('Tentando buscar tipos de passageiro...');
       const [rows] = await pool.execute(
         `SELECT tipo_passageiro_id, nome, descricao 
         FROM TipoPassageiro 
         ORDER BY nome`
       );
       
-      console.log('Tipos encontrados:', rows);
+      //console.log('Tipos encontrados:', rows);
 
       res.json({
         data: rows

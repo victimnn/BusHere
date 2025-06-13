@@ -99,6 +99,41 @@ const api = {
     getTypes: () => {
       return api.get('/passengers/tipos');
     }
+  },
+
+  stops: {
+    // Listar todos os pontos
+    list: () => {
+      return api.get('/stops');
+    },
+
+    // Obter detalhes de um ponto específico pelo ID
+    getById: (id) => {
+      return api.get(`/stops/${id}`);
+    },
+
+    // Criar novo ponto
+    create: (stopData) => {
+      return api.post('/stops', stopData);
+    },
+
+    // Atualizar dados de um ponto existente
+    update: (id, stopData) => {
+      return api.put(`/stops/${id}`, stopData);
+    },
+
+    // Excluir ponto
+    delete: (id) => {
+      return api.delete(`/stops/${id}`);
+    },
+
+    // Buscar pontos por nome
+    search: (name) => {
+      const queryParams = new URLSearchParams({ name });
+      return api.get(`/stops/search?${queryParams.toString()}`);
+    },
+
+
   }
 };
 

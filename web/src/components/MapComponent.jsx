@@ -25,13 +25,26 @@ function getColoredIcon(color = 'blue', size = 32) {
 }
 
 function MapComponent({ center, zoom = 13, markers = [], polylines = [], onMapClick = null, onMarkerClick = null, className = '' }) {
+  const maxBounds = [
+    [-90, -180], // Southwest (lat, lng) - whole world
+    [90, 180],   // Northeast (lat, lng)
+  ];
 
   return (
-    <div className={`map-container-wrapper ${className}`}> {/* Um wrapper para controlar o tamanho */}
-      <MapContainer center={center} zoom={zoom} className="w-100 h-100">
+    <div className={`map-container-wrapper ${className}`}>
+      <MapContainer
+        center={center}
+        zoom={zoom}
+        minZoom={3} // Set your minimum zoom
+        maxBounds={maxBounds}
+        maxBoundsViscosity={1.0}
+        worldCopyJump={false}
+        className="w-100 h-100"
+      >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          noWrap={true}
         />
         {/* For each markers */}
         {markers.map((marker, index) => (

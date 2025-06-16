@@ -273,7 +273,8 @@ Table.propTypes = {
   itemsPerPage: PropTypes.number,
   searchable: PropTypes.bool,
   className: PropTypes.string,
-  onRowClick: PropTypes.func
+  onRowClick: PropTypes.func,
+  popUpRef: PropTypes.object,
 };
 
 export default Table;

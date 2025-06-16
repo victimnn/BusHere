@@ -17,7 +17,7 @@ INSERT INTO Passageiros (
     configuracoes_json
 ) VALUES (
     'Victor Gabriel Prado Ramos',
-    '51590010135',
+    '24116480061',
     'victor.ramos@bushere.com',
     'hashed_password_abc123',
     '19999990001',
@@ -51,7 +51,7 @@ INSERT INTO Passageiros (
     configuracoes_json
 ) VALUES (
     'Leticia Aparecida Moraes Fructoso',
-    '98765432109',
+    '17551394036',
     'llett.moraes@euteamo.com',
     'hashed_password_xyz456',
     '19988880002',
@@ -83,7 +83,7 @@ INSERT INTO Passageiros (
     -- tipo_passageiro_id, rota_id, status_pagamento_id, notificacoes_json, configuracoes_json podem usar DEFAULT
 ) VALUES (
     'Rubens Castaldelli Carlos',
-    '11122233344',
+    '01093540010',
     'rubao@palmeiras.com',
     'hashed_password_123xyz',
     '19977770003',

@@ -18,7 +18,8 @@ function Table({
   itemsPerPage = 10, 
   searchable = true,
   className = '',
-  onRowClick
+  onRowClick,
+  popUpRef = null,
 }) {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [currentPage, setCurrentPage] = useState(1);
@@ -57,16 +58,20 @@ function Table({
     filteredData.sort((a, b) => {
     // Verifica se os valores são números
     if (!isNaN(a[sortConfig.key]) && !isNaN(b[sortConfig.key])) {
-      return sortConfig.direction === 'asc' 
-        ? Number(a[sortConfig.key]) - Number(b[sortConfig.key])
-        : Number(b[sortConfig.key]) - Number(a[sortConfig.key]);
+      if (sortConfig.direction === 'asc') {
+        return Number(a[sortConfig.key]) - Number(b[sortConfig.key]);
+      } else {
+        return Number(b[sortConfig.key]) - Number(a[sortConfig.key]);
+      }
     }
     
     // Para datas (assume formato ISO)
     if (Date.parse(a[sortConfig.key]) && Date.parse(b[sortConfig.key])) {
-      return sortConfig.direction === 'asc'
-        ? new Date(a[sortConfig.key]) - new Date(b[sortConfig.key])
-        : new Date(b[sortConfig.key]) - new Date(a[sortConfig.key]);
+      if (sortConfig.direction === 'asc') {
+        return new Date(a[sortConfig.key]) - new Date(b[sortConfig.key]);
+      } else {
+        return new Date(b[sortConfig.key]) - new Date(a[sortConfig.key]);
+      }
     }
     
     // Para strings
@@ -82,7 +87,6 @@ function Table({
     return 0;
   });
 }
-    
     return filteredData;
   }, [data, sortConfig, searchTerm, searchable]);
 
@@ -96,10 +100,40 @@ function Table({
   // mostra a setinha de direcao na coluna certa
   const getSortDirectionIndicator = (key) => {
     if (sortConfig.key !== key) return '';
-    return sortConfig.direction === 'asc' 
-    ? <i className="bi bi-arrow-up text-secondary"></i> 
-    : <i className="bi bi-arrow-down text-secondary"></i>;
+
+    if (sortConfig.direction === "asc"){
+      return <i className="bi bi-arrow-up text-secondary"></i>;
+    } else {
+      return <i className="bi bi-arrow-down text-secondary"></i>;
+    }
   };
+
+  const showArrOrValueButton = (value) => {
+    const popUpContent = () => (
+      <div>
+        <ul>
+          {value.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+      </div>
+    );
+
+    if (popUpRef && Array.isArray(value)) {
+      return (
+        <button className="btn btn-secondary p-2 pb-0 pt-0" //tira o padding de cima e baixo
+          onClick={(e) => {
+            e.stopPropagation(); // previne o evento de click na linha
+            popUpRef.current.show(popUpContent, {}, 'Valores');
+          }}>
+          ...
+        </button>
+      );
+    } else {
+      return value;
+    }
+  }
+
 
 return (
     <div className="table-responsive ms-3 me-3">
@@ -160,7 +194,7 @@ return (
                             className={onRowClick ? 'cursor-pointer' : ''}
                         >
                             {headers.map((header) => (
-                                <td key={header.id}>{row[header.id]}</td>
+                                <td key={header.id}>{showArrOrValueButton(row[header.id])}</td> 
                             ))}
                         </tr>
                     ))
@@ -239,7 +273,8 @@ Table.propTypes = {
   itemsPerPage: PropTypes.number,
   searchable: PropTypes.bool,
   className: PropTypes.string,
-  onRowClick: PropTypes.func
+  onRowClick: PropTypes.func,
+  popUpRef: PropTypes.object,
 };
 
 export default Table;

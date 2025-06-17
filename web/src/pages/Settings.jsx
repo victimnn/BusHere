@@ -1,43 +1,38 @@
 import { useRef } from "react";
 import PopUpComponent from "../components/PopUpComponent";
 
-function PopUpContent() {
+
+
+function Settings({ pageFunctions }) {
+  pageFunctions.set("Configurações", true, true);
+  const popUpRef = useRef(null); // Referência para o componente PopUpComponent
+
   return (
-    <div className="p-3 bg-blue">
-      <h2>Conteúdo do PopUp</h2>
-      <p>Essa é a page das Configuracoes.</p>
-    </div>
-  );
+    <main>
+      <h1>Configuracoes</h1> 
+
+      <button
+        onClick={() => {
+          //pageFunctions.setPageName("Novo nome da pagina "+ Math.random().toFixed(2));
+          pageFunctions.toggleShowHeader();
+        }}
+        className="btn btn-primary"
+      >
+        Mudar o nome da pagina
+      </button>
+        
+      {/* texto com a cor secundaria */}
+      <p className="text-secondary">Texto com a cor secundaria</p> 
+
+      {/* por enquanto printa o .env inteiro */}
+      <pre>{JSON.stringify(import.meta.env, null, 2)}</pre>
+      {/* Componente PopUpComponent */}
+
+      <PopUpComponent 
+        ref={popUpRef}
+      />
+    </main>
+  )
 }
-
-function Settings(){
-    const popUpRef = useRef(null); // Referência para o componente PopUpComponent
-  
-    return (
-      <main>
-        <h1>Configuracoes</h1> 
-  
-        <button
-          onClick={() => {
-            popUpRef.current.show(PopUpContent, {}, "PopUp das Configuracoes"); // Chama a função show do PopUpComponent, sempre 3 parametos
-          }}
-          className="btn btn-primary"
-        >
-          Abrir PopUp
-        </button>
-          
-        {/* texto com a cor secundaria */}
-        <p className="text-secondary">Texto com a cor secundaria</p> 
-
-        {/* por enquanto printa o .env inteiro */}
-        <pre>{JSON.stringify(import.meta.env, null, 2)}</pre>
-        {/* Componente PopUpComponent */}
-  
-        <PopUpComponent 
-          ref={popUpRef}
-        />
-      </main>
-    )
-  }
 
 export default Settings

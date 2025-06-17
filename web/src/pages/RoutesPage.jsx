@@ -10,32 +10,29 @@ function PopUpContent() {
   );
 }
 
-function RoutesPage(){
-    const popUpRef = useRef(null); // Referência para o componente PopUpComponent
-  
-    return (
-      <main>
-        <h1>Rotas</h1> 
-  
-        <button
-          onClick={() => {
-            popUpRef.current.show(PopUpContent, {}, "PopUp das Rotas"); // Chama a função show do PopUpComponent, sempre 3 parametos
-          }}
-          className="btn btn-primary"
-        >
-          Abrir PopUp
-        </button>
-          
-        {/* texto com a cor secundaria */}
-        <p className="text-secondary">Texto com a cor secundaria</p> 
+function RoutesPage({ pageFunctions }) {
+  const popUpRef = useRef(null); // Referência para o componente PopUpComponent
+  pageFunctions.set("Rotas", true, true);
 
+  return (
+    <main>
+      <h1>Rotas</h1>
 
-  
-        <PopUpComponent 
-          ref={popUpRef}
-        />
-      </main>
-    )
-  }
+      <button
+        onClick={() => {
+          popUpRef.current.show(PopUpContent, {}, "PopUp das Rotas"); // Chama a função show do PopUpComponent, sempre 3 parametos
+        }}
+        className="btn btn-primary"
+      >
+        Abrir PopUp
+      </button>
 
-export default RoutesPage
+      {/* texto com a cor secundaria */}
+      <p className="text-secondary">Texto com a cor secundaria</p>
+
+      <PopUpComponent ref={popUpRef} />
+    </main>
+  );
+}
+
+export default RoutesPage;

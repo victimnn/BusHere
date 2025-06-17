@@ -115,6 +115,7 @@ function Stops(){
     const [markers, setMarkers] = useState([]);
     const [polylines, setPolylines] = useState([]);
     const [mapCenter, setMapCenter] = useState([-22.698, -47.009]);
+    const [zoom, setZoom] = useState(13); 
 
     const popUpRef = useRef(null); // Referência para o componente PopUpComponent
 
@@ -156,9 +157,6 @@ function Stops(){
 
 
     const handleRowClick = (rowData) => {
-      // Exemplo de ação ao clicar na linha da tabela
-      console.log("Você clicou na linha:",rowData);
-      
       const marker = markers.find(m => m.id === rowData.id);
       if (marker) {
         popUpRef.current.show(() => marker.popupContent, {}, "Parada Detalhes");
@@ -186,10 +184,11 @@ function Stops(){
           <MapComponent 
             className="w-100 h-100 rounded-3"
             center={mapCenter}
-            zoom={13}
+            zoom={zoom}
             markers={markers}
             polylines={polylines}
-            onMapClick={handleMapClick} // Passa a função de clique no mapa
+            onMapClick={handleMapClick} 
+            handleZoomChange={(e) => {console.log("Zoom alterado para:", e.target._zoom); setZoom(e.target._zoom);}}
           />
 
           <MajorStops 

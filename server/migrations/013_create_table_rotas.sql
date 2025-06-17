@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS Rotas;
 CREATE TABLE Rotas (
     rota_id INT AUTO_INCREMENT PRIMARY KEY,
     codigo_rota VARCHAR(20) UNIQUE COMMENT 'Código identificador da rota',
-    nome_rota VARCHAR(255) NOT NULL COMMENT 'Nome descritivo da rota',
+    nome VARCHAR(255) NOT NULL COMMENT 'Nome descritivo da rota',
     descricao TEXT,
     origem_descricao VARCHAR(255) COMMENT 'Descrição da origem',
     destino_descricao VARCHAR(255) COMMENT 'Descrição do destino',
@@ -19,5 +19,5 @@ CREATE TABLE Rotas (
     FOREIGN KEY (status_rota_id) REFERENCES StatusRota(status_rota_id),
 
     INDEX idx_rota_codigo (codigo_rota),
-    INDEX idx_rota_nome (nome_rota)
+    INDEX idx_rota_nome (nome)
 );

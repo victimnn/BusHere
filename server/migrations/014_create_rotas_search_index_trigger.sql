@@ -7,10 +7,10 @@ AFTER INSERT ON Rotas
 FOR EACH ROW
 BEGIN
     -- NEW é a nova linha adicionada à tabela Rotas
-    -- NEW.nome_rota e NEW.rota_id são os valores da nova linha
+    -- NEW.nome e NEW.rota_id são os valores da nova linha
     -- 'Rota' é o tipo de item constante indicando que é uma rota
     INSERT INTO searchIndex (search_text, item_type, item_id)
-    VALUES (NEW.nome_rota, 'Rota', NEW.rota_id);
+    VALUES (NEW.nome, 'Rota', NEW.rota_id);
 END;
 
 -- Trigger para UPDATE: Atualiza o índice de busca quando o nome da rota muda
@@ -20,10 +20,10 @@ AFTER UPDATE ON Rotas
 FOR EACH ROW
 BEGIN
     -- Verifica se o nome (o texto pesquisável) realmente mudou
-    IF OLD.nome_rota <> NEW.nome_rota THEN
+    IF OLD.nome <> NEW.nome THEN
         -- Encontra a entrada correspondente em searchIndex e atualiza seu search_text
         UPDATE searchIndex
-        SET search_text = NEW.nome_rota
+        SET search_text = NEW.nome
         WHERE item_type = 'Rota' AND item_id = NEW.rota_id;
     END IF;
 END;

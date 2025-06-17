@@ -115,18 +115,35 @@ function Stops(){
     const [markers, setMarkers] = useState([]);
     const [polylines, setPolylines] = useState([]);
     const [mapCenter, setMapCenter] = useState([-22.698, -47.009]);
+    const [zoom, setZoom] = useState(13); 
 
     const popUpRef = useRef(null); // Referência para o componente PopUpComponent
 
     function Test(){
       return (
         <button className="btn btn-primary" onClick={() => {
-          
-
-          popUpRef.current.show(()=>(<h2> aaa </h2>), {} , "success");
-
+          const newMarkers = [];
+          for (let i = 0; i < 100; i++) {
+            const lat = -22.698 + (Math.random() * 50); // Gera uma latitude aleatória
+            const lng = -47.009 + (Math.random() * 50); // Gera uma longitude aleatória
+            newMarkers.push({
+              position: [lat, lng],
+              popupContent: (
+                <div>
+                  <h4>Ponto {i + 1}</h4>
+                  <p>Latitude: {lat.toFixed(4)}</p>
+                  <p>Longitude: {lng.toFixed(4)}</p>
+                </div>
+              ),
+              color: 'red',
+              size: 32,
+              id: `marker-${i}`
+            });
+          }
+          setMarkers(newMarkers);
+          setMapCenter(newMarkers[0].position);
         }}>
-          g
+          Criar 100 Pontos no mapa
         </button>
       );
     }
@@ -156,9 +173,6 @@ function Stops(){
 
 
     const handleRowClick = (rowData) => {
-      // Exemplo de ação ao clicar na linha da tabela
-      console.log("Você clicou na linha:",rowData);
-      
       const marker = markers.find(m => m.id === rowData.id);
       if (marker) {
         popUpRef.current.show(() => marker.popupContent, {}, "Parada Detalhes");
@@ -186,10 +200,11 @@ function Stops(){
           <MapComponent 
             className="w-100 h-100 rounded-3"
             center={mapCenter}
-            zoom={13}
+            zoom={zoom}
             markers={markers}
             polylines={polylines}
-            onMapClick={handleMapClick} // Passa a função de clique no mapa
+            onMapClick={handleMapClick} 
+            handleZoomChange={(e) => {console.log("Zoom alterado para:", e.target._zoom); setZoom(e.target._zoom);}}
           />
 
           <MajorStops 

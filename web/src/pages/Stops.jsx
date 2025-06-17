@@ -122,12 +122,28 @@ function Stops(){
     function Test(){
       return (
         <button className="btn btn-primary" onClick={() => {
-          
-
-          popUpRef.current.show(()=>(<h2> aaa </h2>), {} , "success");
-
+          const newMarkers = [];
+          for (let i = 0; i < 100; i++) {
+            const lat = -22.698 + (Math.random() * 50); // Gera uma latitude aleatória
+            const lng = -47.009 + (Math.random() * 50); // Gera uma longitude aleatória
+            newMarkers.push({
+              position: [lat, lng],
+              popupContent: (
+                <div>
+                  <h4>Ponto {i + 1}</h4>
+                  <p>Latitude: {lat.toFixed(4)}</p>
+                  <p>Longitude: {lng.toFixed(4)}</p>
+                </div>
+              ),
+              color: 'red',
+              size: 32,
+              id: `marker-${i}`
+            });
+          }
+          setMarkers(newMarkers);
+          setMapCenter(newMarkers[0].position);
         }}>
-          g
+          Criar 100 Pontos no mapa
         </button>
       );
     }

@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS Onibus;
 -- Tabela para ônibus
 CREATE TABLE Onibus (
     onibus_id INT AUTO_INCREMENT PRIMARY KEY,
-    codigo_identificador VARCHAR(50) UNIQUE COMMENT 'Código interno ou apelido do veículo',
+    nome VARCHAR(50) UNIQUE COMMENT 'Código interno ou apelido do veículo',
     placa VARCHAR(10) UNIQUE NOT NULL,
     modelo VARCHAR(100),
     marca VARCHAR(100),
@@ -22,5 +22,5 @@ CREATE TABLE Onibus (
 
     -- Índices para otimização de consultas
     INDEX idx_placa (placa),
-    INDEX idx_codigo_identificador (codigo_identificador)
+    INDEX idx_nome (nome)
 );

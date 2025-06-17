@@ -54,9 +54,10 @@ function PopUpContent() {
   );
 }
 
-function Home(){
+function Home({ pageFunctions }) {
     const popUpRef = useRef(null); // Referência para o componente PopUpComponent
-  
+    pageFunctions.set("Home", true, true);
+
     return (
       <main>
         <h1>Home</h1> 

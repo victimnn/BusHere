@@ -52,7 +52,9 @@ function StopComponent({ name="", passengers="", routeAmount=""}) {
   );
 }
 
-function Stops(){
+function Stops({ pageFunctions }) {
+  pageFunctions.set("Paradas", true, true);
+
     //api.stops.list().then((response) => { console.log(response); });
 
     const [stops, setStops] = useState([]); 

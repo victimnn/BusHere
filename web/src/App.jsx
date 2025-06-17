@@ -15,26 +15,53 @@ import SideBar from "./components/SideBar";
 import Header from "./components/Header";
 
 function App() {
+  const [pageName, setPageName] = useState("Giraldi");
+  const [showSideBar, setShowSideBar] = useState(true);
+  const [showHeader, setShowHeader] = useState(true);
+
+  // funcoes de navegação para serem usadas pelas paginas
+  const pageFunctions = {
+    setPageName: (newName) => setPageName(newName),
+    getPageName: () => pageName,
+
+    setShowSideBar: (show) => setShowSideBar(show),
+    getShowSideBar: () => showSideBar,
+    toggleShowSideBar: () => setShowSideBar(!showSideBar),
+
+    setShowHeader: (show) => setShowHeader(show),
+    getShowHeader: () => showHeader,
+    toggleShowHeader: () => setShowHeader(!showHeader),
+
+    // Função para definir o nome da página, visibilidade da barra lateral e do cabeçalho
+    set: (newPageName, newShowSideBar, newShowHeader) => {
+      setPageName(newPageName ?? pageName);
+      setShowSideBar(newShowSideBar ?? showSideBar);
+      setShowHeader(newShowHeader ?? showHeader);
+    }
+  }
+
   return (
     <Router>
       <div className="container-fluid p-0 bg-blue">
-        <div className="d-flex w-100"> {/* Usando flex */}
+        <div className="d-flex w-100" style={{overflow: "hidden", height:"100vh"}}> {/* Usando flex */}
 
-          <SideBar />
+          {/* Sidebar */}
+          {showSideBar && <SideBar/>}
+
 
           <main className="flex-grow-1"> {/* A main ocupará o espaço restante */}
-            <Header 
-              pageName={"Giraldi"}/>
+            {/* Header */}
+            {showHeader && <Header pageName={pageName}/>}
 
             <div className="py-4" >
               <Routes>
-                <Route path="/" index element={<Home />} />
-                <Route path="/passengers" element={<Passangers />} />
-                <Route path="/buses" element={<Buses />} />
-                <Route path="/routes" element={<RoutesPage />} />
-                <Route path="/stops" element={<Stops />} />
-                <Route path="/reports" element={<Reports />} />
-                <Route path="/settings" element={<Settings />} />
+                <Route path="/" index element={<Home pageFunctions={pageFunctions} />} />
+                <Route path="/passengers" element={<Passangers pageFunctions={pageFunctions}/>} />
+                <Route path="/buses" element={<Buses pageFunctions={pageFunctions}/>} />
+                <Route path="/routes" element={<RoutesPage pageFunctions={pageFunctions}/>} />
+                <Route path="/stops" element={<Stops pageFunctions={pageFunctions}/>} />
+                <Route path="/reports" element={<Reports pageFunctions={pageFunctions}/>} />
+                <Route path="/settings" element={<Settings pageFunctions={pageFunctions}/>} />
 
                 <Route path="/search/:searchTerm" element={<SearchPage   />} />
               </Routes>

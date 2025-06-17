@@ -10,32 +10,29 @@ function PopUpContent() {
   );
 }
 
-function Buses(){
-    const popUpRef = useRef(null); // Referência para o componente PopUpComponent
-  
-    return (
-      <main>
-        <h1>Ônibus</h1> 
-  
-        <button
-          onClick={() => {
-            popUpRef.current.show(PopUpContent, {}, "PopUp dos Onibus"); // Chama a função show do PopUpComponent, sempre 3 parametos
-          }}
-          className="btn btn-primary"
-        >
-          Abrir PopUp
-        </button>
-          
-        {/* texto com a cor secundaria */}
-        <p className="text-secondary">Texto com a cor secundaria</p> 
+function Buses({ pageFunctions }) {
+  pageFunctions.set("Ônibus", true, true);
 
+  const popUpRef = useRef(null); // Referência para o componente PopUpComponent
 
-  
-        <PopUpComponent 
-          ref={popUpRef}
-        />
-      </main>
-    )
-  }
+  return (
+    <main>
+      <h1>Ônibus</h1>
 
-export default Buses
+      <button
+        onClick={() => {
+          popUpRef.current.show(PopUpContent, {}, "PopUp dos Onibus"); // Chama a função show do PopUpComponent, sempre 3 parametos
+        }}
+        className="btn btn-primary"
+      >
+        Abrir PopUp
+      </button>
+
+      {/* texto com a cor secundaria */}
+      <p className="text-secondary">Texto com a cor secundaria</p>
+      <PopUpComponent ref={popUpRef} />
+    </main>
+  );
+}
+
+export default Buses;

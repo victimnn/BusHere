@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import PopUpComponent from "../components/PopUpComponent";
 
 //coisas do chartJS
@@ -56,7 +56,9 @@ function PopUpContent() {
 
 function Home({ pageFunctions }) {
     const popUpRef = useRef(null); // Referência para o componente PopUpComponent
+    useEffect(() => {
     pageFunctions.set("Home", true, true);
+  }, []);
 
     return (
       <main>

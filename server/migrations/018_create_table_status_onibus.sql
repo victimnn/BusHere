@@ -14,3 +14,8 @@ CREATE TABLE StatusOnibus (
     -- Índice para otimização de consultas
     INDEX idx_nome (nome)
 );
+
+insert into StatusOnibus (nome, descricao) values
+('Em Operação', 'Ônibus que está em operação normal'),
+('Em Manutenção', 'Ônibus que está passando por manutenção'),
+('Inativo', 'Ônibus que não está em operação');

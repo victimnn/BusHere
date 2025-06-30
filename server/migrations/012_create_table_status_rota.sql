@@ -13,3 +13,8 @@ CREATE TABLE StatusRota (
 
     INDEX idx_status_rota_nome (nome)
 );
+
+insert into StatusRota (nome, descricao) values
+('Ativa', 'Rota que está em operação normal'),
+('Inativa', 'Rota que não está em operação'),
+('Em Planejamento', 'Rota que está sendo planejada ou revisada');

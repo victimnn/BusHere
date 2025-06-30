@@ -17,8 +17,10 @@ const tableHeaders = [
   { id: "tipo_passageiro", label: "Tipo", sortable: true }
 ];
 
-function Passangers({ pageFunctions }) {
+function Passengers({ pageFunctions }) {
+    useEffect(() => {
     pageFunctions.set("Passageiros", true, true);
+  }, []);
     const popUpRef = useRef(null); // Referência para o componente PopUpComponent
     const [passengers, setPassengers] = useState([]); // Estado para armazenar os passageiros
     const [isLoading, setIsLoading] = useState(true); // Estado para controlar o carregamento
@@ -294,4 +296,4 @@ function Passangers({ pageFunctions }) {
     );
   }
 
-export default Passangers;
+export default Passengers;

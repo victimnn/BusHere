@@ -4,10 +4,7 @@ import api from '../../api/api';
 import { validateCPF, validateEmail, validatePhoneNumber } from '../../utils/validators';
 import { formatCPF, formatPhoneNumber } from '../../utils/formatters';
 import '../../../styles/PassengerForm.scss'; // Importação do arquivo SCSS
-
-//import o faker.js
-import { faker } from '@faker-js/faker';
-
+import { createFakePassengerData } from '../../fakers'; // Importa a função para criar dados fictícios
 /**
  * Componente de formulário para criação e edição de passageiros
  * @param {Object} props - As propriedades do componente
@@ -16,43 +13,6 @@ import { faker } from '@faker-js/faker';
  * @param {Function} props.onCancel - Função chamada ao cancelar
  * @returns {JSX.Element}
  */
-
-
-
-function createFakeData() {
-  function generateValidCPF() {
-    function calculateDigit(cpfPart) {
-        let sum = 0;
-        let multiplier = cpfPart.length + 1;
-        for (let i = 0; i < cpfPart.length; i++) {
-            sum += parseInt(cpfPart[i]) * multiplier;
-            multiplier--;
-        }
-        const remainder = sum % 11;
-        return remainder < 2 ? 0 : 11 - remainder;
-    }
-    let cpfNumbers = [];
-    for (let i = 0; i < 9; i++) {
-        cpfNumbers.push(Math.floor(Math.random() * 10));
-    }
-    let cpfBase = cpfNumbers.join('');
-    const firstDigit = calculateDigit(cpfBase);
-    cpfBase += firstDigit;
-    const secondDigit = calculateDigit(cpfBase);
-    cpfBase += secondDigit; 
-    return cpfBase.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-  }
-
-  return {
-    nome: faker.person.fullName(),
-    cpf: generateValidCPF(),
-    telefone: formatPhoneNumber(faker.string.numeric(11)), // Gera um número de telefone fictício
-    email: faker.internet.email(),
-    tipo_passageiro: faker.helpers.arrayElement(['1', '2'])
-  }
-
-
-}
 function PassengerForm({ initialData, onSubmit, onCancel }) {
   const [formData, setFormData] = useState({
     nome: '',
@@ -338,12 +298,12 @@ function PassengerForm({ initialData, onSubmit, onCancel }) {
             type="button"
             className="btn btn-secondary btn-lg px-4"
             onClick={() => {
-              setFormData(createFakeData());
+              setFormData(createFakePassengerData());
               setErrors({}); // Limpa os erros ao preencher com dados fictícios
             }
             }
           >
-            Preencher com faker
+            Faker
           </button>
         </div>
       </form>

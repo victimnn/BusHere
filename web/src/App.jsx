@@ -4,7 +4,7 @@ import { useState, useEffect, useRef} from 'react'
 
 import PopUpComponent from "./components/PopUpComponent";
 import Home from "./pages/Home";
-import Passangers from "./pages/Passangers";
+import Passengers from "./pages/Passengers";
 import Buses from "./pages/Buses";
 import RoutesPage from "./pages/RoutesPage";
 import Reports from "./pages/Reports";
@@ -56,7 +56,7 @@ function App() {
             <div className="py-4" >
               <Routes>
                 <Route path="/" index element={<Home pageFunctions={pageFunctions} />} />
-                <Route path="/passengers" element={<Passangers pageFunctions={pageFunctions}/>} />
+                <Route path="/passengers" element={<Passengers pageFunctions={pageFunctions}/>} />
                 <Route path="/buses" element={<Buses pageFunctions={pageFunctions}/>} />
                 <Route path="/routes" element={<RoutesPage pageFunctions={pageFunctions}/>} />
                 <Route path="/stops" element={<Stops pageFunctions={pageFunctions}/>} />

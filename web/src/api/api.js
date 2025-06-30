@@ -101,6 +101,30 @@ const api = {
     }
   },
 
+  routes: {
+    list: (page = 1, limit = 10, search = '') => {
+      const queryParams = new URLSearchParams({ page, limit, search });
+      return api.get(`/routes?${queryParams.toString()}`);
+    },
+    getById: (id) => api.get(`/routes/${id}`),
+    create: (routeData) => api.post('/routes', routeData),
+    update: (id, routeData) => api.put(`/routes/${id}`, routeData),
+    delete: (id) => api.delete(`/routes/${id}`),
+    getStatus: () => api.get('/routes/status'),
+  },
+
+  buses: {
+    list: (page = 1, limit = 10, search = '') => {
+      const queryParams = new URLSearchParams({ page, limit, search });
+      return api.get(`/buses?${queryParams.toString()}`);
+    },
+    getById: (id) => api.get(`/buses/${id}`),
+    create: (busData) => api.post('/buses', busData),
+    update: (id, busData) => api.put(`/buses/${id}`, busData),
+    delete: (id) => api.delete(`/buses/${id}`),
+    getStatus: () => api.get('/buses/status'),
+  },
+
   stops: {
     // Listar todos os pontos
     list: () => {

@@ -46,16 +46,19 @@ const authRoutes = require("./authRoutes")(pool);
 const searchRoutes = require("./searchRoutes")(pool);
 const passengerRoutes = require("./passengerRoutes")(pool);
 const stopRoutes = require("./stopRoutes")(pool);
+const busRoutes = require("./busRoutes")(pool);
+const routeRoutes = require("./routeRoutes")(pool);
 //const XXXXRoutes = require("./XXXX")(pool);
 //const YYYYRoutes = require("./YYYY")(pool);
 
 // Usando as rotas
-// Adicionando prefixo /api em todas as rotas
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api", searchRoutes); // Rota raiz da API
 app.use("/api/passengers", passengerRoutes);
 app.use("/api/stops", stopRoutes);
+app.use("/api/buses", busRoutes);
+app.use("/api/routes", routeRoutes);
 //app.use("/api/XXXX", XXXXRoutes);
 //app.use("/api/YYYY", YYYYRoutes);
 

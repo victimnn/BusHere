@@ -35,14 +35,14 @@ module.exports = (pool) => {
       // Single query to fetch data and total count using a window function
       const [rows] = await pool.execute(
         `SELECT 
-          passageiro_id,
-          nome_completo, 
-          cpf, 
-          email, 
-          telefone,
-          tipo_passageiro_id,
+          P.passageiro_id,
+          P.nome_completo, 
+          P.cpf, 
+          P.email, 
+          P.telefone,
+          P.tipo_passageiro_id,
           COUNT(*) OVER() as total_passengers_found
-        FROM Passageiros
+        FROM Passageiros P
         ${whereClause}
         ORDER BY passageiro_id ${limitClause}`,
         params
@@ -159,7 +159,7 @@ module.exports = (pool) => {
       ativo: ativo !== undefined ? ativo : true
     };
 
-    try {      const [existingRows] = await pool.execute(
+    try {const [existingRows] = await pool.execute(
         'SELECT passageiro_id, cpf, email FROM Passageiros WHERE cpf = ? OR email = ?',
         [cpf, email]
       );

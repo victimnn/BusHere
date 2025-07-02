@@ -107,10 +107,8 @@ function Stops({ pageFunctions }) {
   const [polylines, setPolylines] = useState([]);
   const [mapCenter, setMapCenter] = useState([-22.698, -47.009]);
   const [zoom, setZoom] = useState(13); 
-  const [mapReady, setMapReady] = useState(false); // novo estado
 
   const popUpRef = useRef(null); // Referência para o componente PopUpComponent
-  const mapRef = useRef(null); // Referência para o componente MapComponent
 
   //id,nome,cep,cordenadas,rotas,endereco,status
   const tableHeaders = [
@@ -164,10 +162,6 @@ function Stops({ pageFunctions }) {
       const avgX = newMarkers.reduce((sum, marker) => sum + marker.position[0], 0) / newMarkers.length;
       const avgY = newMarkers.reduce((sum, marker) => sum + marker.position[1], 0) / newMarkers.length;
       console.log("Média das coordenadas:", avgX, avgY);
-      // Só move o mapa se estiver pronto
-      if (mapReady && mapRef.current) {
-        mapRef.current.moveMap(avgX, avgY, zoom);
-      }
       setMapCenter(newMarkers.length > 0 ? [avgX, avgY] : [-22.698, -47.009]);
     } catch (error) {
       console.error("Erro ao buscar pontos:", error); 
@@ -213,7 +207,6 @@ function Stops({ pageFunctions }) {
           onMapClick={handleMapClick} 
           handleZoomChange={(e) => {console.log("Zoom alterado para:", e.target._zoom); setZoom(e.target._zoom);}}
           ref={mapRef}
-          onMapReady={() => setMapReady(true)} // novo callback
         />
 
         <MajorStops 

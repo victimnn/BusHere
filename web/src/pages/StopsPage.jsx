@@ -52,14 +52,62 @@ function StopComponent({ name="", passengers="", routeAmount=""}) {
   );
 }
 
+
+/**
+ * Retorna uma cor de ícone baseada em algum valor
+ * @param {string} str - Valor baseado no qual a cor do ícone será determinada
+ * @return {string} - Retorna uma cor em formato hexadecimal ou nome de cor
+ */
+function getColorBasedOnValue(str) {
+  console.log("getColorBasedOnValue called with:", str, typeof str);
+  if (typeof str !== "string" || !str) {
+    return "red"; 
+  }
+
+  if (IconColorCache.has(str)) {
+    return IconColorCache.get(str); // Retorna a cor do cache
+  }
+
+  const hash = Array.from(str).reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const hue = (hash**7) % 360 ; // Gera um valor de matiz baseado no hash
+  return `hsl(${hue}, 100%, 50%)`; // Retorna uma cor HSL
+} const IconColorCache = new Map();
+
+
+/** 
+* Função para sincronizar os marcadores com os pontos buscados
+* @param {Array} stops - Array de objetos representando os pontos
+* @param {Function} setMarkers - Função para atualizar o estado dos marcadores
+* @returns {Array} - Retorna um novo array de marcadores formatados
+*/
+function sincronizeMarkers(stops, setMarkers){
+  const newMarkers = stops.map(stop => ({
+    position: [parseFloat(stop.latitude), parseFloat(stop.longitude)],
+    popupContent: (
+      <div className="gap-0">
+        <h4>{stop.nome}</h4>
+        <p>Endereço: {stop.logradouro}, {stop.numero_endereco} - {stop.bairro}, {stop.cidade} - {stop.uf}</p>
+        <p>CEP: {stop.cep}</p>
+        <p>Referência: {stop.referencia ?? "Nenhuma"}</p>
+      </div>
+    ),
+    color: getColorBasedOnValue(String(stop.latitude) + String(stop.longitude)), 
+    size: 32,
+    id: stop.ponto_id // ID único para o marcador
+  }));
+  setMarkers(newMarkers); // Atualiza os marcadores com os pontos buscados
+  return newMarkers; // Retorna os novos marcadores
+}
+
 function Stops({ pageFunctions }) {
   pageFunctions.set("Paradas", true, true);
-
+  
     //api.stops.list().then((response) => { console.log(response); });
 
     const [stops, setStops] = useState([]); 
 
     const fetchStops = async () => {
+      {
       /*{
         "ponto_id": 1,
         "nome": "Terminal Central",
@@ -76,32 +124,46 @@ function Stops({ pageFunctions }) {
         "atualizacao": "2025-06-12T23:33:30.000Z",
         "ativo": 1
       }*/
+      }
+      
+      //Ignorar essa logica e criar uma grid 100 x 100 de pontos
+      const newStops = [];
+      for (let ix=0; ix < 20; ix++) {
+        for (let iy=0; iy < 20; iy++) {
+          const newStop = {
+            ponto_id: ix * 10000 + iy,
+            nome: `Parada ${ix * 100 + iy}`,
+            latitude: -22.698 + (ix / 100) * 0.1, // Simulando latitude
+            longitude: -47.009 + (iy / 100) * 0.1, // Simulando longitude
+            logradouro: "Rua Exemplo",
+            numero_endereco: `${ix * 10 + iy}`,
+            bairro: "Bairro Exemplo",
+            cidade: "Cidade Exemplo",
+            uf: "SP",
+            cep: `130${ix}${iy}-000`,
+            referencia: "Referência Exemplo",
+            ativo: true
+          };
+          newStops.push(newStop);
+        }
+      }
+      console.log("Pontos simulados:", newStops); // Log dos pontos simulados
+      setStops(newStops); // Atualiza o estado com os pontos simulados
+      sincronizeMarkers(newStops, setMarkers); // Sincroniza os marcadores com os pontos simulados
+      return;
 
       try {
         const response = await api.stops.list(); 
         setStops(response); 
         console.log("Pontos buscados:", response); 
-
-        const newMarkers = response.map(stop => ({
-          position: [parseFloat(stop.latitude), parseFloat(stop.longitude)],
-          popupContent: (
-            <div className="gap-0">
-              <h4>{stop.nome}</h4>
-              <p>Endereço: {stop.logradouro}, {stop.numero_endereco} - {stop.bairro}, {stop.cidade} - {stop.uf}</p>
-              <p>CEP: {stop.cep}</p>
-              <p>Referência: {stop.referencia ?? "Nenhuma"}</p>
-            </div>
-          ),
-          color: 'blue', // Cor do ícone
-          size: 32, // Tamanho do ícone
-          id: stop.ponto_id // ID único para o marcador
-        }));
-        setMarkers(newMarkers); // Atualiza os marcadores com os pontos buscados
-        setMapCenter(newMarkers.length > 0 ? newMarkers[0].position : [-22.698, -47.009]); // Centraliza o mapa no primeiro ponto ou em um valor padrão
-
-
-          
-
+        const newMarkers = sincronizeMarkers(response, setMarkers);
+        
+        // Centraliza o mapa calculando a média das coordenadas dos pontos
+        console.log("centralizando mapa com", newMarkers.length, "marcadores");
+        const avgX = newMarkers.reduce((sum, marker) => sum + marker.position[0], 0) / newMarkers.length;
+        const avgY = newMarkers.reduce((sum, marker) => sum + marker.position[1], 0) / newMarkers.length;
+        console.log("Média das coordenadas:", avgX, avgY);
+        setMapCenter(newMarkers.length > 0 ? [avgX, avgY] : [-22.698, -47.009]); // Centraliza o mapa na média ou em um valor padrão
       } catch (error) {
         console.error("Erro ao buscar pontos:", error); 
       }
@@ -120,35 +182,6 @@ function Stops({ pageFunctions }) {
     const [zoom, setZoom] = useState(13); 
 
     const popUpRef = useRef(null); // Referência para o componente PopUpComponent
-
-    function Test(){
-      return (
-        <button className="btn btn-primary" onClick={() => {
-          const newMarkers = [];
-          for (let i = 0; i < 100; i++) {
-            const lat = -22.698 + (Math.random() * 50); // Gera uma latitude aleatória
-            const lng = -47.009 + (Math.random() * 50); // Gera uma longitude aleatória
-            newMarkers.push({
-              position: [lat, lng],
-              popupContent: (
-                <div>
-                  <h4>Ponto {i + 1}</h4>
-                  <p>Latitude: {lat.toFixed(4)}</p>
-                  <p>Longitude: {lng.toFixed(4)}</p>
-                </div>
-              ),
-              color: 'red',
-              size: 32,
-              id: `marker-${i}`
-            });
-          }
-          setMarkers(newMarkers);
-          setMapCenter(newMarkers[0].position);
-        }}>
-          Criar 100 Pontos no mapa
-        </button>
-      );
-    }
 
     //id,nome,cep,cordenadas,rotas,endereco,status
     const tableHeaders = [
@@ -224,8 +257,6 @@ function Stops({ pageFunctions }) {
           onRowClick={handleRowClick}
         />
 
-        <Test />
-        
         <PopUpComponent 
           ref={popUpRef}
         />

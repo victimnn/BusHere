@@ -170,7 +170,7 @@ function Stops({ pageFunctions }) {
 
   useEffect(() => {
     fetchStops(); 
-  }, [mapReady]); // só busca/move quando o mapa estiver pronto
+  }, []); // só busca/move quando o mapa estiver pronto
 
 
   const handleRowClick = (rowData) => {

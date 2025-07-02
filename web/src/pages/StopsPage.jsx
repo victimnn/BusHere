@@ -206,7 +206,6 @@ function Stops({ pageFunctions }) {
           polylines={polylines}
           onMapClick={handleMapClick} 
           handleZoomChange={(e) => {console.log("Zoom alterado para:", e.target._zoom); setZoom(e.target._zoom);}}
-          ref={mapRef}
         />
 
         <MajorStops 

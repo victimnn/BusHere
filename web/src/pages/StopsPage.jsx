@@ -52,185 +52,191 @@ function StopComponent({ name="", passengers="", routeAmount=""}) {
   );
 }
 
+
+/**
+ * Retorna uma cor de ícone baseada em algum valor
+ * @param {string} str - Valor baseado no qual a cor do ícone será determinada
+ * @return {string} - Retorna uma cor em formato hexadecimal ou nome de cor
+ */
+function getColorBasedOnValue(str) {
+  console.log("getColorBasedOnValue called with:", str, typeof str);
+  if (typeof str !== "string" || !str) {
+    return "red"; 
+  }
+
+  if (IconColorCache.has(str)) {
+    return IconColorCache.get(str); // Retorna a cor do cache
+  }
+
+  const hash = Array.from(str).reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const hue = (hash**7) % 360 ; // Gera um valor de matiz baseado no hash
+  return `hsl(${hue}, 100%, 50%)`; // Retorna uma cor HSL
+} const IconColorCache = new Map();
+
+
+/** 
+* Função para sincronizar os marcadores com os pontos buscados
+* @param {Array} stops - Array de objetos representando os pontos
+* @param {Function} setMarkers - Função para atualizar o estado dos marcadores
+* @returns {Array} - Retorna um novo array de marcadores formatados
+*/
+function sincronizeMarkers(stops, setMarkers){
+  const newMarkers = stops.map(stop => ({
+    position: [parseFloat(stop.latitude), parseFloat(stop.longitude)],
+    popupContent: (
+      <div className="gap-0">
+        <h4>{stop.nome}</h4>
+        <p>Endereço: {stop.logradouro}, {stop.numero_endereco} - {stop.bairro}, {stop.cidade} - {stop.uf}</p>
+        <p>CEP: {stop.cep}</p>
+        <p>Referência: {stop.referencia ?? "Nenhuma"}</p>
+      </div>
+    ),
+    color: getColorBasedOnValue(String(stop.latitude) + String(stop.longitude)), 
+    size: 32,
+    id: stop.ponto_id // ID único para o marcador
+  }));
+  setMarkers(newMarkers); // Atualiza os marcadores com os pontos buscados
+  return newMarkers; // Retorna os novos marcadores
+}
+
 function Stops({ pageFunctions }) {
   pageFunctions.set("Paradas", true, true);
 
-    //api.stops.list().then((response) => { console.log(response); });
+  const [stops, setStops] = useState([]); 
+  const [markers, setMarkers] = useState([]);
+  const [polylines, setPolylines] = useState([]);
+  const [mapCenter, setMapCenter] = useState([-22.698, -47.009]);
+  const [zoom, setZoom] = useState(13); 
 
-    const [stops, setStops] = useState([]); 
+  const popUpRef = useRef(null); // Referência para o componente PopUpComponent
+
+  //id,nome,cep,cordenadas,rotas,endereco,status
+  const tableHeaders = [
+    {id: "id",label: "ID", sortable: true},
+    {id: "name", label: "Nome", sortable: true},
+    {id: "cep", label: "CEP", sortable: false},
+    {id: "coordinates", label: "Cordenadas", sortable: false},
+    {id: "routesView", label: "Rotas", sortable: false}, 
+    {id: "address", label: "Endereço", sortable: false},
+    {id: "status", label: "Status", sortable: true}
+  ]
+  
+  
+
+  const tableData = stops.map((stop) => ({
+    id: stop.ponto_id,
+    name: stop.nome,
+    cep: stop.cep,
+    coordinates: `${Number(stop.latitude).toFixed(4)}, ${Number(stop.longitude).toFixed(4)}`,
+    routesView: "Rotas",
+    address: `${stop.logradouro}, ${stop.numero_endereco} - ${stop.bairro}, ${stop.cidade} - ${stop.uf}`,
+    status: stop.ativo ? "Ativo" : "Inativo"
+  }));
 
     const fetchStops = async () => {
-      /*{
-        "ponto_id": 1,
-        "nome": "Terminal Central",
-        "latitude": "-22.90680000",
-        "longitude": "-47.06260000",
-        "logradouro": "Av. Andrade Neves",
-        "numero_endereco": "200",
-        "bairro": "Centro",
-        "cidade": "Campinas",
-        "uf": "SP",
-        "cep": "13013-161",
-        "referencia": "Terminal de ônibus central da cidade",
-        "criacao": "2025-06-12T23:33:30.000Z",
-        "atualizacao": "2025-06-12T23:33:30.000Z",
-        "ativo": 1
-      }*/
-
-      try {
-        const response = await api.stops.list(); 
-        setStops(response); 
-        console.log("Pontos buscados:", response); 
-
-        const newMarkers = response.map(stop => ({
-          position: [parseFloat(stop.latitude), parseFloat(stop.longitude)],
-          popupContent: (
-            <div className="gap-0">
-              <h4>{stop.nome}</h4>
-              <p>Endereço: {stop.logradouro}, {stop.numero_endereco} - {stop.bairro}, {stop.cidade} - {stop.uf}</p>
-              <p>CEP: {stop.cep}</p>
-              <p>Referência: {stop.referencia ?? "Nenhuma"}</p>
-            </div>
-          ),
-          color: 'blue', // Cor do ícone
-          size: 32, // Tamanho do ícone
-          id: stop.ponto_id // ID único para o marcador
-        }));
-        setMarkers(newMarkers); // Atualiza os marcadores com os pontos buscados
-        setMapCenter(newMarkers.length > 0 ? newMarkers[0].position : [-22.698, -47.009]); // Centraliza o mapa no primeiro ponto ou em um valor padrão
-
-
-          
-
-      } catch (error) {
-        console.error("Erro ao buscar pontos:", error); 
-      }
-    };
-
-    useEffect(() => {
-      fetchStops(); 
-    }, []);
-
-
-
-
-    const [markers, setMarkers] = useState([]);
-    const [polylines, setPolylines] = useState([]);
-    const [mapCenter, setMapCenter] = useState([-22.698, -47.009]);
-    const [zoom, setZoom] = useState(13); 
-
-    const popUpRef = useRef(null); // Referência para o componente PopUpComponent
-
-    function Test(){
-      return (
-        <button className="btn btn-primary" onClick={() => {
-          const newMarkers = [];
-          for (let i = 0; i < 100; i++) {
-            const lat = -22.698 + (Math.random() * 50); // Gera uma latitude aleatória
-            const lng = -47.009 + (Math.random() * 50); // Gera uma longitude aleatória
-            newMarkers.push({
-              position: [lat, lng],
-              popupContent: (
-                <div>
-                  <h4>Ponto {i + 1}</h4>
-                  <p>Latitude: {lat.toFixed(4)}</p>
-                  <p>Longitude: {lng.toFixed(4)}</p>
-                </div>
-              ),
-              color: 'red',
-              size: 32,
-              id: `marker-${i}`
-            });
-          }
-          setMarkers(newMarkers);
-          setMapCenter(newMarkers[0].position);
-        }}>
-          Criar 100 Pontos no mapa
-        </button>
-      );
+    {
+    /*{
+      "ponto_id": 1,
+      "nome": "Terminal Central",
+      "latitude": "-22.90680000",
+      "longitude": "-47.06260000",
+      "logradouro": "Av. Andrade Neves",
+      "numero_endereco": "200",
+      "bairro": "Centro",
+      "cidade": "Campinas",
+      "uf": "SP",
+      "cep": "13013-161",
+      "referencia": "Terminal de ônibus central da cidade",
+      "criacao": "2025-06-12T23:33:30.000Z",
+      "atualizacao": "2025-06-12T23:33:30.000Z",
+      "ativo": 1
+    }*/
     }
-
-    //id,nome,cep,cordenadas,rotas,endereco,status
-    const tableHeaders = [
-      {id: "id",label: "ID", sortable: true},
-      {id: "name", label: "Nome", sortable: true},
-      {id: "cep", label: "CEP", sortable: false},
-      {id: "coordinates", label: "Cordenadas", sortable: false},
-      {id: "routesView", label: "Rotas", sortable: false}, 
-      {id: "address", label: "Endereço", sortable: false},
-      {id: "status", label: "Status", sortable: true}
-    ]
-    
-    
-
-    const tableData = stops.map((stop) => ({
-      id: stop.ponto_id,
-      name: stop.nome,
-      cep: stop.cep,
-      coordinates: `${Number(stop.latitude).toFixed(4)}, ${Number(stop.longitude).toFixed(4)}`,
-      routesView: "Rotas",
-      address: `${stop.logradouro}, ${stop.numero_endereco} - ${stop.bairro}, ${stop.cidade} - ${stop.uf}`,
-      status: stop.ativo ? "Ativo" : "Inativo"
-    }));
-
-
-    const handleRowClick = (rowData) => {
-      const marker = markers.find(m => m.id === rowData.id);
-      if (marker) {
-        popUpRef.current.show(() => marker.popupContent, {}, "Parada Detalhes");
-      } else {
-        console.error("Marcador não encontrado para a parada clicada:", rowData.id);
-      }
+    try {
+      const response = await api.stops.list(); 
+      setStops(response); 
+      console.log("Pontos buscados:", response); 
+      const newMarkers = sincronizeMarkers(response, setMarkers);
+      // Centraliza o mapa calculando a média das coordenadas dos pontos
+      console.log("centralizando mapa com", newMarkers.length, "marcadores");
+      const avgX = newMarkers.reduce((sum, marker) => sum + marker.position[0], 0) / newMarkers.length;
+      const avgY = newMarkers.reduce((sum, marker) => sum + marker.position[1], 0) / newMarkers.length;
+      console.log("Média das coordenadas:", avgX, avgY);
+      setMapCenter(newMarkers.length > 0 ? [avgX, avgY] : [-22.698, -47.009]);
+    } catch (error) {
+      console.error("Erro ao buscar pontos:", error); 
     }
+  };
 
-    const handleMapClick = (latlng) => {
-      //alert(`Você clicou em: ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`);
-    
+  useEffect(() => {
+    fetchStops(); 
+  }, []); // só busca/move quando o mapa estiver pronto
 
-      const Component = (
-        <div>
-          <p>latitude: {latlng.lat}</p>
-          <p>longitude: {latlng.lng}</p>
-        </div>
-      );
-      popUpRef.current.show(()=>Component, {}, "Nova Parada");
+
+  const handleRowClick = (rowData) => {
+    const marker = markers.find(m => m.id === rowData.id);
+    if (marker) {
+      popUpRef.current.show(() => marker.popupContent, {}, "Parada Detalhes");
+    } else {
+      console.error("Marcador não encontrado para a parada clicada:", rowData.id);
     }
-
-    return (
-      <main style={{ height: '100vh', maxWidth: "100%", overflowX: 'hidden' }} className="d-flex flex-column">
-        <div className="d-flex flex-row m-3 w-100 h-50 gap-4" style={{ overflowY: 'hidden', /*background:"red",*/ maxHeight: '30%' }}>
-          <MapComponent 
-            className="w-100 h-100 rounded-3"
-            center={mapCenter}
-            zoom={zoom}
-            markers={markers}
-            polylines={polylines}
-            onMapClick={handleMapClick} 
-            handleZoomChange={(e) => {console.log("Zoom alterado para:", e.target._zoom); setZoom(e.target._zoom);}}
-          />
-
-          <MajorStops 
-            stops={stops}
-          />
-        </div>
-        
-
-        <Table 
-          headers={tableHeaders}
-          data={tableData}
-          itemsPerPage={5}
-          searchable={true}
-          className="table-striped table-hover"
-          onRowClick={handleRowClick}
-        />
-
-        <Test />
-        
-        <PopUpComponent 
-          ref={popUpRef}
-        />
-      </main>
-    )
   }
+
+  const handleMapClick = (latlng) => {
+    //alert(`Você clicou em: ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`);
+  
+
+    const Component = (
+      <div>
+        <p>latitude: {latlng.lat}</p>
+        <p>longitude: {latlng.lng}</p>
+      </div>
+    );
+    popUpRef.current.show(()=>Component, {}, "Nova Parada");
+  }
+
+  return (
+    <main style={{ height: '100vh', maxWidth: "100%", overflowX: 'hidden' }} className="d-flex flex-column">
+      <div className="d-flex flex-row m-3 w-100 h-50 gap-4" style={{ overflowY: 'hidden', /*background:"red",*/ maxHeight: '30%' }}>
+        <MapComponent 
+          className="w-100 h-100 rounded-3"
+          center={mapCenter}
+          zoom={zoom}
+          markers={markers}
+          polylines={polylines}
+          onMapClick={handleMapClick} 
+          handleZoomChange={(e) => {console.log("Zoom alterado para:", e.target._zoom); setZoom(e.target._zoom);}}
+        />
+
+        <MajorStops 
+          stops={stops}
+        />
+      </div>
+      
+
+      <Table 
+        headers={tableHeaders}
+        data={tableData}
+        itemsPerPage={5}
+        searchable={true}
+        className="table-striped table-hover"
+        onRowClick={handleRowClick}
+      />
+
+      <button
+        onClick={()=>{
+          mapRef.current?.moveMap(0, 0, zoom); // Move o mapa para 0:0 com o zoom atual
+          popUpRef.current.show(() => <p>Mapa movido para 0:0</p>, {}, "Mapa Movido");
+        }}
+      >
+        mover mapa para 0:0
+      </button>
+
+      <PopUpComponent 
+        ref={popUpRef}
+      />
+    </main>
+  )
+}
 
 export default Stops

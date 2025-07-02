@@ -101,167 +101,167 @@ function sincronizeMarkers(stops, setMarkers){
 
 function Stops({ pageFunctions }) {
   pageFunctions.set("Paradas", true, true);
-  
-    //api.stops.list().then((response) => { console.log(response); });
 
-    const [stops, setStops] = useState([]); 
+  //api.stops.list().then((response) => { console.log(response); });
 
-    const fetchStops = async () => {
-      {
-      /*{
-        "ponto_id": 1,
-        "nome": "Terminal Central",
-        "latitude": "-22.90680000",
-        "longitude": "-47.06260000",
-        "logradouro": "Av. Andrade Neves",
-        "numero_endereco": "200",
-        "bairro": "Centro",
-        "cidade": "Campinas",
-        "uf": "SP",
-        "cep": "13013-161",
-        "referencia": "Terminal de ônibus central da cidade",
-        "criacao": "2025-06-12T23:33:30.000Z",
-        "atualizacao": "2025-06-12T23:33:30.000Z",
-        "ativo": 1
-      }*/
+  const [stops, setStops] = useState([]); 
+
+  const fetchStops = async () => {
+    {
+    /*{
+      "ponto_id": 1,
+      "nome": "Terminal Central",
+      "latitude": "-22.90680000",
+      "longitude": "-47.06260000",
+      "logradouro": "Av. Andrade Neves",
+      "numero_endereco": "200",
+      "bairro": "Centro",
+      "cidade": "Campinas",
+      "uf": "SP",
+      "cep": "13013-161",
+      "referencia": "Terminal de ônibus central da cidade",
+      "criacao": "2025-06-12T23:33:30.000Z",
+      "atualizacao": "2025-06-12T23:33:30.000Z",
+      "ativo": 1
+    }*/
+    }
+    
+    //Ignorar essa logica e criar uma grid 100 x 100 de pontos
+    const newStops = [];
+    for (let ix=0; ix < 20; ix++) {
+      for (let iy=0; iy < 20; iy++) {
+        const newStop = {
+          ponto_id: ix * 10000 + iy,
+          nome: `Parada ${ix * 100 + iy}`,
+          latitude: -22.698 + (ix / 100) * 0.1, // Simulando latitude
+          longitude: -47.009 + (iy / 100) * 0.1, // Simulando longitude
+          logradouro: "Rua Exemplo",
+          numero_endereco: `${ix * 10 + iy}`,
+          bairro: "Bairro Exemplo",
+          cidade: "Cidade Exemplo",
+          uf: "SP",
+          cep: `130${ix}${iy}-000`,
+          referencia: "Referência Exemplo",
+          ativo: true
+        };
+        newStops.push(newStop);
       }
+    }
+    console.log("Pontos simulados:", newStops); // Log dos pontos simulados
+    setStops(newStops); // Atualiza o estado com os pontos simulados
+    sincronizeMarkers(newStops, setMarkers); // Sincroniza os marcadores com os pontos simulados
+    return;
+
+    try {
+      const response = await api.stops.list(); 
+      setStops(response); 
+      console.log("Pontos buscados:", response); 
+      const newMarkers = sincronizeMarkers(response, setMarkers);
       
-      //Ignorar essa logica e criar uma grid 100 x 100 de pontos
-      const newStops = [];
-      for (let ix=0; ix < 20; ix++) {
-        for (let iy=0; iy < 20; iy++) {
-          const newStop = {
-            ponto_id: ix * 10000 + iy,
-            nome: `Parada ${ix * 100 + iy}`,
-            latitude: -22.698 + (ix / 100) * 0.1, // Simulando latitude
-            longitude: -47.009 + (iy / 100) * 0.1, // Simulando longitude
-            logradouro: "Rua Exemplo",
-            numero_endereco: `${ix * 10 + iy}`,
-            bairro: "Bairro Exemplo",
-            cidade: "Cidade Exemplo",
-            uf: "SP",
-            cep: `130${ix}${iy}-000`,
-            referencia: "Referência Exemplo",
-            ativo: true
-          };
-          newStops.push(newStop);
-        }
-      }
-      console.log("Pontos simulados:", newStops); // Log dos pontos simulados
-      setStops(newStops); // Atualiza o estado com os pontos simulados
-      sincronizeMarkers(newStops, setMarkers); // Sincroniza os marcadores com os pontos simulados
-      return;
-
-      try {
-        const response = await api.stops.list(); 
-        setStops(response); 
-        console.log("Pontos buscados:", response); 
-        const newMarkers = sincronizeMarkers(response, setMarkers);
-        
-        // Centraliza o mapa calculando a média das coordenadas dos pontos
-        console.log("centralizando mapa com", newMarkers.length, "marcadores");
-        const avgX = newMarkers.reduce((sum, marker) => sum + marker.position[0], 0) / newMarkers.length;
-        const avgY = newMarkers.reduce((sum, marker) => sum + marker.position[1], 0) / newMarkers.length;
-        console.log("Média das coordenadas:", avgX, avgY);
-        setMapCenter(newMarkers.length > 0 ? [avgX, avgY] : [-22.698, -47.009]); // Centraliza o mapa na média ou em um valor padrão
-      } catch (error) {
-        console.error("Erro ao buscar pontos:", error); 
-      }
-    };
-
-    useEffect(() => {
-      fetchStops(); 
-    }, []);
-
-
-
-
-    const [markers, setMarkers] = useState([]);
-    const [polylines, setPolylines] = useState([]);
-    const [mapCenter, setMapCenter] = useState([-22.698, -47.009]);
-    const [zoom, setZoom] = useState(13); 
-
-    const popUpRef = useRef(null); // Referência para o componente PopUpComponent
-
-    //id,nome,cep,cordenadas,rotas,endereco,status
-    const tableHeaders = [
-      {id: "id",label: "ID", sortable: true},
-      {id: "name", label: "Nome", sortable: true},
-      {id: "cep", label: "CEP", sortable: false},
-      {id: "coordinates", label: "Cordenadas", sortable: false},
-      {id: "routesView", label: "Rotas", sortable: false}, 
-      {id: "address", label: "Endereço", sortable: false},
-      {id: "status", label: "Status", sortable: true}
-    ]
-    
-    
-
-    const tableData = stops.map((stop) => ({
-      id: stop.ponto_id,
-      name: stop.nome,
-      cep: stop.cep,
-      coordinates: `${Number(stop.latitude).toFixed(4)}, ${Number(stop.longitude).toFixed(4)}`,
-      routesView: "Rotas",
-      address: `${stop.logradouro}, ${stop.numero_endereco} - ${stop.bairro}, ${stop.cidade} - ${stop.uf}`,
-      status: stop.ativo ? "Ativo" : "Inativo"
-    }));
-
-
-    const handleRowClick = (rowData) => {
-      const marker = markers.find(m => m.id === rowData.id);
-      if (marker) {
-        popUpRef.current.show(() => marker.popupContent, {}, "Parada Detalhes");
-      } else {
-        console.error("Marcador não encontrado para a parada clicada:", rowData.id);
-      }
+      // Centraliza o mapa calculando a média das coordenadas dos pontos
+      console.log("centralizando mapa com", newMarkers.length, "marcadores");
+      const avgX = newMarkers.reduce((sum, marker) => sum + marker.position[0], 0) / newMarkers.length;
+      const avgY = newMarkers.reduce((sum, marker) => sum + marker.position[1], 0) / newMarkers.length;
+      console.log("Média das coordenadas:", avgX, avgY);
+      setMapCenter(newMarkers.length > 0 ? [avgX, avgY] : [-22.698, -47.009]); // Centraliza o mapa na média ou em um valor padrão
+    } catch (error) {
+      console.error("Erro ao buscar pontos:", error); 
     }
+  };
 
-    const handleMapClick = (latlng) => {
-      //alert(`Você clicou em: ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`);
-    
+  useEffect(() => {
+    fetchStops(); 
+  }, []);
 
-      const Component = (
-        <div>
-          <p>latitude: {latlng.lat}</p>
-          <p>longitude: {latlng.lng}</p>
-        </div>
-      );
-      popUpRef.current.show(()=>Component, {}, "Nova Parada");
+
+
+
+  const [markers, setMarkers] = useState([]);
+  const [polylines, setPolylines] = useState([]);
+  const [mapCenter, setMapCenter] = useState([-22.698, -47.009]);
+  const [zoom, setZoom] = useState(13); 
+
+  const popUpRef = useRef(null); // Referência para o componente PopUpComponent
+
+  //id,nome,cep,cordenadas,rotas,endereco,status
+  const tableHeaders = [
+    {id: "id",label: "ID", sortable: true},
+    {id: "name", label: "Nome", sortable: true},
+    {id: "cep", label: "CEP", sortable: false},
+    {id: "coordinates", label: "Cordenadas", sortable: false},
+    {id: "routesView", label: "Rotas", sortable: false}, 
+    {id: "address", label: "Endereço", sortable: false},
+    {id: "status", label: "Status", sortable: true}
+  ]
+  
+  
+
+  const tableData = stops.map((stop) => ({
+    id: stop.ponto_id,
+    name: stop.nome,
+    cep: stop.cep,
+    coordinates: `${Number(stop.latitude).toFixed(4)}, ${Number(stop.longitude).toFixed(4)}`,
+    routesView: "Rotas",
+    address: `${stop.logradouro}, ${stop.numero_endereco} - ${stop.bairro}, ${stop.cidade} - ${stop.uf}`,
+    status: stop.ativo ? "Ativo" : "Inativo"
+  }));
+
+
+  const handleRowClick = (rowData) => {
+    const marker = markers.find(m => m.id === rowData.id);
+    if (marker) {
+      popUpRef.current.show(() => marker.popupContent, {}, "Parada Detalhes");
+    } else {
+      console.error("Marcador não encontrado para a parada clicada:", rowData.id);
     }
-
-    return (
-      <main style={{ height: '100vh', maxWidth: "100%", overflowX: 'hidden' }} className="d-flex flex-column">
-        <div className="d-flex flex-row m-3 w-100 h-50 gap-4" style={{ overflowY: 'hidden', /*background:"red",*/ maxHeight: '30%' }}>
-          <MapComponent 
-            className="w-100 h-100 rounded-3"
-            center={mapCenter}
-            zoom={zoom}
-            markers={markers}
-            polylines={polylines}
-            onMapClick={handleMapClick} 
-            handleZoomChange={(e) => {console.log("Zoom alterado para:", e.target._zoom); setZoom(e.target._zoom);}}
-          />
-
-          <MajorStops 
-            stops={stops}
-          />
-        </div>
-        
-
-        <Table 
-          headers={tableHeaders}
-          data={tableData}
-          itemsPerPage={5}
-          searchable={true}
-          className="table-striped table-hover"
-          onRowClick={handleRowClick}
-        />
-
-        <PopUpComponent 
-          ref={popUpRef}
-        />
-      </main>
-    )
   }
+
+  const handleMapClick = (latlng) => {
+    //alert(`Você clicou em: ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`);
+  
+
+    const Component = (
+      <div>
+        <p>latitude: {latlng.lat}</p>
+        <p>longitude: {latlng.lng}</p>
+      </div>
+    );
+    popUpRef.current.show(()=>Component, {}, "Nova Parada");
+  }
+
+  return (
+    <main style={{ height: '100vh', maxWidth: "100%", overflowX: 'hidden' }} className="d-flex flex-column">
+      <div className="d-flex flex-row m-3 w-100 h-50 gap-4" style={{ overflowY: 'hidden', /*background:"red",*/ maxHeight: '30%' }}>
+        <MapComponent 
+          className="w-100 h-100 rounded-3"
+          center={mapCenter}
+          zoom={zoom}
+          markers={markers}
+          polylines={polylines}
+          onMapClick={handleMapClick} 
+          handleZoomChange={(e) => {console.log("Zoom alterado para:", e.target._zoom); setZoom(e.target._zoom);}}
+        />
+
+        <MajorStops 
+          stops={stops}
+        />
+      </div>
+      
+
+      <Table 
+        headers={tableHeaders}
+        data={tableData}
+        itemsPerPage={5}
+        searchable={true}
+        className="table-striped table-hover"
+        onRowClick={handleRowClick}
+      />
+
+      <PopUpComponent 
+        ref={popUpRef}
+      />
+    </main>
+  )
+}
 
 export default Stops

@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { useState, useEffect, useRef} from 'react'
 
 import PopUpComponent from "./components/PopUpComponent";
-import Home from "./pages/Home";
-import Passengers from "./pages/Passengers";
-import Buses from "./pages/Buses";
+import HomePage from "./pages/HomePage";
+import PassengersPage from "./pages/PassengersPage";
+import BusesPage from "./pages/BusesPage";
 import RoutesPage from "./pages/RoutesPage";
-import Reports from "./pages/Reports";
-import Settings from "./pages/Settings";
+import ReportsPage from "./pages/ReportsPage";
+import SettingsPage from "./pages/SettingsPage";
 import SearchPage from "./pages/SearchPage";
-import Stops from "./pages/Stops";
+import StopsPage from "./pages/StopsPage";
 import SideBar from "./components/SideBar";
 import Header from "./components/Header";
 
@@ -55,13 +55,13 @@ function App() {
 
             <div className="py-4" >
               <Routes>
-                <Route path="/" index element={<Home pageFunctions={pageFunctions} />} />
-                <Route path="/passengers" element={<Passengers pageFunctions={pageFunctions}/>} />
-                <Route path="/buses" element={<Buses pageFunctions={pageFunctions}/>} />
+                <Route path="/" index element={<HomePage pageFunctions={pageFunctions} />} />
+                <Route path="/passengers" element={<PassengersPage pageFunctions={pageFunctions}/>} />
+                <Route path="/buses" element={<BusesPage pageFunctions={pageFunctions}/>} />
                 <Route path="/routes" element={<RoutesPage pageFunctions={pageFunctions}/>} />
-                <Route path="/stops" element={<Stops pageFunctions={pageFunctions}/>} />
-                <Route path="/reports" element={<Reports pageFunctions={pageFunctions}/>} />
-                <Route path="/settings" element={<Settings pageFunctions={pageFunctions}/>} />
+                <Route path="/stops" element={<StopsPage pageFunctions={pageFunctions}/>} />
+                <Route path="/reports" element={<ReportsPage pageFunctions={pageFunctions}/>} />
+                <Route path="/settings" element={<SettingsPage pageFunctions={pageFunctions}/>} />
 
                 <Route path="/search/:searchTerm" element={<SearchPage   />} />
               </Routes>

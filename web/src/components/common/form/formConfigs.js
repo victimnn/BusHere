@@ -13,6 +13,7 @@ export const passengerFormConfig = {
       labelIcon: 'bi bi-person-fill',
       inputIcon: 'bi bi-person',
       placeholder: 'Nome completo',
+      maxLength: 255,
       required: true,
       size: 'lg',
       validator: (value) => {
@@ -26,6 +27,7 @@ export const passengerFormConfig = {
       labelIcon: 'bi bi-envelope-fill',
       inputIcon: 'bi bi-envelope',
       placeholder: 'email@exemplo.com',
+      maxLength: 255,
       required: true,
       size: 'lg',
       validator: (value) => {
@@ -114,6 +116,7 @@ export const busFormConfig = {
       labelIcon: 'bi bi-card-text',
       inputIcon: 'bi bi-signpost',
       placeholder: 'ABC-1234 ou ABC1D23',
+      maxLength: 8,
       required: true,
       size: 'lg',
       validator: (value) => {
@@ -156,6 +159,7 @@ export const busFormConfig = {
       labelIcon: 'bi bi-calendar-event',
       inputIcon: 'bi bi-calendar',
       placeholder: 'Ano de fabricação',
+      additionalProps: { max: new Date().getFullYear() + 1, min: 1950 },
       size: 'lg',
       validator: (value) => {
         if (value === '') return null;
@@ -164,6 +168,7 @@ export const busFormConfig = {
         if (isNaN(ano)) return 'Ano deve ser um número';
         if (ano < 1950) return 'Ano deve ser maior que 1950';
         if (ano > currentYear + 1) return `Ano não pode ser maior que ${currentYear + 1}`;
+        if (value.length > 4) return 'Ano deve ter no máximo 4 dígitos';
         return null;
       }
     },
@@ -174,6 +179,7 @@ export const busFormConfig = {
       labelIcon: 'bi bi-people',
       inputIcon: 'bi bi-person-plus',
       placeholder: 'Número de passageiros',
+      additionalProps: { max: 200, min: 1 },
       required: true,
       size: 'lg',
       validator: (value) => {
@@ -182,6 +188,7 @@ export const busFormConfig = {
         if (isNaN(capacidade)) return 'Capacidade deve ser um número';
         if (capacidade < 1) return 'Capacidade deve ser maior que zero';
         if (capacidade > 200) return 'Capacidade deve ser menor que 200';
+        if (value.length > 3) return 'Capacidade deve ter no máximo 3 dígitos';
         return null;
       }
     },
@@ -272,6 +279,7 @@ export const routeFormConfig = {
       labelIcon: 'bi bi-rulers',
       inputIcon: 'bi bi-speedometer',
       placeholder: 'Distância em quilômetros',
+      additionalProps: { step: '0.1', min: '0', max: '999.9' },
       size: 'lg',
       additionalProps: { step: '0.1', min: '0' },
       validator: (value) => {
@@ -290,6 +298,7 @@ export const routeFormConfig = {
       labelIcon: 'bi bi-clock',
       inputIcon: 'bi bi-stopwatch',
       placeholder: 'Tempo estimado em minutos',
+      additionalProps: { min: '0', max: '1440' },
       size: 'lg',
       additionalProps: { min: '0' },
       validator: (value) => {

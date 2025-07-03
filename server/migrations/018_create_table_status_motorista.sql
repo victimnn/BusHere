@@ -14,3 +14,9 @@ CREATE TABLE StatusMotorista (
     -- Índice para otimização de consultas
     INDEX idx_nome (nome)
 );
+
+INSERT INTO StatusMotorista (nome, descricao) VALUES
+('Ativo', 'Motorista que está em operação normal'),
+('Férias', 'Motorista que está de férias'),
+('Afastado', 'Motorista que está afastado por motivos de saúde ou outros'),
+('Inativo', 'Motorista que não está em operação');

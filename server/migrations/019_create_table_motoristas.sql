@@ -23,5 +23,4 @@ CREATE TABLE Motoristas (
     INDEX idx_cpf (cpf),
     INDEX idx_cnh_numero (cnh_numero),
     INDEX idx_nome (nome)
-
 );

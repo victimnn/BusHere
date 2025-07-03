@@ -8,8 +8,8 @@ import api from "../api/api";
 // header da tabela
 const tableHeaders = [
   { id: "rota_id", label: "ID", sortable: true },
-  { id: "nome", label: "Nome", sortable: true },
   { id: "codigo_rota", label: "Código", sortable: true },
+  { id: "nome", label: "Nome", sortable: true },
   { id: "origem_descricao", label: "Origem", sortable: true },
   { id: "destino_descricao", label: "Destino", sortable: true },
   { id: "distancia_km", label: "Distância (km)", sortable: true },

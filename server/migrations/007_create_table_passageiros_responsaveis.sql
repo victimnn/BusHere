@@ -1,8 +1,8 @@
 -- Down
-DROP TABLE IF EXISTS PassageiroResponsaveis;
+DROP TABLE IF EXISTS PassageirosResponsaveis;
 
 -- Up
-CREATE TABLE PassageiroResponsaveis (
+CREATE TABLE PassageirosResponsaveis (
     passageiro_menor_id INT,
     passageiro_responsavel_id INT,
     tipo_responsabilidade_id INT,

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import api from '../../api/api';
 import '../../../styles/PassengerForm.scss'; // Importação do arquivo SCSS
-import { createFakeBusData } from '../../fakers'; // Importa a função para gerar dados fictícios
+import { createFakeBusData } from '../../utils/fakers'; // Importa a função para gerar dados fictícios
 
 /**
  * Componente de formulário para criação e edição de ônibus

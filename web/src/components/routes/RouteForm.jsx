@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import api from '../../api/api';
 import '../../../styles/PassengerForm.scss'; // Importação do arquivo SCSS
-import { createFakeRouteData } from '../../fakers';
+import { createFakeRouteData } from '../../utils/fakers';;
 
 /**
  * Componente de formulário para criação e edição de rotas

@@ -4,7 +4,7 @@ import api from '../../api/api';
 import { validateCPF, validateEmail, validatePhoneNumber } from '../../utils/validators';
 import { formatCPF, formatPhoneNumber } from '../../utils/formatters';
 import '../../../styles/PassengerForm.scss'; // Importação do arquivo SCSS
-import { createFakePassengerData } from '../../fakers'; // Importa a função para criar dados fictícios
+import { createFakePassengerData } from '../../utils/fakers'; // Importa a função para criar dados fictícios
 /**
  * Componente de formulário para criação e edição de passageiros
  * @param {Object} props - As propriedades do componente

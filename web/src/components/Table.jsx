@@ -1,5 +1,10 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import SearchBar from './table/SearchBar';
+import TableHeader from './table/TableHeader';
+import TableBody from './table/TableBody';
+import Pagination from './table/Pagination';
+import { useTable } from './table/useTable';
 
 /**
  * componente da tabela com funcionalidades de ordenação, paginação e pesquisa
@@ -7,7 +12,7 @@ import PropTypes from 'prop-types';
  * @param {Array<Object>} props.headers - array do header da tabela, cada objeto deve conter:
  * @param {Array<Object>} props.data - array de dados a serem exibidos na tabela
  * @param {Number} props.itemsPerPage - itens por página (default 10)
- * @param {boolean} props.searchable - bglh pra add funcionalidade de pesquisa (default true) // 'boolean' minúsculo é mais comum
+ * @param {boolean} props.searchable - bglh pra add funcionalidade de pesquisa (default true)
  * @param {String} props.className - add class css pra estilizar a tabela
  * @param {Function} props.onRowClick - função chamada quando uma linha é clicada, recebe o objeto da linha como parâmetro
  * @returns {JSX.Element} componente da tabela renderizado
@@ -21,246 +26,52 @@ function Table({
   onRowClick,
   popUpRef = null,
 }) {
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState('');
-
-  // volta pra primeira page quando os dados ou o termo de pesquisa mudam
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [data, searchTerm]);
-
-  // alterna a direção quando a mesma coluna é clicada novamente
-  const requestSort = (key) => {
-    let direction = 'asc';
-    if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
-    }
-    setSortConfig({ key, direction });
-  };
-
-  // usa useMemo para evitar recálculos desnecessários
-  const processedData = useMemo(() => {
-    let filteredData = [...data];
-
-    // filtra dados com base no termo de pesquisa
-    if (searchable && searchTerm) {
-      const lowerCaseSearchTerm = searchTerm.toLowerCase();
-      filteredData = filteredData.filter(item => 
-        Object.values(item).some(value => 
-        String(value).toLowerCase().includes(lowerCaseSearchTerm)
-        )
-      );
-    }
-
-    // ordena dados com base na configuração de ordenação
-    if (sortConfig.key) {
-    filteredData.sort((a, b) => {
-    // Verifica se os valores são números
-    if (!isNaN(a[sortConfig.key]) && !isNaN(b[sortConfig.key])) {
-      if (sortConfig.direction === 'asc') {
-        return Number(a[sortConfig.key]) - Number(b[sortConfig.key]);
-      } else {
-        return Number(b[sortConfig.key]) - Number(a[sortConfig.key]);
-      }
-    }
-    
-    // Para datas (assume formato ISO)
-    if (Date.parse(a[sortConfig.key]) && Date.parse(b[sortConfig.key])) {
-      if (sortConfig.direction === 'asc') {
-        return new Date(a[sortConfig.key]) - new Date(b[sortConfig.key]);
-      } else {
-        return new Date(b[sortConfig.key]) - new Date(a[sortConfig.key]);
-      }
-    }
-    
-    // Para strings
-    const aValue = String(a[sortConfig.key]).toLowerCase();
-    const bValue = String(b[sortConfig.key]).toLowerCase();
-    
-    if (aValue < bValue) {
-      return sortConfig.direction === 'asc' ? -1 : 1;
-    }
-    if (aValue > bValue) {
-      return sortConfig.direction === 'asc' ? 1 : -1;
-    }
-    return 0;
-  });
-}
-    return filteredData;
-  }, [data, sortConfig, searchTerm, searchable]);
-
-  // calcula o número total de páginas e a pagina atual
-  const totalPages = Math.ceil(processedData.length / itemsPerPage);
-  const paginatedData = processedData.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  // mostra a setinha de direcao na coluna certa
-  const getSortDirectionIndicator = (key) => {
-    if (sortConfig.key !== key) return '';
-
-    if (sortConfig.direction === "asc"){
-      return <i className="bi bi-arrow-up text-secondary"></i>;
-    } else {
-      return <i className="bi bi-arrow-down text-secondary"></i>;
-    }
-  };
-
-  const showArrOrValueButton = (value) => {
-    const popUpContent = () => (
-      <div>
-        <ul>
-          {value.map((item, index) => (
-            <li key={index}>{item}</li>
-          ))}
-        </ul>
-      </div>
-    );
-
-    if (popUpRef && Array.isArray(value)) {
-      return (
-        <button className="btn btn-secondary p-2 pb-0 pt-0" //tira o padding de cima e baixo
-          onClick={(e) => {
-            e.stopPropagation(); // previne o evento de click na linha
-            popUpRef.current.show(popUpContent, {}, 'Valores');
-          }}>
-          ...
-        </button>
-      );
-    } else {
-      return value;
-    }
-  }
+  const {
+    sortConfig,
+    currentPage,
+    searchTerm,
+    totalPages,
+    paginatedData,
+    requestSort,
+    setCurrentPage,
+    setSearchTerm,
+  } = useTable(data, itemsPerPage, searchable);
 
 
-return (
+  return (
     <div className="table-responsive ms-3 me-3">
-    {/* Search box */}
-            {searchable && (
-                <div className="search-bar-container d-flex justify-content-end mb-1">
-                    <div className="search-form d-flex position-relative w-20">
-                        <div className="input-group shadow-sm border rounded-pill overflow-hidden">
-                            <input
-                                type="text"
-                                className="form-control border-0 bg-light px-3"
-                                placeholder="Pesquisar..."
-                                aria-label="Search"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                                <button 
-                                className="btn border-start bg-light px-3 d-flex align-items-center" 
-                                type="submit">
-                                <i className="fa-solid fa-magnifying-glass search-icon text-primary"></i>
-                                </button>
-                            {searchTerm && (
-                                <button 
-                                    className="btn border-start bg-light px-3 d-flex align-items-center" 
-                                    type="button"
-                                    onClick={() => setSearchTerm('')}
-                                >
-                                    <i className="bi bi-x"></i>
-                                </button>
-                        )}
-                    </div>
-                    </div>
-                </div>
-            )}
-            
-            {/* Table */}
-        <table className={`table table-hover table-striped rounded ${className}`} style={{ borderRadius: '8px', overflow: 'hidden' }}>
-            <thead>
-                <tr>
-                    {headers.map((header) => (
-                        <th 
-                            key={header.id} 
-                            onClick={() => header.sortable && requestSort(header.id)}
-                            className={header.sortable ? 'cursor-pointer' : ''}
-                        >
-                            {header.label}
-                            {header.sortable && getSortDirectionIndicator(header.id)}
-                        </th>
-                    ))}
-                </tr>
-            </thead>
-            <tbody className="table-group-divider">
-                {paginatedData.length > 0 ? (
-                    paginatedData.map((row, rowIndex) => (
-                        <tr 
-                            key={rowIndex}
-                            onClick={() => onRowClick && onRowClick(row)}
-                            className={onRowClick ? 'cursor-pointer' : ''}
-                        >
-                            {headers.map((header) => (
-                                <td key={header.id}>{showArrOrValueButton(row[header.id])}</td> 
-                            ))}
-                        </tr>
-                    ))
-                ) : (
-                    <tr>
-                        <td colSpan={headers.length} className="text-center py-4">
-                            Sem dados para exibir.
-                        </td>
-                    </tr>
-                )}
-            </tbody>
-        </table>
+      {/* Search box */}
+      {searchable && (
+        <SearchBar
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          placeholder="Pesquisar..."
+        />
+      )}
+      
+      {/* Table */}
+      <table className={`table table-hover table-striped rounded ${className}`} style={{ borderRadius: '8px', overflow: 'hidden' }}>
+        <TableHeader
+          headers={headers}
+          sortConfig={sortConfig}
+          onSort={requestSort}
+        />
+        <TableBody
+          data={paginatedData}
+          headers={headers}
+          onRowClick={onRowClick}
+          popUpRef={popUpRef}
+        />
+      </table>
 
-        {/* Pagination */}
-        {totalPages > 1 && (
-            <nav aria-label="Table pagination" className='mt-3 d-flex justify-content-end'>
-                <ul className="pagination justify-content-center">
-                    {/* <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                        <button 
-                            className="page-link rounded-start" 
-                            onClick={() => setCurrentPage(1)}
-                            disabled={currentPage === 1}
-                        >
-                            Primeiro
-                        </button>
-                    </li> */}
-                    <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                        <button 
-                            className="page-link bg-primary text-white" 
-                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                            disabled={currentPage === 1}
-                        >
-                            <strong>&lt;</strong>
-                        </button>
-                    </li>
-                    
-                    {/* Page indicator */}
-                    <li className="page-item">
-                        <span className="page-link">
-                            {currentPage} de {totalPages}
-                        </span>
-                    </li>
-                    
-                    <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                        <button 
-                            className="page-link bg-primary text-white" 
-                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                            disabled={currentPage === totalPages}
-                        >
-                            <strong>&gt;</strong>
-                        </button>
-                    </li>
-                    {/* <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                        <button 
-                            className="page-link rounded-end" 
-                            onClick={() => setCurrentPage(totalPages)}
-                            disabled={currentPage === totalPages}
-                        >
-                            Último
-                        </button>
-                    </li> */}
-                </ul>
-            </nav>
-        )}
+      {/* Pagination */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </div>
-);
+  );
 }
 
 Table.propTypes = {

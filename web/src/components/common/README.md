@@ -247,3 +247,5 @@ export const minhaEntidadeFormConfig = {
 5. **Validação**: Sistema robusto de validação
 6. **Formatação**: Suporte nativo a formatadores
 7. **Acessibilidade**: Labels e estrutura semântica
+
+![alt text](image.png)

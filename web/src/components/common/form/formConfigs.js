@@ -281,7 +281,6 @@ export const routeFormConfig = {
       placeholder: 'Distância em quilômetros',
       additionalProps: { step: '0.1', min: '0', max: '999.9' },
       size: 'lg',
-      additionalProps: { step: '0.1', min: '0' },
       validator: (value) => {
         if (value === '') return null;
         const distancia = parseFloat(value);
@@ -300,7 +299,6 @@ export const routeFormConfig = {
       placeholder: 'Tempo estimado em minutos',
       additionalProps: { min: '0', max: '1440' },
       size: 'lg',
-      additionalProps: { min: '0' },
       validator: (value) => {
         if (value === '') return null;
         const tempo = parseInt(value);

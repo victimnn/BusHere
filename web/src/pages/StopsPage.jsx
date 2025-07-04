@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import PopUpComponent from "../components/PopUpComponent";
 import StopDetails from "../components/stops/StopDetails";
+import StopForm from "../components/stops/StopForm";
 import MapComponent from "../components/MapComponent";
 import Table from "../components/Table";
 import api from "../api/api";
@@ -100,22 +101,81 @@ function sincronizeMarkers(stops, setMarkers, popUpRef, onDelete = null, onEdit 
 }
 
 function EditStop({ stop, onEdit, onDelete }) {
+  const [fieldsArr, setFieldsArr] = useState([
+    { id: "nome", label: "Nome", type: "text", value: stop.nome, required: true, wasEdited: false },
+    { id: "logradouro", label: "Logradouro", type: "text", value: stop.logradouro, required: false, wasEdited: false },
+    { id: "numero_endereco", label: "Número do Endereço", type: "text", value: stop.numero_endereco, required: false, wasEdited: false },
+    { id: "bairro", label: "Bairro", type: "text", value: stop.bairro, required: false, wasEdited: false },
+    { id: "cidade", label: "Cidade", type: "text", value: stop.cidade, required: false, wasEdited: false },
+    { id: "uf", label: "UF", type: "text", value: stop.uf, required: false, wasEdited: false },
+    { id: "cep", label: "CEP", type: "text", value: stop.cep, required: false, wasEdited: false },
+    { id: "referencia", label: "Referência", type: "text", value: stop.referencia ?? "", required: false, wasEdited: false }
+  ])
+
+  const handleInputChange = (id, value) => {
+    setFieldsArr(prevFields => 
+      prevFields.map(field => 
+        field.id === id ? { ...field, value, wasEdited: true } : field
+      )
+    );
+  }
+
+  const handleUpdate= () => {
+    const edits = {};
+    fieldsArr.forEach(field => {
+      if (field.wasEdited) {
+        edits[field.id] = field.value;
+      }
+    });
+
+    if (Object.keys(edits).length === 0) {
+      alert("Nenhum campo foi editado.");
+      return;
+    }
+
+    if (onEdit) {
+      onEdit(stop.ponto_id, edits);
+    } else {
+      alert("Função de edição não implementada");
+    }
+  };
+
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete(stop.ponto_id);
+    } else {
+      alert("Função de exclusão não implementada");
+    }
+  };
+
   return (
     <div className="d-flex flex-column gap-2">
-      {JSON.stringify(stop, null, 2)}
+      <h3>Editar Parada: {stop.nome}</h3>
+      {fieldsArr.map((field) => (
+        <div key={field.id} className="form-group">
+          <label htmlFor={field.id}>{field.label}</label>
+          <input
+            type={field.type}
+            className="form-control"
+            id={field.id}
+            value={field.value}
+            onChange={(e) => handleInputChange(field.id, e.target.value)}
+            required={field.required}
+          />
+        </div>
+      ))}
+      <button className="btn btn-success"
+        onClick={handleUpdate}
+      >
+        Atualizar
+      </button>
+
       <button className="btn btn-primary" 
-        onClick={ () => {
-          if (onDelete) {
-            onDelete(stop.ponto_id);
-          } else {
-            alert("Função de exclusão não implementada");
-          }
-        }}
+        onClick={handleDelete}
       >
         Apagar
       </button>
     </div>
-
   )
 }
 

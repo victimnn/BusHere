@@ -81,23 +81,69 @@ function getColorBasedOnValue(str) {
 * @param {Function} setMarkers - Função para atualizar o estado dos marcadores
 * @returns {Array} - Retorna um novo array de marcadores formatados
 */
-function sincronizeMarkers(stops, setMarkers){
+function sincronizeMarkers(stops, setMarkers, popUpRef, onDelete = null, onEdit = null) {
   const newMarkers = stops.map(stop => ({
     position: [parseFloat(stop.latitude), parseFloat(stop.longitude)],
-    popupContent: (
-      <div className="gap-0">
-        <h4>{stop.nome}</h4>
-        <p>Endereço: {stop.logradouro}, {stop.numero_endereco} - {stop.bairro}, {stop.cidade} - {stop.uf}</p>
-        <p>CEP: {stop.cep}</p>
-        <p>Referência: {stop.referencia ?? "Nenhuma"}</p>
-      </div>
-    ),
-    color: getColorBasedOnValue(String(stop.latitude) + String(stop.longitude)), 
+    popupContent: 
+      <MarkerPopUpContent 
+        stop={stop} 
+        popUpRef={popUpRef} 
+        onDelete={onDelete}
+        onEdit={onEdit} 
+      />, 
+    color: stop.ativo ? getColorBasedOnValue(String(stop.latitude) + String(stop.longitude)) : "gray", // Cor baseada na latitude e longitude, ou cinza se inativo
     size: 32,
     id: stop.ponto_id // ID único para o marcador
   }));
   setMarkers(newMarkers); // Atualiza os marcadores com os pontos buscados
   return newMarkers; // Retorna os novos marcadores
+}
+
+function EditStop({ stop, onEdit, onDelete }) {
+  return (
+    <div className="d-flex flex-column gap-2">
+      {JSON.stringify(stop, null, 2)}
+      <button className="btn btn-primary" 
+        onClick={ () => {
+          if (onDelete) {
+            onDelete(stop.ponto_id);
+          } else {
+            alert("Função de exclusão não implementada");
+          }
+        }}
+      >
+        Apagar
+      </button>
+    </div>
+
+  )
+}
+
+function MarkerPopUpContent({ stop, popUpRef }) {
+  return (
+    <div className="gap-0">
+      <h4>{stop.nome}</h4>
+      <p>Endereço: {stop.logradouro}, {stop.numero_endereco} - {stop.bairro}, {stop.cidade} - {stop.uf}</p>
+      <p>CEP: {stop.cep}</p>
+      <p>Referência: {stop.referencia ?? "Nenhuma"}</p>
+
+      <button className="btn btn-primary mt-2"
+        onClick={() => {
+          if (popUpRef && popUpRef.current) {
+            popUpRef.current.show(
+              () => <EditStop stop={stop} />, 
+              {}, 
+              `Editar Parada: ${stop.nome}`
+            );
+          } else {
+            console.error("PopUpComponent não está definido ou não possui a referência correta.");
+          }
+        }}
+      >
+        Detalhes
+      </button>
+    </div>
+  );
 }
 
 function Stops({ pageFunctions }) {
@@ -157,13 +203,16 @@ function Stops({ pageFunctions }) {
       const response = await api.stops.list(); 
       setStops(response); 
       console.log("Pontos buscados:", response); 
-      const newMarkers = sincronizeMarkers(response, setMarkers);
-      // Centraliza o mapa calculando a média das coordenadas dos pontos
-      console.log("centralizando mapa com", newMarkers.length, "marcadores");
-      const avgX = newMarkers.reduce((sum, marker) => sum + marker.position[0], 0) / newMarkers.length;
-      const avgY = newMarkers.reduce((sum, marker) => sum + marker.position[1], 0) / newMarkers.length;
-      console.log("Média das coordenadas:", avgX, avgY);
-      setMapCenter(newMarkers.length > 0 ? [avgX, avgY] : [-22.698, -47.009]);
+      const newMarkers = sincronizeMarkers(response, setMarkers, popUpRef); 
+      /* Função que não funciona
+        TODO(): arrumar a centralização do mapa
+        // Centraliza o mapa calculando a média das coordenadas dos pontos
+        console.log("centralizando mapa com", newMarkers.length, "marcadores");
+        const avgX = newMarkers.reduce((sum, marker) => sum + marker.position[0], 0) / newMarkers.length;
+        const avgY = newMarkers.reduce((sum, marker) => sum + marker.position[1], 0) / newMarkers.length;
+        console.log("Média das coordenadas:", avgX, avgY);
+        setMapCenter(newMarkers.length > 0 ? [avgX, avgY] : [-22.698, -47.009]);
+      */
     } catch (error) {
       console.error("Erro ao buscar pontos:", error); 
     }

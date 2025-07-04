@@ -119,7 +119,7 @@ function EditStop({ stop, onEdit, onDelete }) {
   )
 }
 
-function MarkerPopUpContent({ stop, popUpRef }) {
+function MarkerPopUpContent({ stop, popUpRef, onDelete, onEdit }) {
   return (
     <div className="gap-0">
       <h4>{stop.nome}</h4>
@@ -131,7 +131,7 @@ function MarkerPopUpContent({ stop, popUpRef }) {
         onClick={() => {
           if (popUpRef && popUpRef.current) {
             popUpRef.current.show(
-              () => <EditStop stop={stop} />, 
+              () => <EditStop stop={stop} onDelete={onDelete} onEdit={onEdit}/>, 
               {}, 
               `Editar Parada: ${stop.nome}`
             );
@@ -157,30 +157,29 @@ function Stops({ pageFunctions }) {
 
   const popUpRef = useRef(null); // Referência para o componente PopUpComponent
 
-  //id,nome,cep,cordenadas,rotas,endereco,status
-  const tableHeaders = [
-    {id: "id",label: "ID", sortable: true},
-    {id: "name", label: "Nome", sortable: true},
-    {id: "cep", label: "CEP", sortable: false},
-    {id: "coordinates", label: "Cordenadas", sortable: false},
-    {id: "routesView", label: "Rotas", sortable: false}, 
-    {id: "address", label: "Endereço", sortable: false},
-    {id: "status", label: "Status", sortable: true}
-  ]
-  
-  
+  const handleDeleteStop = async (id) => {
+    try {
+      await api.stops.delete(id); // Chama a API para deletar o ponto
+      fetchStops(); // Recarrega os pontos após a exclusão (é pior para performance, porem já atualza o estado mais vezes)
+      console.log(`Ponto com ID ${id} deletado com sucesso.`);
+    } catch (error) {
+      console.error(`Erro ao deletar ponto com ID ${id}:`, error);  
+      alert(`Erro ao deletar ponto: ${error.message || "Erro desconhecido"}`);
+    }
+  };
 
-  const tableData = stops.map((stop) => ({
-    id: stop.ponto_id,
-    name: stop.nome,
-    cep: stop.cep,
-    coordinates: `${Number(stop.latitude).toFixed(4)}, ${Number(stop.longitude).toFixed(4)}`,
-    routesView: "Rotas",
-    address: `${stop.logradouro}, ${stop.numero_endereco} - ${stop.bairro}, ${stop.cidade} - ${stop.uf}`,
-    status: stop.ativo ? "Ativo" : "Inativo"
-  }));
+  const handleEditStop = async (id, edits) => {
+    try {
+      const response = await api.stops.update(id, edits); // Chama a API para atualizar o ponto
+      console.log(`Ponto com ID ${id} atualizado com sucesso:`, response);
+      fetchStops(); // Recarrega os pontos após a atualização
+    } catch (error) {
+      console.error(`Erro ao atualizar ponto com ID ${id}:`, error);
+      alert(`Erro ao atualizar ponto: ${error.message || "Erro desconhecido"}`);
+    }
+  };
 
-    const fetchStops = async () => {
+  const fetchStops = async () => {
     {
     /*{
       "ponto_id": 1,
@@ -203,7 +202,7 @@ function Stops({ pageFunctions }) {
       const response = await api.stops.list(); 
       setStops(response); 
       console.log("Pontos buscados:", response); 
-      const newMarkers = sincronizeMarkers(response, setMarkers, popUpRef); 
+      const newMarkers = sincronizeMarkers(response, setMarkers, popUpRef, handleDeleteStop, handleEditStop);
       /* Função que não funciona
         TODO(): arrumar a centralização do mapa
         // Centraliza o mapa calculando a média das coordenadas dos pontos
@@ -222,6 +221,26 @@ function Stops({ pageFunctions }) {
     fetchStops(); 
   }, []); // só busca/move quando o mapa estiver pronto
 
+  //id,nome,cep,cordenadas,rotas,endereco,status
+  const tableHeaders = [
+    {id: "id",label: "ID", sortable: true},
+    {id: "name", label: "Nome", sortable: true},
+    {id: "cep", label: "CEP", sortable: false},
+    {id: "coordinates", label: "Cordenadas", sortable: false},
+    {id: "routesView", label: "Rotas", sortable: false}, 
+    {id: "address", label: "Endereço", sortable: false},
+    {id: "status", label: "Status", sortable: true}
+  ]
+  
+  const tableData = stops.map((stop) => ({
+    id: stop.ponto_id,
+    name: stop.nome,
+    cep: stop.cep,
+    coordinates: `${Number(stop.latitude).toFixed(4)}, ${Number(stop.longitude).toFixed(4)}`,
+    routesView: "Rotas",
+    address: `${stop.logradouro}, ${stop.numero_endereco} - ${stop.bairro}, ${stop.cidade} - ${stop.uf}`,
+    status: stop.ativo ? "Ativo" : "Inativo"
+  }));
 
   // const handleRowClick = (rowData) => {
   //   const marker = markers.find(m => m.id === rowData.id);

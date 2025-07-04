@@ -114,3 +114,65 @@ export const routeConfig = {
     }
   ]
 };
+
+export const stopConfig = {
+  title: "Detalhes do Ponto",
+  headerIcon: "bi bi-geo-alt-fill",
+  emptyIcon: "bi bi-geo-alt",
+  emptyMessage: "Nenhum ponto selecionado",
+  idField: "ponto_id",
+  fields: [
+    {
+      key: "nome",
+      label: "Nome",
+      icon: "bi bi-info-circle"
+    },
+    {
+      key: "logradouro",
+      label: "Logradouro",
+      icon: "bi bi-road"
+    },
+    {
+      key: "numero_endereco",
+      label: "Número",
+      icon: "bi bi-house-door"
+    },
+    {
+      key: "bairro",
+      label: "Bairro",
+      icon: "bi bi-building"
+    },
+    {
+      key: "cidade",
+      label: "Cidade",
+      icon: "bi bi-building-fill"
+    },
+    {
+      key: "uf",
+      label: "UF",
+      icon: "bi bi-map"
+    },
+    {
+      key: "cep",
+      label: "CEP",
+      icon: "bi bi-mailbox"
+    },
+    {
+      key: "latitude",
+      label: "Latitude",
+      icon: "bi bi-geo-alt",
+      formatter: (value) => value ? Number(value).toFixed(6) : "Não informado"
+    },
+    {
+      key: "longitude",
+      label: "Longitude", 
+      icon: "bi bi-geo-alt",
+      formatter: (value) => value ? Number(value).toFixed(6) : "Não informado"
+    },
+    {
+      key: "referencia",
+      label: "Referência",
+      icon: "bi bi-signpost"
+    }
+  ]
+};

@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import PopUpComponent from "../components/PopUpComponent";
+import StopDetails from "../components/stops/StopDetails";
 import MapComponent from "../components/MapComponent";
 import Table from "../components/Table";
 import api from "../api/api";
@@ -173,14 +174,36 @@ function Stops({ pageFunctions }) {
   }, []); // só busca/move quando o mapa estiver pronto
 
 
-  const handleRowClick = (rowData) => {
-    const marker = markers.find(m => m.id === rowData.id);
-    if (marker) {
-      popUpRef.current.show(() => marker.popupContent, {}, "Parada Detalhes");
-    } else {
-      console.error("Marcador não encontrado para a parada clicada:", rowData.id);
+  // const handleRowClick = (rowData) => {
+  //   const marker = markers.find(m => m.id === rowData.id);
+  //   if (marker) {
+  //     popUpRef.current.show(() => marker.popupContent, {}, "Parada Detalhes");
+  //   } else {
+  //     console.error("Marcador não encontrado para a parada clicada:", rowData.id);
+  //   }
+  // }
+
+  // Handler para quando uma linha for clicada
+    const handleRowClick = (rowData) => {
+      // Encontrar o objeto stop original baseado no ID da linha clicada
+      const marker = stops.find(stop => stop.ponto_id === rowData.id);
+      
+      if (marker) {
+        popUpRef.current.show(
+          () => (
+            <StopDetails 
+              stop={marker} 
+              // onEdit={handleEditStop} 
+              // onDelete={handleDeleteStop} 
+            />
+          ), 
+          {}, 
+          `Parada: ${marker.nome}`
+        );
+      } else {
+        console.error("Parada não encontrado para ID:", rowData.id);
+      }
     }
-  }
 
   const handleMapClick = (latlng) => {
     //alert(`Você clicou em: ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`);

@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import PopUpComponent from "../components/PopUpComponent";
 import StopDetails from "../components/stops/StopDetails";
+import StopForm from "../components/stops/StopForm";
 import MapComponent from "../components/MapComponent";
 import Table from "../components/Table";
 import api from "../api/api";
@@ -81,23 +82,72 @@ function getColorBasedOnValue(str) {
 * @param {Function} setMarkers - Função para atualizar o estado dos marcadores
 * @returns {Array} - Retorna um novo array de marcadores formatados
 */
-function sincronizeMarkers(stops, setMarkers){
+function sincronizeMarkers(stops, setMarkers, popUpRef, onDelete = null, onEdit = null) {
   const newMarkers = stops.map(stop => ({
     position: [parseFloat(stop.latitude), parseFloat(stop.longitude)],
-    popupContent: (
-      <div className="gap-0">
-        <h4>{stop.nome}</h4>
-        <p>Endereço: {stop.logradouro}, {stop.numero_endereco} - {stop.bairro}, {stop.cidade} - {stop.uf}</p>
-        <p>CEP: {stop.cep}</p>
-        <p>Referência: {stop.referencia ?? "Nenhuma"}</p>
-      </div>
-    ),
-    color: getColorBasedOnValue(String(stop.latitude) + String(stop.longitude)), 
+    popupContent: 
+      <MarkerPopUpContent 
+        stop={stop} 
+        popUpRef={popUpRef} 
+        onDelete={onDelete}
+        onEdit={onEdit} 
+      />, 
+    color: stop.ativo ? getColorBasedOnValue(String(stop.latitude) + String(stop.longitude)) : "gray", // Cor baseada na latitude e longitude, ou cinza se inativo
     size: 32,
     id: stop.ponto_id // ID único para o marcador
   }));
   setMarkers(newMarkers); // Atualiza os marcadores com os pontos buscados
   return newMarkers; // Retorna os novos marcadores
+}
+
+function MarkerPopUpContent({ stop, popUpRef, onDelete, onEdit }) {
+  return (
+    <div className="gap-0">
+      <h4>{stop.nome}</h4>
+      <p>Endereço: {stop.logradouro}, {stop.numero_endereco} - {stop.bairro}, {stop.cidade} - {stop.uf}</p>
+      <p>Referência: {stop.referencia ?? "Nenhuma"}</p>
+
+      <button className="btn btn-primary mt-2"
+        onClick={() => {
+          if (popUpRef && popUpRef.current) {
+            const handleFormSubmit = (formData) => {
+              if (onEdit) {
+                onEdit(stop.ponto_id, formData);
+              }
+              popUpRef.current.hide();
+            };
+
+            const handleFormCancel = () => {
+              popUpRef.current.hide();
+            };
+
+            const handleFormDelete = () => {
+              if (onDelete) {
+                onDelete(stop.ponto_id);
+              }
+              popUpRef.current.hide();
+            };
+
+            popUpRef.current.show(
+              () => <StopForm 
+                initialData={stop} 
+                onSubmit={handleFormSubmit}
+                onCancel={handleFormCancel}
+                onDelete={handleFormDelete}
+                showDeleteButton={true}
+              />, 
+              {}, 
+              `Editar Parada: ${stop.nome}`
+            );
+          } else {
+            console.error("PopUpComponent não está definido ou não possui a referência correta.");
+          }
+        }}
+      >
+        Detalhes
+      </button>
+    </div>
+  );
 }
 
 function Stops({ pageFunctions }) {
@@ -111,30 +161,29 @@ function Stops({ pageFunctions }) {
 
   const popUpRef = useRef(null); // Referência para o componente PopUpComponent
 
-  //id,nome,cep,cordenadas,rotas,endereco,status
-  const tableHeaders = [
-    {id: "id",label: "ID", sortable: true},
-    {id: "name", label: "Nome", sortable: true},
-    {id: "cep", label: "CEP", sortable: false},
-    {id: "coordinates", label: "Cordenadas", sortable: false},
-    {id: "routesView", label: "Rotas", sortable: false}, 
-    {id: "address", label: "Endereço", sortable: false},
-    {id: "status", label: "Status", sortable: true}
-  ]
-  
-  
+  const handleDeleteStop = async (id) => {
+    try {
+      await api.stops.delete(id); // Chama a API para deletar o ponto
+      fetchStops(); // Recarrega os pontos após a exclusão (é pior para performance, porem já atualza o estado mais vezes)
+      console.log(`Ponto com ID ${id} deletado com sucesso.`);
+    } catch (error) {
+      console.error(`Erro ao deletar ponto com ID ${id}:`, error);  
+      alert(`Erro ao deletar ponto: ${error.message || "Erro desconhecido"}`);
+    }
+  };
 
-  const tableData = stops.map((stop) => ({
-    id: stop.ponto_id,
-    name: stop.nome,
-    cep: stop.cep,
-    coordinates: `${Number(stop.latitude).toFixed(4)}, ${Number(stop.longitude).toFixed(4)}`,
-    routesView: "Rotas",
-    address: `${stop.logradouro}, ${stop.numero_endereco} - ${stop.bairro}, ${stop.cidade} - ${stop.uf}`,
-    status: stop.ativo ? "Ativo" : "Inativo"
-  }));
+  const handleEditStop = async (id, edits) => {
+    try {
+      const response = await api.stops.update(id, edits); // Chama a API para atualizar o ponto
+      console.log(`Ponto com ID ${id} atualizado com sucesso:`, response);
+      fetchStops(); // Recarrega os pontos após a atualização
+    } catch (error) {
+      console.error(`Erro ao atualizar ponto com ID ${id}:`, error);
+      alert(`Erro ao atualizar ponto: ${error.message || "Erro desconhecido"}`);
+    }
+  };
 
-    const fetchStops = async () => {
+  const fetchStops = async () => {
     {
     /*{
       "ponto_id": 1,
@@ -157,13 +206,16 @@ function Stops({ pageFunctions }) {
       const response = await api.stops.list(); 
       setStops(response); 
       console.log("Pontos buscados:", response); 
-      const newMarkers = sincronizeMarkers(response, setMarkers);
-      // Centraliza o mapa calculando a média das coordenadas dos pontos
-      console.log("centralizando mapa com", newMarkers.length, "marcadores");
-      const avgX = newMarkers.reduce((sum, marker) => sum + marker.position[0], 0) / newMarkers.length;
-      const avgY = newMarkers.reduce((sum, marker) => sum + marker.position[1], 0) / newMarkers.length;
-      console.log("Média das coordenadas:", avgX, avgY);
-      setMapCenter(newMarkers.length > 0 ? [avgX, avgY] : [-22.698, -47.009]);
+      const newMarkers = sincronizeMarkers(response, setMarkers, popUpRef, handleDeleteStop, handleEditStop);
+      /* Função que não funciona
+        TODO(): arrumar a centralização do mapa
+        // Centraliza o mapa calculando a média das coordenadas dos pontos
+        console.log("centralizando mapa com", newMarkers.length, "marcadores");
+        const avgX = newMarkers.reduce((sum, marker) => sum + marker.position[0], 0) / newMarkers.length;
+        const avgY = newMarkers.reduce((sum, marker) => sum + marker.position[1], 0) / newMarkers.length;
+        console.log("Média das coordenadas:", avgX, avgY);
+        setMapCenter(newMarkers.length > 0 ? [avgX, avgY] : [-22.698, -47.009]);
+      */
     } catch (error) {
       console.error("Erro ao buscar pontos:", error); 
     }
@@ -173,16 +225,61 @@ function Stops({ pageFunctions }) {
     fetchStops(); 
   }, []); // só busca/move quando o mapa estiver pronto
 
+  //id,nome,cep,cordenadas,rotas,endereco,status
+  const tableHeaders = [
+    {id: "id",label: "ID", sortable: true},
+    {id: "name", label: "Nome", sortable: true},
+    {id: "cep", label: "CEP", sortable: false},
+    {id: "coordinates", label: "Cordenadas", sortable: false},
+    {id: "routesView", label: "Rotas", sortable: false}, 
+    {id: "address", label: "Endereço", sortable: false},
+    {id: "status", label: "Status", sortable: true}
+  ]
+  
+  const tableData = stops.map((stop) => ({
+    id: stop.ponto_id,
+    name: stop.nome,
+    cep: stop.cep,
+    coordinates: `${Number(stop.latitude).toFixed(4)}, ${Number(stop.longitude).toFixed(4)}`,
+    routesView: "Rotas",
+    address: `${stop.logradouro}, ${stop.numero_endereco} - ${stop.bairro}, ${stop.cidade} - ${stop.uf}`,
+    status: stop.ativo ? "Ativo" : "Inativo"
+  }));
 
-  // const handleRowClick = (rowData) => {
-  //   const marker = markers.find(m => m.id === rowData.id);
-  //   if (marker) {
-  //     popUpRef.current.show(() => marker.popupContent, {}, "Parada Detalhes");
-  //   } else {
-  //     console.error("Marcador não encontrado para a parada clicada:", rowData.id);
-  //   }
-  // }
+  // faz a mesma coisa que clicar no marcador
+  const openStopForm = (stopId) => {
+    const stop = stops.find(s => s.ponto_id === stopId);
+    if (!stop) {
+      console.error("Parada não encontrada para ID:", stopId);
+      return;
+    }
 
+    const handleFormSubmit = (formData) => {
+      handleEditStop(stopId, formData);
+      popUpRef.current.hide();
+    };
+
+    const handleFormCancel = () => {
+      popUpRef.current.hide();
+    };
+
+    const handleFormDelete = () => {
+      handleDeleteStop(stopId);
+      popUpRef.current.hide();
+    };
+
+    popUpRef.current.show(
+      () => <StopForm 
+        initialData={stop} 
+        onSubmit={handleFormSubmit}
+        onCancel={handleFormCancel}
+        onDelete={handleFormDelete}
+        showDeleteButton={true}
+      />, 
+      {}, 
+      `Editar Parada: ${stop.nome}`
+    );
+  }
   // Handler para quando uma linha for clicada
     const handleRowClick = (rowData) => {
       // Encontrar o objeto stop original baseado no ID da linha clicada
@@ -193,9 +290,15 @@ function Stops({ pageFunctions }) {
           () => (
             <StopDetails 
               stop={marker} 
-              // onEdit={handleEditStop} 
-              // onDelete={handleDeleteStop} 
+              onEdit={()=>openStopForm(marker.ponto_id)} 
+              onDelete={handleDeleteStop} 
             />
+            // <MarkerPopUpContent 
+            //   stop={marker} 
+            //   popUpRef={popUpRef} 
+            //   onDelete={handleDeleteStop}
+            //   onEdit={handleEditStop}
+            // />
           ), 
           {}, 
           `Parada: ${marker.nome}`
@@ -207,15 +310,44 @@ function Stops({ pageFunctions }) {
 
   const handleMapClick = (latlng) => {
     //alert(`Você clicou em: ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`);
-  
+    const InnitialComponent = () => (
+      <div className="d-flex flex-row gap-2">
+        <button className="btn btn-primary"
+          onClick={() => {
+            popUpRef.current.hide(); // Fecha o pop-up atual
+            popUpRef.current.show(FormComponent, {}, "Criar Parada");
+          }}>
+            Criar Parada
+        </button>
+        
+        <button className="btn btn-secondary ms-2"
+          onClick={() => {
+            popUpRef.current.hide(); // Fecha o pop-up atual
+            console.log("Fechando o pop-up");
+          }}>
+            Cancelar
+        </button>
 
-    const Component = (
-      <div>
-        <p>latitude: {latlng.lat}</p>
-        <p>longitude: {latlng.lng}</p>
       </div>
     );
-    popUpRef.current.show(()=>Component, {}, "Nova Parada");
+
+    const FormComponent = () => (
+      <StopForm
+        initialData={{ latitude: latlng.lat, longitude: latlng.lng }} 
+        onSubmit={(formData) => {
+          api.stops.create(formData).then(() => {
+            fetchStops(); // Recarrega os pontos após a criação
+            popUpRef.current.hide();
+          }).catch(error => {
+            console.error("Erro ao criar parada:", error);
+            alert(`Erro ao criar parada: ${error.message || "Erro desconhecido"}`);
+          });
+        }}
+        onCancel={() => popUpRef.current.hide()}
+        showDeleteButton={false} // Não mostra o botão de deletar aqui
+      />
+    );
+    popUpRef.current.show(InnitialComponent, {}, "Nova Parada");
   }
 
   return (
@@ -245,15 +377,6 @@ function Stops({ pageFunctions }) {
         className="table-striped table-hover"
         onRowClick={handleRowClick}
       />
-
-      <button
-        onClick={()=>{
-          mapRef.current?.moveMap(0, 0, zoom); // Move o mapa para 0:0 com o zoom atual
-          popUpRef.current.show(() => <p>Mapa movido para 0:0</p>, {}, "Mapa Movido");
-        }}
-      >
-        mover mapa para 0:0
-      </button>
 
       <PopUpComponent 
         ref={popUpRef}

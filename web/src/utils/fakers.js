@@ -120,11 +120,82 @@ function createFakeBusData() {
     marca: faker.helpers.arrayElement(brands),
     ano_fabricacao: faker.number.int({ min: currentYear - 15, max: currentYear }).toString(),
     capacidade: faker.number.int({ min: 25, max: 80 }).toString(),
-    status_onibus_id: faker.helpers.arrayElement(['1', '2', '3'])
+    status_onibus_id: faker.helpers.arrayElement(['1', '2', '3'])  };
+}
+
+function createFakeStopData() {
+  // Cidades da região de Campinas
+  const cidades = ['Campinas', 'Amparo', 'Jaguariúna', 'Pedreira', 'Serra Negra', 'Itapira', 'Mogi Mirim'];
+  
+  // Tipos de paradas comuns
+  const tiposParada = [
+    'Terminal', 'Rodoviária', 'Centro', 'Igreja', 'Escola', 'Faculdade', 
+    'Hospital', 'UPA', 'Parque', 'Shopping', 'Estação', 'Posto'
+  ];
+  
+  // Logradouros típicos brasileiros
+  const tiposLogradouro = ['Rua', 'Avenida', 'Praça', 'Alameda', 'Travessa'];
+  const nomesLogradouro = [
+    'das Flores', 'São João', 'Central', 'da Independência', 'XV de Novembro',
+    'Getúlio Vargas', 'Dom Pedro II', 'da República', 'Santos Dumont', 'José Bonifácio',
+    'Tiradentes', 'Major Souto', 'Cel. Silva', 'Dr. Campos', 'Irmã Dulce'
+  ];
+  
+  // Bairros típicos
+  const bairros = [
+    'Centro', 'Vila Nova', 'Jardim América', 'Parque das Nações', 'Vila São João',
+    'Jardim Europa', 'Vila Industrial', 'Centro Histórico', 'Jardim das Flores',
+    'Vila Santa Maria', 'Parque São José', 'Jardim Paulista'
+  ];
+  
+  // Gera CEP válido para região de Campinas (13000-000 a 13999-999)
+  const generateCEP = () => {
+    const firstPart = faker.number.int({ min: 13000, max: 13999 });
+    const secondPart = faker.string.numeric(3);
+    return `${firstPart}-${secondPart}`;
+  };
+  
+  // Gera coordenadas próximas à região de Campinas
+  const generateCoordinates = () => {
+    // Região de Campinas: lat aproximadamente -22.9 a -22.5, lng aproximadamente -47.2 a -46.8
+    const latitude = faker.number.float({ min: -22.95, max: -22.45, fractionDigits: 8 });
+    const longitude = faker.number.float({ min: -47.25, max: -46.75, fractionDigits: 8 });
+    return { latitude, longitude };
+  };
+  
+  const cidade = faker.helpers.arrayElement(cidades);
+  const tipoParada = faker.helpers.arrayElement(tiposParada);
+  const tipoLog = faker.helpers.arrayElement(tiposLogradouro);
+  const nomeLog = faker.helpers.arrayElement(nomesLogradouro);
+  const coordinates = generateCoordinates();
+  
+  return {
+    latitude: coordinates.latitude.toString(),
+    longitude: coordinates.longitude.toString(),
+    nome: `${tipoParada} ${cidade === 'Campinas' ? faker.helpers.arrayElement(['Norte', 'Sul', 'Central', 'Leste', 'Oeste']) : cidade}`,
+    logradouro: `${tipoLog} ${nomeLog}`,
+    numero_endereco: faker.number.int({ min: 1, max: 9999 }).toString(),
+    bairro: faker.helpers.arrayElement(bairros),
+    cidade: cidade,
+    uf: 'SP',
+    cep: generateCEP(),
+    referencia: faker.helpers.arrayElement([
+      'Próximo ao banco',
+      'Em frente à farmácia',
+      'Ao lado da padaria',
+      'Esquina com a praça',
+      'Próximo ao posto de gasolina',
+      'Em frente ao supermercado',
+      'Ao lado da igreja',
+      '',
+      '',
+      ''
+    ])
   };
 }
+
 export {
-    createFakePassengerData, createFakeRouteData, createFakeBusData
+    createFakePassengerData, createFakeRouteData, createFakeBusData, createFakeStopData
 };
 
 

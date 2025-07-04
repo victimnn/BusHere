@@ -86,8 +86,8 @@ const api = {
     },
     
     // Atualizar dados de um passageiro existente
-    update: (id, passengerData) => {
-      return api.put(`/passengers/${id}`, passengerData);
+    update: (id, edits) => {
+      return api.put(`/passengers/${id}`, edits);
     },
     
     // Excluir passageiro
@@ -108,7 +108,7 @@ const api = {
     },
     getById: (id) => api.get(`/routes/${id}`),
     create: (routeData) => api.post('/routes', routeData),
-    update: (id, routeData) => api.put(`/routes/${id}`, routeData),
+    update: (id, edits) => api.put(`/routes/${id}`, edits),
     delete: (id) => api.delete(`/routes/${id}`),
     getStatus: () => api.get('/routes/status'),
   },
@@ -120,7 +120,7 @@ const api = {
     },
     getById: (id) => api.get(`/buses/${id}`),
     create: (busData) => api.post('/buses', busData),
-    update: (id, busData) => api.put(`/buses/${id}`, busData),
+    update: (id, edits) => api.put(`/buses/${id}`, edits),
     delete: (id) => api.delete(`/buses/${id}`),
     getStatus: () => api.get('/buses/status'),
   },
@@ -142,8 +142,8 @@ const api = {
     },
 
     // Atualizar dados de um ponto existente
-    update: (id, stopData) => {
-      return api.put(`/stops/${id}`, stopData);
+    update: (id, edits) => {
+      return api.put(`/stops/${id}`, edits);
     },
 
     // Excluir ponto

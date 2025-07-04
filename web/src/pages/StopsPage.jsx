@@ -186,22 +186,22 @@ function Stops({ pageFunctions }) {
   // Handler para quando uma linha for clicada
     const handleRowClick = (rowData) => {
       // Encontrar o objeto stop original baseado no ID da linha clicada
-      const originalStop = stops.find(stop => stop.ponto_id === rowData.id);
+      const marker = stops.find(stop => stop.ponto_id === rowData.id);
       
-      if (originalStop) {
+      if (marker) {
         popUpRef.current.show(
           () => (
             <StopDetails 
-              stop={originalStop} 
+              stop={marker} 
               // onEdit={handleEditStop} 
               // onDelete={handleDeleteStop} 
             />
           ), 
           {}, 
-          `Parada: ${originalStop.nome}`
+          `Parada: ${marker.nome}`
         );
       } else {
-        console.error("Stop original não encontrado para ID:", rowData.id);
+        console.error("Parada não encontrado para ID:", rowData.id);
       }
     }
 

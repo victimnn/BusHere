@@ -2,7 +2,7 @@
 import api from '../../../api/api';
 import { validateCPF, validateEmail, validatePhoneNumber } from '../../../utils/validators';
 import { formatCPF, formatPhoneNumber } from '../../../utils/formatters';
-import { createFakePassengerData, createFakeBusData, createFakeRouteData } from '../../../utils/fakers';
+import { createFakePassengerData, createFakeBusData, createFakeRouteData, createFakeStopData } from '../../../utils/fakers';
 
 export const passengerFormConfig = {
   fields: [
@@ -438,8 +438,8 @@ export const stopFormConfig = {
       labelIcon: 'bi bi-bookmark',
       inputIcon: 'bi bi-bookmark',
       placeholder: 'Ponto de referência',
-      maxLength: 255,
-      size: 'lg'
+      maxLength: 255,      size: 'lg'
     }
-  ]
+  ],
+  fakeDataGenerator: createFakeStopData
 };

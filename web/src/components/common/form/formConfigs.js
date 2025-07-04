@@ -333,3 +333,113 @@ export const routeFormConfig = {
   ],
   fakeDataGenerator: createFakeRouteData
 };
+
+export const stopFormConfig = {
+  fields: [
+    {
+      name: 'latitude',
+      type: 'hidden'
+    },
+    {
+      name: 'longitude',
+      type: 'hidden'
+    },
+    {
+      name: 'nome',
+      type: 'text',
+      label: 'Nome',
+      labelIcon: 'bi bi-geo-alt-fill',
+      inputIcon: 'bi bi-info-circle',
+      placeholder: 'Nome da parada',
+      maxLength: 255,
+      required: true,
+      size: 'lg',
+      validator: (value) => {
+        return !value.trim() ? 'Nome é obrigatório' : null;
+      }
+    },
+    {
+      name: 'logradouro',
+      type: 'text',
+      label: 'Logradouro',
+      labelIcon: 'bi bi-house-fill',
+      inputIcon: 'bi bi-geo',
+      placeholder: 'Nome da rua/avenida',
+      maxLength: 255,
+      size: 'lg',
+      validator: (value) => {
+        return value.trim() && value.length < 2 ? 'Logradouro deve ter pelo menos 2 caracteres' : null;
+      }
+    },
+    {
+      name: 'numero_endereco',
+      type: 'text',
+      label: 'Número do Endereço',
+      labelIcon: 'bi bi-123',
+      inputIcon: 'bi bi-hash',
+      placeholder: 'Número do endereço',
+      maxLength: 10,
+      size: 'lg'
+    },
+    {
+      name: 'bairro',
+      type: 'text',
+      label: 'Bairro',
+      labelIcon: 'bi bi-building',
+      inputIcon: 'bi bi-buildings',
+      placeholder: 'Nome do bairro',
+      maxLength: 100,
+      size: 'lg'
+    },
+    {
+      name: 'cidade',
+      type: 'text',
+      label: 'Cidade',
+      labelIcon: 'bi bi-geo-alt',
+      inputIcon: 'bi bi-building',
+      placeholder: 'Nome da cidade',
+      maxLength: 100,
+      size: 'lg'
+    },
+    {
+      name: 'uf',
+      type: 'text',
+      label: 'UF',
+      labelIcon: 'bi bi-flag',
+      inputIcon: 'bi bi-flag',
+      placeholder: 'Estado (ex: SP)',
+      maxLength: 2,
+      size: 'lg',
+      validator: (value) => {
+        if (value.trim() && value.length !== 2) return 'UF deve ter exatamente 2 caracteres';
+        return null;
+      }
+    },
+    {
+      name: 'cep',
+      type: 'text',
+      label: 'CEP',
+      labelIcon: 'bi bi-mailbox',
+      inputIcon: 'bi bi-envelope',
+      placeholder: '00000-000',
+      maxLength: 9,
+      size: 'lg',
+      validator: (value) => {
+        if (!value.trim()) return null;
+        const cepRegex = /^\d{5}-?\d{3}$/;
+        if (!cepRegex.test(value)) return 'CEP deve ter o formato 00000-000';
+        return null;
+      }
+    },
+    {
+      name: 'referencia',
+      type: 'text',
+      label: 'Referência',
+      labelIcon: 'bi bi-bookmark',
+      inputIcon: 'bi bi-bookmark',
+      placeholder: 'Ponto de referência',
+      maxLength: 255,
+      size: 'lg'
+    }
+  ]
+};

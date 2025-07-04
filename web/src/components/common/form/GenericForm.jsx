@@ -5,7 +5,9 @@ function GenericForm({
   config, 
   initialData, 
   onSubmit, 
-  onCancel 
+  onCancel,
+  onDelete,
+  showDeleteButton = false
 }) {
   const [formData, setFormData] = useState(() => {
     const initialFormData = {};
@@ -116,13 +118,22 @@ function GenericForm({
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
   // Manipulador de envio do formulário
   const handleSubmit = (e) => {
     e.preventDefault();
     
     if (validateForm()) {
-      onSubmit(formData);
+      // Prepara os dados para envio
+      let submitData = { ...formData };
+      
+      // Transforma latitude e longitude em coordinates array se ambos existirem
+      if (submitData.latitude && submitData.longitude) {
+        submitData.coordinates = [parseFloat(submitData.latitude), parseFloat(submitData.longitude)];
+        delete submitData.latitude;
+        delete submitData.longitude;
+      }
+      
+      onSubmit(submitData);
     }
   };
 
@@ -140,9 +151,18 @@ function GenericForm({
     const value = formData[field.name];
 
     const inputGroupClass = `input-group${field.size ? ` input-group-${field.size}` : ''}`;
-    const inputClass = `form-control${field.size ? ` form-control-${field.size}` : ''} ${error ? 'is-invalid' : ''}`;
+    const inputClass = `form-control${field.size ? ` form-control-${field.size}` : ''} ${error ? 'is-invalid' : ''}`;    switch (field.type) {
+      case 'hidden':
+        return (
+          <input
+            key={field.name}
+            type="hidden"
+            id={field.name}
+            name={field.name}
+            value={value}
+          />
+        );
 
-    switch (field.type) {
       case 'text':
       case 'email':
       case 'number':
@@ -239,8 +259,7 @@ function GenericForm({
         {config.fields.map(field => renderField(field))}
         
         <hr className="my-4" />
-        
-        <div className="d-flex justify-content-end gap-3 mt-4">
+          <div className="d-flex justify-content-end gap-3 mt-4">
           <button 
             type="button" 
             className="btn btn-outline-secondary btn-lg px-4" 
@@ -257,6 +276,17 @@ function GenericForm({
             <i className={`bi ${initialData ? 'bi-pencil-square' : 'bi-plus-circle'} me-2`}></i>
             {initialData ? 'Atualizar' : 'Cadastrar'} 
           </button>
+
+          {showDeleteButton && onDelete && initialData && (
+            <button
+              type="button"
+              className="btn btn-danger btn-lg px-4"
+              onClick={onDelete}
+            >
+              <i className="bi bi-trash me-2"></i>
+              Deletar
+            </button>
+          )}
           
           {config.fakeDataGenerator && (
             <button
@@ -278,7 +308,7 @@ GenericForm.propTypes = {
     fields: PropTypes.arrayOf(
       PropTypes.shape({
         name: PropTypes.string.isRequired,
-        type: PropTypes.oneOf(['text', 'email', 'number', 'select', 'textarea']).isRequired,
+        type: PropTypes.oneOf(['text', 'email', 'number', 'select', 'textarea', 'hidden']).isRequired,
         label: PropTypes.string.isRequired,
         labelIcon: PropTypes.string.isRequired,
         inputIcon: PropTypes.string.isRequired,
@@ -300,11 +330,12 @@ GenericForm.propTypes = {
         alternativeKey: PropTypes.string
       })
     ).isRequired,
-    fakeDataGenerator: PropTypes.func
-  }).isRequired,
+    fakeDataGenerator: PropTypes.func  }).isRequired,
   initialData: PropTypes.object,
   onSubmit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired
+  onCancel: PropTypes.func.isRequired,
+  onDelete: PropTypes.func,
+  showDeleteButton: PropTypes.bool
 };
 
 export default GenericForm;

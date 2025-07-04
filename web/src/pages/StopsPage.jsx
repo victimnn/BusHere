@@ -100,98 +100,42 @@ function sincronizeMarkers(stops, setMarkers, popUpRef, onDelete = null, onEdit 
   return newMarkers; // Retorna os novos marcadores
 }
 
-function EditStop({ stop, onEdit, onDelete }) {
-  const [fieldsArr, setFieldsArr] = useState([
-    { id: "nome", label: "Nome", type: "text", value: stop.nome, required: true, wasEdited: false },
-    { id: "logradouro", label: "Logradouro", type: "text", value: stop.logradouro, required: false, wasEdited: false },
-    { id: "numero_endereco", label: "Número do Endereço", type: "text", value: stop.numero_endereco, required: false, wasEdited: false },
-    { id: "bairro", label: "Bairro", type: "text", value: stop.bairro, required: false, wasEdited: false },
-    { id: "cidade", label: "Cidade", type: "text", value: stop.cidade, required: false, wasEdited: false },
-    { id: "uf", label: "UF", type: "text", value: stop.uf, required: false, wasEdited: false },
-    { id: "cep", label: "CEP", type: "text", value: stop.cep, required: false, wasEdited: false },
-    { id: "referencia", label: "Referência", type: "text", value: stop.referencia ?? "", required: false, wasEdited: false }
-  ])
-
-  const handleInputChange = (id, value) => {
-    setFieldsArr(prevFields => 
-      prevFields.map(field => 
-        field.id === id ? { ...field, value, wasEdited: true } : field
-      )
-    );
-  }
-
-  const handleUpdate= () => {
-    const edits = {};
-    fieldsArr.forEach(field => {
-      if (field.wasEdited) {
-        edits[field.id] = field.value;
-      }
-    });
-
-    if (Object.keys(edits).length === 0) {
-      alert("Nenhum campo foi editado.");
-      return;
-    }
-
-    if (onEdit) {
-      onEdit(stop.ponto_id, edits);
-    } else {
-      alert("Função de edição não implementada");
-    }
-  };
-
-  const handleDelete = () => {
-    if (onDelete) {
-      onDelete(stop.ponto_id);
-    } else {
-      alert("Função de exclusão não implementada");
-    }
-  };
-
-  return (
-    <div className="d-flex flex-column gap-2">
-      <h3>Editar Parada: {stop.nome}</h3>
-      {fieldsArr.map((field) => (
-        <div key={field.id} className="form-group">
-          <label htmlFor={field.id}>{field.label}</label>
-          <input
-            type={field.type}
-            className="form-control"
-            id={field.id}
-            value={field.value}
-            onChange={(e) => handleInputChange(field.id, e.target.value)}
-            required={field.required}
-          />
-        </div>
-      ))}
-      <button className="btn btn-success"
-        onClick={handleUpdate}
-      >
-        Atualizar
-      </button>
-
-      <button className="btn btn-primary" 
-        onClick={handleDelete}
-      >
-        Apagar
-      </button>
-    </div>
-  )
-}
-
 function MarkerPopUpContent({ stop, popUpRef, onDelete, onEdit }) {
   return (
     <div className="gap-0">
       <h4>{stop.nome}</h4>
       <p>Endereço: {stop.logradouro}, {stop.numero_endereco} - {stop.bairro}, {stop.cidade} - {stop.uf}</p>
-      <p>CEP: {stop.cep}</p>
       <p>Referência: {stop.referencia ?? "Nenhuma"}</p>
 
       <button className="btn btn-primary mt-2"
         onClick={() => {
           if (popUpRef && popUpRef.current) {
+            const handleFormSubmit = (formData) => {
+              if (onEdit) {
+                onEdit(stop.ponto_id, formData);
+              }
+              popUpRef.current.hide();
+            };
+
+            const handleFormCancel = () => {
+              popUpRef.current.hide();
+            };
+
+            const handleFormDelete = () => {
+              if (onDelete) {
+                onDelete(stop.ponto_id);
+              }
+              popUpRef.current.hide();
+            };
+
             popUpRef.current.show(
-              () => <EditStop stop={stop} onDelete={onDelete} onEdit={onEdit}/>, 
+              () => <StopForm 
+                initialData={stop} 
+                onSubmit={handleFormSubmit}
+                onCancel={handleFormCancel}
+                onDelete={handleFormDelete}
+                showDeleteButton={true}
+              />, 
               {}, 
               `Editar Parada: ${stop.nome}`
             );
@@ -302,15 +246,40 @@ function Stops({ pageFunctions }) {
     status: stop.ativo ? "Ativo" : "Inativo"
   }));
 
-  // const handleRowClick = (rowData) => {
-  //   const marker = markers.find(m => m.id === rowData.id);
-  //   if (marker) {
-  //     popUpRef.current.show(() => marker.popupContent, {}, "Parada Detalhes");
-  //   } else {
-  //     console.error("Marcador não encontrado para a parada clicada:", rowData.id);
-  //   }
-  // }
+  // faz a mesma coisa que clicar no marcador
+  const openStopForm = (stopId) => {
+    const stop = stops.find(s => s.ponto_id === stopId);
+    if (!stop) {
+      console.error("Parada não encontrada para ID:", stopId);
+      return;
+    }
 
+    const handleFormSubmit = (formData) => {
+      handleEditStop(stopId, formData);
+      popUpRef.current.hide();
+    };
+
+    const handleFormCancel = () => {
+      popUpRef.current.hide();
+    };
+
+    const handleFormDelete = () => {
+      handleDeleteStop(stopId);
+      popUpRef.current.hide();
+    };
+
+    popUpRef.current.show(
+      () => <StopForm 
+        initialData={stop} 
+        onSubmit={handleFormSubmit}
+        onCancel={handleFormCancel}
+        onDelete={handleFormDelete}
+        showDeleteButton={true}
+      />, 
+      {}, 
+      `Editar Parada: ${stop.nome}`
+    );
+  }
   // Handler para quando uma linha for clicada
     const handleRowClick = (rowData) => {
       // Encontrar o objeto stop original baseado no ID da linha clicada
@@ -321,9 +290,15 @@ function Stops({ pageFunctions }) {
           () => (
             <StopDetails 
               stop={marker} 
-              // onEdit={handleEditStop} 
-              // onDelete={handleDeleteStop} 
+              onEdit={()=>openStopForm(marker.ponto_id)} 
+              onDelete={handleDeleteStop} 
             />
+            // <MarkerPopUpContent 
+            //   stop={marker} 
+            //   popUpRef={popUpRef} 
+            //   onDelete={handleDeleteStop}
+            //   onEdit={handleEditStop}
+            // />
           ), 
           {}, 
           `Parada: ${marker.nome}`
@@ -335,15 +310,44 @@ function Stops({ pageFunctions }) {
 
   const handleMapClick = (latlng) => {
     //alert(`Você clicou em: ${latlng.lat.toFixed(4)}, ${latlng.lng.toFixed(4)}`);
-  
+    const InnitialComponent = () => (
+      <div className="d-flex flex-row gap-2">
+        <button className="btn btn-primary"
+          onClick={() => {
+            popUpRef.current.hide(); // Fecha o pop-up atual
+            popUpRef.current.show(FormComponent, {}, "Criar Parada");
+          }}>
+            Criar Parada
+        </button>
+        
+        <button className="btn btn-secondary ms-2"
+          onClick={() => {
+            popUpRef.current.hide(); // Fecha o pop-up atual
+            console.log("Fechando o pop-up");
+          }}>
+            Cancelar
+        </button>
 
-    const Component = (
-      <div>
-        <p>latitude: {latlng.lat}</p>
-        <p>longitude: {latlng.lng}</p>
       </div>
     );
-    popUpRef.current.show(()=>Component, {}, "Nova Parada");
+
+    const FormComponent = () => (
+      <StopForm
+        initialData={{ latitude: latlng.lat, longitude: latlng.lng }} 
+        onSubmit={(formData) => {
+          api.stops.create(formData).then(() => {
+            fetchStops(); // Recarrega os pontos após a criação
+            popUpRef.current.hide();
+          }).catch(error => {
+            console.error("Erro ao criar parada:", error);
+            alert(`Erro ao criar parada: ${error.message || "Erro desconhecido"}`);
+          });
+        }}
+        onCancel={() => popUpRef.current.hide()}
+        showDeleteButton={false} // Não mostra o botão de deletar aqui
+      />
+    );
+    popUpRef.current.show(InnitialComponent, {}, "Nova Parada");
   }
 
   return (

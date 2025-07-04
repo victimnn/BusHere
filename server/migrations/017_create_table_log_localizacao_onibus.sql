@@ -12,6 +12,4 @@ CREATE TABLE LogLocalizacaoOnibus (
     velocidade DECIMAL(5,2) COMMENT 'Velocidade em km/h, se disponível',
     timestamp_recebimento TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Quando o sistema recebeu este dado',
     FOREIGN KEY (onibus_id) REFERENCES Onibus(onibus_id) ON DELETE CASCADE
-
-
-) COMMENT 'Log de localizações recebidas do sistema de rastreamento GPS [cite: 2, 33]';
+);

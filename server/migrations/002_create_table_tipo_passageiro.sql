@@ -11,7 +11,7 @@ CREATE TABLE TipoPassageiro (
     atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     ativo BOOLEAN DEFAULT TRUE,
 
-    INDEX idx_tipo_passsageiro_ativo (ativo)
+    INDEX idx_tipo_passageiro_ativo (ativo)
 );
 
 -- Inserindo dados de exemplo na tabela Passageiros

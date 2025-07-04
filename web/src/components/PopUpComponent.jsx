@@ -53,10 +53,9 @@ const PopUpComponent = forwardRef((props, ref) => {
           ...styles.fullScreenOverlay // Estilos combinados para cobrir a tela e ser o backdrop
       }}
       onClick={hide} // Fechar ao clicar no fundo transparente (este div)
-    >
-      {/* Adicionamos onClick com stopPropagation para evitar que cliques no conteúdo fechem o modal */}
-      <div className="modal-dialog modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-content">
+    >      {/* Adicionamos onClick com stopPropagation para evitar que cliques no conteúdo fechem o modal */}
+      <div className="modal-dialog modal-dialog-centered d-flex justify-content-center" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-content w-auto">
           <div className="modal-header">
             {/* Adicionado o título do modal */}
             {title && <h5 className="modal-title" id="myBootstrapModalLabel">{title}</h5>}

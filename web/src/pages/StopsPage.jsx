@@ -246,15 +246,6 @@ function Stops({ pageFunctions }) {
         onRowClick={handleRowClick}
       />
 
-      <button
-        onClick={()=>{
-          mapRef.current?.moveMap(0, 0, zoom); // Move o mapa para 0:0 com o zoom atual
-          popUpRef.current.show(() => <p>Mapa movido para 0:0</p>, {}, "Mapa Movido");
-        }}
-      >
-        mover mapa para 0:0
-      </button>
-
       <PopUpComponent 
         ref={popUpRef}
       />

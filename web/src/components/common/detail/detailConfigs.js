@@ -130,7 +130,7 @@ export const stopConfig = {
     {
       key: "logradouro",
       label: "Logradouro",
-      icon: "bi bi-road"
+      icon: "'bi bi-geo-alt-fill'"
     },
     {
       key: "numero_endereco",

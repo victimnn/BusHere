@@ -347,6 +347,16 @@ function Stops({ pageFunctions }) {
         onRowClick={handleRowClick}
       />
 
+      <div className="card border-0 bg-light shadow-sm mt-4 p-3 ms-3 me-3">
+        <div className="d-flex align-items-center">
+          <i className="bi bi-info-circle-fill text-primary me-3 fs-4"></i>
+          <p className="mb-0 text-muted">
+            <strong>Dica:</strong>
+            Para adicionar um novo ponto, clique no mapa.
+          </p>
+        </div>
+      </div>
+
       <PopUpComponent 
         ref={popUpRef}
       />

@@ -40,7 +40,7 @@ const PerformanceSection = ({ reportData }) => {
         if (capacidadeTotal === 0) return 0;
         return ((totalPassageiros / capacidadeTotal) * 100).toFixed(1);
       })(),
-      gradient: "linear-gradient(90deg, #4facfe 0%, #00f2fe 100%)",
+      gradient: "linear-gradient(90deg, #12BE4D 0%, #5CE98B 100%)", // Primary gradient
       description: "Passageiros vs Capacidade Total"
     },
     {
@@ -53,7 +53,7 @@ const PerformanceSection = ({ reportData }) => {
         if (totalPontos === 0) return 0;
         return ((pontosAtivos / totalPontos) * 100).toFixed(1);
       })(),
-      gradient: "linear-gradient(90deg, #f093fb 0%, #f5576c 100%)",
+      gradient: "linear-gradient(90deg, #1E90FF 0%, #12BEA0 100%)", // Info to analogous
       description: (() => {
         const totalPontos = reportData.stats?.stops?.total_pontos || reportData.stops?.length || 0;
         const pontosAtivos = reportData.stats?.stops?.pontos_ativos || 
@@ -71,7 +71,7 @@ const PerformanceSection = ({ reportData }) => {
         if (totalRotas === 0) return 0;
         return ((rotasAtivas / totalRotas) * 100).toFixed(1);
       })(),
-      gradient: "linear-gradient(90deg, #fa709a 0%, #fee140 100%)",
+      gradient: "linear-gradient(90deg, #FF6B6B 0%, #FFC107 100%)", // Accent to warning
       description: "Rotas Ativas vs Total"
     }
   ];
@@ -79,14 +79,14 @@ const PerformanceSection = ({ reportData }) => {
   return (
     <div className="row mb-5">
       <div className="col-12">
-        <div className="card border-0 shadow-sm" style={{borderRadius: '20px'}}>
+        <div className="card border-0 shadow-sm performance-card">
           <div className="card-header bg-transparent border-0 p-4">
             <div className="d-flex align-items-center">
               <div className="bg-success bg-opacity-10 rounded-circle p-2 me-3">
                 <i className="fas fa-tachometer-alt text-success"></i>
               </div>
               <div>
-                <h5 className="mb-0 fw-bold">Indicadores de Performance</h5>
+                <h5 className="mb-0 fw-bold text-primary">Indicadores de Performance</h5>
                 <small className="text-muted">Métricas de eficiência operacional</small>
               </div>
             </div>

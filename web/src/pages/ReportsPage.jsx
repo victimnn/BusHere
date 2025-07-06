@@ -26,7 +26,7 @@ import { useReportData } from "../hooks/useReportData";
 import { useChartData } from "../hooks/useChartData";
 
 // Estilos
-import { customStyles } from "../styles/reportStyles";
+import "../../styles/reportStyles.scss";
 
 // Registrar componentes do Chart.js
 ChartJS.register(
@@ -47,17 +47,6 @@ function Reports({ pageFunctions }) {
   const chartData = useChartData(reportData);
 
   pageFunctions.set("Relatórios", true, true);
-
-  // Injetar estilos CSS na página
-  useEffect(() => {
-    const styleElement = document.createElement('style');
-    styleElement.innerHTML = customStyles;
-    document.head.appendChild(styleElement);
-    
-    return () => {
-      document.head.removeChild(styleElement);
-    };
-  }, []);
 
   // Função para exportar dados
   const handleExport = () => {

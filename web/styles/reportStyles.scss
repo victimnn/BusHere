@@ -1,0 +1,589 @@
+// Importar as variáveis customizadas
+@import "./custom.scss";
+
+/* Estilos SCSS customizados para a página de relatórios */
+
+/* Gradientes alinhados com a identidade visual */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, $primary 0%, $primary-dark 100%) !important;
+}
+
+.bg-gradient-success {
+  background: linear-gradient(135deg, $primary 0%, $analogous-1 100%) !important;
+}
+
+.bg-gradient-info {
+  background: linear-gradient(135deg, $info 0%, $analogous-1 100%) !important;
+}
+
+.bg-gradient-warning {
+  background: linear-gradient(135deg, $warning 0%, $accent 100%) !important;
+}
+
+.bg-gradient-danger {
+  background: linear-gradient(135deg, $danger 0%, $accent 100%) !important;
+}
+
+/* Cards com hover effects */
+.card-hover {
+  transition: $btn-transition;
+  position: relative;
+  overflow: hidden;
+  border-radius: $border-radius !important;
+  border: 1px solid rgba(0,0,0,0.08);
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+    border-color: rgba($primary, 0.2);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transition: left 0.4s ease;
+  }
+
+  &:hover::before {
+    left: 100%;
+  }
+}
+
+/* Progress bars */
+.progress {
+  background-color: rgba($primary, 0.1) !important;
+  border-radius: $border-radius;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, $primary 0%, $primary-light 100%);
+}
+
+/* Chart containers */
+.chart-container {
+  position: relative;
+  height: 250px;
+  max-height: 250px;
+  background: rgba($bg-medium, 0.5);
+  border-radius: $border-radius;
+  padding: 1rem;
+}
+
+/* Stats icons */
+.stats-icon {
+  font-size: 2.2rem;
+  opacity: 1;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1), inset 0 1px 2px rgba(255,255,255,0.2);
+
+  &:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15), inset 0 1px 2px rgba(255,255,255,0.3);
+  }
+
+  i {
+    color: $white !important;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    font-weight: 600;
+  }
+}
+
+/* Animated counter */
+.animated-counter {
+  display: inline-block;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: $white;
+}
+
+/* Stats cards */
+.stats-card {
+  .card-body {
+    position: relative;
+    z-index: 2;
+    border-radius: $border-radius;
+  }
+
+  min-height: 140px;
+  max-height: 180px;
+  border-radius: $border-radius !important;
+  border: none;
+  box-shadow: $box-shadow-sm;
+}
+
+/* Metric cards */
+.metric-card {
+  background: rgba($white, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba($primary, 0.1);
+  border-radius: $border-radius;
+
+  &:hover {
+    border-color: rgba($primary, 0.2);
+    background: rgba($white, 1);
+  }
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+}
+
+/* Botões alinhados com a identidade visual */
+.btn-primary {
+  background: linear-gradient(135deg, $primary 0%, $primary-light 100%);
+  border: none;
+  border-radius: $border-radius;
+  transition: $btn-transition;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba($primary, 0.2);
+
+  &:hover {
+    background: linear-gradient(135deg, $primary-dark 0%, $primary 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba($primary, 0.3);
+  }
+}
+
+.btn-outline-primary {
+  border-color: $primary;
+  color: $primary;
+  border-radius: $border-radius;
+  transition: $btn-transition;
+  font-weight: 500;
+
+  &:hover {
+    background-color: $primary;
+    border-color: $primary;
+    color: $white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba($primary, 0.3);
+  }
+}
+
+/* Estilo específico para botão outline-light no header */
+.bg-gradient-primary .btn-outline-light {
+  &:hover {
+    background-color: rgba($white, 1);
+    border-color: rgba($white, 1);
+    color: $primary !important;
+    box-shadow: 0 4px 8px rgba($white, 0.2);
+  }
+
+  &:focus {
+    background-color: rgba($white, 0.15);
+    border-color: rgba($white, 0.3);
+    color: $white !important;
+    box-shadow: 0 0 0 0.2rem rgba($white, 0.25);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    background-color: transparent;
+    border-color: rgba($white, 0.3);
+    color: rgba($white, 0.7) !important;
+  }
+}
+
+/* Garantir scroll único no body */
+body {
+  overflow-y: auto !important;
+  overflow-x: hidden;
+}
+
+/* Layout e scroll */
+.reports-main {
+  height: auto;
+  min-height: calc(100vh - 120px);
+  overflow-x: hidden;
+  overflow-y: visible;
+  padding-bottom: 2rem;
+  scroll-behavior: smooth;
+  background: linear-gradient(135deg, $bg-medium 0%, $white 100%);
+
+  &.container-fluid {
+    max-height: none;
+    height: auto;
+    overflow-y: visible !important;
+    padding-top: 1rem;
+    background: transparent;
+  }
+}
+
+/* Chart cards */
+.chart-card {
+  min-height: 350px;
+  max-height: 450px;
+  border-radius: $border-radius !important;
+  border: 1px solid rgba($border-color, 0.5);
+  background: rgba($white, 0.95);
+  backdrop-filter: blur(8px);
+
+  .card-body {
+    height: 300px;
+    overflow: hidden;
+    padding: 1.5rem;
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, $bg-medium 0%, $white 100%);
+    border-bottom: 1px solid rgba($primary, 0.1);
+    border-radius: $border-radius $border-radius 0 0 !important;
+  }
+}
+
+/* Performance cards */
+.performance-card {
+  border-radius: $border-radius !important;
+  border: 1px solid rgba($border-color, 0.5);
+  background: rgba($white, 0.98);
+  transition: $btn-transition;
+
+  &:hover {
+    border-color: rgba($primary, 0.2);
+    box-shadow: 0 .25rem .5rem rgba($primary, .1);
+  }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .stats-icon {
+    font-size: 1.8rem;
+    width: 50px;
+    height: 50px;
+
+    i {
+      color: $white;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    }
+  }
+
+  .card-body h2 {
+    font-size: 1.5rem !important;
+  }
+
+  .chart-card {
+    min-height: 300px;
+    max-height: 350px;
+
+    .card-body {
+      height: 250px;
+      padding: 1rem;
+    }
+  }
+
+  .stats-card {
+    min-height: 120px;
+    max-height: 150px;
+  }
+
+  .reports-main {
+    padding-bottom: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .stats-icon {
+    font-size: 1.5rem;
+    width: 45px;
+    height: 45px;
+
+    i {
+      color: $white;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+    }
+  }
+
+  .chart-container {
+    height: 200px;
+    max-height: 200px;
+    padding: 0.5rem;
+  }
+
+  .chart-card .card-body {
+    height: 200px;
+    padding: 0.75rem;
+  }
+
+  .card-body h2 {
+    font-size: 1.3rem !important;
+  }
+
+  .btn {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* Melhorias de acessibilidade e UX */
+.card-title {
+  color: rgba($white, 0.9);
+  font-weight: 500;
+}
+
+.text-muted {
+  color: $text-muted !important;
+}
+
+.border-primary {
+  border-color: $primary !important;
+}
+
+.text-primary {
+  color: $primary !important;
+}
+
+.alert-info {
+  background-color: rgba($info, 0.1);
+  border-color: rgba($info, 0.2);
+  color: $info;
+}
+
+.alert-success {
+  background-color: rgba($primary, 0.1);
+  border-color: rgba($primary, 0.2);
+  color: $primary;
+}
+
+/* === CÍRCULOS PERFEITOS - Padronização de elementos elípticos === */
+
+/* Botão de três pontos nas tabelas - transformar em círculo perfeito */
+.btn-secondary {
+  &.p-2 {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.875rem !important;
+    line-height: 1 !important;
+    font-weight: bold !important;
+    min-width: 32px !important;
+    
+    &:hover {
+      transform: scale(1.05) !important;
+      transition: transform 0.2s ease !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+    }
+  }
+}
+
+/* Ícones circulares - garantir que sejam círculos perfeitos */
+.rounded-circle {
+  border-radius: 50% !important;
+  
+  /* Para ícones que podem ter tamanhos diferentes */
+  &.p-2, &.p-3 {
+    aspect-ratio: 1 / 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  /* Sidebar logo icon */
+  &.d-flex {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+  }
+}
+
+/* Garantir que todos os avatares sejam círculos perfeitos */
+.avatar {
+  width: $avatar-size !important;
+  height: $avatar-size !important;
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1 !important;
+  object-fit: cover !important;
+}
+
+/* Indicadores de status circulares */
+.badge {
+  &.rounded-pill {
+    border-radius: 50rem !important;
+  }
+}
+
+/* Botões de ação circulares */
+.btn-circle {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1rem !important;
+  
+  &.btn-sm {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 0.875rem !important;
+  }
+  
+  &.btn-lg {
+    width: 48px !important;
+    height: 48px !important;
+    font-size: 1.125rem !important;
+  }
+  
+  &:hover {
+    transform: scale(1.05) !important;
+    transition: transform 0.2s ease !important;
+  }
+}
+
+/* Spinner/loading circulares */
+.spinner-border {
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1 !important;
+}
+
+/* Progress bars circulares se houver */
+.progress-circle {
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1 !important;
+  
+  .progress-bar {
+    border-radius: 50% !important;
+  }
+}
+
+/* Garantir que elementos de mapa sejam circulares */
+.leaflet-marker-icon {
+  border-radius: 50% !important;
+}
+
+/* Ícones de notificação circulares */
+.notification-badge {
+  min-width: 20px !important;
+  height: 20px !important;
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.75rem !important;
+  line-height: 1 !important;
+}
+
+/* Botões flutuantes circulares */
+.btn-floating {
+  width: 56px !important;
+  height: 56px !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+  
+  &:hover {
+    transform: scale(1.1) !important;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3) !important;
+  }
+}
+
+/* Override para elementos Bootstrap que podem ser elípticos */
+.btn-close {
+  border-radius: 50% !important;
+  width: 32px !important;
+  height: 32px !important;
+  
+  &:hover {
+    transform: scale(1.05) !important;
+  }
+}
+
+/* Dots de paginação circulares */
+.pagination .page-link {
+  &.rounded-circle {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+/* Toggle switches circulares */
+.form-check-input {
+  &[type="checkbox"] {
+    border-radius: 50% !important;
+    
+    &:checked {
+      border-radius: 50% !important;
+    }
+  }
+}
+
+/* Chips/tags circulares */
+.chip, .tag {
+  &.rounded {
+    border-radius: 50rem !important;
+  }
+}
+
+/* === GLOBAL CIRCLE OVERRIDES === */
+/* Aplicar círculos perfeitos globalmente para elementos específicos */
+
+/* Todos os botões com classe específica para círculos */
+.table .btn {
+  &.btn-secondary {
+    /* Especificamente para botões "..." nas tabelas */
+    &:contains("...") {
+      width: 32px !important;
+      height: 32px !important;
+      border-radius: 50% !important;
+      padding: 0 !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+  }
+}
+
+/* Garantir círculos perfeitos em componentes do sidebar */
+#sidebar .rounded-circle {
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1 !important;
+}
+
+/* Aplicar a todos os elementos com data-circle="true" */
+[data-circle="true"] {
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1 !important;
+  
+  &.btn {
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}

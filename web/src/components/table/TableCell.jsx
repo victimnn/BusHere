@@ -23,10 +23,24 @@ function TableCell({ value, popUpRef }) {
     if (popUpRef && Array.isArray(value)) {
       return (
         <button 
-          className="btn btn-secondary p-2 pb-0 pt-0"
+          className="btn btn-secondary circle"
+          data-circle="true"
           onClick={(e) => {
             e.stopPropagation(); // previne o evento de click na linha
             popUpRef.current.show(popUpContent, {}, 'Valores');
+          }}
+          style={{
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            padding: '0',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '0.875rem',
+            lineHeight: '1',
+            fontWeight: 'bold',
+            minWidth: '32px'
           }}
         >
           ...

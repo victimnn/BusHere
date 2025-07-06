@@ -26,31 +26,27 @@ const extractCity = (address) => {
 };
 
 export const useChartData = (reportData) => {
-  // Dados para gráfico de passageiros por tipo
-  const passengersByTypeData = {
-    labels: reportData.chartData?.passengersByType?.map(item => item.label) || 
-            reportData.passengerTypes.map(type => type.nome),
+  // Dados para gráfico de passageiros por cidade
+  const passengersByCityData = {
+    labels: reportData.chartData?.passengersByCity?.map(item => item.label) || [],
     datasets: [{
       label: 'Número de Passageiros',
-      data: reportData.chartData?.passengersByType?.map(item => item.value) ||
-            reportData.passengerTypes.map(type => 
-              reportData.passengers.filter(p => p.tipo_passageiro_id === type.tipo_passageiro_id).length
-            ),
+      data: reportData.chartData?.passengersByCity?.map(item => item.value) || [],
       backgroundColor: [
-        'rgba(54, 162, 235, 0.8)',
-        'rgba(255, 99, 132, 0.8)',
-        'rgba(255, 205, 86, 0.8)',
-        'rgba(75, 192, 192, 0.8)',
-        'rgba(153, 102, 255, 0.8)',
+        'rgba(18, 190, 77, 0.8)',   // Primary green
+        'rgba(18, 190, 160, 0.8)',  // Analogous 1
+        'rgba(18, 190, 24, 0.8)',   // Analogous 2
+        'rgba(30, 144, 255, 0.8)',  // Info blue
+        'rgba(255, 107, 107, 0.8)', // Accent red
       ],
       borderColor: [
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 99, 132, 1)',
-        'rgba(255, 205, 86, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
+        'rgba(18, 190, 77, 1)',
+        'rgba(18, 190, 160, 1)',
+        'rgba(18, 190, 24, 1)',
+        'rgba(30, 144, 255, 1)',
+        'rgba(255, 107, 107, 1)',
       ],
-      borderWidth: 1
+      borderWidth: 2
     }]
   };
 
@@ -65,18 +61,18 @@ export const useChartData = (reportData) => {
               reportData.buses.filter(bus => (bus.status_nome || 'Não informado') === status).length
             ),
       backgroundColor: [
-        'rgba(75, 192, 192, 0.8)',
-        'rgba(255, 99, 132, 0.8)',
-        'rgba(255, 205, 86, 0.8)',
-        'rgba(54, 162, 235, 0.8)',
+        'rgba(18, 190, 77, 0.8)',   // Primary green
+        'rgba(255, 107, 107, 0.8)', // Accent red  
+        'rgba(255, 193, 7, 0.8)',   // Warning yellow
+        'rgba(30, 144, 255, 0.8)',  // Info blue
       ],
       borderColor: [
-        'rgba(75, 192, 192, 1)',
-        'rgba(255, 99, 132, 1)',
-        'rgba(255, 205, 86, 1)',
-        'rgba(54, 162, 235, 1)',
+        'rgba(18, 190, 77, 1)',
+        'rgba(255, 107, 107, 1)',
+        'rgba(255, 193, 7, 1)',
+        'rgba(30, 144, 255, 1)',
       ],
-      borderWidth: 1
+      borderWidth: 2
     }]
   };
 
@@ -90,9 +86,9 @@ export const useChartData = (reportData) => {
             [...new Set(reportData.routes.map(route => route.status_nome || 'Não informado'))].map(status =>
               reportData.routes.filter(route => (route.status_nome || 'Não informado') === status).length
             ),
-      backgroundColor: 'rgba(153, 102, 255, 0.8)',
-      borderColor: 'rgba(153, 102, 255, 1)',
-      borderWidth: 1
+      backgroundColor: 'rgba(255, 107, 107, 0.8)', // Accent red
+      borderColor: 'rgba(255, 107, 107, 1)',
+      borderWidth: 2
     }]
   };
 
@@ -111,14 +107,14 @@ export const useChartData = (reportData) => {
               .map(city =>
                 reportData.stops.filter(stop => extractCity(stop.endereco || stop.address || '') === city).length
               ),
-      backgroundColor: 'rgba(255, 159, 64, 0.8)',
-      borderColor: 'rgba(255, 159, 64, 1)',
-      borderWidth: 1
+      backgroundColor: 'rgba(30, 144, 255, 0.8)', // Info blue
+      borderColor: 'rgba(30, 144, 255, 1)',
+      borderWidth: 2
     }]
   };
 
   return {
-    passengersByType: passengersByTypeData,
+    passengersByCity: passengersByCityData,
     busStatus: busStatusData,
     routeStatus: routeStatusData,
     stopsByCity: stopsByCityData

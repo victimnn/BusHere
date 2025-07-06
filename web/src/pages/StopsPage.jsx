@@ -46,7 +46,6 @@ function StopComponent({ name = "", passengers = "", routeAmount = "" }) {
   );
 }
 
-
 /**
  * Retorna uma cor de ícone baseada em algum valor
  * @param {string} str - Valor baseado no qual a cor do ícone será determinada
@@ -66,7 +65,6 @@ function getColorBasedOnValue(str) {
   const hue = (hash**7) % 360 ; // Gera um valor de matiz baseado no hash
   return `hsl(${hue}, 100%, 50%)`; // Retorna uma cor HSL
 } const IconColorCache = new Map();
-
 
 /** 
 * Função para sincronizar os marcadores com os pontos buscados
@@ -268,22 +266,46 @@ function Stops({ pageFunctions }) {
 
   const handleMapClick = (latlng) => {
     const InnitialComponent = () => (
-      <div className="d-flex flex-row gap-2">
-        <button className="btn btn-primary"
-          onClick={() => {
-            popUpRef.current.hide(); // Fecha o pop-up atual
-            handleCreateStop({ latitude: latlng.lat, longitude: latlng.lng });
-          }}>
-            Criar Ponto
-        </button>
+      <div className="p-4">
+        <div className="text-center mb-4">
+          <div className="mb-3">
+            <i className="bi bi-geo-alt-fill text-primary fs-1"></i>
+          </div>
+          
+          <h5 className="mb-2 fw-bold text-dark">
+            Novo Ponto de Parada
+          </h5>
+
+          <div className="bg-light rounded-pill px-3 py-2 d-inline-block">
+            <i className="bi bi-compass me-2 text-primary"></i>
+            <span className="font-monospace text-dark">
+              {latlng.lat.toFixed(6)}, {latlng.lng.toFixed(6)}
+            </span>
+          </div>
+        </div>
         
-        <button className="btn btn-secondary ms-2"
-          onClick={() => {
-            popUpRef.current.hide(); // Fecha o pop-up atual
-            console.log("Fechando o pop-up");
-          }}>
+        <div className="d-flex gap-3 justify-content-center">
+          <button 
+            className="btn btn-primary btn-lg px-4 py-2"
+            onClick={() => {
+              popUpRef.current.hide();
+              handleCreateStop({ latitude: latlng.lat, longitude: latlng.lng });
+            }}
+          >
+            <i className="bi bi-plus-circle me-2"></i>
+            <span>Criar Ponto</span>
+          </button>
+          <button 
+            type="button" 
+            className="btn btn-outline-secondary btn-lg px-4 py-2" 
+            onClick={() => {
+              popUpRef.current.hide();
+            }}
+          >
+            <i className="bi bi-x-circle me-2"></i>
             Cancelar
-        </button>
+          </button>
+        </div>
       </div>
     );
 

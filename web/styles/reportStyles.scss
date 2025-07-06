@@ -150,20 +150,20 @@
 }
 
 /* Botões alinhados com a identidade visual */
-.btn-primary {
-  background: linear-gradient(135deg, $primary 0%, $primary-light 100%);
-  border: none;
-  border-radius: $border-radius;
-  transition: $btn-transition;
-  font-weight: 500;
-  box-shadow: 0 2px 4px rgba($primary, 0.2);
+// .btn-primary {
+//   background: linear-gradient(135deg, $primary 0%, $primary-light 100%);
+//   border: none;
+//   border-radius: $border-radius;
+//   transition: $btn-transition;
+//   font-weight: 500;
+//   box-shadow: 0 2px 4px rgba($primary, 0.2);
 
-  &:hover {
-    background: linear-gradient(135deg, $primary-dark 0%, $primary 100%);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba($primary, 0.3);
-  }
-}
+//   &:hover {
+//     background: linear-gradient(135deg, $primary-dark 0%, $primary 100%);
+//     transform: translateY(-1px);
+//     box-shadow: 0 4px 8px rgba($primary, 0.3);
+//   }
+// }
 
 .btn-outline-primary {
   border-color: $primary;

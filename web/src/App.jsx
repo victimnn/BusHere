@@ -65,7 +65,7 @@ function App() {
                 <Route path="/settings" element={<SettingsPage pageFunctions={pageFunctions}/>} />
                 <Route path="/login" element={<LoginPage pageFunctions={pageFunctions}/>} />
 
-                <Route path="/search/:searchTerm" element={<SearchPage  />} />
+                <Route path="/search/:searchTerm" element={<SearchPage   />} />
               </Routes>
             </div>
           </main>

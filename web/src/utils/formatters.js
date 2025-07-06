@@ -13,3 +13,15 @@ export function removeFormatting(value) {
   if (!value) return value;
   return value.replace(/\D/g, '');
 }
+
+export function formatCEP(value) {
+  if (!value) return '';
+  // Remove tudo que não é número
+  const numbers = value.replace(/\D/g, '');
+  // Aplica a formatação 00000-000
+  if (numbers.length <= 5) {
+    return numbers;
+  } else {
+    return numbers.slice(0, 5) + '-' + numbers.slice(5, 8);
+  }
+}

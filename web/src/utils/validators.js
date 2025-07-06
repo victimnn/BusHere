@@ -75,3 +75,34 @@ export function validadeRawCPF(cpf) {
     
     return remainder === parseInt(cpf.substring(10, 11));
 }
+
+/**
+ * Valida um CEP no formato XXXXX-XXX
+ * @param {string} cep - O CEP a ser validado (formato: XXXXX-XXX)
+ * @return {boolean} - Retorna true se o CEP for válido, caso contrário, false
+ */
+export function validateCEP(cep) {
+    if (!cep || !cep.trim()) return false;
+    
+    // Remove caracteres que não são números ou hífen
+    const cleanValue = cep.replace(/[^0-9-]/g, '');
+    
+    // Verifica se contém apenas números e hífen
+    if (cleanValue !== cep) {
+        return false;
+    }
+    
+    // Verifica o formato correto
+    const cepRegex = /^\d{5}-?\d{3}$/;
+    if (!cepRegex.test(cep)) {
+        return false;
+    }
+    
+    // Verifica se tem exatamente 8 dígitos
+    const numbersOnly = cep.replace(/\D/g, '');
+    if (numbersOnly.length !== 8) {
+        return false;
+    }
+    
+    return true;
+}

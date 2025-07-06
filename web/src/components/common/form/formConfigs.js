@@ -1,8 +1,9 @@
 // Configurações para o componente GenericForm
 import api from '../../../api/api';
-import { validateCPF, validateEmail, validatePhoneNumber } from '../../../utils/validators';
-import { formatCPF, formatPhoneNumber } from '../../../utils/formatters';
+import { validateCPF, validateEmail, validatePhoneNumber, validateCEP } from '../../../utils/validators';
+import { formatCPF, formatPhoneNumber, formatCEP } from '../../../utils/formatters';
 import { createFakePassengerData, createFakeBusData, createFakeRouteData, createFakeStopData } from '../../../utils/fakers';
+import { BRAZILIAN_STATES, isValidUF } from '../../../utils/brazilianStates';
 
 export const passengerFormConfig = {
   fields: [
@@ -373,7 +374,7 @@ export const stopFormConfig = {
     },
     {
       name: 'numero_endereco',
-      type: 'text',
+      type: 'number',
       label: 'Número do Endereço',
       labelIcon: 'bi bi-123',
       inputIcon: 'bi bi-hash',
@@ -403,15 +404,19 @@ export const stopFormConfig = {
     },
     {
       name: 'uf',
-      type: 'text',
+      type: 'select',
       label: 'UF',
       labelIcon: 'bi bi-flag',
       inputIcon: 'bi bi-flag',
-      placeholder: 'Estado (ex: SP)',
-      maxLength: 2,
+      placeholder: 'Selecione o estado',
       size: 'lg',
+      defaultOptions: BRAZILIAN_STATES,
+      optionValue: 'value',
+      optionLabel: 'label',
       validator: (value) => {
-        if (value.trim() && value.length !== 2) return 'UF deve ter exatamente 2 caracteres';
+        if (value && !isValidUF(value)) {
+          return 'Estado inválido';
+        }
         return null;
       }
     },
@@ -424,10 +429,10 @@ export const stopFormConfig = {
       placeholder: '00000-000',
       maxLength: 9,
       size: 'lg',
+      formatter: formatCEP,
       validator: (value) => {
         if (!value.trim()) return null;
-        const cepRegex = /^\d{5}-?\d{3}$/;
-        if (!cepRegex.test(value)) return 'CEP deve ter o formato 00000-000';
+        if (!validateCEP(value)) return 'CEP deve ter o formato 00000-000 e conter apenas números e hífen';
         return null;
       }
     },
@@ -438,7 +443,8 @@ export const stopFormConfig = {
       labelIcon: 'bi bi-bookmark',
       inputIcon: 'bi bi-bookmark',
       placeholder: 'Ponto de referência',
-      maxLength: 255,      size: 'lg'
+      maxLength: 255,      
+      size: 'lg'
     }
   ],
   fakeDataGenerator: createFakeStopData

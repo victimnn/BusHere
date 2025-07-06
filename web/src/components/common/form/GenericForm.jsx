@@ -37,17 +37,22 @@ function GenericForm({
       const newSelectOptions = {};
       
       for (const field of config.fields) {
-        if (field.type === 'select' && field.loadOptions) {
-          try {
-            const response = await field.loadOptions();
-            if (response && response.data) {
-              newSelectOptions[field.name] = response.data;
+        if (field.type === 'select') {
+          if (field.loadOptions) {
+            try {
+              const response = await field.loadOptions();
+              if (response && response.data) {
+                newSelectOptions[field.name] = response.data;
+              }
+            } catch (error) {
+              console.error(`Erro ao carregar opções para ${field.name}:`, error);
+              if (field.defaultOptions) {
+                newSelectOptions[field.name] = field.defaultOptions;
+              }
             }
-          } catch (error) {
-            console.error(`Erro ao carregar opções para ${field.name}:`, error);
-            if (field.defaultOptions) {
-              newSelectOptions[field.name] = field.defaultOptions;
-            }
+          } else if (field.defaultOptions) {
+            // Usa defaultOptions diretamente quando não há loadOptions
+            newSelectOptions[field.name] = field.defaultOptions;
           }
         }
       }

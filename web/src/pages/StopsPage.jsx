@@ -6,6 +6,7 @@ import MarkerPopUpContent from "../components/stops/MarkerPopUpContent";
 import MapComponent from "../components/MapComponent";
 import Table from "../components/Table";
 import api from "../api/api";
+import { getColorBasedOnValue } from "../utils/mapIcons";
 
 function MajorStops( { stops = [] } ) {
   return (
@@ -46,42 +47,25 @@ function StopComponent({ name = "", passengers = "", routeAmount = "" }) {
   );
 }
 
-/**
- * Retorna uma cor de ícone baseada em algum valor
- * @param {string} str - Valor baseado no qual a cor do ícone será determinada
- * @return {string} - Retorna uma cor em formato hexadecimal ou nome de cor
- */
-function getColorBasedOnValue(str) {
-  console.log("getColorBasedOnValue called with:", str, typeof str);
-  if (typeof str !== "string" || !str) {
-    return "red"; 
-  }
-
-  if (IconColorCache.has(str)) {
-    return IconColorCache.get(str); // Retorna a cor do cache
-  }
-
-  const hash = Array.from(str).reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const hue = (hash**7) % 360 ; // Gera um valor de matiz baseado no hash
-  return `hsl(${hue}, 100%, 50%)`; // Retorna uma cor HSL
-} const IconColorCache = new Map();
-
 /** 
 * Função para sincronizar os marcadores com os pontos buscados
 * @param {Array} stops - Array de objetos representando os pontos
 * @param {Function} setMarkers - Função para atualizar o estado dos marcadores
+* @param {Object} popUpRef - Referência para o componente PopUpComponent
+* @param {Function} onDelete - Função callback para deletar um ponto
+* @param {Function} onEdit - Função callback para editar um ponto
 * @returns {Array} - Retorna um novo array de marcadores formatados
 */
-function sincronizeMarkers(stops, setMarkers, popUpRef, onDelete = null, onEdit = null) {
+export function sincronizeMarkers(stops, setMarkers, popUpRef, onDelete = null, onEdit = null) {
   const newMarkers = stops.map(stop => ({
     position: [parseFloat(stop.latitude), parseFloat(stop.longitude)],
     popupContent: 
       <MarkerPopUpContent 
-        stop={stop} 
-        popUpRef={popUpRef} 
+        stop={stop}
+        popUpRef={popUpRef}
         onDelete={onDelete}
-        onEdit={onEdit} 
-      />, 
+        onEdit={onEdit}
+      />,
     color: stop.ativo ? getColorBasedOnValue(String(stop.latitude) + String(stop.longitude)) : "gray", // Cor baseada na latitude e longitude, ou cinza se inativo
     size: 32,
     id: stop.ponto_id // ID único para o marcador
@@ -351,7 +335,7 @@ function Stops({ pageFunctions }) {
         <div className="d-flex align-items-center justify-content-center">
           <i className="bi bi-info-circle-fill text-primary me-3 fs-4"></i>
           <p className="mb-0 text-muted">
-            <strong>Dica:</strong>
+            <strong>Dica: </strong>
             Para adicionar um novo ponto, clique no mapa.
           </p>
         </div>

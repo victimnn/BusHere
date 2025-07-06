@@ -44,13 +44,13 @@ function App() {
   return (
     <Router>
       <div className="container-fluid p-0 bg-blue">
-        <div className="d-flex w-100" style={{overflow: "hidden", height:"100vh"}}> {/* Usando flex */}
+        <div className="d-flex w-100" style={{overflow: "hidden", minHeight:"100vh"}}> {/* Usando flex com min-height */}
 
           {/* Sidebar */}
           {showSideBar && <SideBar/>}
 
 
-          <main className="flex-grow-1"> {/* A main ocupará o espaço restante */}
+          <main className="flex-grow-1" style={{overflow: "auto", maxHeight: "100vh"}}> {/* A main ocupará o espaço restante */}
             {/* Header */}
             {showHeader && <Header pageName={pageName}/>}
 

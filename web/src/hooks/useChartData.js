@@ -1,0 +1,122 @@
+import React from 'react';
+
+// Função para extrair cidade do endereço
+const extractCity = (address) => {
+  if (!address) return 'Não informado';
+  
+  // Tentar diferentes padrões de endereço
+  const parts = address.split(',');
+  
+  if (parts.length >= 2) {
+    // Pega a última parte (cidade) e remove espaços extras
+    const city = parts[parts.length - 1].trim();
+    if (city && city !== '') {
+      return city;
+    }
+    
+    // Se a última parte estiver vazia, tenta a penúltima
+    const secondLast = parts[parts.length - 2].trim();
+    if (secondLast && secondLast !== '') {
+      return secondLast;
+    }
+  }
+  
+  // Se não conseguir extrair, retorna o endereço completo limitado
+  return address.length > 20 ? address.substring(0, 20) + '...' : address;
+};
+
+export const useChartData = (reportData) => {
+  // Dados para gráfico de passageiros por cidade
+  const passengersByCityData = {
+    labels: reportData.chartData?.passengersByCity?.map(item => item.label) || [],
+    datasets: [{
+      label: 'Número de Passageiros',
+      data: reportData.chartData?.passengersByCity?.map(item => item.value) || [],
+      backgroundColor: [
+        'rgba(18, 190, 77, 0.8)',   // Primary green
+        'rgba(18, 190, 160, 0.8)',  // Analogous 1
+        'rgba(18, 190, 24, 0.8)',   // Analogous 2
+        'rgba(30, 144, 255, 0.8)',  // Info blue
+        'rgba(255, 107, 107, 0.8)', // Accent red
+      ],
+      borderColor: [
+        'rgba(18, 190, 77, 1)',
+        'rgba(18, 190, 160, 1)',
+        'rgba(18, 190, 24, 1)',
+        'rgba(30, 144, 255, 1)',
+        'rgba(255, 107, 107, 1)',
+      ],
+      borderWidth: 2
+    }]
+  };
+
+  // Dados para gráfico de status dos ônibus
+  const busStatusData = {
+    labels: reportData.chartData?.busesByStatus?.map(item => item.label) ||
+            [...new Set(reportData.buses.map(bus => bus.status_nome || 'Não informado'))],
+    datasets: [{
+      label: 'Quantidade de Ônibus',
+      data: reportData.chartData?.busesByStatus?.map(item => item.value) ||
+            [...new Set(reportData.buses.map(bus => bus.status_nome || 'Não informado'))].map(status =>
+              reportData.buses.filter(bus => (bus.status_nome || 'Não informado') === status).length
+            ),
+      backgroundColor: [
+        'rgba(18, 190, 77, 0.8)',   // Primary green
+        'rgba(255, 107, 107, 0.8)', // Accent red  
+        'rgba(255, 193, 7, 0.8)',   // Warning yellow
+        'rgba(30, 144, 255, 0.8)',  // Info blue
+      ],
+      borderColor: [
+        'rgba(18, 190, 77, 1)',
+        'rgba(255, 107, 107, 1)',
+        'rgba(255, 193, 7, 1)',
+        'rgba(30, 144, 255, 1)',
+      ],
+      borderWidth: 2
+    }]
+  };
+
+  // Dados para gráfico de rotas por status
+  const routeStatusData = {
+    labels: reportData.chartData?.routesByStatus?.map(item => item.label) ||
+            [...new Set(reportData.routes.map(route => route.status_nome || 'Não informado'))],
+    datasets: [{
+      label: 'Número de Rotas',
+      data: reportData.chartData?.routesByStatus?.map(item => item.value) ||
+            [...new Set(reportData.routes.map(route => route.status_nome || 'Não informado'))].map(status =>
+              reportData.routes.filter(route => (route.status_nome || 'Não informado') === status).length
+            ),
+      backgroundColor: 'rgba(255, 107, 107, 0.8)', // Accent red
+      borderColor: 'rgba(255, 107, 107, 1)',
+      borderWidth: 2
+    }]
+  };
+
+  // Dados para gráfico de pontos por cidade
+  const stopsByCityData = {
+    labels: reportData.chartData?.stopsByCity?.map(item => item.label) ||
+            reportData.stats?.stops?.byCity?.map(item => item.cidade || item.label) ||
+            [...new Set(reportData.stops.map(stop => extractCity(stop.endereco || stop.address || '')))]
+              .filter(city => city && city !== 'Não informado'),
+    datasets: [{
+      label: 'Número de Pontos',
+      data: reportData.chartData?.stopsByCity?.map(item => item.value) ||
+            reportData.stats?.stops?.byCity?.map(item => item.total_pontos || item.value) ||
+            [...new Set(reportData.stops.map(stop => extractCity(stop.endereco || stop.address || '')))]
+              .filter(city => city && city !== 'Não informado')
+              .map(city =>
+                reportData.stops.filter(stop => extractCity(stop.endereco || stop.address || '') === city).length
+              ),
+      backgroundColor: 'rgba(30, 144, 255, 0.8)', // Info blue
+      borderColor: 'rgba(30, 144, 255, 1)',
+      borderWidth: 2
+    }]
+  };
+
+  return {
+    passengersByCity: passengersByCityData,
+    busStatus: busStatusData,
+    routeStatus: routeStatusData,
+    stopsByCity: stopsByCityData
+  };
+};

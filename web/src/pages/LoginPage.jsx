@@ -3,7 +3,7 @@ import React from "react";
 function Login(){
     return (
        <div className="d-flex justify-content-center align-items-center min-vh-100 bg-success bg-gradient">
-      <div className="bg-dark text-white p-5 rounded shadow" style={{ width: "100%", maxWidth: "400px" }}>
+      <div className="bg-dark text-white p-5 shadow" style={{ width: "100%", maxWidth: "400px", borderRadius: '15px'}}>
         <h2>Olá,</h2>
         <h1>
           <strong>BEM-VINDO</strong> ao <span className="text-success">BusHere!</span>

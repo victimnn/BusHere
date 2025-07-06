@@ -279,7 +279,7 @@ function Stops({ pageFunctions }) {
           handleZoomChange={(e) => {console.log("Zoom alterado para:", e.target._zoom); setZoom(e.target._zoom);}}
         />
 
-        <div style={{ flex: "2", minWidth: "350px", marginRight: "20px" }}>
+        <div style={{ flex: "2", minWidth: "350px", marginRight: "30px" }}>
           <StopsContainer 
             stops={stops}
           />

@@ -3,49 +3,11 @@ import PopUpComponent from "../components/PopUpComponent";
 import StopDetails from "../components/stops/StopDetails";
 import StopForm from "../components/stops/StopForm";
 import MarkerPopUpContent from "../components/stops/MarkerPopUpContent";
+import StopsContainer from "../components/stops/StopsContainer";
 import MapComponent from "../components/MapComponent";
 import Table from "../components/Table";
 import api from "../api/api";
 import { getColorBasedOnValue } from "../utils/mapIcons";
-
-function MajorStops( { stops = [] } ) {
-  return (
-    <StopsContainer stops={stops} />
-  );
-}
-
-function StopsContainer({ stops }) {
-  return (
-    <div className="d-flex flex-column me-3 w-100 h-100 bg-secondary-light rounded-3 p-2" style={{ overflowY: "auto" }}>
-      {stops.length > 0 ? (
-        stops.map((stop, index) => (
-          <StopComponent 
-            key={stop.ponto_id || index}
-            name={stop.nome} 
-            passengers={Math.ceil(Math.random() * 40)} // Simula um número de passageiros
-            routeAmount={Math.ceil(Math.random() * 10)} // Simula um número de rotas
-          />
-        ))
-      ) : (
-        <div className="text-center text-muted p-3">
-          <p className="mb-0">Não há pontos cadastrados</p>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function StopComponent({ name = "", passengers = "", routeAmount = "" }) {
-  return (
-    <div className="d-flex flex-row border border-secondary rounded-3 m-1 p-2 align-items-center justify-content-between bg-white shadow-sm">
-      <h5 className="m-0 text-truncate flex-grow-1 me-2">{name}</h5>
-      <div className="d-flex flex-column align-items-end">
-        <small className="text-muted mb-0">{passengers} passageiros</small>
-        <small className="text-muted mb-0">{routeAmount} rotas</small>
-      </div>
-    </div>
-  );
-}
 
 /** 
 * Função para sincronizar os marcadores com os pontos buscados
@@ -305,9 +267,10 @@ function Stops({ pageFunctions }) {
 
   return (
     <main style={{ height: '100vh', maxWidth: "100%", overflowX: 'hidden' }} className="d-flex flex-column">
-      <div className="d-flex flex-row m-3 w-100 h-50 gap-4" style={{ overflowY: 'hidden', /*background:"red",*/ maxHeight: '35%' }}>
+      <div className="d-flex flex-row m-3 w-100 h-50 gap-4" style={{ overflowY: 'hidden', maxHeight: '35%' }}>
         <MapComponent 
           className="w-100 h-100 rounded-3"
+          style={{ flex: "2" }}
           center={mapCenter}
           zoom={zoom}
           markers={markers}
@@ -316,9 +279,11 @@ function Stops({ pageFunctions }) {
           handleZoomChange={(e) => {console.log("Zoom alterado para:", e.target._zoom); setZoom(e.target._zoom);}}
         />
 
-        <MajorStops 
-          stops={stops}
-        />
+        <div style={{ flex: "2", minWidth: "350px", marginRight: "20px" }}>
+          <StopsContainer 
+            stops={stops}
+          />
+        </div>
       </div>
       
 

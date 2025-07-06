@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { useState, useEffect, useRef} from 'react'
 
 import PopUpComponent from "./components/PopUpComponent";
+import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import PassengersPage from "./pages/PassengersPage";
 import BusesPage from "./pages/BusesPage";
@@ -62,6 +63,7 @@ function App() {
                 <Route path="/stops" element={<StopsPage pageFunctions={pageFunctions}/>} />
                 <Route path="/reports" element={<ReportsPage pageFunctions={pageFunctions}/>} />
                 <Route path="/settings" element={<SettingsPage pageFunctions={pageFunctions}/>} />
+                <Route path="/login" element={<SettingsPage pageFunctions={pageFunctions}/>} />
 
                 <Route path="/search/:searchTerm" element={<SearchPage   />} />
               </Routes>

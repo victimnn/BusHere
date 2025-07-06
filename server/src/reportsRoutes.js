@@ -100,15 +100,17 @@ module.exports = (pool) => {
   // Endpoint para obter dados detalhados para gráficos
   router.get('/charts', authMiddleware, async (req, res) => {
     try {
-      // Dados para gráfico de passageiros por tipo
-      const [passengersByType] = await pool.execute(`
+      // Dados para gráfico de passageiros por cidade
+      const [passengersByCity] = await pool.execute(`
         SELECT 
-          tp.nome as label,
-          COUNT(p.passageiro_id) as value
-        FROM TipoPassageiro tp
-        LEFT JOIN Passageiros p ON tp.tipo_passageiro_id = p.tipo_passageiro_id
-        GROUP BY tp.tipo_passageiro_id, tp.nome
+          COALESCE(cidade, 'Não informado') as label,
+          COUNT(passageiro_id) as value
+        FROM Passageiros
+        WHERE cidade IS NOT NULL AND cidade != ''
+        GROUP BY cidade
+        HAVING cidade != '' AND cidade != 'Não informado'
         ORDER BY value DESC
+        LIMIT 10
       `);
       
       // Dados para gráfico de ônibus por status
@@ -147,7 +149,7 @@ module.exports = (pool) => {
       `);
       
       const chartData = {
-        passengersByType,
+        passengersByCity,
         busesByStatus,
         routesByStatus,
         stopsByCity

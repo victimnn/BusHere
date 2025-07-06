@@ -4,14 +4,14 @@ import { Bar, Pie } from 'react-chartjs-2';
 const ChartCard = ({ title, subtitle, iconClass, iconBg, children }) => {
   return (
     <div className="col-xl-6 col-lg-12">
-      <div className="card border-0 shadow-sm h-100 chart-card card-hover" style={{borderRadius: '15px'}}>
+      <div className="card border-0 shadow-sm h-100 chart-card card-hover">
         <div className="card-header bg-transparent border-0 p-3">
           <div className="d-flex align-items-center">
             <div className={`${iconBg} bg-opacity-10 rounded-circle p-2 me-2`}>
               <i className={`${iconClass} ${iconBg.replace('bg-', 'text-')}`}></i>
             </div>
             <div>
-              <h6 className="mb-0 fw-bold">{title}</h6>
+              <h6 className="mb-0 fw-bold text-primary">{title}</h6>
               <small className="text-muted">{subtitle}</small>
             </div>
           </div>
@@ -68,12 +68,12 @@ const ChartsSection = ({ chartData }) => {
   return (
     <div className="row g-3 mb-4">
       <ChartCard
-        title="Passageiros por Tipo"
+        title="Passageiros por Cidade"
         subtitle="Distribuição de categorias"
         iconClass="fas fa-chart-pie"
         iconBg="bg-primary"
       >
-        <Pie data={chartData.passengersByType} options={pieOptions} />
+        <Pie data={chartData.passengersByCity} options={pieOptions} />
       </ChartCard>
 
       <ChartCard

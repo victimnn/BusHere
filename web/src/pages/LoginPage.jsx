@@ -9,7 +9,7 @@ function Login(){
           <strong>BEM-VINDO</strong> ao <span className="text-success">BusHere!</span>
         </h1>
 
-        <form className="mt-4">
+        <form className="mt-4" method="GET" >
           <div className="mb-3">
             <label htmlFor="username" className="form-label">
               Usuário

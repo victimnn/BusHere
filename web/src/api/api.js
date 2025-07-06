@@ -156,8 +156,24 @@ const api = {
       const queryParams = new URLSearchParams({ name });
       return api.get(`/stops/search?${queryParams.toString()}`);
     },
+  },
 
-
+  // Funções específicas para relatórios
+  reports: {
+    // Obter estatísticas gerais
+    getStats: () => {
+      return api.get('/reports/stats');
+    },
+    
+    // Obter dados para gráficos
+    getCharts: () => {
+      return api.get('/reports/charts');
+    },
+    
+    // Obter dados de utilização
+    getUtilization: () => {
+      return api.get('/reports/utilization');
+    }
   }
 };
 

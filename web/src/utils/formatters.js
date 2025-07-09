@@ -61,11 +61,22 @@ export function formatDateForDatabase(dateValue) {
 
 /**
  * Converte uma data do formato AAAA-MM-DD (formato ISO do banco) para DD/MM/AAAA
- * @param {string} dateValue - Data no formato AAAA-MM-DD
+ * Também lida com formatos ISO completos como "2030-06-19T03:00:00.000Z"
+ * @param {string} dateValue - Data no formato AAAA-MM-DD ou ISO completo
  * @return {string} - Data no formato DD/MM/AAAA ou string vazia se inválida
  */
 export function formatDateFromDatabase(dateValue) {
   if (!dateValue) return '';
+  
+  // Se for um objeto Date, converte para string ISO
+  if (dateValue instanceof Date) {
+    dateValue = dateValue.toISOString();
+  }
+  
+  // Se for formato ISO completo (ex: "2030-06-19T03:00:00.000Z"), extrai apenas a data
+  if (dateValue.includes('T')) {
+    dateValue = dateValue.split('T')[0];
+  }
   
   // Verifica se está no formato AAAA-MM-DD
   const dateRegex = /^\d{4}-\d{2}-\d{2}$/;

@@ -5,7 +5,7 @@ import DriverDetails from "../components/drivers/DriverDetails";
 import Table from "../components/Table";
 import api from "../api/api";
 
-import { formatCPF, formatPhoneNumber, removeFormatting } from "../utils/formatters";
+import { formatCPF, formatPhoneNumber, removeFormatting, formatDateFromDatabase } from "../utils/formatters";
 
 // header da tabela
 const tableHeaders = [
@@ -155,10 +155,10 @@ function Drivers({ pageFunctions }) {
         cpf: driver.cpf,
         cnh_numero: driver.cnh_numero,
         cnh_categoria: driver.cnh_categoria,
-        cnh_validade: driver.cnh_validade,
+        cnh_validade: formatDateFromDatabase(driver.cnh_validade),
         telefone: driver.telefone,
         email: driver.email,
-        data_admissao: driver.data_admissao,
+        data_admissao: formatDateFromDatabase(driver.data_admissao),
         status_motorista_id: driver.status_motorista_id
       };
       

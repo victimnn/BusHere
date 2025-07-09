@@ -222,18 +222,26 @@ function createFakeDriverData() {
     return faker.string.numeric(11); // CNH tem 11 dígitos
   }
 
+  // Função auxiliar para converter data para formato brasileiro DD/MM/AAAA
+  function formatDateToBrazilian(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+
   function generateValidadeDate() {
     // Gera uma data de validade da CNH entre 1 ano e 5 anos no futuro
     const futureDate = new Date();
     futureDate.setFullYear(futureDate.getFullYear() + faker.number.int({ min: 1, max: 5 }));
-    return futureDate.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    return formatDateToBrazilian(futureDate); // Formato DD/MM/AAAA
   }
 
   function generateAdmissaoDate() {
     // Gera uma data de admissão entre 10 anos atrás e hoje
     const pastDate = new Date();
     pastDate.setFullYear(pastDate.getFullYear() - faker.number.int({ min: 0, max: 10 }));
-    return pastDate.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    return formatDateToBrazilian(pastDate); // Formato DD/MM/AAAA
   }
 
   return {

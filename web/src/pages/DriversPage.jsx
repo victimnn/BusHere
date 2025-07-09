@@ -2,10 +2,14 @@ import React, { useRef, useState, useEffect } from "react";
 import PopUpComponent from "../components/PopUpComponent";
 import DriverForm from "../components/drivers/DriverForm";
 import DriverDetails from "../components/drivers/DriverDetails";
+import DriversStatsCards from "../components/drivers/DriversStatsCards";
 import Table from "../components/Table";
 import api from "../api/api";
 
 import { formatCPF, formatPhoneNumber, removeFormatting, formatDateFromDatabase } from "../utils/formatters";
+
+// Importar estilos dos cards de estatísticas
+import "../../styles/reportStyles.scss";
 
 // header da tabela
 const tableHeaders = [
@@ -237,7 +241,10 @@ function Drivers({ pageFunctions }) {
     };
 
     return (
-      <main className="container p-3">
+      <main className="ps-5 pe-5">
+        {/* Cards de Estatísticas */}
+            <DriversStatsCards drivers={drivers} />
+      <div className="container p-1">
         <div className="card border-0 shadow-sm mb-4">
           <div className="card-header bg-white py-3">
             <div className="d-flex justify-content-between align-items-center">
@@ -259,6 +266,7 @@ function Drivers({ pageFunctions }) {
           </div>
           
           <div className="card-body p-3">
+            
             {error && (
               <div className="alert alert-danger d-flex align-items-center mb-4" role="alert">
                 <i className="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
@@ -298,10 +306,12 @@ function Drivers({ pageFunctions }) {
             </p>
           </div>
         </div>
+        
   
-        <PopUpComponent 
-          ref={popUpRef}
-        />
+          <PopUpComponent 
+            ref={popUpRef}
+          />
+        </div>
       </main>
     );
   }

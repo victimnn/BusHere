@@ -21,3 +21,11 @@ INSERT INTO Passageiros (nome_completo, cpf, email, senha_hash, telefone, data_n
 ('Pedro Costa Souza', '34567890123', 'pedro.costa@empresa.com', 'hash789', '11965432109', '1992-12-10', 'Rua do Comércio', '789', 'Centro', 'Campinas', 'SP', '13030003', 2),
 ('Ana Paula Ferreira', '45678901234', 'ana.ferreira@email.com', 'hash101', '11954321098', '1988-03-18', 'Rua das Palmeiras', '321', 'Taquaral', 'Campinas', 'SP', '13040004', 1),
 ('Carlos Eduardo Alves', '56789012345', 'carlos.alves@empresa.com', 'hash202', '11943210987', '1995-07-25', 'Av. das Nações', '654', 'Barão Geraldo', 'Campinas', 'SP', '13050005', 2);
+
+-- Inserir dados de exemplo para motoristas
+INSERT INTO Motoristas (nome, cpf, cnh_numero, cnh_categoria, cnh_validade, telefone, email, data_admissao, status_motorista_id) VALUES
+('José Antonio Silva', '12345678901', '12345678901', 'D', '2026-12-31', '11987654321', 'jose.silva@empresa.com', '2020-01-15', 1),
+('Maria Santos Lima', '23456789012', '23456789012', 'AD', '2025-08-15', '11976543210', 'maria.lima@empresa.com', '2019-03-10', 1),
+('Carlos Eduardo Souza', '34567890123', '34567890123', 'D', '2027-05-20', '11965432109', 'carlos.souza@empresa.com', '2021-06-01', 1),
+('Ana Paula Costa', '45678901234', '45678901234', 'AE', '2024-11-30', '11954321098', 'ana.costa@empresa.com', '2018-09-12', 2),
+('Roberto Ferreira Santos', '56789012345', '56789012345', 'D', '2026-03-25', '11943210987', 'roberto.santos@empresa.com', '2022-02-28', 1);

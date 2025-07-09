@@ -2,7 +2,7 @@
 import api from '../../../api/api';
 import { validateCPF, validateEmail, validatePhoneNumber, validateCEP } from '../../../utils/validators';
 import { formatCPF, formatPhoneNumber, formatCEP } from '../../../utils/formatters';
-import { createFakePassengerData, createFakeBusData, createFakeRouteData, createFakeStopData } from '../../../utils/fakers';
+import { createFakePassengerData, createFakeBusData, createFakeRouteData, createFakeStopData, createFakeDriverData } from '../../../utils/fakers';
 import { BRAZILIAN_STATES, isValidUF } from '../../../utils/brazilianStates';
 
 export const passengerFormConfig = {
@@ -448,4 +448,171 @@ export const stopFormConfig = {
     }
   ],
   fakeDataGenerator: createFakeStopData
+};
+
+export const driverFormConfig = {
+  fields: [
+    {
+      name: 'nome',
+      type: 'text',
+      label: 'Nome',
+      labelIcon: 'bi bi-person-fill',
+      inputIcon: 'bi bi-person',
+      placeholder: 'Nome completo do motorista',
+      maxLength: 255,
+      required: true,
+      size: 'lg',
+      validator: (value) => {
+        return !value.trim() ? 'Nome é obrigatório' : null;
+      }
+    },
+    {
+      name: 'cpf',
+      type: 'text',
+      label: 'CPF',
+      labelIcon: 'bi bi-card-text',
+      inputIcon: 'bi bi-123',
+      placeholder: '000.000.000-00',
+      maxLength: 14,
+      required: true,
+      size: 'lg',
+      formatter: formatCPF,
+      validator: (value) => {
+        if (!value.trim()) return 'CPF é obrigatório';
+        if (!validateCPF(value)) return 'CPF inválido';
+        return null;
+      }
+    },
+    {
+      name: 'cnh_numero',
+      type: 'text',
+      label: 'Número da CNH',
+      labelIcon: 'bi bi-credit-card-fill',
+      inputIcon: 'bi bi-credit-card',
+      placeholder: 'Número da CNH',
+      maxLength: 20,
+      required: true,
+      size: 'lg',
+      validator: (value) => {
+        if (!value.trim()) return 'Número da CNH é obrigatório';
+        if (value.length < 10) return 'Número da CNH deve ter pelo menos 10 dígitos';
+        return null;
+      }
+    },
+    {
+      name: 'cnh_categoria',
+      type: 'select',
+      label: 'Categoria da CNH',
+      labelIcon: 'bi bi-award-fill',
+      inputIcon: 'bi bi-award',
+      placeholder: 'Selecione a categoria',
+      required: true,
+      size: 'lg',
+      defaultOptions: [
+        { value: 'A', label: 'A - Motocicleta' },
+        { value: 'B', label: 'B - Automóvel' },
+        { value: 'C', label: 'C - Veículo de carga' },
+        { value: 'D', label: 'D - Ônibus e similares' },
+        { value: 'E', label: 'E - Combinação de veículos' },
+        { value: 'AB', label: 'AB - A + B' },
+        { value: 'AC', label: 'AC - A + C' },
+        { value: 'AD', label: 'AD - A + D' },
+        { value: 'AE', label: 'AE - A + E' }
+      ],
+      optionValue: 'value',
+      optionLabel: 'label',
+      validator: (value) => {
+        if (!value) return 'Categoria da CNH é obrigatória';
+        return null;
+      }
+    },
+    {
+      name: 'cnh_validade',
+      type: 'date',
+      label: 'Validade da CNH',
+      labelIcon: 'bi bi-calendar-fill',
+      inputIcon: 'bi bi-calendar',
+      placeholder: 'DD/MM/AAAA',
+      required: true,
+      size: 'lg',
+      validator: (value) => {
+        if (!value) return 'Validade da CNH é obrigatória';
+        const today = new Date();
+        const validadeDate = new Date(value);
+        if (validadeDate <= today) return 'CNH não pode estar vencida';
+        return null;
+      }
+    },
+    {
+      name: 'telefone',
+      type: 'text',
+      label: 'Telefone',
+      labelIcon: 'bi bi-telephone-fill',
+      inputIcon: 'bi bi-telephone',
+      placeholder: '(00) 00000-0000',
+      maxLength: 15,
+      size: 'lg',
+      formatter: formatPhoneNumber,
+      validator: (value) => {
+        if (value && !validatePhoneNumber(value)) return 'Formato: (00) 00000-0000';
+        return null;
+      }
+    },
+    {
+      name: 'email',
+      type: 'email',
+      label: 'E-mail',
+      labelIcon: 'bi bi-envelope-fill',
+      inputIcon: 'bi bi-envelope',
+      placeholder: 'email@exemplo.com',
+      maxLength: 255,
+      size: 'lg',
+      validator: (value) => {
+        if (value && !validateEmail(value)) return 'E-mail inválido';
+        return null;
+      }
+    },
+    {
+      name: 'data_admissao',
+      type: 'date',
+      label: 'Data de Admissão',
+      labelIcon: 'bi bi-calendar-plus-fill',
+      inputIcon: 'bi bi-calendar-plus',
+      placeholder: 'DD/MM/AAAA',
+      size: 'lg',
+      validator: (value) => {
+        if (value) {
+          const today = new Date();
+          const admissaoDate = new Date(value);
+          if (admissaoDate > today) return 'Data de admissão não pode ser futura';
+        }
+        return null;
+      }
+    },
+    {
+      name: 'status_motorista_id',
+      alternativeKey: 'status_motorista_id',
+      type: 'select',
+      label: 'Status',
+      labelIcon: 'bi bi-flag-fill',
+      inputIcon: 'bi bi-flag',
+      placeholder: 'Selecione o status',
+      required: true,
+      size: 'lg',
+      loadOptions: () => api.drivers.getStatus(),
+      defaultOptions: [
+        { status_motorista_id: 1, nome: 'Ativo', descricao: 'Motorista em operação normal' },
+        { status_motorista_id: 2, nome: 'Férias', descricao: 'Motorista de férias' },
+        { status_motorista_id: 3, nome: 'Afastado', descricao: 'Motorista afastado' },
+        { status_motorista_id: 4, nome: 'Inativo', descricao: 'Motorista inativo' }
+      ],
+      optionValue: 'status_motorista_id',
+      optionLabel: 'nome',
+      validator: (value) => {
+        if (!value) return 'Status é obrigatório';
+        return null;
+      }
+    }
+  ],
+  fakeDataGenerator: createFakeDriverData
 };

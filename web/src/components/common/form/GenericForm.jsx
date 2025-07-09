@@ -25,7 +25,14 @@ function GenericForm({
     if (initialData) {
       const newFormData = {};
       config.fields.forEach(field => {
-        newFormData[field.name] = initialData[field.name] || initialData[field.alternativeKey] || '';
+        let value = initialData[field.name] || initialData[field.alternativeKey] || '';
+        
+        // Aplica transformação reversa se disponível (ex: conversão de datas do banco para formato de exibição)
+        if (field.reverseTransform && value) {
+          value = field.reverseTransform(value);
+        }
+        
+        newFormData[field.name] = value;
       });
       setFormData(newFormData);
     }
@@ -130,6 +137,13 @@ function GenericForm({
     if (validateForm()) {
       // Prepara os dados para envio
       let submitData = { ...formData };
+      
+      // Aplica transformações dos campos (ex: conversão de datas para formato do banco)
+      config.fields.forEach(field => {
+        if (field.transform && submitData[field.name]) {
+          submitData[field.name] = field.transform(submitData[field.name]);
+        }
+      });
       
       // Transforma latitude e longitude em coordinates array se ambos existirem
       if (submitData.latitude && submitData.longitude) {

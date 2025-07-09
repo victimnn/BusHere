@@ -176,3 +176,68 @@ export const stopConfig = {
     }
   ]
 };
+
+export const driverConfig = {
+  title: "Detalhes do Motorista",
+  headerIcon: "bi bi-person-fill-gear",
+  emptyIcon: "bi bi-person-slash",
+  emptyMessage: "Nenhum motorista selecionado",
+  idField: "motorista_id",
+  fields: [
+    {
+      key: "nome",
+      label: "Nome",
+      icon: "bi bi-person"
+    },
+    {
+      key: "cpf",
+      label: "CPF",
+      icon: "bi bi-card-text"
+    },
+    {
+      key: "cnh_numero",
+      label: "Número da CNH",
+      icon: "bi bi-credit-card"
+    },
+    {
+      key: "cnh_categoria",
+      label: "Categoria da CNH",
+      icon: "bi bi-award"
+    },
+    {
+      key: "cnh_validade",
+      label: "Validade da CNH",
+      icon: "bi bi-calendar-event",
+      formatter: (value) => {
+        if (!value) return "Não informado";
+        const date = new Date(value);
+        const today = new Date();
+        const isExpired = date <= today;
+        const formattedDate = date.toLocaleDateString('pt-BR');
+        return isExpired ? `${formattedDate} (VENCIDA)` : formattedDate;
+      }
+    },
+    {
+      key: "telefone",
+      label: "Telefone",
+      icon: "bi bi-telephone"
+    },
+    {
+      key: "email",
+      label: "E-mail",
+      icon: "bi bi-envelope"
+    },
+    {
+      key: "data_admissao",
+      label: "Data de Admissão",
+      icon: "bi bi-calendar-plus",
+      formatter: (value) => value ? new Date(value).toLocaleDateString('pt-BR') : "Não informado"
+    },
+    {
+      key: "status_nome",
+      label: "Status",
+      icon: "bi bi-flag",
+      formatter: (value) => value || "Não informado"
+    }
+  ]
+};

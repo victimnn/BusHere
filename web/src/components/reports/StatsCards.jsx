@@ -1,31 +1,6 @@
 import React from 'react';
 import { isBusActive, isRouteActive, getActiveCountFromStats, getActiveBuses, getActiveRoutes } from '../../utils/reportFilters';
-import AnimatedCounter from './AnimatedCounter';
-
-const StatCard = ({ title, value, icon, gradient, iconClass = "fas fa-users" }) => {
-  return (
-    <div className="col-lg-3 col-md-6 mb-4">
-      <div 
-        className="card border-0 shadow-sm h-100 stats-card card-hover" 
-        style={{background: gradient}}
-      >
-        <div className="card-body text-white p-3">
-          <div className="d-flex justify-content-between align-items-center">
-            <div>
-              <h6 className="card-title mb-2 opacity-75 fw-normal">{title}</h6>
-              <h2 className="fw-bold mb-0" style={{fontSize: '2rem'}}>
-                <AnimatedCounter endValue={value || 0} />
-              </h2>
-            </div>
-            <div className="bg-white bg-opacity-20 rounded-circle stats-icon">
-              <i className={iconClass}></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+import StatCard from '../common/StatCard';
 
 const StatsCards = ({ reportData }) => {
   const stats = [
@@ -69,6 +44,7 @@ const StatsCards = ({ reportData }) => {
           value={stat.value}
           iconClass={stat.iconClass}
           gradient={stat.gradient}
+          className="col-lg-3 col-md-6 mb-4"
         />
       ))}
     </div>

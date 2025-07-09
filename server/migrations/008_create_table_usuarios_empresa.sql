@@ -11,7 +11,7 @@ CREATE TABLE UsuariosEmpresa (
     senha_hash VARCHAR(255) NOT NULL COMMENT 'Hash da senha',
     telefone VARCHAR(15),
     data_ultimo_login TIMESTAMP NULL,
-    ip_ultimo_login VARCHAR(45),
+    ip_ultimo_login VARCHAR(45) NULL,
     criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     ativo BOOLEAN DEFAULT TRUE,
@@ -19,3 +19,6 @@ CREATE TABLE UsuariosEmpresa (
     INDEX idx_usuario_empresa_login (login_usuario),
     INDEX idx_usuario_empresa_email (email)
 );
+
+INSERT INTO UsuariosEmpresa (nome, login_usuario, email, senha_hash, telefone)
+VALUES ('Administrador', 'admin', 'admin@admin', 'admin', '40028992')

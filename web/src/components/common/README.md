@@ -248,4 +248,72 @@ export const minhaEntidadeFormConfig = {
 6. **Formatação**: Suporte nativo a formatadores
 7. **Acessibilidade**: Labels e estrutura semântica
 
-![alt text](image.png)
+
+
+# Otimização de Código - StatCard Component
+
+### 🎯 **Principais Otimizações Realizadas:**
+
+1. **Criação de Componente Reutilizável**: 
+   - Criado `StatCard.jsx` em `/components/common/` para eliminar duplicação de código
+
+2. **Performance Melhorada**:
+   - Uso de `useMemo` para evitar recálculos desnecessários
+   - Memoização de dados filtrados e configurações de stats
+   - Otimização dos componentes `ListPopup` com hooks de performance
+
+3. **Organização do Código**:
+   - Constantes movidas para fora dos componentes
+   - Configurações centralizadas em objetos configuráveis
+   - Separação clara de responsabilidades
+
+### 📁 **Arquivos Modificados:**
+
+#### ✅ **Novos Arquivos:**
+- `src/components/common/StatCard.jsx` - Componente reutilizável
+
+### 🚀 **Benefícios Alcançados:**
+
+1. **Redução de Código Duplicado**: Eliminação de linhas de código duplicado
+2. **Melhoria de Performance**: Menos re-renderizações e cálculos desnecessários
+3. **Facilidade de Manutenção**: Mudanças no design afetam apenas um arquivo
+4. **Consistência Visual**: Garantia de que todos os cards tenham o mesmo comportamento
+5. **Flexibilidade**: Componente aceita diferentes layouts (3 ou 4 colunas)
+
+### 🔧 **Como Usar o Novo StatCard:**
+
+```jsx
+import StatCard from '../common/StatCard';
+
+// Para relatórios (4 colunas)
+<StatCard
+  title="Total de Passageiros"
+  value={1250}
+  iconClass="fas fa-users"
+  gradient="linear-gradient(135deg, #12BE4D 0%, #0E8F3A 100%)"
+  className="col-lg-3 col-md-6 mb-4"
+/>
+
+// Para motoristas (3 colunas) com clique
+<StatCard
+  title="Motoristas Ativos" 
+  value={85}
+  iconClass="bi bi-person-check-fill"
+  gradient="linear-gradient(135deg, #12BEA0 0%, #12BE18 100%)"
+  onClick={() => showPopup()}
+  className="col-lg-4 col-md-6 mb-4"
+/>
+```
+
+### 📊 **Impacto na Performance:**
+
+- **Antes**: Múltiplos cálculos a cada render
+- **Depois**: Cálculos memoizados, re-executados apenas quando necessário
+- **Resultado**: Redução significativa de processamento desnecessário
+
+### 🎨 **Compatibilidade:**
+
+- ✅ Mantém toda funcionalidade existente
+- ✅ Interface visual idêntica
+- ✅ Todos os eventos e interações preservados
+- ✅ Responsividade mantida

@@ -101,6 +101,44 @@ const api = {
     }
   },
 
+  // Funções específicas para motoristas
+  drivers: {
+    // Listar todos os motoristas (com suporte à paginação e busca)
+    list: (page = 1, limit = 10, search = '') => {
+      const queryParams = new URLSearchParams();
+      queryParams.append('page', page);
+      queryParams.append('limit', limit);
+      if (search) queryParams.append('search', search);
+      
+      return api.get(`/drivers?${queryParams.toString()}`);
+    },
+    
+    // Obter detalhes de um motorista específico pelo ID
+    getById: (id) => {
+      return api.get(`/drivers/${id}`);
+    },
+    
+    // Criar novo motorista
+    create: (driverData) => {
+      return api.post('/drivers', driverData);
+    },
+    
+    // Atualizar dados de um motorista existente
+    update: (id, edits) => {
+      return api.put(`/drivers/${id}`, edits);
+    },
+    
+    // Excluir motorista
+    delete: (id) => {
+      return api.delete(`/drivers/${id}`);
+    },
+
+    // Buscar status de motorista
+    getStatus: () => {
+      return api.get('/drivers/status');
+    }
+  },
+
   routes: {
     list: (page = 1, limit = 10, search = '') => {
       const queryParams = new URLSearchParams({ page, limit, search });

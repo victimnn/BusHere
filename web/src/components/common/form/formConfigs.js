@@ -1,7 +1,7 @@
 // Configurações para o componente GenericForm
 import api from '../../../api/api';
-import { validateCPF, validateEmail, validatePhoneNumber, validateCEP } from '../../../utils/validators';
-import { formatCPF, formatPhoneNumber, formatCEP } from '../../../utils/formatters';
+import { validateCPF, validateEmail, validatePhoneNumber, validateCEP, validateDate } from '../../../utils/validators';
+import { formatCPF, formatPhoneNumber, formatCEP, formatDate, formatDateFromDatabase } from '../../../utils/formatters';
 import { createFakePassengerData, createFakeBusData, createFakeRouteData, createFakeStopData, createFakeDriverData } from '../../../utils/fakers';
 import { BRAZILIAN_STATES, isValidUF } from '../../../utils/brazilianStates';
 
@@ -48,6 +48,12 @@ export const passengerFormConfig = {
       required: true,
       size: 'lg',
       formatter: formatCPF,
+      additionalProps: { 
+        autoComplete: 'new-password',
+        'data-form-type': 'other',
+        'data-lpignore': 'true',
+        'data-1p-ignore': 'true'
+      },
       validator: (value) => {
         if (!value.trim()) return 'CPF é obrigatório';
         if (!validateCPF(value)) return 'CPF inválido';
@@ -477,6 +483,12 @@ export const driverFormConfig = {
       required: true,
       size: 'lg',
       formatter: formatCPF,
+      additionalProps: { 
+        autoComplete: 'new-password',
+        'data-form-type': 'other',
+        'data-lpignore': 'true',
+        'data-1p-ignore': 'true'
+      },
       validator: (value) => {
         if (!value.trim()) return 'CPF é obrigatório';
         if (!validateCPF(value)) return 'CPF inválido';
@@ -487,12 +499,18 @@ export const driverFormConfig = {
       name: 'cnh_numero',
       type: 'text',
       label: 'Número da CNH',
-      labelIcon: 'bi bi-credit-card-fill',
-      inputIcon: 'bi bi-credit-card',
+      labelIcon: 'bi bi-person-vcard',
+      inputIcon: 'bi bi-123',
       placeholder: 'Número da CNH',
-      maxLength: 20,
+      maxLength: 11,
       required: true,
       size: 'lg',
+      additionalProps: { 
+        autoComplete: 'new-password',
+        'data-form-type': 'other',
+        'data-lpignore': 'true',
+        'data-1p-ignore': 'true'
+      },
       validator: (value) => {
         if (!value.trim()) return 'Número da CNH é obrigatório';
         if (value.length < 10) return 'Número da CNH deve ter pelo menos 10 dígitos';
@@ -528,17 +546,45 @@ export const driverFormConfig = {
     },
     {
       name: 'cnh_validade',
-      type: 'date',
+      type: 'text',
       label: 'Validade da CNH',
       labelIcon: 'bi bi-calendar-fill',
       inputIcon: 'bi bi-calendar',
       placeholder: 'DD/MM/AAAA',
+      maxLength: 10,
       required: true,
       size: 'lg',
+      formatter: formatDate,
+      transform: (value) => {
+        // Converte DD/MM/AAAA para AAAA-MM-DD antes de enviar ao banco
+        if (!value) return value;
+        const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+        if (dateRegex.test(value)) {
+          const [day, month, year] = value.split('/');
+          return `${year}-${month}-${day}`;
+        }
+        return value;
+      },
+      reverseTransform: formatDateFromDatabase,
+      additionalProps: { 
+        autoComplete: 'new-password',
+        'data-form-type': 'other',
+        'data-lpignore': 'true',
+        'data-1p-ignore': 'true'
+      },
       validator: (value) => {
         if (!value) return 'Validade da CNH é obrigatória';
+        
+        // Valida o formato e a data
+        if (!validateDate(value, 1990, 2100)) {
+          return 'Data inválida. Use o formato DD/MM/AAAA e verifique se a data existe';
+        }
+        
+        // Verifica se a CNH não está vencida
+        const [day, month, year] = value.split('/').map(num => parseInt(num, 10));
+        const validadeDate = new Date(year, month - 1, day);
         const today = new Date();
-        const validadeDate = new Date(value);
+        
         if (validadeDate <= today) return 'CNH não pode estar vencida';
         return null;
       }
@@ -574,18 +620,45 @@ export const driverFormConfig = {
     },
     {
       name: 'data_admissao',
-      type: 'date',
+      type: 'text',
       label: 'Data de Admissão',
       labelIcon: 'bi bi-calendar-plus-fill',
       inputIcon: 'bi bi-calendar-plus',
       placeholder: 'DD/MM/AAAA',
+      maxLength: 10,
       size: 'lg',
-      validator: (value) => {
-        if (value) {
-          const today = new Date();
-          const admissaoDate = new Date(value);
-          if (admissaoDate > today) return 'Data de admissão não pode ser futura';
+      formatter: formatDate,
+      transform: (value) => {
+        // Converte DD/MM/AAAA para AAAA-MM-DD antes de enviar ao banco
+        if (!value) return value;
+        const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+        if (dateRegex.test(value)) {
+          const [day, month, year] = value.split('/');
+          return `${year}-${month}-${day}`;
         }
+        return value;
+      },
+      reverseTransform: formatDateFromDatabase,
+      additionalProps: { 
+        autoComplete: 'new-password',
+        'data-form-type': 'other',
+        'data-lpignore': 'true',
+        'data-1p-ignore': 'true'
+      },
+      validator: (value) => {
+        if (!value) return null; // Campo opcional
+        
+        // Valida o formato e a data
+        if (!validateDate(value, 1990, 2100)) {
+          return 'Data inválida. Use o formato DD/MM/AAAA e verifique se a data existe';
+        }
+        
+        // Verifica se a data não é futura
+        const [day, month, year] = value.split('/').map(num => parseInt(num, 10));
+        const admissaoDate = new Date(year, month - 1, day);
+        const today = new Date();
+        
+        if (admissaoDate > today) return 'Data de admissão não pode ser futura';
         return null;
       }
     },

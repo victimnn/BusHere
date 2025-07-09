@@ -8,9 +8,6 @@ import api from "../api/api";
 
 import { formatCPF, formatPhoneNumber, removeFormatting, formatDateFromDatabase } from "../utils/formatters";
 
-// Importar estilos dos cards de estatísticas
-import "../../styles/reportStyles.scss";
-
 // header da tabela
 const tableHeaders = [
   { id: "id", label: "ID", sortable: true },

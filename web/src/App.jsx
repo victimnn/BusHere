@@ -54,7 +54,7 @@ function App() {
             {/* Header */}
             {showHeader && <Header pageName={pageName}/>}
 
-            <div className="py-4" >
+            <div className="py-0" >
               <Routes>
                 <Route path="/" index element={<HomePage pageFunctions={pageFunctions} />} />
                 <Route path="/passengers" element={<PassengersPage pageFunctions={pageFunctions}/>} />

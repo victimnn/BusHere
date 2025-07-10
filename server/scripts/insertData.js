@@ -39,6 +39,16 @@ async function insertSampleData() {
       ('Carlos Eduardo Alves', '56789012345', 'carlos.alves@empresa.com', 'hash202', '11943210987', '1995-07-25', 'Av. das Nações', '654', 'Barão Geraldo', 'Campinas', 'SP', '13050005', 2)
     `);
 
+    // Inserir motoristas de exemplo
+    await connection.execute(`
+      INSERT IGNORE INTO Motoristas (nome, cpf, cnh_numero, cnh_categoria, cnh_validade, telefone, email, data_admissao, status_motorista_id) VALUES
+      ('José Antonio Silva', '11122233401', '11122233401', 'D', '2026-12-31', '11987654321', 'jose.silva@empresa.com', '2020-01-15', 1),
+      ('Maria Santos Lima', '22233344502', '22233344502', 'AD', '2025-08-15', '11976543210', 'maria.lima@empresa.com', '2019-03-10', 1),
+      ('Carlos Eduardo Souza', '33344455603', '33344455603', 'D', '2027-05-20', '11965432109', 'carlos.souza@empresa.com', '2021-06-01', 1),
+      ('Ana Paula Costa', '44455566704', '44455566704', 'AE', '2024-11-30', '11954321098', 'ana.costa@empresa.com', '2018-09-12', 2),
+      ('Roberto Ferreira Santos', '55566677805', '55566677805', 'D', '2026-03-25', '11943210987', 'roberto.santos@empresa.com', '2022-02-28', 1)
+    `);
+
     console.log('✅ Dados de exemplo inseridos com sucesso!');
     
   } catch (error) {

@@ -25,3 +25,66 @@ export function formatCEP(value) {
     return numbers.slice(0, 5) + '-' + numbers.slice(5, 8);
   }
 }
+
+export function formatDate(value) {
+  if (!value) return '';
+  // Remove tudo que não é número
+  const numbers = value.replace(/\D/g, '');
+  // Aplica a formatação DD/MM/AAAA
+  if (numbers.length <= 2) {
+    return numbers;
+  } else if (numbers.length <= 4) {
+    return numbers.slice(0, 2) + '/' + numbers.slice(2);
+  } else {
+    return numbers.slice(0, 2) + '/' + numbers.slice(2, 4) + '/' + numbers.slice(4, 8);
+  }
+}
+
+/**
+ * Converte uma data do formato DD/MM/AAAA para AAAA-MM-DD (formato ISO para banco)
+ * @param {string} dateValue - Data no formato DD/MM/AAAA
+ * @return {string} - Data no formato AAAA-MM-DD ou string vazia se inválida
+ */
+export function formatDateForDatabase(dateValue) {
+  if (!dateValue) return '';
+  
+  // Verifica se está no formato DD/MM/AAAA
+  const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+  if (!dateRegex.test(dateValue)) return dateValue;
+  
+  // Extrai dia, mês e ano
+  const [day, month, year] = dateValue.split('/');
+  
+  // Retorna no formato AAAA-MM-DD
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * Converte uma data do formato AAAA-MM-DD (formato ISO do banco) para DD/MM/AAAA
+ * Também lida com formatos ISO completos como "2030-06-19T03:00:00.000Z"
+ * @param {string} dateValue - Data no formato AAAA-MM-DD ou ISO completo
+ * @return {string} - Data no formato DD/MM/AAAA ou string vazia se inválida
+ */
+export function formatDateFromDatabase(dateValue) {
+  if (!dateValue) return '';
+  
+  // Se for um objeto Date, converte para string ISO
+  if (dateValue instanceof Date) {
+    dateValue = dateValue.toISOString();
+  }
+  
+  // Se for formato ISO completo (ex: "2030-06-19T03:00:00.000Z"), extrai apenas a data
+  if (dateValue.includes('T')) {
+    dateValue = dateValue.split('T')[0];
+  }
+  
+  // Verifica se está no formato AAAA-MM-DD
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+  if (!dateRegex.test(dateValue)) return dateValue;
+  
+  // Extrai ano, mês e dia
+  const [year, month, day] = dateValue.split('-');
+  
+  // Retorna no formato DD/MM/AAAA
+  return `${day}/${month}/${year}`;
+}

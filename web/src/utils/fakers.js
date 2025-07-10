@@ -194,8 +194,71 @@ function createFakeStopData() {
   };
 }
 
+function createFakeDriverData() {
+  function generateValidCPF() {
+    function calculateDigit(cpfPart) {
+        let sum = 0;
+        let multiplier = cpfPart.length + 1;
+        for (let i = 0; i < cpfPart.length; i++) {
+            sum += parseInt(cpfPart[i]) * multiplier;
+            multiplier--;
+        }
+        const remainder = sum % 11;
+        return remainder < 2 ? 0 : 11 - remainder;
+    }
+    let cpfNumbers = [];
+    for (let i = 0; i < 9; i++) {
+        cpfNumbers.push(Math.floor(Math.random() * 10));
+    }
+    let cpfBase = cpfNumbers.join('');
+    const firstDigit = calculateDigit(cpfBase);
+    cpfBase += firstDigit;
+    const secondDigit = calculateDigit(cpfBase);
+    cpfBase += secondDigit; 
+    return cpfBase.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+  }
+
+  function generateCNH() {
+    return faker.string.numeric(11); // CNH tem 11 dígitos
+  }
+
+  // Função auxiliar para converter data para formato brasileiro DD/MM/AAAA
+  function formatDateToBrazilian(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+
+  function generateValidadeDate() {
+    // Gera uma data de validade da CNH entre 1 ano e 5 anos no futuro
+    const futureDate = new Date();
+    futureDate.setFullYear(futureDate.getFullYear() + faker.number.int({ min: 1, max: 5 }));
+    return formatDateToBrazilian(futureDate); // Formato DD/MM/AAAA
+  }
+
+  function generateAdmissaoDate() {
+    // Gera uma data de admissão entre 10 anos atrás e hoje
+    const pastDate = new Date();
+    pastDate.setFullYear(pastDate.getFullYear() - faker.number.int({ min: 0, max: 10 }));
+    return formatDateToBrazilian(pastDate); // Formato DD/MM/AAAA
+  }
+
+  return {
+    nome: faker.person.fullName(),
+    cpf: generateValidCPF(),
+    cnh_numero: generateCNH(),
+    cnh_categoria: faker.helpers.arrayElement(['D', 'AD', 'AE']), // Categorias apropriadas para ônibus
+    cnh_validade: generateValidadeDate(),
+    telefone: `(${faker.string.numeric(2)}) ${faker.string.numeric(5)}-${faker.string.numeric(4)}`,
+    email: faker.internet.email(),
+    data_admissao: generateAdmissaoDate(),
+    status_motorista_id: faker.helpers.arrayElement(['1', '2', '3', '4']) // Ativo, Férias, Afastado, Inativo
+  };
+}
+
 export {
-    createFakePassengerData, createFakeRouteData, createFakeBusData, createFakeStopData
+    createFakePassengerData, createFakeRouteData, createFakeBusData, createFakeStopData, createFakeDriverData
 };
 
 

@@ -137,6 +137,12 @@ function SideBar() {
             isOpen={isHovered}
           />
           <SideButton
+            name="Motoristas"
+            icon="person-fill-gear"
+            href="drivers"
+            isOpen={isHovered}
+          />
+          <SideButton
             name="Ônibus"
             icon="bus-front-fill"
             href="buses"

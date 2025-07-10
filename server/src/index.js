@@ -17,9 +17,20 @@ const PORT = process.env.PORT || 3000
 const app = express();
 
 
-// Configuração do servidor
+//Configuração do servidor
 app.use(bodyParser.json()); // Faz o parse do body das requisições para JSON
 app.use(cors()); // Permite requisições de outros domínios (CORS)
+
+// Printa no console o IP, método e URL de cada requisição
+app.use((req, res, next) => {
+    const ip = req.ip || req.connection.remoteAddress;  // Get the IP address
+    const method = req.method;
+    const url = req.url;
+  
+    console.log(`${ip} ${method}: ${url}`);
+  
+    next();
+});
 
 
 
@@ -45,6 +56,7 @@ const userRoutes = require("./userRoutes")(pool);
 const authRoutes = require("./authRoutes")(pool);
 const searchRoutes = require("./searchRoutes")(pool);
 const passengerRoutes = require("./passengerRoutes")(pool);
+const driverRoutes = require("./driverRoutes")(pool);
 const stopRoutes = require("./stopRoutes")(pool);
 const busRoutes = require("./busRoutes")(pool);
 const routeRoutes = require("./routeRoutes")(pool);
@@ -57,23 +69,13 @@ app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api", searchRoutes); // Rota raiz da API
 app.use("/api/passengers", passengerRoutes);
+app.use("/api/drivers", driverRoutes);
 app.use("/api/stops", stopRoutes);
 app.use("/api/buses", busRoutes);
 app.use("/api/routes", routeRoutes);
 app.use("/api/reports", reportsRoutes);
 //app.use("/api/XXXX", XXXXRoutes);
 //app.use("/api/YYYY", YYYYRoutes);
-
-// Printa no console o IP, método e URL de cada requisição
-app.use((req, res, next) => {
-    const ip = req.ip || req.connection.remoteAddress;  // Get the IP address
-    const method = req.method;
-    const url = req.url;
-  
-    console.log(`${ip} ${method}: ${url}`);
-  
-    next();
-});
 
 app.get("/ping", (req, res) => {
     res.json({ message: "Palmeiras!" ,request: req.body});

@@ -6,6 +6,7 @@ import PopUpComponent from "./components/PopUpComponent";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import PassengersPage from "./pages/PassengersPage";
+import DriversPage from "./pages/DriversPage";
 import BusesPage from "./pages/BusesPage";
 import RoutesPage from "./pages/RoutesPage";
 import ReportsPage from "./pages/ReportsPage";
@@ -58,6 +59,7 @@ function App() {
               <Routes>
                 <Route path="/" index element={<HomePage pageFunctions={pageFunctions} />} />
                 <Route path="/passengers" element={<PassengersPage pageFunctions={pageFunctions}/>} />
+                <Route path="/drivers" element={<DriversPage pageFunctions={pageFunctions}/>} />
                 <Route path="/buses" element={<BusesPage pageFunctions={pageFunctions}/>} />
                 <Route path="/routes" element={<RoutesPage pageFunctions={pageFunctions}/>} />
                 <Route path="/stops" element={<StopsPage pageFunctions={pageFunctions}/>} />

@@ -1,3 +1,5 @@
+import { findStateByLabel } from "../utils/brazilianStates";
+
 function getBearerToken() {
     const token = localStorage.getItem('token');
     return token ? `Bearer ${token}` : null;
@@ -211,6 +213,52 @@ const api = {
     // Obter dados de utilização
     getUtilization: () => {
       return api.get('/reports/utilization');
+    }
+  },
+
+  // Funções de geolocalização com o nominatim
+  geolocation: {
+    getInfoFromCoordinates: async (lat, lon) => {
+      const queryParams = new URLSearchParams({
+        format: "json",
+        lat: lat,
+        lon: lon,
+        addressdetails: 1,
+        extratags: 1,
+        limit: 1
+      })
+
+      try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?${queryParams.toString()}`);
+        if (!response.ok) {
+          throw new Error(`Erro ao obter informações de geolocalização: ${response.statusText}`);
+        }
+        const data = await response.json();
+
+        const state = findStateByLabel(data.address.state || data.address.region || '');
+        if (!state) {
+          throw new Error(`Estado não encontrado: ${data.address.state || data.address.region}`);
+        }
+        const uf = state.value
+
+        return {
+          road: data.address.road || '',
+          suburb: data.address.suburb || '',
+          city: data.address.city || data.address.town || '',
+          state: data.address.state || '',
+          uf: uf,
+          coordinates: {
+            latitude: lat,
+            longitude: lon
+          },
+          data: data,
+        }
+
+      } catch (error) {
+        console.error("Erro na requisição de geolocalização:", error);
+        throw error; // Propaga o erro para ser tratado fora
+      }
+
     }
   }
 };

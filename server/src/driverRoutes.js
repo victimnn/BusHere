@@ -7,7 +7,7 @@ module.exports = (pool) => {
   router.get('/', async (req, res) => {
     try {
       const { page = 1, limit = 10, search = '' } = req.query;
-      const offset = (parseInt(page) - 1) * parseInt(limit) ?? 0;
+      const offset = (parseInt(page) - 1) * parseInt(limit);
 
       let params = [];
       let whereClause = "";
@@ -18,16 +18,11 @@ module.exports = (pool) => {
         const searchPattern = `%${search}%`;
         params = [searchPattern, searchPattern, searchPattern, searchPattern, searchPattern];
       }
-      
-      if (limit && limit > 0) {
-        limitClause = "LIMIT ?";
-        params.push(parseInt(limit));
-      }
 
-      if (offset && offset > 0) {
-        limitClause += " OFFSET ?";
-        params.push(offset);
-      } 
+      if (limit > 0) {
+        limitClause = " LIMIT ? OFFSET ?";
+        params.push(parseInt(limit), offset);
+      }
 
       // Query para buscar motoristas com status
       const [rows] = await pool.execute(
@@ -43,6 +38,7 @@ module.exports = (pool) => {
           M.data_admissao,
           M.status_motorista_id,
           SM.nome as status_nome,
+          M.ativo,
           COUNT(*) OVER() as total_drivers_found
         FROM Motoristas M
         LEFT JOIN StatusMotorista SM ON M.status_motorista_id = SM.status_motorista_id
@@ -60,7 +56,7 @@ module.exports = (pool) => {
         page: parseInt(page),
         limit: parseInt(limit),
         totalPages
-      });    
+      });
     } catch (error) {
       console.error('Erro ao buscar motoristas:', error);
       res.status(500).json({ error: 'Erro ao buscar motoristas' });
@@ -71,18 +67,17 @@ module.exports = (pool) => {
   router.get('/status', async (req, res) => {
     try {
       const [rows] = await pool.execute(
-        `SELECT status_motorista_id, nome, descricao 
+        `SELECT status_motorista_id, nome 
         FROM StatusMotorista 
-        WHERE ativo = TRUE
         ORDER BY nome`
       );
 
-      res.json({
-        data: rows
+      res.json({ 
+        data: rows 
       });
     } catch (error) {
       console.error('Erro ao buscar status de motorista:', error);
-      res.status(500).json({ error: 'Erro ao buscar status de motorista', details: error.message });
+      res.status(500).json({ error: 'Erro ao buscar status de motorista' });
     }
   });
 
@@ -90,7 +85,7 @@ module.exports = (pool) => {
   router.get('/:id', async (req, res) => {
     try {
       const { id } = req.params;
-
+      
       const [rows] = await pool.execute(
         `SELECT 
           M.motorista_id,
@@ -104,8 +99,6 @@ module.exports = (pool) => {
           M.data_admissao,
           M.status_motorista_id,
           SM.nome as status_nome,
-          M.criacao,
-          M.atualizacao,
           M.ativo
         FROM Motoristas M
         LEFT JOIN StatusMotorista SM ON M.status_motorista_id = SM.status_motorista_id
@@ -130,7 +123,7 @@ module.exports = (pool) => {
 
     for (const field of requiredFields) {
       if (!req.body[field]) {
-        return res.status(400).json({ error: `Campo obrigatório faltando: ${field}`, request: req.body });
+        return res.status(400).json({ error: `Campo obrigatório faltando: ${field}` });
       }
     }
 
@@ -153,7 +146,7 @@ module.exports = (pool) => {
     };
 
     try {
-      // Verificar se já existe motorista com o mesmo CPF, CNH ou email
+      // Verificar duplicatas
       const [existingRows] = await pool.execute(
         'SELECT motorista_id, cpf, cnh_numero, email FROM Motoristas WHERE cpf = ? OR cnh_numero = ? OR (email IS NOT NULL AND email = ?)',
         [cpf, cnh_numero, email || '']
@@ -169,7 +162,6 @@ module.exports = (pool) => {
       }
 
       const [result] = await pool.query('INSERT INTO Motoristas SET ?', newDriverData);
-
       const [newDriver] = await pool.execute(
         `SELECT 
           M.motorista_id,
@@ -183,8 +175,6 @@ module.exports = (pool) => {
           M.data_admissao,
           M.status_motorista_id,
           SM.nome as status_nome,
-          M.criacao,
-          M.atualizacao,
           M.ativo
         FROM Motoristas M
         LEFT JOIN StatusMotorista SM ON M.status_motorista_id = SM.status_motorista_id
@@ -218,7 +208,7 @@ module.exports = (pool) => {
         return res.status(404).json({ error: 'Motorista não encontrado' });
       }
 
-      // Verificar duplicatas (excluindo o motorista atual)
+      // Verificar duplicatas
       if (cpf || cnh_numero || email) {
         const [duplicateRows] = await pool.execute(
           `SELECT motorista_id, cpf, cnh_numero, email 
@@ -256,7 +246,6 @@ module.exports = (pool) => {
 
       await pool.query('UPDATE Motoristas SET ? WHERE motorista_id = ?', [updateData, id]);
 
-      // Retornar dados atualizados
       const [updatedDriver] = await pool.execute(
         `SELECT 
           M.motorista_id,
@@ -270,8 +259,6 @@ module.exports = (pool) => {
           M.data_admissao,
           M.status_motorista_id,
           SM.nome as status_nome,
-          M.criacao,
-          M.atualizacao,
           M.ativo
         FROM Motoristas M
         LEFT JOIN StatusMotorista SM ON M.status_motorista_id = SM.status_motorista_id
@@ -288,21 +275,15 @@ module.exports = (pool) => {
 
   // Rota para excluir um motorista
   router.delete('/:id', async (req, res) => {
-    const { id } = req.params;
-
     try {
-      const [existingDriver] = await pool.execute(
-        'SELECT motorista_id FROM Motoristas WHERE motorista_id = ?',
-        [id]
-      );
-
-      if (existingDriver.length === 0) {
+      const { id } = req.params;
+      const [result] = await pool.execute('DELETE FROM Motoristas WHERE motorista_id = ?', [id]);
+      
+      if (result.affectedRows === 0) {
         return res.status(404).json({ error: 'Motorista não encontrado' });
       }
-
-      await pool.execute('DELETE FROM Motoristas WHERE motorista_id = ?', [id]);
-
-      res.json({ message: 'Motorista excluído com sucesso' });
+      
+      res.json({ message: 'Motorista excluído com sucesso', id });
     } catch (error) {
       console.error('Erro ao excluir motorista:', error);
       res.status(500).json({ error: 'Erro ao excluir motorista' });

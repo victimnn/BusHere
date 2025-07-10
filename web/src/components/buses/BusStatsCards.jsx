@@ -27,7 +27,7 @@ const STATS_CONFIG = {
   operational: {
     title: "Em Operação",
     iconClass: "bi bi-check-circle-fill",
-    gradient: "linear-gradient(135deg, #28A745 0%, #1E7E34 100%)",
+    gradient: "linear-gradient(135deg, #12BE4D 0%, #0E8F3A 100%)",
     popupTitle: 'Ônibus Em Operação'
   },
   maintenance: {

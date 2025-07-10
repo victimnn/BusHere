@@ -1,3 +1,5 @@
+import { findStateByLabel } from "../utils/brazilianStates";
+
 function getBearerToken() {
     const token = localStorage.getItem('token');
     return token ? `Bearer ${token}` : null;
@@ -211,6 +213,101 @@ const api = {
     // Obter dados de utilização
     getUtilization: () => {
       return api.get('/reports/utilization');
+    }
+  },
+
+  // Funções de geolocalização com o nominatim
+  geolocation: {
+    //https://nominatim.openstreetmap.org/search?q=Avenida+Paulista%2C+S%C3%A3o+Paulo&format=json&addressdetails=1&limit=1
+    getCepFromStreet: async (street, city, state) => {
+      const queryParams = new URLSearchParams({
+        format: "json",
+        street: street,
+        city: city,
+        state: state,
+        addressdetails: 1,
+        limit: 1
+      });
+
+      try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?${queryParams.toString()}`);
+        if (!response.ok) {
+          throw new Error(`Erro ao obter CEP: ${response.statusText}`);
+        }
+        const data = await response.json();
+
+        if (data.length === 0) {
+          throw new Error("Nenhum resultado encontrado para a busca de CEP.");
+        }
+
+        const stateInfo = findStateByLabel(data[0].address.state || data[0].address.region || '');
+        if (!stateInfo) {
+          throw new Error(`Estado não encontrado: ${data[0].address.state || data[0].address.region}`);
+        }
+        const uf = stateInfo.value;
+
+        return {
+          road: data[0].address.road || '',
+          suburb: data[0].address.suburb || '',
+          city: data[0].address.city || data[0].address.town || '',
+          state: data[0].address.state || '',
+          cep: data[0].address.postcode || '',
+          uf: uf,
+          coordinates: {
+            latitude: parseFloat(data[0].lat),
+            longitude: parseFloat(data[0].lon)
+          },
+          data: data,
+        };
+
+      } catch (error) {
+        console.error("Erro na requisição de geolocalização:", error);
+        throw error; // Propaga o erro para ser tratado fora
+      } 
+    },
+
+    getInfoFromCoordinates: async (lat, lon) => {
+      const queryParams = new URLSearchParams({
+        format: "json",
+        lat: lat,
+        lon: lon,
+        addressdetails: 1,
+        extratags: 1,
+        limit: 1
+      })
+
+      try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?${queryParams.toString()}`);
+        if (!response.ok) {
+          throw new Error(`Erro ao obter informações de geolocalização: ${response.statusText}`);
+        }
+        const data = await response.json();
+
+        const state = findStateByLabel(data.address.state || data.address.region || '');
+        const stateName = state.label || '';
+        if (!state) {
+          throw new Error(`Estado não encontrado: ${data.address.state || data.address.region}`);
+        }
+        const uf = state.value
+        return {
+          road: data.address.road || '',
+          suburb: data.address.suburb || '',
+          city: data.address.city || data.address.town || '',
+          state: data.address.state || '', // tipicamente nao vem preenchido, mas pode ser útil
+          //cep: cep || '', -- deu errado, pois o cep fica retornando um cep aleatório
+          uf: uf,
+          coordinates: {
+            latitude: lat,
+            longitude: lon
+          },
+          data: data,
+        }
+
+      } catch (error) {
+        console.error("Erro na requisição de geolocalização:", error);
+        throw error; // Propaga o erro para ser tratado fora
+      }
+
     }
   }
 };

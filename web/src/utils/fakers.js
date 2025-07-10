@@ -112,6 +112,34 @@ function createFakeBusData() {
       return `${letters.charAt(faker.number.int({ min: 0, max: 25 }))}${letters.charAt(faker.number.int({ min: 0, max: 25 }))}${letters.charAt(faker.number.int({ min: 0, max: 25 }))}-${digits.charAt(faker.number.int({ min: 0, max: 9 }))}${digits.charAt(faker.number.int({ min: 0, max: 9 }))}${digits.charAt(faker.number.int({ min: 0, max: 9 }))}${digits.charAt(faker.number.int({ min: 0, max: 9 }))}`;
     }
   };
+
+  // Função auxiliar para converter data para formato brasileiro DD/MM/AAAA
+  function formatDateToBrazilian(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+
+  function generateUltimaManutencaoDate() {
+    // Gera uma data de última manutenção entre 30 e 365 dias atrás
+    const pastDate = new Date();
+    pastDate.setDate(pastDate.getDate() - faker.number.int({ min: 30, max: 365 }));
+    return formatDateToBrazilian(pastDate); // Formato DD/MM/AAAA
+  }
+
+  function generateProximaManutencaoDate() {
+    // Gera uma data de próxima manutenção entre 30 e 180 dias no futuro
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + faker.number.int({ min: 30, max: 180 }));
+    return formatDateToBrazilian(futureDate); // Formato DD/MM/AAAA
+  }
+
+  function generateQuilometragem() {
+    // Gera quilometragem realista para ônibus (entre 50.000 e 800.000 km)
+    const km = faker.number.float({ min: 50000, max: 800000, fractionDigits: 2 });
+    return km.toString();
+  }
   
   return {
     nome: `Ônibus ${faker.string.numeric(3)}`,
@@ -120,7 +148,11 @@ function createFakeBusData() {
     marca: faker.helpers.arrayElement(brands),
     ano_fabricacao: faker.number.int({ min: currentYear - 15, max: currentYear }).toString(),
     capacidade: faker.number.int({ min: 25, max: 80 }).toString(),
-    status_onibus_id: faker.helpers.arrayElement(['1', '2', '3'])  };
+    quilometragem: generateQuilometragem(),
+    data_ultima_manutencao: generateUltimaManutencaoDate(),
+    data_proxima_manutencao: generateProximaManutencaoDate(),
+    status_onibus_id: faker.helpers.arrayElement(['1', '2', '3'])
+  };
 }
 
 function createFakeStopData() {

@@ -15,6 +15,9 @@ const tableHeaders = [
   { id: "marca", label: "Marca", sortable: true },
   { id: "ano_fabricacao", label: "Ano", sortable: true },
   { id: "capacidade", label: "Capacidade", sortable: true },
+  { id: "data_ultima_manutencao", label: "Última Manutenção", sortable: true },
+  { id: "data_proxima_manutencao", label: "Próxima Manutenção", sortable: true },
+  { id: "quilometragem", label: "Quilometragem", sortable: true },
   { id: "status", label: "Status", sortable: true },
 ];
 
@@ -39,10 +42,21 @@ function Buses({ pageFunctions }) {
       // Adaptar os dados do servidor para o formato esperado pelo frontend
       let busesData = [];
       if (response && response.data && Array.isArray(response.data)) {
-        busesData = response.data.map(bus => ({
-          ...bus, 
-          status: bus.status_nome 
-        }));
+        busesData = response.data.map(bus => {
+          // Função para formatar a data para DD/MM/AAAA
+          const formatDate = (dateString) => {
+            if (!dateString) return "N/A";
+            const date = new Date(dateString);
+            return date.toLocaleDateString('pt-BR');
+          };
+
+          return {
+            ...bus,
+            status: bus.status_nome,
+            data_ultima_manutencao: formatDate(bus.data_ultima_manutencao),
+            data_proxima_manutencao: formatDate(bus.data_proxima_manutencao)
+          };
+        });
       }
       
       setBuses(busesData);

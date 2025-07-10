@@ -15,6 +15,7 @@ const tableHeaders = [
   { id: "cpf", label: "CPF", sortable: true },
   { id: "cnh_numero", label: "CNH", sortable: true },
   { id: "cnh_categoria", label: "Categoria", sortable: true },
+  { id: "cnh_validade", label: "Validade CNH", sortable: true },
   { id: "telefone", label: "Telefone", sortable: false },
   { id: "status_nome", label: "Status", sortable: true }
 ];
@@ -64,19 +65,32 @@ function Drivers({ pageFunctions }) {
         // Adaptar os dados do servidor para o formato esperado pelo frontend
         let driversData = [];
         if (response && response.data && Array.isArray(response.data)) {
-          driversData = response.data.map(driver => ({
-            id: driver.motorista_id,
-            nome: driver.nome,
-            cpf: formatCPF(driver.cpf),
-            cnh_numero: driver.cnh_numero,
-            cnh_categoria: driver.cnh_categoria,
-            cnh_validade: driver.cnh_validade,
-            telefone: formatPhoneNumber(driver.telefone),
-            email: driver.email,
-            data_admissao: driver.data_admissao,
-            status_motorista_id: driver.status_motorista_id,
-            status_nome: driver.status_nome || getStatusNome(driver.status_motorista_id)
-          }));
+          driversData = response.data.map(driver => {
+            // Função para formatar a data para DD/MM/AAAA
+            const formatDate = (dateString) => {
+              if (!dateString) return "N/A";
+              const date = new Date(dateString);
+              return date.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+              });
+            };
+
+            return {
+              id: driver.motorista_id,
+              nome: driver.nome,
+              cpf: formatCPF(driver.cpf),
+              cnh_numero: driver.cnh_numero,
+              cnh_categoria: driver.cnh_categoria,
+              cnh_validade: formatDate(driver.cnh_validade),
+              telefone: formatPhoneNumber(driver.telefone),
+              email: driver.email,
+              data_admissao: formatDate(driver.data_admissao),
+              status_motorista_id: driver.status_motorista_id,
+              status_nome: driver.status_nome || getStatusNome(driver.status_motorista_id)
+            };
+          });
         }
         
         setDrivers(driversData);

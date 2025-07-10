@@ -71,6 +71,31 @@ export const busConfig = {
       key: "capacidade",
       label: "Capacidade",
       icon: "bi bi-people"
+    },
+    {
+      key: "quilometragem",
+      label: "Quilometragem (km)",
+      icon: "bi bi-speedometer",
+      formatter: (value) => value ? `${Number(value).toLocaleString('pt-BR')} km` : "Não informado"
+    },
+    {
+      key: "data_ultima_manutencao",
+      label: "Última Manutenção",
+      icon: "bi bi-wrench",
+      formatter: (value) => value ? new Date(value).toLocaleDateString('pt-BR') : "Não informado"
+    },
+    {
+      key: "data_proxima_manutencao",
+      label: "Próxima Manutenção",
+      icon: "bi bi-calendar-plus",
+      formatter: (value) => {
+        if (!value) return "Não informado";
+        const date = new Date(value);
+        const today = new Date();
+        const isOverdue = date < today;
+        const formattedDate = date.toLocaleDateString('pt-BR');
+        return isOverdue ? `${formattedDate} (ATRASADA)` : formattedDate;
+      }
     }
   ]
 };

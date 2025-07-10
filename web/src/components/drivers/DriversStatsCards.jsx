@@ -10,6 +10,7 @@ const STATUS_MAP = { 1: 'Ativo', 2: 'Férias', 3: 'Afastado', 4: 'Inativo' };
 const STATS_MESSAGE = {
   total: (count) => `Total de ${count} motorista(s) cadastrado(s)`,
   active: (count) => `${count} motorista(s) ativo(s)`,
+  holiday: (count) => `${count} motorista(s) em férias`,
   expiring: (count) => `${count} motorista(s) com CNH próxima do vencimento (próximos 6 meses)`
 };
 
@@ -17,14 +18,20 @@ const STATS_CONFIG = {
   total: {
     title: "Total de Motoristas",
     iconClass: "bi bi-person-fill-gear",
-    gradient: "linear-gradient(135deg, #12BE4D 0%, #0E8F3A 100%)",
+    gradient: "linear-gradient(135deg, #007BFF 0%, #0056B3 100%)",
     popupTitle: 'Total de Motoristas'
   },
   active: {
     title: "Motoristas Ativos",
     iconClass: "bi bi-person-check-fill",
-    gradient: "linear-gradient(135deg, #12BEA0 0%, #12BE18 100%)",
+    gradient: "linear-gradient(135deg, #12BE4D 0%, #0E8F3A 100%)",
     popupTitle: 'Motoristas Ativos'
+  },
+  holiday: {
+    title: "Motoristas em Férias",
+    iconClass: "bi bi-person-fill-dash",
+    gradient: "linear-gradient(135deg, #FFC107 0%, #E0A800 100%)",
+    popupTitle: 'Motoristas em Férias'
   },
   expiring: {
     title: "CNH Próxima do Vencimento",
@@ -43,6 +50,9 @@ const filterDriversByCategory = (drivers, stats) => {
   switch (stats) {
     case 'active':
       return drivers.filter(driver => driver.status_motorista_id === 1);
+
+    case 'holiday':
+      return drivers.filter(driver => driver.status_motorista_id === 2);
     
     case 'expiring':
       return drivers.filter(driver => {
@@ -156,7 +166,7 @@ const DriversStatsCards = ({ drivers = [] }) => {
             iconClass={config.iconClass}
             gradient={config.gradient}
             onClick={() => showDriversPopup(stats)}
-            className="col-lg-4 col-md-6 mb-4"
+            className="col-xl-3 col-md-6 mb-4"
           />
         ))}
       </div>

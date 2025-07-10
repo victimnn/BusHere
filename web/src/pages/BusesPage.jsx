@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import PopUpComponent from "../components/PopUpComponent";
 import BusDetails from "../components/buses/BusDetails";
 import BusForm from "../components/buses/BusForm";
+import BusStatsCards from "../components/buses/BusStatsCards";
 import Table from "../components/Table";
 import api from "../api/api";
 
@@ -162,8 +163,12 @@ function Buses({ pageFunctions }) {
   };
 
   return (
-    <main className="container p-3">
-      <div className="card border-0 shadow-sm mb-4">
+    <main className="ps-5 pe-5 pt-3">
+      {/* Cards de Estatísticas */}
+      <BusStatsCards buses={buses} />
+      
+      <div className="container-fluid">
+        <div className="card border-0 shadow-sm mb-4">
         <div className="card-header bg-white py-3">
           <div className="d-flex justify-content-between align-items-center">
             <div className="d-flex align-items-center">
@@ -226,6 +231,7 @@ function Buses({ pageFunctions }) {
       <PopUpComponent 
         ref={popUpRef}
       />
+      </div>
     </main>
   );
 }

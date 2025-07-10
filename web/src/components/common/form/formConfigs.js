@@ -126,6 +126,7 @@ export const busFormConfig = {
       maxLength: 8,
       required: true,
       size: 'lg',
+      formatter: (value) => value.toUpperCase(),
       validator: (value) => {
         if (!value.trim()) return 'Placa é obrigatória';
         const placaRegex = /^[A-Z]{3}-?\d{4}$|^[A-Z]{3}\d[A-Z]\d{2}$/;
@@ -161,13 +162,15 @@ export const busFormConfig = {
     },
     {
       name: 'ano_fabricacao',
-      type: 'number',
+      type: 'text',
       label: 'Ano de Fabricação',
       labelIcon: 'bi bi-calendar-event',
       inputIcon: 'bi bi-calendar',
       placeholder: 'Ano de fabricação',
+      maxLength: 4,
       additionalProps: { max: new Date().getFullYear() + 1, min: 1950 },
       size: 'lg',
+      formatter: (value) => value.replace(/\D/g, ''), // Remove tudo que não for dígito
       validator: (value) => {
         if (value === '') return null;
         const currentYear = new Date().getFullYear();
@@ -181,14 +184,16 @@ export const busFormConfig = {
     },
     {
       name: 'capacidade',
-      type: 'number',
+      type: 'text',
       label: 'Capacidade',
       labelIcon: 'bi bi-people',
       inputIcon: 'bi bi-person-plus',
       placeholder: 'Número de passageiros',
+      maxLength: 3,
       additionalProps: { max: 200, min: 1 },
       required: true,
       size: 'lg',
+      formatter: (value) => value.replace(/\D/g, ''), // Remove tudo que não for dígito
       validator: (value) => {
         if (value === '') return 'Capacidade é obrigatória';
         const capacidade = parseInt(value);
@@ -196,6 +201,125 @@ export const busFormConfig = {
         if (capacidade < 1) return 'Capacidade deve ser maior que zero';
         if (capacidade > 200) return 'Capacidade deve ser menor que 200';
         if (value.length > 3) return 'Capacidade deve ter no máximo 3 dígitos';
+        return null;
+      }
+    },
+    {
+      name: 'quilometragem',
+      type: 'text',
+      label: 'Quilometragem (km)',
+      labelIcon: 'bi bi-speedometer',
+      inputIcon: 'bi bi-speedometer2',
+      placeholder: 'Quilometragem atual do veículo',
+      size: 'lg',
+      formatter: (value) => {
+        // Remove tudo que não for dígito ou ponto
+        const cleaned = value.replace(/[^\d.]/g, '');
+        // Garante apenas um ponto decimal
+        const parts = cleaned.split('.');
+        if (parts.length > 2) {
+          const formatted = parts[0] + '.' + parts.slice(1).join('');
+          const finalParts = formatted.split('.');
+          // Limita a 2 casas decimais
+          if (finalParts[1] && finalParts[1].length > 2) {
+            return finalParts[0] + '.' + finalParts[1].substring(0, 2);
+          }
+          return formatted;
+        }
+        // Limita a 2 casas decimais
+        if (parts.length === 2 && parts[1].length > 2) {
+          return parts[0] + '.' + parts[1].substring(0, 2);
+        }
+        return cleaned;
+      },
+      reverseTransform: (value) => {
+        // Converte o valor do banco para exibição no formulário
+        if (value === null || value === undefined || value === '') return '';
+        return String(value);
+      },
+      validator: (value) => {
+        if (value === '') return null; // Campo opcional
+        const km = parseFloat(value);
+        if (isNaN(km)) return 'Quilometragem deve ser um número';
+        if (km < 0) return 'Quilometragem deve ser maior ou igual a zero';
+        if (km > 9999999.99) return 'Quilometragem muito alta';
+        return null;
+      }
+    },
+    {
+      name: 'data_ultima_manutencao',
+      type: 'text',
+      label: 'Data da Última Manutenção',
+      labelIcon: 'bi bi-wrench',
+      inputIcon: 'bi bi-calendar-check',
+      placeholder: 'DD/MM/AAAA',
+      maxLength: 10,
+      size: 'lg',
+      formatter: formatDate,
+      transform: (value) => {
+        // Converte DD/MM/AAAA para AAAA-MM-DD antes de enviar ao banco
+        if (!value) return value;
+        const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+        if (dateRegex.test(value)) {
+          const [day, month, year] = value.split('/');
+          return `${year}-${month}-${day}`;
+        }
+        return value;
+      },
+      reverseTransform: formatDateFromDatabase,
+      validator: (value) => {
+        if (!value) return null; // Campo opcional
+        
+        // Valida o formato e a data
+        if (!validateDate(value, 1990, 2100)) {
+          return 'Data inválida. Use o formato DD/MM/AAAA e verifique se a data existe';
+        }
+        
+        // Verifica se a data não é futura
+        const [day, month, year] = value.split('/').map(num => parseInt(num, 10));
+        const manutencaoDate = new Date(year, month - 1, day);
+        const today = new Date();
+        
+        if (manutencaoDate > today) return 'Data da manutenção não pode ser futura';
+        return null;
+      }
+    },
+    {
+      name: 'data_proxima_manutencao',
+      type: 'text',
+      label: 'Data da Próxima Manutenção',
+      labelIcon: 'bi bi-calendar-event',
+      inputIcon: 'bi bi-calendar-plus',
+      placeholder: 'DD/MM/AAAA',
+      maxLength: 10,
+      size: 'lg',
+      formatter: formatDate,
+      transform: (value) => {
+        // Converte DD/MM/AAAA para AAAA-MM-DD antes de enviar ao banco
+        if (!value) return value;
+        const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+        if (dateRegex.test(value)) {
+          const [day, month, year] = value.split('/');
+          return `${year}-${month}-${day}`;
+        }
+        return value;
+      },
+      reverseTransform: formatDateFromDatabase,
+      validator: (value) => {
+        if (!value) return null; // Campo opcional
+        
+        // Valida o formato e a data
+        if (!validateDate(value, 1990, 2100)) {
+          return 'Data inválida. Use o formato DD/MM/AAAA e verifique se a data existe';
+        }
+        
+        // Verifica se a data não é no passado
+        const [day, month, year] = value.split('/').map(num => parseInt(num, 10));
+        const proximaManutencaoDate = new Date(year, month - 1, day);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Remove horas para comparar apenas a data
+        
+        if (proximaManutencaoDate < today) return 'Data da próxima manutenção não pode ser no passado';
         return null;
       }
     },

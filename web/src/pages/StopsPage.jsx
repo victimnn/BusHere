@@ -233,9 +233,20 @@ function Stops({ pageFunctions }) {
         <div className="d-flex gap-3 justify-content-center">
           <button 
             className="btn btn-primary btn-lg px-4 py-2"
-            onClick={() => {
+            onClick={async () => {
               popUpRef.current.hide();
-              handleCreateStop({ latitude: latlng.lat, longitude: latlng.lng });
+              const data = await api.geolocation.getInfoFromCoordinates(latlng.lat, latlng.lng)
+              const innitialData = {
+                latitude: latlng.lat,
+                longitude: latlng.lng,
+                
+                logradouro: data.road || '',
+                bairro: data.suburb || 'nao tem',
+                cidade: data.city || '',
+                uf: data.uf || '',
+                cep: data.cep || '',
+              }
+              handleCreateStop(innitialData)
             }}
           >
             <i className="bi bi-plus-circle me-2"></i>

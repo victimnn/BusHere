@@ -241,7 +241,7 @@ function Stops({ pageFunctions }) {
                 longitude: latlng.lng,
                 
                 logradouro: data.road || '',
-                bairro: data.suburb || 'nao tem',
+                bairro: data.suburb || '',
                 cidade: data.city || '',
                 uf: data.uf || '',
                 cep: data.cep || '',

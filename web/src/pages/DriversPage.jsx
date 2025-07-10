@@ -238,10 +238,10 @@ function Drivers({ pageFunctions }) {
     };
 
     return (
-      <main className="ps-5 pe-5">
+      <main className="ps-5 pe-5 pt-3">
         {/* Cards de Estatísticas */}
             <DriversStatsCards drivers={drivers} />
-      <div className="container p-1">
+      <div className="container-fluid">
         <div className="card border-0 shadow-sm mb-4">
           <div className="card-header bg-white py-3">
             <div className="d-flex justify-content-between align-items-center">

@@ -26,8 +26,11 @@ O **BusHere!** é um sistema completo de gestão de transporte público desenvol
 ## ✨ Características
 
 ### 🖥️ Aplicação Web (Admin)
-- **Gestão de Passageiros**: Cadastro, edição e visualização completa de passageiros
-- **Sistema de Busca**: Pesquisa avançada com autocomplete
+- **Gestão Completa**: Cadastro, edição e visualização de passageiros, motoristas, ônibus, rotas e pontos
+- **Sistema de Busca Avançado**: Pesquisa com autocomplete e sugestões inteligentes
+- **Mapeamento Interativo**: Visualização de pontos no mapa com funcionalidades de criação e edição
+- **Geolocalização**: Integração com APIs de geolocalização para preenchimento automático de CEP
+- **Relatórios e Gráficos**: Dashboard completo com estatísticas e visualizações de dados
 - **Interface Responsiva**: Design moderno com Bootstrap e componentes personalizados
 - **Validação de Dados**: Validação em tempo real de CPF, telefone e e-mail
 - **Paginação**: Navegação eficiente para grandes volumes de dados
@@ -36,22 +39,104 @@ O **BusHere!** é um sistema completo de gestão de transporte público desenvol
 - **Interface Nativa**: Desenvolvido com React Native e Expo
 - **Cartões de Linha**: Visualização intuitiva das linhas de ônibus
 - **Componentização**: Arquitetura modular e reutilizável
+- **Busca Integrada**: Sistema de busca com componentes nativos
 
 ### 🔧 API Backend
-- **RESTful API**: Endpoints organizados e documentados
-- **Autenticação**: Sistema de tokens JWT
+- **RESTful API**: Endpoints organizados e documentados para todas as entidades
+- **Sistema de Busca**: Índices de busca full-text para autocomplete
 - **Validação**: Validação robusta de dados de entrada
-- **Banco de Dados**: MySQL com migrations organizadas
+- **Banco de Dados**: MySQL com migrations organizadas e triggers
 - **Middleware**: CORS, autenticação e tratamento de erros
+- **Cache**: Sistema de cache para otimização de performance
+
+## 🚀 Funcionalidades Principais
+
+### 📊 Dashboard e Relatórios
+- **Estatísticas em Tempo Real**: Contadores dinâmicos de passageiros, motoristas, ônibus e rotas
+- **Gráficos Interativos**: Visualizações com Chart.js para análise de dados
+- **Indicadores de Performance**: Métricas de utilização e eficiência do sistema
+- **Filtros Avançados**: Relatórios segmentados por diferentes critérios
+
+### 🗺️ Sistema de Mapeamento
+- **Mapas Interativos**: Integração com OpenStreetMap via Leaflet
+- **Marcadores Dinâmicos**: Visualização de pontos com cores baseadas em dados
+- **Criação de Pontos**: Interface para adicionar novos pontos diretamente no mapa
+- **Geocodificação**: Conversão automática de coordenadas para endereços
+- **Cache de Localização**: Otimização para consultas repetidas
+
+### 🔍 Sistema de Busca
+- **Autocomplete Inteligente**: Sugestões em tempo real durante a digitação
+- **Busca Full-text**: Pesquisa otimizada em todos os campos relevantes
+- **Filtros por Categoria**: Busca específica por tipo de entidade
+- **Índices Otimizados**: Performance aprimorada para grandes volumes de dados
+
+### 📝 Formulários Inteligentes
+- **Validação em Tempo Real**: Verificação de CPF, e-mail e outros dados
+- **Preenchimento Automático**: Integração com APIs para completar endereços
+- **Componentes Reutilizáveis**: Formulários padronizados para todas as entidades
+- **Máscaras de Entrada**: Formatação automática de campos como telefone e CPF
+
+### 🔧 Componentes Genéricos
+- **DetailCard**: Componente reutilizável para exibição de detalhes
+- **GenericForm**: Sistema de formulários configurável
+- **StatCard**: Cartões de estatísticas otimizados
+- **MapComponent**: Componente de mapa com funcionalidades avançadas
+
+### 📱 Interface Responsiva
+- **Design Mobile-First**: Adaptação para todos os tamanhos de tela
+- **Componentes Bootstrap**: Interface consistente e profissional
+- **Animações Suaves**: Transições e efeitos visuais aprimorados
+- **Acessibilidade**: Suporte a tecnologias assistivas
+
+## 🎯 Características Técnicas
+
+### 🏗️ Arquitetura de Código
+- **Componentização**: Separação clara de responsabilidades
+- **Reutilização**: Componentes genéricos para máxima eficiência
+- **Modularidade**: Estrutura organizada em módulos independentes
+- **Manutenibilidade**: Código limpo e bem documentado
+
+### ⚡ Performance
+- **Cache Inteligente**: Sistema de cache para APIs e dados
+- **Lazy Loading**: Carregamento sob demanda de componentes
+- **Otimização de Consultas**: Índices e queries otimizadas
+- **Compressão**: Minificação e otimização de assets
+
+### 🔒 Segurança
+- **Validação de Entrada**: Sanitização de todos os dados
+- **Proteção CORS**: Configuração segura de cross-origin
+- **Hash de Senhas**: Criptografia bcrypt para senhas
+- **Sanitização SQL**: Proteção contra SQL injection
+
+### 🛠️ Desenvolvimento
+- **ESLint**: Padronização de código JavaScript
+- **Hot Reload**: Desenvolvimento com atualizações em tempo real
+- **Source Maps**: Debugging facilitado
+- **Migrations**: Versionamento do banco de dados
 
 ## 🏗️ Arquitetura
 
 ```
 BusHere!
 ├── 🌐 Frontend Web (React + Vite)
-├── 📱 Mobile App (React Native + Expo) 
+│   ├── Páginas de Gestão (Passageiros, Motoristas, Ônibus, Rotas, Pontos)
+│   ├── Sistema de Busca com Autocomplete
+│   ├── Mapeamento Interativo (Leaflet)
+│   ├── Relatórios e Gráficos (Chart.js)
+│   └── Componentes Reutilizáveis
+├── 📱 Mobile App (React Native + Expo)
+│   ├── Interface de Usuário
+│   ├── Componentes de Busca
+│   └── Navegação por Rotas
 ├── ⚙️ Backend API (Node.js + Express)
+│   ├── Endpoints RESTful
+│   ├── Sistema de Autocomplete
+│   ├── Validação de Dados
+│   └── Geolocalização
 └── 🗄️ Database (MySQL)
+    ├── Migrations Organizadas
+    ├── Índices Full-text
+    └── Triggers para Busca
 ```
 
 ## 🔧 Pré-requisitos
@@ -73,7 +158,7 @@ Antes de iniciar, certifique-se de ter instalado:
 ### 1. Clone o Repositório
 ```bash
 git clone https://github.com/TCC-JB-02-2025/tcc.git
-cd bushere
+cd tcc
 ```
 
 ### 2. Setup Automático
@@ -169,27 +254,37 @@ cd server && NODE_ENV=production npm start
 ## 📁 Estrutura do Projeto
 
 ```
-bushere/
+tcc/
 ├── 📁 web/                    # Frontend React
 │   ├── src/
 │   │   ├── components/        # Componentes React
-│   │   │   └── passengers/    # Componentes específicos de passageiros
+│   │   │   ├── common/        # Componentes genéricos reutilizáveis
+│   │   │   ├── passengers/    # Componentes específicos de passageiros
+│   │   │   ├── buses/         # Componentes específicos de ônibus
+│   │   │   ├── drivers/       # Componentes específicos de motoristas
+│   │   │   ├── routes/        # Componentes específicos de rotas
+│   │   │   ├── stops/         # Componentes específicos de pontos
+│   │   │   └── reports/       # Componentes de relatórios
 │   │   ├── pages/            # Páginas da aplicação
 │   │   ├── api/              # Configuração da API
-│   │   └── utils/            # Utilitários e helpers
-│   └── public/               # Arquivos estáticos
+│   │   ├── utils/            # Utilitários e helpers
+│   │   └── hooks/            # Hooks customizados
+│   ├── public/               # Arquivos estáticos
+│   └── styles/               # Estilos SCSS
 │
 ├── 📁 server/                 # Backend API
 │   ├── src/
 │   │   ├── routes/           # Rotas da API
 │   │   ├── helpers.js        # Funções auxiliares
 │   │   └── setupDB.js        # Configuração do banco
-│   └── migrations/           # Scripts SQL de migração
+│   ├── migrations/           # Scripts SQL de migração
+│   └── scripts/              # Scripts de utilidade
 │
 ├── 📁 mobile/                 # App React Native
 │   ├── app/                  # Telas do app
 │   ├── components/           # Componentes reutilizáveis
-│   └── assets/               # Imagens e fontes
+│   ├── assets/               # Imagens e fontes
+│   └── scripts/              # Scripts de configuração
 │
 ├── package.json              # Configuração raiz
 └── README.md                 # Este arquivo
@@ -203,12 +298,16 @@ bushere/
 - **React Router DOM** - Roteamento
 - **Bootstrap 5** - Framework CSS
 - **Chart.js** - Gráficos e visualizações
+- **Leaflet** - Mapas interativos
+- **React Leaflet** - Integração do Leaflet com React
 - **Sass** - Pré-processador CSS
 
 ### Mobile
 - **React Native** - Framework mobile
 - **Expo** - Plataforma de desenvolvimento
 - **Expo Router** - Navegação baseada em arquivos
+- **React Native Vector Icons** - Ícones
+- **React Native Reanimated** - Animações
 
 ### Backend
 - **Node.js** - Runtime JavaScript
@@ -217,10 +316,18 @@ bushere/
 - **bcrypt** - Hash de senhas
 - **CORS** - Cross-origin resource sharing
 - **dotenv** - Gerenciamento de variáveis de ambiente
+- **body-parser** - Parsing de requisições
 
 ### Banco de Dados
 - **MySQL 8.0+** - Sistema de gerenciamento de banco de dados
 - **Migrations** - Versionamento do esquema do banco
+- **Full-text Search** - Busca textual otimizada
+- **Triggers** - Automatização de índices de busca
+
+### APIs Externas
+- **ViaCEP** - Consulta de CEP
+- **Nominatim** - Geolocalização reversa
+- **OpenStreetMap** - Mapas e tiles
 
 ## 🌐 API Endpoints
 
@@ -231,19 +338,58 @@ GET    /api/passengers/:id      # Obter passageiro por ID
 POST   /api/passengers          # Criar novo passageiro
 PUT    /api/passengers/:id      # Atualizar passageiro
 DELETE /api/passengers/:id      # Excluir passageiro
-GET    /api/passengers/tipos    # Listar tipos de passageiro
 ```
 
-### Autenticação
+### Motoristas
 ```http
-POST   /api/auth/register       # Registrar usuário
-POST   /api/auth/login          # Fazer login
-POST   /api/auth/logout         # Fazer logout
+GET    /api/drivers             # Listar motoristas
+GET    /api/drivers/:id         # Obter motorista por ID
+POST   /api/drivers             # Criar novo motorista
+PUT    /api/drivers/:id         # Atualizar motorista
+DELETE /api/drivers/:id         # Excluir motorista
+GET    /api/drivers/status      # Listar status de motoristas
+```
+
+### Ônibus
+```http
+GET    /api/buses               # Listar ônibus
+GET    /api/buses/:id           # Obter ônibus por ID
+POST   /api/buses               # Criar novo ônibus
+PUT    /api/buses/:id           # Atualizar ônibus
+DELETE /api/buses/:id           # Excluir ônibus
+GET    /api/buses/status        # Listar status de ônibus
+```
+
+### Rotas
+```http
+GET    /api/routes              # Listar rotas
+GET    /api/routes/:id          # Obter rota por ID
+POST   /api/routes              # Criar nova rota
+PUT    /api/routes/:id          # Atualizar rota
+DELETE /api/routes/:id          # Excluir rota
+GET    /api/routes/status       # Listar status de rotas
+```
+
+### Pontos
+```http
+GET    /api/stops               # Listar pontos
+GET    /api/stops/:id           # Obter ponto por ID
+POST   /api/stops               # Criar novo ponto
+PUT    /api/stops/:id           # Atualizar ponto
+DELETE /api/stops/:id           # Excluir ponto
+GET    /api/stops/search        # Buscar pontos por nome
+```
+
+### Relatórios
+```http
+GET    /api/reports/stats       # Estatísticas gerais
+GET    /api/reports/charts      # Dados para gráficos
+GET    /api/reports/utilization # Dados de utilização
 ```
 
 ### Busca
 ```http
-GET    /api/search              # Busca global no sistema
+GET    /api/autocomplete        # Autocomplete para busca
 ```
 
 ## 📝 Scripts Disponíveis
@@ -298,7 +444,7 @@ npm run web      # Versão web do app
 **Erro de conexão com banco de dados:**
 ```bash
 # Verifique se o MySQL está rodando
-# Confirme as credenciais no arquivo .env
+# Confirme as credenciais no arquivo server/.env
 # Execute as migrations: npm run setup no diretório server/
 ```
 
@@ -311,19 +457,37 @@ npm run web      # Versão web do app
 **Dependências não instaladas:**
 ```bash
 # Execute npm install em cada diretório (raiz, web/, server/, mobile/)
+# Ou use o comando de setup automático: npm run setup
+```
+
+**Problemas com mapeamento:**
+```bash
+# Verifique se as APIs de geolocalização estão funcionando
+# Confirme se há conexão com a internet para carregar os mapas
+```
+
+**Erro de autocomplete/busca:**
+```bash
+# Verifique se os índices de busca foram criados corretamente
+# Execute as migrations do banco de dados
 ```
 
 ## 📄 Licença
 
-Este projeto foi desenvolvido como Trabalho de Conclusão de Curso (TCC).
+Este projeto foi desenvolvido como Trabalho de Conclusão de Curso (TCC) da **ETEC João Belarmino** do Centro Paula Souza.
+
+**Desenvolvido por:** Equipe BusHere!  
+**Instituição:** ETEC João Belarmino - Centro Paula Souza  
+**Ano:** 2025  
+**Curso:** Desenvolvimento de Sistemas
 
 ## 👥 Equipe de Desenvolvimento
 
-- **Victor Ramos** - Desenvolvimento Full Stack, Banco de Dados, Documentação e Design
+- **Victor Ramos** - Desenvolvimento Full Stack, Mobile, Banco de Dados, Documentação e Design
 - **Renan Andrade** - Desenvolvimento Full Stack e Mobile
 - **Luiz Souza** - Desenvolvimento FrontEnd e Design
 - **Sarah Porsch** - Documentação
-- **Marcelo Camillo** - Documentação e Banco de Dados
+- **Marcelo Camillo** - Documentação
 
 ---
 

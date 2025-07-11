@@ -239,7 +239,6 @@ function Stops({ pageFunctions }) {
               const innitialData = {
                 latitude: latlng.lat,
                 longitude: latlng.lng,
-                
                 logradouro: data.road || '',
                 bairro: data.suburb || '',
                 cidade: data.city || '',

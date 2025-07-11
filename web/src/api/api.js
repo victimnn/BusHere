@@ -218,52 +218,23 @@ const api = {
 
   // Funções de geolocalização com o nominatim
   geolocation: {
-    //https://nominatim.openstreetmap.org/search?q=Avenida+Paulista%2C+S%C3%A3o+Paulo&format=json&addressdetails=1&limit=1
-    getCepFromStreet: async (street, city, state) => {
-      const queryParams = new URLSearchParams({
-        format: "json",
-        street: street,
-        city: city,
-        state: state,
-        addressdetails: 1,
-        limit: 1
-      });
-
+    //https://viacep.com.br/ws/SP/Jaguari%C3%BAna/Rua%20Antonio%20Oliveira%20Mathias/json/
+    getCepFromStreet: async (uf, city, road) => {
       try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/search?${queryParams.toString()}`);
-        if (!response.ok) {
-          throw new Error(`Erro ao obter CEP: ${response.statusText}`);
+        const data = await fetch(`https://viacep.com.br/ws/${uf}/${city}/${road}/json/`)
+        if (!data.ok) {
+          throw new Error(`Erro ao obter CEP: ${data.statusText}`);
         }
-        const data = await response.json();
-
-        if (data.length === 0) {
-          throw new Error("Nenhum resultado encontrado para a busca de CEP.");
+        const json = await data.json();
+        if (json.length === 0) {
+          throw new Error(`Nenhum CEP encontrado para ${road}, ${city}, ${uf}`);
         }
 
-        const stateInfo = findStateByLabel(data[0].address.state || data[0].address.region || '');
-        if (!stateInfo) {
-          throw new Error(`Estado não encontrado: ${data[0].address.state || data[0].address.region}`);
-        }
-        const uf = stateInfo.value;
-
-        return {
-          road: data[0].address.road || '',
-          suburb: data[0].address.suburb || '',
-          city: data[0].address.city || data[0].address.town || '',
-          state: data[0].address.state || '',
-          cep: data[0].address.postcode || '',
-          uf: uf,
-          coordinates: {
-            latitude: parseFloat(data[0].lat),
-            longitude: parseFloat(data[0].lon)
-          },
-          data: data,
-        };
-
+        return json[0].cep || ''; // Retorna o primeiro CEP encontrado
       } catch (error) {
-        console.error("Erro na requisição de geolocalização:", error);
+        console.error("Erro na requisição de CEP:", error);
         throw error; // Propaga o erro para ser tratado fora
-      } 
+      }
     },
 
     getInfoFromCoordinates: async (lat, lon) => {
@@ -289,12 +260,19 @@ const api = {
           throw new Error(`Estado não encontrado: ${data.address.state || data.address.region}`);
         }
         const uf = state.value
+        const city = data.address.city || data.address.town || data.address.village || '';
+        const road = data.address.road || '';
+        let cep = '';
+        if(uf !== "" && city !== "" && road !== "") {
+          cep = await api.geolocation.getCepFromStreet(uf, city, road);
+        }
+
         return {
-          road: data.address.road || '',
+          road: road,
           suburb: data.address.suburb || '',
-          city: data.address.city || data.address.town || '',
+          city: city,
           state: data.address.state || '', // tipicamente nao vem preenchido, mas pode ser útil
-          //cep: cep || '', -- deu errado, pois o cep fica retornando um cep aleatório
+          cep: cep || '',
           uf: uf,
           coordinates: {
             latitude: lat,

@@ -218,74 +218,146 @@ const api = {
 
   // Funções de geolocalização com o nominatim
   geolocation: {
-    //https://viacep.com.br/ws/SP/Jaguari%C3%BAna/Rua%20Antonio%20Oliveira%20Mathias/json/
+    // Cache pra armazenar resultados do CEP
+    _cepCache: new Map(),
+    // Cache pra armazenar resultados da geolocalização
+    _geoCache: new Map(),
+
+    // Função pra gerar chave de cache do CEP
+    _getCepCacheKey: (uf, city, road) => {
+      return `${uf.toUpperCase()}-${city.toLowerCase()}-${road.toLowerCase()}`;
+    },
+
+    // Função pra gerar chave de cache da geolocalização
+    _getGeoCacheKey: (lat, lon) => {
+      // Arredonda as coordenadas pra 6 casas pea melhorar cache
+      return `${parseFloat(lat).toFixed(6)}-${parseFloat(lon).toFixed(6)}`;
+    },
+
     getCepFromStreet: async (uf, city, road) => {
       try {
-        const data = await fetch(`https://viacep.com.br/ws/${uf}/${city}/${road}/json/`)
+        // Verifica se já existe no cache
+        const cacheKey = api.geolocation._getCepCacheKey(uf, city, road);
+        if (api.geolocation._cepCache.has(cacheKey)) {
+          return api.geolocation._cepCache.get(cacheKey);
+        }
+
+        // Se não estiver no cache faz a requisição
+        const data = await fetch(
+          `https://viacep.com.br/ws/${encodeURIComponent(uf)}/${encodeURIComponent(city)}/${encodeURIComponent(road)}/json/`,
+          { 
+            headers: { 'Accept': 'application/json' },
+            cache: 'force-cache' // Usa cache do navegador se der 
+          }
+        );
+
         if (!data.ok) {
           throw new Error(`Erro ao obter CEP: ${data.statusText}`);
         }
+
         const json = await data.json();
-        if (json.length === 0) {
-          throw new Error(`Nenhum CEP encontrado para ${road}, ${city}, ${uf}`);
+        if (!Array.isArray(json) || json.length === 0) {
+          const emptyCep = '';
+          api.geolocation._cepCache.set(cacheKey, emptyCep);
+          return emptyCep;
         }
 
-        return json[0].cep || ''; // Retorna o primeiro CEP encontrado
+        const cep = json[0].cep || '';
+        // Armazena no cache
+        api.geolocation._cepCache.set(cacheKey, cep);
+        return cep;
       } catch (error) {
         console.error("Erro na requisição de CEP:", error);
-        throw error; // Propaga o erro para ser tratado fora
+        throw error;
       }
     },
 
     getInfoFromCoordinates: async (lat, lon) => {
-      const queryParams = new URLSearchParams({
-        format: "json",
-        lat: lat,
-        lon: lon,
-        addressdetails: 1,
-        extratags: 1,
-        limit: 1
-      })
-
       try {
-        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?${queryParams.toString()}`);
+        // Verifica se já existe no cache
+        const cacheKey = api.geolocation._getGeoCacheKey(lat, lon);
+        if (api.geolocation._geoCache.has(cacheKey)) {
+          return api.geolocation._geoCache.get(cacheKey);
+        }
+
+        const queryParams = new URLSearchParams({
+          format: "json",
+          lat: parseFloat(lat).toFixed(6),
+          lon: parseFloat(lon).toFixed(6),
+          addressdetails: 1,
+          extratags: 1,
+          limit: 1
+        });
+
+        // Adiciona um tempo de 5 segundos para a requisição
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?${queryParams.toString()}`,
+          {
+            headers: {
+              'Accept-Language': 'pt-BR',
+              'Accept': 'application/json'
+            },
+            signal: controller.signal,
+            cache: 'force-cache' // Usa cache do navegador se for possível
+          }
+        );
+
+        clearTimeout(timeoutId);
+
         if (!response.ok) {
           throw new Error(`Erro ao obter informações de geolocalização: ${response.statusText}`);
         }
-        const data = await response.json();
 
+        const data = await response.json();
         const state = findStateByLabel(data.address.state || data.address.region || '');
-        const stateName = state.label || '';
         if (!state) {
           throw new Error(`Estado não encontrado: ${data.address.state || data.address.region}`);
         }
-        const uf = state.value
-        const city = data.address.city || data.address.town || data.address.village || '';
-        const road = data.address.road || '';
-        let cep = '';
-        if(uf !== "" && city !== "" && road !== "") {
-          cep = await api.geolocation.getCepFromStreet(uf, city, road);
-        }
 
-        return {
-          road: road,
+        const result = {
+          road: data.address.road || '',
           suburb: data.address.suburb || '',
-          city: city,
-          state: data.address.state || '', // tipicamente nao vem preenchido, mas pode ser útil
-          cep: cep || '',
-          uf: uf,
+          city: data.address.city || data.address.town || data.address.village || '',
+          state: data.address.state || '',
+          uf: state.value,
+          cep: '',
           coordinates: {
-            latitude: lat,
-            longitude: lon
+            latitude: parseFloat(lat).toFixed(6),
+            longitude: parseFloat(lon).toFixed(6)
           },
           data: data,
+        };
+
+        // Busca o CEP apenas se tivermos todas as informações precisas
+        if (result.uf && result.city && result.road) {
+          try {
+            result.cep = await api.geolocation.getCepFromStreet(result.uf, result.city, result.road);
+          } catch (error) {
+            console.warn("Erro ao buscar CEP:", error);
+            result.cep = '';
+          }
         }
 
-      } catch (error) {
-        console.error("Erro na requisição de geolocalização:", error);
-        throw error; // Propaga o erro para ser tratado fora
-      }
+        // Armazena no cache
+        api.geolocation._geoCache.set(cacheKey, result);
+        return result;
 
+      } catch (error) {
+        if (error.name === 'AbortError') {
+          throw new Error('Tempo limite excedido ao buscar informações de geolocalização');
+        }
+        console.error("Erro na requisição de geolocalização:", error);
+        throw error;
+      }
+    },
+
+    // Método para limpar o cache se necessário
+    clearCache: () => {
+      api.geolocation._cepCache.clear();
+      api.geolocation._geoCache.clear();
     }
   }
 };

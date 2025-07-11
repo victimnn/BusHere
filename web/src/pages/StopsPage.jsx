@@ -16,7 +16,6 @@ import { getColorBasedOnValue } from "../utils/mapIcons";
 * @param {Object} popUpRef - Referência para o componente PopUpComponent
 * @param {Function} onDelete - Função callback para deletar um ponto
 * @param {Function} onEdit - Função callback para editar um ponto
-* @returns {Array} - Retorna um novo array de marcadores formatados
 */
 export function sincronizeMarkers(stops, setMarkers, popUpRef, onDelete = null, onEdit = null) {
   const newMarkers = stops.map(stop => ({
@@ -158,8 +157,15 @@ function Stops({ pageFunctions }) {
     if (confirm("Você tem certeza que deseja deletar este ponto? Esta ação não pode ser desfeita.")) {
       try {
         await api.stops.delete(id); // Chama a API para deletar o ponto
-        fetchStops(); // Recarrega os pontos após a exclusão (é pior para performance, porem já atualza o estado mais vezes)
-        popUpRef.current.hide(); // Fecha o pop-up após a exclusão
+        
+        // Atualiza o estado local removendo o ponto excluído
+        setStops(prevStops => prevStops.filter(stop => stop.ponto_id !== id));
+        
+        // Remove o marcador do mapa imediatamente
+        setMarkers(prevMarkers => prevMarkers.filter(marker => marker.id !== id));
+        
+        // Fecha o pop-up
+        popUpRef.current.hide(); 
       } catch (error) {
         console.error(`Erro ao deletar ponto com ID ${id}:`, error);  
         alert(`Erro ao deletar ponto: ${error.message || "Tente novamente mais tarde"}`);

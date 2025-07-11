@@ -90,24 +90,25 @@ function Reports({ pageFunctions }) {
   }
 
   return (
-    <div className="container-fluid px-4 reports-main">
-      <ReportHeader 
-        isLoading={isLoading}
-        onRefresh={() => window.location.reload()}
-        onExport={handleExport}
-      />
+    <main className="reports-main py-2">
+      <div className="container-fluid px-4">
+        <ReportHeader 
+          isLoading={isLoading}
+          onRefresh={() => window.location.reload()}
+          onExport={handleExport}
+        />
       
-      <StatsCards reportData={reportData} />
+        <StatsCards reportData={reportData} />
       
-      <ChartsSection chartData={chartData} />
+        <ChartsSection chartData={chartData} />
       
-      <PerformanceSection reportData={reportData} />
+        <PerformanceSection reportData={reportData} />
       
-      <DetailedSummary reportData={reportData} />
+        <DetailedSummary reportData={reportData} />
 
-      
-      <PopUpComponent ref={popUpRef} />
-    </div>
+        <PopUpComponent ref={popUpRef} />
+      </div>
+    </main>
   );
 }
 

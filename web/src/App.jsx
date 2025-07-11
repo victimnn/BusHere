@@ -44,7 +44,7 @@ function App() {
 
   return (
     <Router>
-      <div className="container-fluid p-0 bg-blue">
+      <div>
         <div className="d-flex w-100" style={{overflow: "hidden", minHeight:"100vh"}}> {/* Usando flex com min-height */}
 
           {/* Sidebar */}

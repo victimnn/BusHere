@@ -5,3 +5,24 @@
   text-align: left;
 }
 
+// Garantir que a sidebar não seja comprimida
+#sidebar {
+  flex-shrink: 0 !important;
+  min-width: 70px !important;
+}
+
+// Garantir que container-fluid não quebre o layout
+.container-fluid {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+// Garantir que o flexbox funcione corretamente
+.d-flex {
+  display: flex !important;
+}
+
+.flex-grow-1 {
+  flex-grow: 1 !important;
+  min-width: 0 !important; // Permite que o flex item encolha além do tamanho do conteúdo
+}

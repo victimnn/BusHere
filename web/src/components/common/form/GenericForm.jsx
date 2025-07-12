@@ -553,7 +553,7 @@ function GenericForm({
             ) : (
               <>
                 <i className={`bi ${initialData ? 'bi-pencil-square' : 'bi-plus-circle'} me-2`}></i>
-                {initialData ? 'Atualizar' : 'Cadastrar'}
+                {(initialData && !isCreateForm) ? 'Atualizar' : 'Cadastrar'}
               </>
             )}
           </button>

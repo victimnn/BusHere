@@ -9,15 +9,17 @@ import { driverFormConfig } from '../common/form/formConfigs';
  * @param {Object} props.initialData - Dados iniciais para edição (opcional)
  * @param {Function} props.onSubmit - Função chamada ao enviar o formulário
  * @param {Function} props.onCancel - Função chamada ao cancelar
+ * @param {boolean} props.isCreateForm - Se é um formulário de criação (opcional)
  * @returns {JSX.Element}
  */
-function DriverForm({ initialData, onSubmit, onCancel }) {
+function DriverForm({ initialData, onSubmit, onCancel, isCreateForm = null }) {
   return (
     <GenericForm
       config={driverFormConfig}
       initialData={initialData}
       onSubmit={onSubmit}
       onCancel={onCancel}
+      isCreateForm={isCreateForm}
     />
   );
 }
@@ -25,7 +27,8 @@ function DriverForm({ initialData, onSubmit, onCancel }) {
 DriverForm.propTypes = {
   initialData: PropTypes.object,
   onSubmit: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired
+  onCancel: PropTypes.func.isRequired,
+  isCreateForm: PropTypes.bool
 };
 
 export default DriverForm;

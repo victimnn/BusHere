@@ -103,11 +103,11 @@ function Stops({ pageFunctions }) {
             } else {
               errorMessage += error.message || "Tente novamente mais tarde";
             }
-            
-            alert(errorMessage);
+              alert(errorMessage);
           }
         },
         onCancel: popUpRef.current.hide,
+        isCreateForm: true
       }
     });
   };

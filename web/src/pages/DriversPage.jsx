@@ -87,7 +87,6 @@ function Drivers({ pageFunctions }) {
   useEffect(() => {
     fetchDrivers();
   }, [currentPage, searchTerm]); // Recarrega quando mudar a página ou termo de busca
-
   // Handler para criar um novo motorista
   const handleCreateDriver = () => {
     popUpRef.current.show({
@@ -127,7 +126,7 @@ function Drivers({ pageFunctions }) {
             alert(errorMessage);
           }
         },
-        onCancel: popUpRef.current.hide,
+        onCancel: popUpRef.current.hide,        isCreateForm: true
       }
     });
   };

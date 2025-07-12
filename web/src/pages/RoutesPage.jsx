@@ -60,7 +60,6 @@ function RoutesPage({ pageFunctions }) {
   useEffect(() => {
     fetchRoutes();
   }, [currentPage, searchTerm]); // Recarrega quando mudar a página ou termo de busca
-
   // Handler para criar uma nova rota
   const handleCreateRoute = () => {
     popUpRef.current.show({
@@ -90,6 +89,7 @@ function RoutesPage({ pageFunctions }) {
           }
         },
         onCancel: popUpRef.current.hide,
+        isCreateForm: true
       }
     });
   };

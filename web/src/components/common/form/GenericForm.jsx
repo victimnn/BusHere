@@ -11,7 +11,8 @@ function GenericForm({
   isLoading = false,
   className = '',
   title = null,
-  subtitle = null
+  subtitle = null,
+  isCreateForm = null
 }) {
   const [formData, setFormData] = useState(() => {
     const initialFormData = {};
@@ -629,8 +630,7 @@ GenericForm.propTypes = {
         columns: PropTypes.number
       })
     )
-  }).isRequired,
-  initialData: PropTypes.object,
+  }).isRequired,  initialData: PropTypes.object,
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   onDelete: PropTypes.func,
@@ -638,7 +638,8 @@ GenericForm.propTypes = {
   isLoading: PropTypes.bool,
   className: PropTypes.string,
   title: PropTypes.string,
-  subtitle: PropTypes.string
+  subtitle: PropTypes.string,
+  isCreateForm: PropTypes.bool
 };
 
 export default GenericForm;

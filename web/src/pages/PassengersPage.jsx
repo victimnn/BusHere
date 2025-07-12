@@ -96,8 +96,7 @@ function Passengers({ pageFunctions }) {
       fetchPassengers();
     }    
   }, [currentPage, searchTerm, tiposPassageiro]); // Recarrega quando mudar a página, termo de busca ou tipos
-    
-  // Handler para criar um novo passageiro
+      // Handler para criar um novo passageiro
   const handleCreatePassenger = () => {
     popUpRef.current.show({
       title: "Novo Passageiro",
@@ -144,6 +143,7 @@ function Passengers({ pageFunctions }) {
           }
         },
         onCancel: popUpRef.current.hide,
+        isCreateForm: true
       }
     });
   };

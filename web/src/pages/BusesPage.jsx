@@ -75,7 +75,6 @@ function Buses({ pageFunctions }) {
   useEffect(() => {
     fetchBuses();
   }, [currentPage, searchTerm]); // Recarrega quando mudar a página ou termo de busca
-
   // Handler para criar um novo ônibus
   const handleCreateBus = () => {
     popUpRef.current.show({
@@ -105,6 +104,7 @@ function Buses({ pageFunctions }) {
           }
         },
         onCancel: popUpRef.current.hide,
+        isCreateForm: true
       }
     });
   };

@@ -21,7 +21,9 @@ function SearchPages({ pageFunctions }) {
       fetchSugestions(); // Chama a função para buscar sugestões
     }, [searchTerm]); // Executa quando a página é carregada
 
-    pageFunctions.set("Pesquisa", true, true);
+    useEffect(() => {
+      pageFunctions.set("Pesquisa", true, true);
+    }, [pageFunctions]);
 
     return (
       <main>

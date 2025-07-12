@@ -46,7 +46,9 @@ function Reports({ pageFunctions }) {
   const { reportData, isLoading, error, refetch } = useReportData();
   const chartData = useChartData(reportData);
 
-  pageFunctions.set("Relatórios", true, true);
+  useEffect(() => {
+    pageFunctions.set("Relatórios", true, true);
+  }, [pageFunctions]);
 
   // Função para exportar dados
   const handleExport = () => {

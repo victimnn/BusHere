@@ -36,7 +36,9 @@ export function sincronizeMarkers(stops, setMarkers, popUpRef, onDelete = null, 
 }
 
 function Stops({ pageFunctions }) {
-  pageFunctions.set("Pontos", true, true);
+  useEffect(() => {
+    pageFunctions.set("Pontos", true, true);
+  }, [pageFunctions]);
 
   const popUpRef = useRef(null); // Referência para o componente PopUpComponent
   const [stops, setStops] = useState([]); 

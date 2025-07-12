@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 function Login({pageFunctions}){
-  pageFunctions.set("login",false,false)
+  useEffect(() => {
+    pageFunctions.set("login",false,false);
+  }, [pageFunctions]);
     return (
     <div className="d-flex justify-content-center align-items-center min-vh-100 bg-success bg-gradient">
       <div className="bg-dark text-white p-5 shadow" style={{ width: "100%", maxWidth: "400px", borderRadius: '15px'}}>

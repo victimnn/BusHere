@@ -99,55 +99,53 @@ function Passengers({ pageFunctions }) {
     
   // Handler para criar um novo passageiro
   const handleCreatePassenger = () => {
-    popUpRef.current.show(
-      ({ close }) => (
-        <PassengerForm 
-          onSubmit={async (formData) => {
-            try {
-              // Adaptar os dados do frontend para o formato esperado pelo backend
-              const backendData = {
-                nome_completo: formData.nome,
-                cpf: removeFormatting(formData.cpf), // Remove pontos e traço
-                telefone: removeFormatting(formData.telefone), // Remove parênteses, espaço e traço
-                email: formData.email || '',
-                tipo_passageiro_id: formData.tipo_passageiro, // Adiciona o tipo de passageiro
-                // Hash temporário apenas para testes
-                senha_hash: 'temp_hash_' + Date.now(), 
-                // Valores mínimos obrigatórios para o banco de dados
-                logradouro: 'Endereço não informado',
-                numero_endereco: '1', // Número genérico ao invés de 0
-                bairro: 'Não informado',
-                cidade: 'Não informada',
-                uf: 'XX',
-                cep: '00000000' // Sem traço
-              };
-              
-              console.log('Enviando dados:', backendData);
-              await api.passengers.create(backendData);
-              close();
-              fetchPassengers(); // Recarrega a lista
-            } catch (err) {
-              console.error("Erro ao criar passageiro:", err);
-              
-              // Provide more specific error messages
-              let errorMessage = "Erro ao criar passageiro: ";
-              if (err.message && err.message.includes('já cadastrado')) {
-                errorMessage += err.message;
-              } else if (err.message && err.message.includes('409')) {
-                errorMessage += "CPF ou email já cadastrado no sistema.";
-              } else {
-                errorMessage += err.message || "Tente novamente mais tarde";
-              }
-              
-              alert(errorMessage);
+    popUpRef.current.show({
+      title: "Novo Passageiro",
+      content: PassengerForm,
+      props: {
+        onSubmit: async (formData) => {
+          try {
+            // Adaptar os dados do frontend para o formato esperado pelo backend
+            const backendData = {
+              nome_completo: formData.nome,
+              cpf: removeFormatting(formData.cpf), // Remove pontos e traço
+              telefone: removeFormatting(formData.telefone), // Remove parênteses, espaço e traço
+              email: formData.email || '',
+              tipo_passageiro_id: formData.tipo_passageiro, // Adiciona o tipo de passageiro
+              // Hash temporário apenas para testes
+              senha_hash: 'temp_hash_' + Date.now(), 
+              // Valores mínimos obrigatórios para o banco de dados
+              logradouro: 'Endereço não informado',
+              numero_endereco: '1', // Número genérico ao invés de 0
+              bairro: 'Não informado',
+              cidade: 'Não informada',
+              uf: 'XX',
+              cep: '00000000' // Sem traço
+            };
+            
+            console.log('Enviando dados:', backendData);
+            await api.passengers.create(backendData);
+            popUpRef.current.hide();
+            fetchPassengers(); // Recarrega a lista
+          } catch (err) {
+            console.error("Erro ao criar passageiro:", err);
+            
+            // Provide more specific error messages
+            let errorMessage = "Erro ao criar passageiro: ";
+            if (err.message && err.message.includes('já cadastrado')) {
+              errorMessage += err.message;
+            } else if (err.message && err.message.includes('409')) {
+              errorMessage += "CPF ou email já cadastrado no sistema.";
+            } else {
+              errorMessage += err.message || "Tente novamente mais tarde";
             }
-          }}
-          onCancel={close}
-        />
-      ), 
-      {},
-      "Novo Passageiro"
-    );
+            
+            alert(errorMessage);
+          }
+        },
+        onCancel: popUpRef.current.hide,
+      }
+    });
   };
     
   // Handler para editar um passageiro
@@ -161,47 +159,45 @@ function Passengers({ pageFunctions }) {
       tipo_passageiro: passenger.tipo_passageiro_id
     };
     
-    popUpRef.current.show(
-      ({ close }) => (
-        <PassengerForm 
-          initialData={initialData}
-          onSubmit={async (formData) => {
-            try {
-              // Adaptar os dados do frontend para o formato esperado pelo backend
-              const backendData = {
-                nome_completo: formData.nome,
-                cpf: removeFormatting(formData.cpf), // Remove pontos e traço
-                email: formData.email,
-                telefone: removeFormatting(formData.telefone), // Remove parênteses, espaço e traço
-                tipo_passageiro_id: formData.tipo_passageiro // Adiciona o tipo de passageiro
-              };
-              
-              console.log('Enviando dados para atualização:', backendData);
-              await api.passengers.update(passenger.id, backendData);
-              close();
-              fetchPassengers(); // Recarrega a lista
-            } catch (err) {
-              console.error("Erro ao atualizar passageiro:", err);
-              
-              // Provide more specific error messages
-              let errorMessage = "Erro ao atualizar passageiro: ";
-              if (err.message && err.message.includes('já está sendo usado')) {
-                errorMessage += err.message;
-              } else if (err.message && err.message.includes('409')) {
-                errorMessage += "CPF ou email já está sendo usado por outro passageiro.";
-              } else {
-                errorMessage += err.message || "Tente novamente mais tarde";
-              }
-              
-              alert(errorMessage);
+    popUpRef.current.show({
+      title: `Editar Passageiro: ${passenger.nome}`,
+      content: PassengerForm,
+      props: {
+        initialData: initialData,
+        onSubmit: async (formData) => {
+          try {
+            // Adaptar os dados do frontend para o formato esperado pelo backend
+            const backendData = {
+              nome_completo: formData.nome,
+              cpf: removeFormatting(formData.cpf), // Remove pontos e traço
+              email: formData.email,
+              telefone: removeFormatting(formData.telefone), // Remove parênteses, espaço e traço
+              tipo_passageiro_id: formData.tipo_passageiro // Adiciona o tipo de passageiro
+            };
+            
+            console.log('Enviando dados para atualização:', backendData);
+            await api.passengers.update(passenger.id, backendData);
+            popUpRef.current.hide();
+            fetchPassengers(); // Recarrega a lista
+          } catch (err) {
+            console.error("Erro ao atualizar passageiro:", err);
+            
+            // Provide more specific error messages
+            let errorMessage = "Erro ao atualizar passageiro: ";
+            if (err.message && err.message.includes('já está sendo usado')) {
+              errorMessage += err.message;
+            } else if (err.message && err.message.includes('409')) {
+              errorMessage += "CPF ou email já está sendo usado por outro passageiro.";
+            } else {
+              errorMessage += err.message || "Tente novamente mais tarde";
             }
-          }}
-          onCancel={close}
-        />
-      ), 
-      {}, 
-      `Editar Passageiro: ${passenger.nome}`
-    );
+            
+            alert(errorMessage);
+          }
+        },
+        onCancel: popUpRef.current.hide,
+      }
+    });
   };
     
   // Handler para excluir um passageiro
@@ -219,17 +215,15 @@ function Passengers({ pageFunctions }) {
   };
   // Handler para quando uma linha for clicada
   const handleRowClick = (passenger) => {
-    popUpRef.current.show(
-      () => (
-        <PassengerDetails 
-          passenger={passenger} 
-          onEdit={handleEditPassenger} 
-          onDelete={handleDeletePassenger} 
-        />
-      ), 
-      {}, 
-      `Passageiro: ${passenger.nome}`
-    );
+    popUpRef.current.show({
+      title: `Passageiro: ${passenger.nome}`,
+      content: PassengerDetails,
+      props: {
+        passenger: passenger,
+        onEdit: handleEditPassenger,
+        onDelete: handleDeletePassenger,
+      }
+    });
   };
 
   return (

@@ -82,36 +82,34 @@ function Stops({ pageFunctions }) {
   }, []); // só busca/move quando o mapa estiver pronto
 
   const handleCreateStop = (initialData = {}) => {
-    popUpRef.current.show(
-      ({ close }) => (
-        <StopForm
-          initialData={initialData}
-          onSubmit={async (formData) => {
-            try {
-              console.log('Enviando dados:', formData);
-              await api.stops.create(formData);
-              close();
-              fetchStops(); // Recarrega a lista
-            } catch (error) {
-              console.error("Erro ao criar ponto:", error);
-              
-              // Provide more specific error messages
-              let errorMessage = "Erro ao criar ponto: ";
-              if (error.message && error.message.includes('já cadastrado')) {
-                errorMessage += error.message;
-              } else {
-                errorMessage += error.message || "Tente novamente mais tarde";
-              }
-              
-              alert(errorMessage);
+    popUpRef.current.show({
+      title: "Novo Ponto",
+      content: StopForm,
+      props: {
+        initialData: initialData,
+        onSubmit: async (formData) => {
+          try {
+            console.log('Enviando dados:', formData);
+            await api.stops.create(formData);
+            popUpRef.current.hide();
+            fetchStops(); // Recarrega a lista
+          } catch (error) {
+            console.error("Erro ao criar ponto:", error);
+            
+            // Provide more specific error messages
+            let errorMessage = "Erro ao criar ponto: ";
+            if (error.message && error.message.includes('já cadastrado')) {
+              errorMessage += error.message;
+            } else {
+              errorMessage += error.message || "Tente novamente mais tarde";
             }
-          }}
-          onCancel={close}
-        />
-      ),
-      {},
-      "Novo Ponto"
-    );
+            
+            alert(errorMessage);
+          }
+        },
+        onCancel: popUpRef.current.hide,
+      }
+    });
   };
 
   const handleEditStop = (stopId) => {
@@ -121,36 +119,34 @@ function Stops({ pageFunctions }) {
       return;
     }
 
-    popUpRef.current.show(
-      ({ close }) => (
-        <StopForm
-          initialData={stop}
-          onSubmit={async (formData) => {
-            try {
-              console.log('Enviando dados para atualização:', formData);
-              await api.stops.update(stop.ponto_id, formData);
-              close();
-              fetchStops(); // Recarrega a lista
-            } catch (error) {
-              console.error("Erro ao atualizar ponto:", error);
-              
-              // Provide more specific error messages
-              let errorMessage = "Erro ao atualizar ponto: ";
-              if (error.message && error.message.includes('já está sendo usado')) {
-                errorMessage += error.message;
-              } else {
-                errorMessage += error.message || "Tente novamente mais tarde";
-              }
-              
-              alert(errorMessage);
+    popUpRef.current.show({
+      title: `Editar Ponto: ${stop.nome}`,
+      content: StopForm,
+      props: {
+        initialData: stop,
+        onSubmit: async (formData) => {
+          try {
+            console.log('Enviando dados para atualização:', formData);
+            await api.stops.update(stop.ponto_id, formData);
+            popUpRef.current.hide();
+            fetchStops(); // Recarrega a lista
+          } catch (error) {
+            console.error("Erro ao atualizar ponto:", error);
+            
+            // Provide more specific error messages
+            let errorMessage = "Erro ao atualizar ponto: ";
+            if (error.message && error.message.includes('já está sendo usado')) {
+              errorMessage += error.message;
+            } else {
+              errorMessage += error.message || "Tente novamente mais tarde";
             }
-          }}
-          onCancel={close}
-        />
-      ),
-      {},
-      `Editar Ponto: ${stop.nome}`
-    );
+            
+            alert(errorMessage);
+          }
+        },
+        onCancel: popUpRef.current.hide,
+      }
+    });
   };
 
   const handleDeleteStop = async (id) => {
@@ -200,17 +196,15 @@ function Stops({ pageFunctions }) {
     const marker = stops.find(stop => stop.ponto_id === rowData.id);
     
     if (marker) {
-      popUpRef.current.show(
-        () => (
-          <StopDetails 
-            stop={marker} 
-            onEdit={() => handleEditStop(marker.ponto_id)} 
-            onDelete={() => handleDeleteStop(marker.ponto_id)} 
-          />
-        ), 
-        {}, 
-        `Ponto: ${marker.nome}`
-      );
+      popUpRef.current.show({
+      title: `Ponto: ${marker.nome}`,
+      content: StopDetails,
+      props: {
+        stop: marker,
+        onEdit: () => handleEditStop(marker.ponto_id),
+        onDelete: () => handleDeleteStop(marker.ponto_id),
+      }
+    });
     } else {
       console.error("Ponto não encontrado para ID:", rowData.id);
     }
@@ -271,7 +265,7 @@ function Stops({ pageFunctions }) {
       </div>
     );
 
-    popUpRef.current.show(InnitialComponent, {}, "Novo Ponto");
+    popUpRef.current.show({ title: "Novo Ponto", content: InnitialComponent });
   }
 
   // Adicionar useEffect para sincronizar marcadores quando stops mudar

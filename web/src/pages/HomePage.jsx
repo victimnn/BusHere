@@ -66,7 +66,7 @@ function Home({ pageFunctions }) {
   
         <button
           onClick={() => {
-            popUpRef.current.show(GraficoPizza, {}, "Grafico de Pizza"); // Chama a função show do PopUpComponent
+            popUpRef.current.show({ content: GraficoPizza, title: "Grafico de Pizza" }); // Chama a função show do PopUpComponent
           }}
           className="btn btn-primary"
         >

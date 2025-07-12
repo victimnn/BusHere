@@ -1,10 +1,12 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import PopUpComponent from "../components/PopUpComponent";
 
 
 
 function Settings({ pageFunctions }) {
-  pageFunctions.set("Configurações", true, true);
+  useEffect(() => {
+    pageFunctions.set("Configurações", true, true);
+  }, [pageFunctions]);
   const popUpRef = useRef(null); // Referência para o componente PopUpComponent
 
   return (

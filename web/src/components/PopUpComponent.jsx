@@ -1,94 +1,136 @@
-import React, { useState, forwardRef, useImperativeHandle, useCallback } from 'react';
+import React, { useState, forwardRef, useImperativeHandle, useCallback, memo } from 'react';
+import PropTypes from 'prop-types';
 
+/**
+ * Estilos para o overlay do modal
+ * Define um overlay que ocupa toda a tela com fundo semi-transparente
+ */
+const styles = {
+  fullScreenOverlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fundo escuro semi-transparente
+    position: 'fixed', // Posição fixa para cobrir toda a tela
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    zIndex: 1040, // Z-index alto para ficar acima de outros elementos
+    overflowX: 'hidden',
+    overflowY: 'auto', // Permite scroll vertical se necessário
+    outline: 0,
+  },
+};
 
-// Usamos forwardRef para permitir que o componente pai obtenha uma referência a ele
-const PopUpComponent = forwardRef((props, ref) => {
-  // Estados para controlar a visibilidade e o conteúdo do pop-up
-  const [isVisible, setIsVisible] = useState(false);
-  const [content, setContent] = useState(null); // Armazena o Componente (tipo/função)
-  const [contentProps, setContentProps] = useState({}); // Armazena as props para o Componente
-  const [title, setTitle] = useState(''); // Novo estado para armazenar o título
+/**
+ * Componente PopUp reutilizável para exibir modais
+ * Utiliza forwardRef para permitir acesso às funções show/hide por componentes pais
+ * Implementa memo para otimização de performance
+ */
+const PopUpComponent = memo(forwardRef((props, ref) => {
+  /**
+   * Estado do modal contendo:
+   * - isVisible: controla se o modal está visível
+   * - ContentComponent: componente a ser renderizado dentro do modal
+   * - componentProps: props a serem passadas para o ContentComponent
+   * - title: título do modal
+   */
+  const [modalState, setModalState] = useState({
+    isVisible: false,
+    ContentComponent: null,
+    componentProps: {},
+    title: '',
+  });
+
+  /**
+   * Função para ocultar o modal
+   * Reseta o estado para valores padrão e remove a classe modal-open do body
+   */
   const hide = useCallback(() => {
-    setIsVisible(false);
-    // Opcional: remover classes do body para limpar o estado do modal do Bootstrap
+    setModalState({
+      isVisible: false,
+      ContentComponent: null,
+      componentProps: {},
+      title: '',
+    });
+    // Remove a classe do body para restaurar o scroll da página
     document.body.classList.remove('modal-open');
   }, []);
-  // Modificado para receber o título como parâmetro
-  const show = useCallback((ContentComponent, componentProps = {}, modalTitle = '') => {
-    // Verifica se ContentComponent é uma função e passa hide como parâmetro close
-    if (typeof ContentComponent === 'function') {
-      const renderedContent = ContentComponent({ close: hide });
-      setContent(() => () => renderedContent); // Armazena um renderizador para o conteúdo pré-renderizado
-    } else {
-      setContent(() => ContentComponent); // Armazena a referência do componente diretamente
-    }
-    
-    setContentProps(componentProps); // Armazena as props
-    setTitle(modalTitle); // Define o título do modal
-    setIsVisible(true); // Torna o modal visível
 
-    // Adicionar classe ao body para desativar scroll de fundo (comportamento padrão do Bootstrap)
+  /**
+   * Função para exibir o modal
+   * @param {Object} params - Parâmetros do modal
+   * @param {Function} params.content - Função que retorna o conteúdo do modal
+   * @param {Object} params.props - Props a serem passadas para o conteúdo
+   * @param {string} params.title - Título do modal
+   */
+  const show = useCallback(({ content, props = {}, title = '' }) => {
+    setModalState({
+      isVisible: true,
+      // Cria um componente que renderiza o conteúdo com a função close
+      ContentComponent: () => content({ close: hide, ...props }),
+      componentProps: props,
+      title,
+    });
+    // Adiciona classe no body para desabilitar scroll da página
     document.body.classList.add('modal-open');
   }, [hide]);
 
-  // Expõe as funções show e hide através da ref passada pelo componente pai
+  /**
+   * Expõe as funções show e hide para componentes pais através da ref
+   */
   useImperativeHandle(ref, () => ({
-    show, // Torna a função show acessível via ref.current.show()
-    hide, // Torna a função hide acessível via ref.current.hide()
-  }));
+    show,
+    hide,
+  }), [show, hide]);
 
-  // O que o componente renderiza (o Modal principal que também serve como backdrop)
+  // Desestrutura o estado do modal
+  const { isVisible, ContentComponent, componentProps, title } = modalState;
+
+  // Se o modal não estiver visível, não renderiza nada
+  if (!isVisible) {
+    return null;
+  }
+
   return (
-    // O modal principal que também serve como backdrop
-    // Usamos classes Bootstrap para a estrutura e estilos do modal
+    // Overlay principal do modal com classes Bootstrap
     <div
-      className={`modal fade ${isVisible ? 'show' : ''}`} // Classes Bootstrap para transição e visibilidade
+      className={`modal fade ${isVisible ? 'show' : ''}`}
       tabIndex="-1"
-      role="dialog" // Acessibilidade
+      role="dialog"
       aria-labelledby="myBootstrapModalLabel"
-      aria-hidden={!isVisible} // Acessibilidade
-      // Aplicamos estilos locais para display, posicionamento, zIndex e o fundo transparente
+      aria-hidden={!isVisible}
       style={{
-          display: isVisible ? 'block' : 'none',
-          ...styles.fullScreenOverlay // Estilos combinados para cobrir a tela e ser o backdrop
+        display: isVisible ? 'block' : 'none',
+        ...styles.fullScreenOverlay,
       }}
-      onClick={hide} // Fechar ao clicar no fundo transparente (este div)
-    >      {/* Adicionamos onClick com stopPropagation para evitar que cliques no conteúdo fechem o modal */}
+      onClick={hide} // Fecha o modal ao clicar no overlay
+    >
+      {/* Container do modal - previne o fechamento ao clicar dentro */}
       <div className="modal-dialog modal-dialog-centered d-flex justify-content-center" onClick={(e) => e.stopPropagation()}>
         <div className="modal-content w-auto">
+          {/* Cabeçalho do modal */}
           <div className="modal-header">
-            {/* Adicionado o título do modal */}
+            {/* Título opcional */}
             {title && <h5 className="modal-title" id="myBootstrapModalLabel">{title}</h5>}
+            {/* Botão de fechar */}
             <button type="button" className="btn-close" aria-label="Close" onClick={hide}></button>
-          </div>          {/* O conteúdo do modal é renderizado aqui */}
+          </div>
+          {/* Corpo do modal onde o conteúdo é renderizado */}
           <div className="modal-body">
-            {content ? React.createElement(content, { ...contentProps }) : null}
+            {ContentComponent && <ContentComponent {...componentProps} />}
           </div>
         </div>
       </div>
     </div>
   );
-});
+}));
 
-// Estilos para o componente, similar ao StyleSheet.create (objeto JavaScript)
-const styles = {
-  fullScreenOverlay: {
-    // Estilos para o div principal que cobre a tela e serve como backdrop
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fundo transparente
-    position: 'fixed', // Essencial para cobrir a tela
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    // Z-index para o backdrop e o modal. O conteúdo do modal (modal-dialog/modal-content)
-    // terá um z-index maior implicitamente pelas regras do Bootstrap ou podemos forçar se necessário.
-    zIndex: 1040, // Z-index típico do backdrop do Bootstrap
-    overflowX: 'hidden', // Garante que não haja scroll horizontal no backdrop
-    overflowY: 'auto', // Permite scroll vertical se o conteúdo do modal for muito grande
-    outline: 0, // Remove o outline ao focar
-  },
-  // Removemos o estilo modalBase separado, pois combinamos com fullScreenOverlay
-  // modalBase: { ... }
+// Define o nome do componente para debugging
+PopUpComponent.displayName = 'PopUpComponent';
+
+// Define os tipos de propriedades esperadas pelo componente
+PopUpComponent.propTypes = {
+  // Atualmente não há props diretas, mas pode ser expandido conforme necessário
+  // As props são passadas através das funções show() expostas pela ref
 };
 
 export default PopUpComponent;

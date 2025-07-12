@@ -90,95 +90,91 @@ function Drivers({ pageFunctions }) {
 
   // Handler para criar um novo motorista
   const handleCreateDriver = () => {
-    popUpRef.current.show(
-      ({ close }) => (
-        <DriverForm
-          onSubmit={async (formData) => {
-            try {
-              const backendData = {
-                nome: formData.nome,
-                cpf: formData.cpf.replace(/\D/g, ''), // Remove pontos e traço
-                cnh_numero: formData.cnh_numero,
-                cnh_categoria: formData.cnh_categoria,
-                cnh_validade: formData.cnh_validade,
-                telefone: formData.telefone.replace(/\D/g, ''), // Remove parênteses, espaço e traço
-                email: formData.email || null,
-                data_admissao: formData.data_admissao || null,
-                status_motorista_id: formData.status_motorista_id
-              };
+    popUpRef.current.show({
+      title: "Novo Motorista",
+      content: DriverForm,
+      props: {
+        onSubmit: async (formData) => {
+          try {
+            const backendData = {
+              nome: formData.nome,
+              cpf: formData.cpf.replace(/\D/g, ''), // Remove pontos e traço
+              cnh_numero: formData.cnh_numero,
+              cnh_categoria: formData.cnh_categoria,
+              cnh_validade: formData.cnh_validade,
+              telefone: formData.telefone.replace(/\D/g, ''), // Remove parênteses, espaço e traço
+              email: formData.email || null,
+              data_admissao: formData.data_admissao || null,
+              status_motorista_id: formData.status_motorista_id
+            };
 
-              console.log('Enviando dados:', backendData);
-              await api.drivers.create(backendData);
-              close();
-              fetchDrivers(); // Recarrega a lista
-            } catch (err) {
-              console.error("Erro ao criar motorista:", err);
-              
-              let errorMessage = "Erro ao criar motorista: ";
-              if (err.message && err.message.includes('já cadastrado')) {
-                errorMessage += err.message;
-              } else if (err.message && err.message.includes('409')) {
-                errorMessage += "CPF, CNH ou email já cadastrado no sistema.";
-              } else {
-                errorMessage += err.message || "Tente novamente mais tarde";
-              }
-              
-              alert(errorMessage);
+            console.log('Enviando dados:', backendData);
+            await api.drivers.create(backendData);
+            popUpRef.current.hide();
+            fetchDrivers(); // Recarrega a lista
+          } catch (err) {
+            console.error("Erro ao criar motorista:", err);
+            
+            let errorMessage = "Erro ao criar motorista: ";
+            if (err.message && err.message.includes('já cadastrado')) {
+              errorMessage += err.message;
+            } else if (err.message && err.message.includes('409')) {
+              errorMessage += "CPF, CNH ou email já cadastrado no sistema.";
+            } else {
+              errorMessage += err.message || "Tente novamente mais tarde";
             }
-          }}
-          onCancel={close}
-        />
-      ),
-      {},
-      "Novo Motorista"
-    );
+            
+            alert(errorMessage);
+          }
+        },
+        onCancel: popUpRef.current.hide,
+      }
+    });
   };
 
   // Handler para editar um motorista
   const handleEditDriver = (driver) => {
-    popUpRef.current.show(
-      ({ close }) => (
-        <DriverForm
-          initialData={driver}
-          onSubmit={async (formData) => {
-            try {
-              const backendData = {
-                nome: formData.nome,
-                cpf: formData.cpf.replace(/\D/g, ''),
-                cnh_numero: formData.cnh_numero,
-                cnh_categoria: formData.cnh_categoria,
-                cnh_validade: formData.cnh_validade,
-                telefone: formData.telefone.replace(/\D/g, ''),
-                email: formData.email,
-                data_admissao: formData.data_admissao,
-                status_motorista_id: formData.status_motorista_id
-              };
+    popUpRef.current.show({
+      title: `Editar Motorista: ${driver.nome}`,
+      content: DriverForm,
+      props: {
+        initialData: driver,
+        onSubmit: async (formData) => {
+          try {
+            const backendData = {
+              nome: formData.nome,
+              cpf: formData.cpf.replace(/\D/g, ''),
+              cnh_numero: formData.cnh_numero,
+              cnh_categoria: formData.cnh_categoria,
+              cnh_validade: formData.cnh_validade,
+              telefone: formData.telefone.replace(/\D/g, ''),
+              email: formData.email,
+              data_admissao: formData.data_admissao,
+              status_motorista_id: formData.status_motorista_id
+            };
 
-              console.log('Enviando dados para atualização:', backendData);
-              await api.drivers.update(driver.motorista_id, backendData);
-              close();
-              fetchDrivers(); // Recarrega a lista
-            } catch (err) {
-              console.error("Erro ao atualizar motorista:", err);
-              
-              let errorMessage = "Erro ao atualizar motorista: ";
-              if (err.message && err.message.includes('já está sendo usado')) {
-                errorMessage += err.message;
-              } else if (err.message && err.message.includes('409')) {
-                errorMessage += "CPF, CNH ou email já está sendo usado por outro motorista.";
-              } else {
-                errorMessage += err.message || "Tente novamente mais tarde";
-              }
-              
-              alert(errorMessage);
+            console.log('Enviando dados para atualização:', backendData);
+            await api.drivers.update(driver.motorista_id, backendData);
+            popUpRef.current.hide();
+            fetchDrivers(); // Recarrega a lista
+          } catch (err) {
+            console.error("Erro ao atualizar motorista:", err);
+            
+            let errorMessage = "Erro ao atualizar motorista: ";
+            if (err.message && err.message.includes('já está sendo usado')) {
+              errorMessage += err.message;
+            } else if (err.message && err.message.includes('409')) {
+              errorMessage += "CPF, CNH ou email já está sendo usado por outro motorista.";
+            } else {
+              errorMessage += err.message || "Tente novamente mais tarde";
             }
-          }}
-          onCancel={close}
-        />
-      ),
-      {},
-      `Editar Motorista: ${driver.nome}`
-    );
+            
+            alert(errorMessage);
+          }
+        },
+        onCancel: popUpRef.current.hide,
+      }
+    });
   };
 
   // Handler para excluir um motorista
@@ -197,17 +193,15 @@ function Drivers({ pageFunctions }) {
 
   // Handler para quando uma linha for clicada
   const handleRowClick = (driver) => {
-    popUpRef.current.show(
-      () => (
-        <DriverDetails 
-          driver={driver} 
-          onEdit={handleEditDriver} 
-          onDelete={handleDeleteDriver} 
-        />
-      ), 
-      {}, 
-      `Motorista: ${driver.nome}`
-    );
+    popUpRef.current.show({
+      title: `Motorista: ${driver.nome}`,
+      content: DriverDetails,
+      props: {
+        driver: driver,
+        onEdit: handleEditDriver,
+        onDelete: handleDeleteDriver,
+      }
+    });
   };
 
   return (

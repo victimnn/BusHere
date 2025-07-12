@@ -62,7 +62,7 @@ export const passengerFormConfig = {
     },
     {
       name: 'telefone',
-      type: 'text',
+      type: 'tel',
       label: 'Telefone',
       labelIcon: 'bi bi-telephone-fill',
       inputIcon: 'bi bi-telephone',
@@ -715,7 +715,7 @@ export const driverFormConfig = {
     },
     {
       name: 'telefone',
-      type: 'text',
+      type: 'tel',
       label: 'Telefone',
       labelIcon: 'bi bi-telephone-fill',
       inputIcon: 'bi bi-telephone',

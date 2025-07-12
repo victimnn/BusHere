@@ -148,11 +148,14 @@ const DriversStatsCards = ({ drivers = [] }) => {
     const filteredDrivers = statsData[stats];
     const config = statsConfig[stats];
     
-    popUpRef.current.show(
-      () => <DriversListPopup drivers={filteredDrivers} title={config.popupTitle} stats={stats} />,
-      {},
-      config.popupTitle
-    );
+    popUpRef.current.show({
+      title: config.popupTitle,
+      content: DriversListPopup,
+      props: {
+        drivers: filteredDrivers,
+        stats: stats,
+      }
+    });
   };
 
   return (

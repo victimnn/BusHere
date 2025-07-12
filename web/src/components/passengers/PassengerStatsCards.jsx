@@ -142,11 +142,14 @@ const PassengerStatsCards = ({ passengers = [] }) => {
     const filteredPassengers = statsData[category];
     const config = statsConfig[category];
     
-    popUpRef.current.show(
-      () => <PassengersListPopup passengers={filteredPassengers} title={config.popupTitle} category={category} />,
-      {},
-      config.popupTitle
-    );
+    popUpRef.current.show({
+      title: config.popupTitle,
+      content: PassengersListPopup,
+      props: {
+        passengers: filteredPassengers,
+        category: category,
+      }
+    });
   };
 
   return (

@@ -134,11 +134,14 @@ const BusStatsCards = ({ buses = [] }) => {
     const filteredBuses = statsData[category];
     const config = statsConfig[category];
     
-    popUpRef.current.show(
-      () => <BusesListPopup buses={filteredBuses} title={config.popupTitle} category={category} />,
-      {},
-      config.popupTitle
-    );
+    popUpRef.current.show({
+      title: config.popupTitle,
+      content: BusesListPopup,
+      props: {
+        buses: filteredBuses,
+        category: category,
+      }
+    });
   };
 
   return (

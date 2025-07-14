@@ -19,9 +19,10 @@ function SuggestionModal({ suggestions, onSuggestionClick, icons }) {
   const itemTypeToText = (v) => {
     const types = {
       "Passenger": "Passageiro",
-      "Bus": "Ônibus",
-      "Route": "Rota",
-      "Stop": "Ponto",
+      "Onibus": "Ônibus",
+      "Rota": "Rota",
+      "Ponto": "Ponto",
+      "Motorista": "Motorista",
     };
     return types[v] || `Indefinido: "${v}"`; // Retorna o tipo ou um texto padrão se não encontrado
   }
@@ -53,10 +54,11 @@ function SearchBar() {
   const [suggestions, setSuggestions] = useState([]); // Estado para armazenar as sugestões
 
   const icons = {
-    "Passenger": "bi bi-person",
-    "Bus": "bi bi-bus-front-fill",
-    "Route": "bi bi-bus-front-fill",  
-    "Stop": "bi bi-geo-alt-fill",
+    "Passenger": "bi bi-person-check",
+    "Onibus": "bi bi-bus-front",
+    "Rota": "bi bi-sign-turn-right",  
+    "Ponto": "bi bi-geo-alt",
+    "Motorista": "bi bi-person-workspace",
   }
 
   useEffect(() => {

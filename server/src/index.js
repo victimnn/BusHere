@@ -16,7 +16,6 @@ const PORT = process.env.PORT || 3000
 //Inicialização do servidor
 const app = express();
 
-
 //Configuração do servidor
 app.use(bodyParser.json()); // Faz o parse do body das requisições para JSON
 app.use(cors()); // Permite requisições de outros domínios (CORS)
@@ -31,8 +30,6 @@ app.use((req, res, next) => {
   
     next();
 });
-
-
 
 // Criação do pool de conexões com o BD
 // (pool é um conjunto de conexões que podem ser reutilizadas,
@@ -52,7 +49,6 @@ const pool = mysql.createPool({
 });
 
 // Importando as rotas
-const userRoutes = require("./userRoutes")(pool);
 const authRoutes = require("./authRoutes")(pool);
 const searchRoutes = require("./searchRoutes")(pool);
 const passengerRoutes = require("./passengerRoutes")(pool);
@@ -65,7 +61,6 @@ const reportsRoutes = require("./reportsRoutes")(pool);
 //const YYYYRoutes = require("./YYYY")(pool);
 
 // Usando as rotas
-app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api", searchRoutes); // Rota raiz da API
 app.use("/api/passengers", passengerRoutes);

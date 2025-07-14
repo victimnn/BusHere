@@ -18,11 +18,11 @@ const fetchAutocompleteSuggestions = async (term) => {
 function SuggestionModal({ suggestions, onSuggestionClick, icons }) {
   const itemTypeToText = (v) => {
     const types = {
-      "Passenger": "Passageiro",
+      "Passenger": "Passageiros",
       "Onibus": "Ônibus",
-      "Rota": "Rota",
-      "Ponto": "Ponto",
-      "Motorista": "Motorista",
+      "Rota": "Rotas",
+      "Ponto": "Pontos",
+      "Motorista": "Motoristas",
     };
     return types[v] || `Indefinido: "${v}"`; // Retorna o tipo ou um texto padrão se não encontrado
   }

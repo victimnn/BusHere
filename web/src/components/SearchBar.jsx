@@ -35,7 +35,13 @@ function SuggestionModal({ suggestions, onSuggestionClick, icons }) {
             key={index}
             className="list-group-item list-group-item-action"
             onClick={() => onSuggestionClick(suggestion)}
-            style={{ cursor: 'pointer' }}
+            style={{ 
+              cursor: 'pointer',
+              transition: 'color 250ms ease',
+              color: 'var(--bs-secondary)'
+            }}
+            onMouseEnter={(e) => e.target.style.color = 'var(--bs-primary)'}
+            onMouseLeave={(e) => e.target.style.color = 'var(--bs-secondary)'}
           >
             <i className={[icons[suggestion.item_type] + " me-2"|| "bi bi-question-diamond-fill me-4"]}></i>
             <b>{suggestion.search_text}</b> em <b>{itemTypeToText(suggestion.item_type)}</b>

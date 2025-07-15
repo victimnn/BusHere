@@ -363,8 +363,13 @@ const api = {
 
   auth: {
     me: async () => {
+      const token = getBearerToken();
+      if (!token) {
+        throw new Error('Usuário não autenticado. Token ausente.');
+      }
+
       try {
-        const response = await api.get('/auth/me');
+        const response = await api.get('/auth/me', {headers: { 'Authorization': token }});
         return response; // Retorna os dados do usuário autenticado
       } catch (error) {
         console.error("Erro ao obter informações do usuário:", error);

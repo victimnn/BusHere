@@ -1,0 +1,106 @@
+import { createContext, useContext, useState, useEffect } from 'react';
+import api from '../api/api'; // Importe a API
+
+// importar coisas para ter navegação e ir para tela de login
+import { useNavigate } from 'react-router-dom';
+
+const AuthContext = createContext();
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}
+
+/* o "children" são as coisas dentro do AuthProvider
+<AuthProvider>
+  <Coisa />
+  <OutraCoisa />
+  <MaisCoisas />
+</AuthProvider> 
+*/
+
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Estado para controlar o loading
+  const navigate = useNavigate(); // Hook para navegação
+
+  // Função para verificar se o usuário está autenticado
+  const checkAuthStatus = async () => {
+    try {
+      const userData = await api.auth.me();
+      if (userData) {
+        setUser(userData);
+        setIsAuthenticated(true);
+      }
+    } catch (error) {
+      navigate('/login'); // Redireciona para a página de login se houver erro
+      console.error('Erro ao verificar autenticação:', error);
+      setUser(null);
+      setIsAuthenticated(false);
+      localStorage.removeItem('token');
+    } finally {
+      setIsLoading(false); // Para o loading independente do resultado
+    }
+  };
+
+  // useEffect para verificar autenticação quando o componente é montado
+  useEffect(() => {
+    checkAuthStatus();
+  }, []);
+
+  const login = (userData) => {
+    setUser(userData);
+    setIsAuthenticated(true);
+  };
+
+  const logout = () => {
+    setUser(null);
+    setIsAuthenticated(false);
+    localStorage.removeItem('token'); // Remove o token do localStorage
+  };
+
+  return (
+    <AuthContext.Provider value={{ 
+      user, 
+      isAuthenticated, 
+      isLoading, 
+      login, 
+      logout, 
+      checkAuthStatus 
+    }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export default AuthContext;
+
+/* como usar essas coisas na pagina:
+import { useAuth } from 'caminho/para/authContext';
+const { user, isAuthenticated, isLoading, login, logout, checkAuthStatus } = useAuth();
+
+// Exemplo de uso do isLoading:
+if (isLoading) {
+  return <div>Carregando...</div>;
+}
+
+// Exemplo de verificação manual:
+const handleRefreshAuth = async () => {
+  await checkAuthStatus();
+};
+*/
+
+/* como logar na pagina:
+user = await api.auth.me() 
+if (user)  // se o usuário existir
+  login(user) // chama a função de
+else
+  logout()
+*/
+
+// Lembrando que o user é compartilhado entre TODOS os componentes que usam o AuthContext

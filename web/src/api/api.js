@@ -359,6 +359,76 @@ const api = {
       api.geolocation._cepCache.clear();
       api.geolocation._geoCache.clear();
     }
+  },
+
+  auth: {
+    me: async () => {
+      try {
+        const response = await api.get('/auth/me');
+        return response; // Retorna os dados do usuário autenticado
+      } catch (error) {
+        console.error("Erro ao obter informações do usuário:", error);
+        throw error; // Propaga o erro para ser tratado onde for chamado
+      }
+    },
+
+    login: async (email, password) => {
+      try {
+        const response = await api.post('/auth/login', { email, password });
+        if (response && response.token) {
+          localStorage.setItem('token', response.token); // Armazena o token no localStorage
+          return response; // Retorna os dados do usuário logado
+        } else {
+          throw new Error('Login falhou: resposta inválida do servidor');
+        }
+      } catch (error) {
+        console.error("Erro ao fazer login:", error);
+        throw error; // Propaga o erro para ser tratado onde for chamado
+      }
+    },
+
+    logout: async () => {
+      try {
+        await api.post('/auth/logout'); // Chama a API para logout
+        localStorage.removeItem('token'); // Remove o token do localStorage
+      } catch (error) {
+        console.error("Erro ao fazer logout:", error);
+        throw error; // Propaga o erro para ser tratado onde for chamado
+      }
+    },
+
+    changePassword: async (currentPassword, newPassword) => {
+      try {
+        const response = await api.post('/auth/change-password', 
+          {
+            old_password: currentPassword,
+            new_password: newPassword
+          })
+        return response; // Retorna a resposta da API
+      } catch (error) {
+        console.error("Erro ao alterar senha:", error);
+        throw error; // Propaga o erro para ser tratado onde for chamado
+      }
+    },
+
+    register: async (userData) => {
+      const requiredFields = ['full_name', 'cpf', 'email', 'password', 'address_street', 'address_number', 'address_city', 'cep'];
+
+      // Verifica se todos os campos obrigatórios estão presentes
+      for (const field of requiredFields) {
+        if (!userData[field]) {
+          throw new Error(`Campo obrigatório ausente: ${field}`);
+        }
+      }
+
+      try {
+        const response = await api.post('/auth/register', userData);
+        return response; // Retorna a resposta da API
+      } catch (error) {
+        console.error("Erro ao registrar usuário:", error);
+        throw error; // Propaga o erro para ser tratado onde for chamado
+      }
+    }
   }
 };
 

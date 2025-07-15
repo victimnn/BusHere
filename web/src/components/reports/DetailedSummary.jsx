@@ -25,16 +25,16 @@ const DetailedSummary = ({ reportData }) => {
                     Estatísticas de Passageiros
                   </h6>
                   <div className="list-group list-group-flush bg-transparent">
-                    {(reportData.chartData?.passengersByType || reportData.passengerTypes).map((item, index) => (
-                      <div key={item.tipo_passageiro_id || index} className="list-group-item bg-transparent border-0 px-0 d-flex justify-content-between align-items-center">
+                    {reportData.chartData?.passengersByCity?.map((item, index) => (
+                      <div key={index} className="list-group-item bg-transparent border-0 px-0 d-flex justify-content-between align-items-center">
                         <div className="d-flex align-items-center">
                           <div className="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
                             <i className="fas fa-user text-primary" style={{fontSize: '12px'}}></i>
                           </div>
-                          <span className="fw-medium">{item.label || item.nome}</span>
+                          <span className="fw-medium">{item.label}</span>
                         </div>
                         <span className="badge bg-primary rounded-pill px-3 py-2">
-                          {item.value || reportData.passengers.filter(p => p.tipo_passageiro_id === item.tipo_passageiro_id).length}
+                          {item.value}
                         </span>
                       </div>
                     ))}

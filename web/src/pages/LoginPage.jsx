@@ -51,7 +51,7 @@ function Login(){
           </button>
 
           <div className="text-center mt-3">
-            <a href="#" className="text-white text-decoration-underline small">
+            <a href="/register" className="text-white text-decoration-underline small">
               Não Possui Cadastro?
             </a>
           </div>

@@ -87,18 +87,17 @@ function SideBar() {
         {/* Header da Sidebar */}
         <div className="border-bottom p-3" style={{ borderColor: "rgba(0,0,0,0.05)" }}>
           <div className="d-flex align-items-center">
-            <div className="bg-primary rounded-circle d-flex align-items-center justify-content-center"
-                 style={{ width: "32px", height: "32px", minWidth: "32px" }}>
-              <i className="bi bi-building text-white" style={{ fontSize: "0.9rem" }}></i>
+            <div className="d-flex align-items-center justify-content-center">
+              <img src="/logo.svg" alt="Logo" className="logo-primary" style={{ width: "40px", height: "40px" }} />
             </div>
-            <h6 className="mb-0 fw-bold text-dark ms-3"
+            <h5 className="mb-0 fw-bold text-dark ms-3"
                 style={{
                     opacity: isHovered ? 1 : 0,
                     transition: "opacity 0.3s ease",
                     whiteSpace: "nowrap"
                 }}>
                 BusHere!
-            </h6>
+            </h5>
           </div>
         </div>
 

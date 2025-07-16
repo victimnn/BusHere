@@ -104,7 +104,7 @@ function SideBar() {
         {/* Navigation */}
         <nav className="flex-grow-1 p-2">
           <SideButton
-            name="Dashboard"
+            name="Início"
             icon="house-fill"
             href="/"
             isOpen={isHovered}

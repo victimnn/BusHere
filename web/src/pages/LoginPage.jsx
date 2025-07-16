@@ -100,7 +100,7 @@ function Login({pageFunctions}){
           </div>
 
           <button type="submit" className="btn btn-success w-100 fw-bold">
-            ENTRAR
+            Entrar
           </button>
 
           <div className="text-center mt-3">

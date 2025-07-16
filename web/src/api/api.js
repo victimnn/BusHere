@@ -31,7 +31,7 @@ const api = {
 
     try {
       const response = await fetch(`${API_BASE_URL}${url}`, config);
-
+      console.log(`Fazendo ${method} ${url}`, data, config, response);
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: response.statusText }));
         const error = new Error(errorData.message || 'Ocorreu um erro na requisição');

@@ -52,7 +52,7 @@ function Login({pageFunctions}){
   }
 
     return (
-    <div className="d-flex justify-content-center align-items-center min-vh-100 bg-success bg-gradient">
+    <div className="login-form d-flex justify-content-center align-items-center min-vh-100 bg-success bg-gradient">
       <div className="bg-dark text-white p-5 shadow" style={{ width: "100%", maxWidth: "400px", borderRadius: '15px'}}>
         <h2>Olá,</h2>
         <h1>
@@ -89,7 +89,7 @@ function Login({pageFunctions}){
 
           <div className="d-flex justify-content-between align-items-center mb-3">
             <div className="form-check">
-              <input className="form-check-input" type="checkbox" id="rememberMe" />
+              <input className="form-check-input" type="checkbox" role="switch" id="rememberMe"/>
               <label className="form-check-label" htmlFor="rememberMe">
                 Lembrar de mim
               </label>

@@ -5,6 +5,7 @@ import { useState, useEffect, useRef} from 'react'
 import { AuthProvider } from "./context/authContext";
 import PopUpComponent from "./components/PopUpComponent";
 import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
 import PassengersPage from "./pages/PassengersPage";
 import DriversPage from "./pages/DriversPage";
@@ -67,6 +68,7 @@ function App() {
                   <Route path="/reports" element={<ReportsPage pageFunctions={pageFunctions}/>} />
                   <Route path="/settings" element={<SettingsPage pageFunctions={pageFunctions}/>} />
                   <Route path="/login" element={<LoginPage pageFunctions={pageFunctions}/>} />
+                  <Route path="/register" element={<RegisterPage pageFunctions={pageFunctions}/>} />
 
                   <Route path="/search/:searchTerm" element={<SearchPage   />} />
                 </Routes>

@@ -257,6 +257,9 @@ $theme-colors: (
   background-color: $bg-medium;
 }
 
+.logo-primary {
+    filter: brightness(0) saturate(100%) invert(60%) sepia(82%) saturate(429%) hue-rotate(93deg) brightness(92%) contrast(87%);
+}
 
 // 3. Importar Bootstrap Icons
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";

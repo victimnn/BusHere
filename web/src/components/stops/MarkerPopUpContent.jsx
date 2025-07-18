@@ -58,15 +58,15 @@ function MarkerPopUpContent({ stop, popUpRef, onDelete, onEdit }) {
           className="btn btn-primary btn-sm d-flex align-items-center justify-content-center gap-2"
           onClick={() => {
             if (popUpRef && popUpRef.current) {
-              popUpRef.current.show(
-                () => <StopDetails 
-                  stop={stop} 
-                  onEdit={() => onEdit(stop.ponto_id)} 
-                  onDelete={onDelete ? () => onDelete(stop.ponto_id) : null} 
-                />, 
-                {}, 
-                `Detalhes do Ponto: ${stop.nome}`
-              );
+              popUpRef.current.show({
+                title: `Detalhes do Ponto: ${stop.nome}`,
+                content: StopDetails,
+                props: {
+                  stop: stop,
+                  onEdit: () => onEdit(stop.ponto_id),
+                  onDelete: onDelete ? () => onDelete(stop.ponto_id) : null,
+                }
+              });
             } else {
               console.error("PopUpComponent não está definido ou não possui a referência correta.");
             }

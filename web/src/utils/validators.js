@@ -106,3 +106,59 @@ export function validateCEP(cep) {
     
     return true;
 }
+
+/**
+ * Valida uma data no formato DD/MM/AAAA
+ * @param {string} date - A data a ser validada (formato: DD/MM/AAAA)
+ * @param {number} minYear - Ano mínimo permitido (padrão: 1990)
+ * @param {number} maxYear - Ano máximo permitido (padrão: 2100)
+ * @return {boolean} - Retorna true se a data for válida, caso contrário, false
+ */
+export function validateDate(date, minYear = 1990, maxYear = 2100) {
+    if (!date || !date.trim()) return false;
+    
+    // Verifica o formato DD/MM/AAAA
+    const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+    if (!dateRegex.test(date)) return false;
+    
+    // Extrai dia, mês e ano
+    const [day, month, year] = date.split('/').map(num => parseInt(num, 10));
+    
+    // Verifica se o ano está dentro do range permitido
+    if (year < minYear || year > maxYear) return false;
+    
+    // Verifica se o mês é válido (1-12)
+    if (month < 1 || month > 12) return false;
+    
+    // Verifica se o dia é válido (1-31, dependendo do mês)
+    if (day < 1 || day > 31) return false;
+    
+    // Verifica dias específicos por mês
+    const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    
+    // Verifica ano bissexto para fevereiro
+    if (month === 2 && isLeapYear(year)) {
+        daysInMonth[1] = 29;
+    }
+    
+    // Verifica se o dia é válido para o mês específico
+    if (day > daysInMonth[month - 1]) return false;
+    
+    // Cria um objeto Date para validação final
+    const dateObj = new Date(year, month - 1, day);
+    
+    // Verifica se a data criada corresponde aos valores fornecidos
+    // (isso pega casos como 30 de fevereiro que o JavaScript ajustaria automaticamente)
+    return dateObj.getDate() === day && 
+           dateObj.getMonth() === (month - 1) && 
+           dateObj.getFullYear() === year;
+}
+
+/**
+ * Verifica se um ano é bissexto
+ * @param {number} year - O ano a ser verificado
+ * @return {boolean} - Retorna true se o ano for bissexto, caso contrário, false
+ */
+function isLeapYear(year) {
+    return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+}

@@ -2,11 +2,13 @@ import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-ro
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { useState, useEffect, useRef} from 'react'
 
+import { AuthProvider } from "./context/authContext";
 import PopUpComponent from "./components/PopUpComponent";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
 import PassengersPage from "./pages/PassengersPage";
+import DriversPage from "./pages/DriversPage";
 import BusesPage from "./pages/BusesPage";
 import RoutesPage from "./pages/RoutesPage";
 import ReportsPage from "./pages/ReportsPage";
@@ -41,39 +43,41 @@ function App() {
       setShowHeader(newShowHeader ?? showHeader);
     }
   }
-
   return (
     <Router>
-      <div className="container-fluid p-0 bg-blue">
-        <div className="d-flex w-100" style={{overflow: "hidden", minHeight:"100vh"}}> {/* Usando flex com min-height */}
+      <AuthProvider>
+        <div>
+          <div className="d-flex w-100" style={{overflow: "hidden", minHeight:"100vh"}}> {/* Usando flex com min-height */}
 
-          {/* Sidebar */}
-          {showSideBar && <SideBar/>}
+            {/* Sidebar */}
+            {showSideBar && <SideBar/>}
 
 
-          <main className="flex-grow-1" style={{overflow: "auto", maxHeight: "100vh"}}> {/* A main ocupará o espaço restante */}
-            {/* Header */}
-            {showHeader && <Header pageName={pageName}/>}
+            <main className="flex-grow-1" style={{overflow: "auto", maxHeight: "100vh"}}> {/* A main ocupará o espaço restante */}
+              {/* Header */}
+              {showHeader && <Header pageName={pageName}/>}
 
-            <div className="py-0" >
-              <Routes>
-                <Route path="/" index element={<HomePage pageFunctions={pageFunctions} />} />
-                <Route path="/passengers" element={<PassengersPage pageFunctions={pageFunctions}/>} />
-                <Route path="/buses" element={<BusesPage pageFunctions={pageFunctions}/>} />
-                <Route path="/routes" element={<RoutesPage pageFunctions={pageFunctions}/>} />
-                <Route path="/stops" element={<StopsPage pageFunctions={pageFunctions}/>} />
-                <Route path="/reports" element={<ReportsPage pageFunctions={pageFunctions}/>} />
-                <Route path="/settings" element={<SettingsPage pageFunctions={pageFunctions}/>} />
-                <Route path="/login" element={<LoginPage pageFunctions={pageFunctions}/>} />
-                <Route path="/register" element={<RegisterPage pageFunctions={pageFunctions}/>} />
+              <div className="py-0" >
+                <Routes>
+                  <Route path="/" index element={<HomePage pageFunctions={pageFunctions} />} />
+                  <Route path="/passengers" element={<PassengersPage pageFunctions={pageFunctions}/>} />
+                  <Route path="/drivers" element={<DriversPage pageFunctions={pageFunctions}/>} />
+                  <Route path="/buses" element={<BusesPage pageFunctions={pageFunctions}/>} />
+                  <Route path="/routes" element={<RoutesPage pageFunctions={pageFunctions}/>} />
+                  <Route path="/stops" element={<StopsPage pageFunctions={pageFunctions}/>} />
+                  <Route path="/reports" element={<ReportsPage pageFunctions={pageFunctions}/>} />
+                  <Route path="/settings" element={<SettingsPage pageFunctions={pageFunctions}/>} />
+                  <Route path="/login" element={<LoginPage pageFunctions={pageFunctions}/>} />
+                  <Route path="/register" element={<RegisterPage pageFunctions={pageFunctions}/>} />
 
-                <Route path="/search/:searchTerm" element={<SearchPage   />} />
-              </Routes>
-            </div>
-          </main>
+                  <Route path="/search/:searchTerm" element={<SearchPage   />} />
+                </Routes>
+              </div>
+            </main>
 
+          </div>
         </div>
-      </div>
+      </AuthProvider>
     </Router>
   );
 }

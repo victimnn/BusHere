@@ -11,9 +11,10 @@ import { stopFormConfig } from '../common/form/formConfigs';
  * @param {Function} props.onCancel - Função chamada ao cancelar
  * @param {Function} props.onDelete - Função chamada ao deletar (opcional)
  * @param {boolean} props.showDeleteButton - Se deve mostrar o botão de deletar
+ * @param {boolean} props.isCreateForm - Se é um formulário de criação (opcional)
  * @returns {JSX.Element}
  */
-function StopForm({ initialData, onSubmit, onCancel, onDelete, showDeleteButton = false }) {
+function StopForm({ initialData, onSubmit, onCancel, onDelete, showDeleteButton = false, isCreateForm = null }) {
   return (
     <GenericForm
       config={stopFormConfig}
@@ -22,6 +23,7 @@ function StopForm({ initialData, onSubmit, onCancel, onDelete, showDeleteButton 
       onCancel={onCancel}
       onDelete={onDelete}
       showDeleteButton={showDeleteButton}
+      isCreateForm={isCreateForm}
     />
   );
 }
@@ -31,7 +33,8 @@ StopForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   onDelete: PropTypes.func,
-  showDeleteButton: PropTypes.bool
+  showDeleteButton: PropTypes.bool,
+  isCreateForm: PropTypes.bool
 };
 
 export default StopForm;

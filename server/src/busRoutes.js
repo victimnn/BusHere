@@ -33,6 +33,9 @@ module.exports = (pool) => {
           O.marca,
           O.ano_fabricacao,
           O.capacidade,
+          O.quilometragem,
+          O.data_ultima_manutencao,
+          O.data_proxima_manutencao,
           O.status_onibus_id,
           SO.nome AS status_nome,
           O.ativo,
@@ -63,11 +66,18 @@ module.exports = (pool) => {
   // Rota para buscar status de onibus
   router.get('/status', async (req, res) => {
     try {
-      const [rows] = await pool.execute('SELECT status_onibus_id, nome FROM StatusOnibus ORDER BY nome');
-      res.json({ data: rows });
+      const [rows] = await pool.execute(`
+        SELECT status_onibus_id, nome 
+        FROM StatusOnibus 
+        ORDER BY nome`
+      );
+
+      res.json({
+         data: rows 
+        });
     } catch (error) {
       console.error('Erro ao buscar status de onibus:', error);
-      res.status(500).json({ error: 'Erro ao buscar status de onibus' });
+      res.status(500).json({ error: 'Erro ao buscar status de onibus', details: error.message });
     }
   });
 
@@ -89,6 +99,7 @@ module.exports = (pool) => {
   // Rota para criar um novo onibus
   router.post('/', async (req, res) => {
     const requiredFields = ['nome', 'placa', 'capacidade'];
+
     for (const field of requiredFields) {
       if (!req.body[field]) {
         return res.status(400).json({ error: `Campo obrigatório faltando: ${field}` });
@@ -96,11 +107,22 @@ module.exports = (pool) => {
     }
 
     const {
-      nome, placa, modelo, marca, ano_fabricacao, capacidade, quilometragem, data_ultima_manutencao, data_proxima_manutencao, status_onibus_id, ativo
+      nome, placa, modelo, marca, ano_fabricacao, capacidade, quilometragem, 
+      data_ultima_manutencao, data_proxima_manutencao, status_onibus_id, ativo
     } = req.body;
 
     const newBusData = {
-      nome, placa, modelo, marca, ano_fabricacao, capacidade, quilometragem, data_ultima_manutencao, data_proxima_manutencao, status_onibus_id, ativo
+      nome, 
+      placa, 
+      modelo, 
+      marca, 
+      ano_fabricacao, 
+      capacidade, 
+      quilometragem, 
+      data_ultima_manutencao, 
+      data_proxima_manutencao, 
+      status_onibus_id, 
+      ativo
     };
 
     try {
@@ -120,7 +142,8 @@ module.exports = (pool) => {
   router.put('/:id', async (req, res) => {
     const { id } = req.params;
     const {
-      nome, placa, modelo, marca, ano_fabricacao, capacidade, quilometragem, data_ultima_manutencao, data_proxima_manutencao, status_onibus_id, ativo
+      nome, placa, modelo, marca, ano_fabricacao, capacidade, quilometragem, 
+      data_ultima_manutencao, data_proxima_manutencao, status_onibus_id, ativo
     } = req.body;
 
     const updatedBusData = {

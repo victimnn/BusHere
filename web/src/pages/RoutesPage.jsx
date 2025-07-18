@@ -60,76 +60,72 @@ function RoutesPage({ pageFunctions }) {
   useEffect(() => {
     fetchRoutes();
   }, [currentPage, searchTerm]); // Recarrega quando mudar a página ou termo de busca
-
   // Handler para criar uma nova rota
   const handleCreateRoute = () => {
-    popUpRef.current.show(
-      ({ close }) => (
-        <RouteForm
-          onSubmit={async (formData) => {
-            try {
-              console.log('Enviando dados:', formData);
-              await api.routes.create(formData);
-              close();
-              fetchRoutes(); // Recarrega a lista
-            } catch (err) {
-              console.error("Erro ao criar rota:", err);
-              
-              // Provide more specific error messages
-              let errorMessage = "Erro ao criar rota: ";
-              if (err.message && err.message.includes('já cadastrado')) {
-                errorMessage += err.message;
-              } else if (err.message && err.message.includes('409')) {
-                errorMessage += "Código de rota já cadastrado no sistema.";
-              } else {
-                errorMessage += err.message || "Tente novamente mais tarde";
-              }
-              
-              alert(errorMessage);
+    popUpRef.current.show({
+      title: "Nova Rota",
+      content: RouteForm,
+      props: {
+        onSubmit: async (formData) => {
+          try {
+            console.log('Enviando dados:', formData);
+            await api.routes.create(formData);
+            popUpRef.current.hide();
+            fetchRoutes(); // Recarrega a lista
+          } catch (err) {
+            console.error("Erro ao criar rota:", err);
+            
+            // Provide more specific error messages
+            let errorMessage = "Erro ao criar rota: ";
+            if (err.message && err.message.includes('já cadastrado')) {
+              errorMessage += err.message;
+            } else if (err.message && err.message.includes('409')) {
+              errorMessage += "Código de rota já cadastrado no sistema.";
+            } else {
+              errorMessage += err.message || "Tente novamente mais tarde";
             }
-          }}
-          onCancel={close}
-        />
-      ),
-      {},
-      "Nova Rota"
-    );
+            
+            alert(errorMessage);
+          }
+        },
+        onCancel: popUpRef.current.hide,
+        isCreateForm: true
+      }
+    });
   };
   
   // Handler para editar uma rota
   const handleEditRoute = (route) => {
-    popUpRef.current.show(
-      ({ close }) => (
-        <RouteForm
-          initialData={route}
-          onSubmit={async (formData) => {
-            try {
-              console.log('Enviando dados para atualização:', formData);
-              await api.routes.update(route.rota_id, formData);
-              close();
-              fetchRoutes(); // Recarrega a lista
-            } catch (err) {
-              console.error("Erro ao atualizar rota:", err);
-              
-              // Provide more specific error messages
-              let errorMessage = "Erro ao atualizar rota: ";
-              if (err.message && err.message.includes('já está sendo usado')) {
-                errorMessage += err.message;
-              } else if (err.message && err.message.includes('409')) {
-                errorMessage += "Código de rota já está sendo usado por outra rota.";
-              } else {
-                errorMessage += err.message || "Tente novamente mais tarde";
-              }
-              
-              alert(errorMessage);
+    popUpRef.current.show({
+      title: `Editar Rota: ${route.nome}`,
+      content: RouteForm,
+      props: {
+        initialData: route,
+        onSubmit: async (formData) => {
+          try {
+            console.log('Enviando dados para atualização:', formData);
+            await api.routes.update(route.rota_id, formData);
+            popUpRef.current.hide();
+            fetchRoutes(); // Recarrega a lista
+          } catch (err) {
+            console.error("Erro ao atualizar rota:", err);
+            
+            // Provide more specific error messages
+            let errorMessage = "Erro ao atualizar rota: ";
+            if (err.message && err.message.includes('já está sendo usado')) {
+              errorMessage += err.message;
+            } else if (err.message && err.message.includes('409')) {
+              errorMessage += "Código de rota já está sendo usado por outra rota.";
+            } else {
+              errorMessage += err.message || "Tente novamente mais tarde";
             }
-          }}
-          onCancel={close}
-        />
-      ),
-      {},
-      `Editar Rota: ${route.nome}`
-    );
+            
+            alert(errorMessage);
+          }
+        },
+        onCancel: popUpRef.current.hide,
+      }
+    });
   };
 
   // Handler para excluir uma rota
@@ -148,17 +144,15 @@ function RoutesPage({ pageFunctions }) {
 
   // Handler para quando uma linha for clicada
   const handleRowClick = (route) => {
-    popUpRef.current.show(
-      () => (
-        <RouteDetails 
-          route={route} 
-          onEdit={handleEditRoute} 
-          onDelete={handleDeleteRoute} 
-        />
-      ), 
-      {}, 
-      `Rota: ${route.nome}`
-    );
+    popUpRef.current.show({
+      title: `Rota: ${route.nome}`,
+      content: RouteDetails,
+      props: {
+        route: route,
+        onEdit: handleEditRoute,
+        onDelete: handleDeleteRoute,
+      }
+    });
   };
 
   return (

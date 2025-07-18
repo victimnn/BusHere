@@ -18,10 +18,11 @@ const fetchAutocompleteSuggestions = async (term) => {
 function SuggestionModal({ suggestions, onSuggestionClick, icons }) {
   const itemTypeToText = (v) => {
     const types = {
-      "Passenger": "Passageiro",
-      "Bus": "Ônibus",
-      "Route": "Rota",
-      "Stop": "Ponto",
+      "Passenger": "Passageiros",
+      "Onibus": "Ônibus",
+      "Rota": "Rotas",
+      "Ponto": "Pontos",
+      "Motorista": "Motoristas",
     };
     return types[v] || `Indefinido: "${v}"`; // Retorna o tipo ou um texto padrão se não encontrado
   }
@@ -34,7 +35,13 @@ function SuggestionModal({ suggestions, onSuggestionClick, icons }) {
             key={index}
             className="list-group-item list-group-item-action"
             onClick={() => onSuggestionClick(suggestion)}
-            style={{ cursor: 'pointer' }}
+            style={{ 
+              cursor: 'pointer',
+              transition: 'color 250ms ease',
+              color: 'var(--bs-secondary)'
+            }}
+            onMouseEnter={(e) => e.target.style.color = 'var(--bs-primary)'}
+            onMouseLeave={(e) => e.target.style.color = 'var(--bs-secondary)'}
           >
             <i className={[icons[suggestion.item_type] + " me-2"|| "bi bi-question-diamond-fill me-4"]}></i>
             <b>{suggestion.search_text}</b> em <b>{itemTypeToText(suggestion.item_type)}</b>
@@ -53,10 +60,11 @@ function SearchBar() {
   const [suggestions, setSuggestions] = useState([]); // Estado para armazenar as sugestões
 
   const icons = {
-    "Passenger": "bi bi-person",
-    "Bus": "bi bi-bus-front-fill",
-    "Route": "bi bi-bus-front-fill",  
-    "Stop": "bi bi-geo-alt-fill",
+    "Passenger": "bi bi-person-check",
+    "Onibus": "bi bi-bus-front",
+    "Rota": "bi bi-sign-turn-right",  
+    "Ponto": "bi bi-geo-alt",
+    "Motorista": "bi bi-person-workspace",
   }
 
   useEffect(() => {

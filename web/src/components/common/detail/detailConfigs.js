@@ -71,6 +71,22 @@ export const busConfig = {
       key: "capacidade",
       label: "Capacidade",
       icon: "bi bi-people"
+    },
+    {
+      key: "quilometragem",
+      label: "Quilometragem (km)",
+      icon: "bi bi-speedometer",
+      formatter: (value) => value ? `${Number(value).toLocaleString('pt-BR')} km` : "Não informado"
+    },
+    {
+      key: "data_ultima_manutencao",
+      label: "Última Manutenção",
+      icon: "bi bi-wrench",
+    },
+    {
+      key: "data_proxima_manutencao",
+      label: "Próxima Manutenção",
+      icon: "bi bi-calendar-plus",
     }
   ]
 };
@@ -173,6 +189,63 @@ export const stopConfig = {
       key: "referencia",
       label: "Referência",
       icon: "bi bi-signpost"
+    }
+  ]
+};
+
+export const driverConfig = {
+  title: "Detalhes do Motorista",
+  headerIcon: "bi bi-person-fill-gear",
+  emptyIcon: "bi bi-person-slash",
+  emptyMessage: "Nenhum motorista selecionado",
+  idField: "motorista_id",
+  fields: [
+    {
+      key: "nome",
+      label: "Nome",
+      icon: "bi bi-person"
+    },
+    {
+      key: "cpf",
+      label: "CPF",
+      icon: "bi bi-card-text"
+    },
+    {
+      key: "cnh_numero",
+      label: "Número da CNH",
+      icon: "bi bi-credit-card"
+    },
+    {
+      key: "cnh_categoria",
+      label: "Categoria da CNH",
+      icon: "bi bi-award"
+    },
+    {
+      key: "cnh_validade",
+      label: "Validade da CNH",
+      icon: "bi bi-calendar-event",
+    },
+    {
+      key: "telefone",
+      label: "Telefone",
+      icon: "bi bi-telephone"
+    },
+    {
+      key: "email",
+      label: "E-mail",
+      icon: "bi bi-envelope"
+    },
+    {
+      key: "data_admissao",
+      label: "Data de Admissão",
+      icon: "bi bi-calendar-plus",
+      formatter: (value) => value ? new Date(value).toLocaleDateString('pt-BR') : "Não informado"
+    },
+    {
+      key: "status_nome",
+      label: "Status",
+      icon: "bi bi-flag",
+      formatter: (value) => value || "Não informado"
     }
   ]
 };

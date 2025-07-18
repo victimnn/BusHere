@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import PopUpComponent from "../components/PopUpComponent";
 import BusDetails from "../components/buses/BusDetails";
 import BusForm from "../components/buses/BusForm";
+import BusStatsCards from "../components/buses/BusStatsCards";
 import Table from "../components/Table";
 import api from "../api/api";
 
@@ -14,6 +15,9 @@ const tableHeaders = [
   { id: "marca", label: "Marca", sortable: true },
   { id: "ano_fabricacao", label: "Ano", sortable: true },
   { id: "capacidade", label: "Capacidade", sortable: true },
+  { id: "data_ultima_manutencao", label: "Última Manutenção", sortable: true },
+  { id: "data_proxima_manutencao", label: "Próxima Manutenção", sortable: true },
+  { id: "quilometragem", label: "Quilometragem", sortable: true },
   { id: "status", label: "Status", sortable: true },
 ];
 
@@ -38,10 +42,21 @@ function Buses({ pageFunctions }) {
       // Adaptar os dados do servidor para o formato esperado pelo frontend
       let busesData = [];
       if (response && response.data && Array.isArray(response.data)) {
-        busesData = response.data.map(bus => ({
-          ...bus, 
-          status: bus.status_nome 
-        }));
+        busesData = response.data.map(bus => {
+          // Função para formatar a data para DD/MM/AAAA
+          const formatDate = (dateString) => {
+            if (!dateString) return "N/A";
+            const date = new Date(dateString);
+            return date.toLocaleDateString('pt-BR');
+          };
+
+          return {
+            ...bus,
+            status: bus.status_nome,
+            data_ultima_manutencao: formatDate(bus.data_ultima_manutencao),
+            data_proxima_manutencao: formatDate(bus.data_proxima_manutencao)
+          };
+        });
       }
       
       setBuses(busesData);
@@ -60,76 +75,72 @@ function Buses({ pageFunctions }) {
   useEffect(() => {
     fetchBuses();
   }, [currentPage, searchTerm]); // Recarrega quando mudar a página ou termo de busca
-
   // Handler para criar um novo ônibus
   const handleCreateBus = () => {
-    popUpRef.current.show(
-      ({ close }) => (
-        <BusForm
-          onSubmit={async (formData) => {
-            try {
-              console.log('Enviando dados:', formData);
-              await api.buses.create(formData);
-              close();
-              fetchBuses(); // Recarrega a lista
-            } catch (err) {
-              console.error("Erro ao criar ônibus:", err);
-              
-              // Provide more specific error messages
-              let errorMessage = "Erro ao criar ônibus: ";
-              if (err.message && err.message.includes('já cadastrado')) {
-                errorMessage += err.message;
-              } else if (err.message && err.message.includes('409')) {
-                errorMessage += "Placa já cadastrada no sistema.";
-              } else {
-                errorMessage += err.message || "Tente novamente mais tarde";
-              }
-              
-              alert(errorMessage);
+    popUpRef.current.show({
+      title: "Novo Ônibus",
+      content: BusForm,
+      props: {
+        onSubmit: async (formData) => {
+          try {
+            console.log('Enviando dados:', formData);
+            await api.buses.create(formData);
+            popUpRef.current.hide();
+            fetchBuses(); // Recarrega a lista
+          } catch (err) {
+            console.error("Erro ao criar ônibus:", err);
+            
+            // Provide more specific error messages
+            let errorMessage = "Erro ao criar ônibus: ";
+            if (err.message && err.message.includes('já cadastrado')) {
+              errorMessage += err.message;
+            } else if (err.message && err.message.includes('409')) {
+              errorMessage += "Placa já cadastrada no sistema.";
+            } else {
+              errorMessage += err.message || "Tente novamente mais tarde";
             }
-          }}
-          onCancel={close}
-        />
-      ),
-      {},
-      "Novo Ônibus"
-    );
+            
+            alert(errorMessage);
+          }
+        },
+        onCancel: popUpRef.current.hide,
+        isCreateForm: true
+      }
+    });
   };
   
   // Handler para editar um ônibus
   const handleEditBus = (bus) => {
-    popUpRef.current.show(
-      ({ close }) => (
-        <BusForm
-          initialData={bus}
-          onSubmit={async (formData) => {
-            try {
-              console.log('Enviando dados para atualização:', formData);
-              await api.buses.update(bus.onibus_id, formData);
-              close();
-              fetchBuses(); // Recarrega a lista
-            } catch (err) {
-              console.error("Erro ao atualizar ônibus:", err);
-              
-              // Provide more specific error messages
-              let errorMessage = "Erro ao atualizar ônibus: ";
-              if (err.message && err.message.includes('já está sendo usado')) {
-                errorMessage += err.message;
-              } else if (err.message && err.message.includes('409')) {
-                errorMessage += "Placa já está sendo usada por outro ônibus.";
-              } else {
-                errorMessage += err.message || "Tente novamente mais tarde";
-              }
-              
-              alert(errorMessage);
+    popUpRef.current.show({
+      title: `Editar Ônibus: ${bus.nome}`,
+      content: BusForm,
+      props: {
+        initialData: bus,
+        onSubmit: async (formData) => {
+          try {
+            console.log('Enviando dados para atualização:', formData);
+            await api.buses.update(bus.onibus_id, formData);
+            popUpRef.current.hide();
+            fetchBuses(); // Recarrega a lista
+          } catch (err) {
+            console.error("Erro ao atualizar ônibus:", err);
+            
+            // Provide more specific error messages
+            let errorMessage = "Erro ao atualizar ônibus: ";
+            if (err.message && err.message.includes('já está sendo usado')) {
+              errorMessage += err.message;
+            } else if (err.message && err.message.includes('409')) {
+              errorMessage += "Placa já está sendo usada por outro ônibus.";
+            } else {
+              errorMessage += err.message || "Tente novamente mais tarde";
             }
-          }}
-          onCancel={close}
-        />
-      ),
-      {},
-      `Editar Ônibus: ${bus.nome}`
-    );
+            
+            alert(errorMessage);
+          }
+        },
+        onCancel: popUpRef.current.hide,
+      }
+    });
   };
 
   // Handler para excluir um ônibus
@@ -148,22 +159,24 @@ function Buses({ pageFunctions }) {
 
   // Handler para quando uma linha for clicada
   const handleRowClick = (bus) => {
-    popUpRef.current.show(
-      () => (
-        <BusDetails 
-          bus={bus} 
-          onEdit={handleEditBus} 
-          onDelete={handleDeleteBus} 
-        />
-      ), 
-      {}, 
-      `Ônibus: ${bus.nome}`
-    );
+    popUpRef.current.show({
+      title: `Ônibus: ${bus.nome}`,
+      content: BusDetails,
+      props: {
+        bus: bus,
+        onEdit: handleEditBus,
+        onDelete: handleDeleteBus,
+      }
+    });
   };
 
   return (
-    <main className="container p-3">
-      <div className="card border-0 shadow-sm mb-4">
+    <main className="ps-5 pe-5 pt-3">
+      {/* Cards de Estatísticas */}
+      <BusStatsCards buses={buses} />
+      
+      <div className="container-fluid">
+        <div className="card border-0 shadow-sm mb-4">
         <div className="card-header bg-white py-3">
           <div className="d-flex justify-content-between align-items-center">
             <div className="d-flex align-items-center">
@@ -226,6 +239,7 @@ function Buses({ pageFunctions }) {
       <PopUpComponent 
         ref={popUpRef}
       />
+      </div>
     </main>
   );
 }

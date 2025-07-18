@@ -16,7 +16,6 @@ import { getColorBasedOnValue } from "../utils/mapIcons";
 * @param {Object} popUpRef - Referência para o componente PopUpComponent
 * @param {Function} onDelete - Função callback para deletar um ponto
 * @param {Function} onEdit - Função callback para editar um ponto
-* @returns {Array} - Retorna um novo array de marcadores formatados
 */
 export function sincronizeMarkers(stops, setMarkers, popUpRef, onDelete = null, onEdit = null) {
   const newMarkers = stops.map(stop => ({
@@ -37,7 +36,9 @@ export function sincronizeMarkers(stops, setMarkers, popUpRef, onDelete = null, 
 }
 
 function Stops({ pageFunctions }) {
-  pageFunctions.set("Pontos", true, true);
+  useEffect(() => {
+    pageFunctions.set("Pontos", true, true);
+  }, [pageFunctions]);
 
   const popUpRef = useRef(null); // Referência para o componente PopUpComponent
   const [stops, setStops] = useState([]); 
@@ -83,36 +84,34 @@ function Stops({ pageFunctions }) {
   }, []); // só busca/move quando o mapa estiver pronto
 
   const handleCreateStop = (initialData = {}) => {
-    popUpRef.current.show(
-      ({ close }) => (
-        <StopForm
-          initialData={initialData}
-          onSubmit={async (formData) => {
-            try {
-              console.log('Enviando dados:', formData);
-              await api.stops.create(formData);
-              close();
-              fetchStops(); // Recarrega a lista
-            } catch (error) {
-              console.error("Erro ao criar ponto:", error);
-              
-              // Provide more specific error messages
-              let errorMessage = "Erro ao criar ponto: ";
-              if (error.message && error.message.includes('já cadastrado')) {
-                errorMessage += error.message;
-              } else {
-                errorMessage += error.message || "Tente novamente mais tarde";
-              }
-              
-              alert(errorMessage);
+    popUpRef.current.show({
+      title: "Novo Ponto",
+      content: StopForm,
+      props: {
+        initialData: initialData,
+        onSubmit: async (formData) => {
+          try {
+            console.log('Enviando dados:', formData);
+            await api.stops.create(formData);
+            popUpRef.current.hide();
+            fetchStops(); // Recarrega a lista
+          } catch (error) {
+            console.error("Erro ao criar ponto:", error);
+            
+            // Provide more specific error messages
+            let errorMessage = "Erro ao criar ponto: ";
+            if (error.message && error.message.includes('já cadastrado')) {
+              errorMessage += error.message;
+            } else {
+              errorMessage += error.message || "Tente novamente mais tarde";
             }
-          }}
-          onCancel={close}
-        />
-      ),
-      {},
-      "Novo Ponto"
-    );
+              alert(errorMessage);
+          }
+        },
+        onCancel: popUpRef.current.hide,
+        isCreateForm: true
+      }
+    });
   };
 
   const handleEditStop = (stopId) => {
@@ -122,44 +121,49 @@ function Stops({ pageFunctions }) {
       return;
     }
 
-    popUpRef.current.show(
-      ({ close }) => (
-        <StopForm
-          initialData={stop}
-          onSubmit={async (formData) => {
-            try {
-              console.log('Enviando dados para atualização:', formData);
-              await api.stops.update(stop.ponto_id, formData);
-              close();
-              fetchStops(); // Recarrega a lista
-            } catch (error) {
-              console.error("Erro ao atualizar ponto:", error);
-              
-              // Provide more specific error messages
-              let errorMessage = "Erro ao atualizar ponto: ";
-              if (error.message && error.message.includes('já está sendo usado')) {
-                errorMessage += error.message;
-              } else {
-                errorMessage += error.message || "Tente novamente mais tarde";
-              }
-              
-              alert(errorMessage);
+    popUpRef.current.show({
+      title: `Editar Ponto: ${stop.nome}`,
+      content: StopForm,
+      props: {
+        initialData: stop,
+        onSubmit: async (formData) => {
+          try {
+            console.log('Enviando dados para atualização:', formData);
+            await api.stops.update(stop.ponto_id, formData);
+            popUpRef.current.hide();
+            fetchStops(); // Recarrega a lista
+          } catch (error) {
+            console.error("Erro ao atualizar ponto:", error);
+            
+            // Provide more specific error messages
+            let errorMessage = "Erro ao atualizar ponto: ";
+            if (error.message && error.message.includes('já está sendo usado')) {
+              errorMessage += error.message;
+            } else {
+              errorMessage += error.message || "Tente novamente mais tarde";
             }
-          }}
-          onCancel={close}
-        />
-      ),
-      {},
-      `Editar Ponto: ${stop.nome}`
-    );
+            
+            alert(errorMessage);
+          }
+        },
+        onCancel: popUpRef.current.hide,
+      }
+    });
   };
 
   const handleDeleteStop = async (id) => {
     if (confirm("Você tem certeza que deseja deletar este ponto? Esta ação não pode ser desfeita.")) {
       try {
         await api.stops.delete(id); // Chama a API para deletar o ponto
-        fetchStops(); // Recarrega os pontos após a exclusão (é pior para performance, porem já atualza o estado mais vezes)
-        popUpRef.current.hide(); // Fecha o pop-up após a exclusão
+        
+        // Atualiza o estado local removendo o ponto excluído
+        setStops(prevStops => prevStops.filter(stop => stop.ponto_id !== id));
+        
+        // Remove o marcador do mapa imediatamente
+        setMarkers(prevMarkers => prevMarkers.filter(marker => marker.id !== id));
+        
+        // Fecha o pop-up
+        popUpRef.current.hide(); 
       } catch (error) {
         console.error(`Erro ao deletar ponto com ID ${id}:`, error);  
         alert(`Erro ao deletar ponto: ${error.message || "Tente novamente mais tarde"}`);
@@ -194,17 +198,15 @@ function Stops({ pageFunctions }) {
     const marker = stops.find(stop => stop.ponto_id === rowData.id);
     
     if (marker) {
-      popUpRef.current.show(
-        () => (
-          <StopDetails 
-            stop={marker} 
-            onEdit={() => handleEditStop(marker.ponto_id)} 
-            onDelete={() => handleDeleteStop(marker.ponto_id)} 
-          />
-        ), 
-        {}, 
-        `Ponto: ${marker.nome}`
-      );
+      popUpRef.current.show({
+      title: `Ponto: ${marker.nome}`,
+      content: StopDetails,
+      props: {
+        stop: marker,
+        onEdit: () => handleEditStop(marker.ponto_id),
+        onDelete: () => handleDeleteStop(marker.ponto_id),
+      }
+    });
     } else {
       console.error("Ponto não encontrado para ID:", rowData.id);
     }
@@ -233,9 +235,19 @@ function Stops({ pageFunctions }) {
         <div className="d-flex gap-3 justify-content-center">
           <button 
             className="btn btn-primary btn-lg px-4 py-2"
-            onClick={() => {
+            onClick={async () => {
               popUpRef.current.hide();
-              handleCreateStop({ latitude: latlng.lat, longitude: latlng.lng });
+              const data = await api.geolocation.getInfoFromCoordinates(latlng.lat, latlng.lng)
+              const innitialData = {
+                latitude: latlng.lat,
+                longitude: latlng.lng,
+                logradouro: data.road || '',
+                bairro: data.suburb || '',
+                cidade: data.city || '',
+                uf: data.uf || '',
+                cep: data.cep || '',
+              }
+              handleCreateStop(innitialData)
             }}
           >
             <i className="bi bi-plus-circle me-2"></i>
@@ -255,7 +267,7 @@ function Stops({ pageFunctions }) {
       </div>
     );
 
-    popUpRef.current.show(InnitialComponent, {}, "Novo Ponto");
+    popUpRef.current.show({ title: "Novo Ponto", content: InnitialComponent });
   }
 
   // Adicionar useEffect para sincronizar marcadores quando stops mudar

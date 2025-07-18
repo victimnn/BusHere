@@ -8,7 +8,7 @@ CREATE TABLE OnibusRota (
     rota_id INT NOT NULL,
     onibus_id INT NOT NULL,
     motorista_id INT NOT NULL,
-    data_programada DATE NOT NULL,
+    data_programada DATE,
     horario_inicio_operacao TIME,
     horario_fim_operacao TIME,
     observacoes TEXT,

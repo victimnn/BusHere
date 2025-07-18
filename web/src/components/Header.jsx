@@ -1,8 +1,11 @@
 import { useRef } from "react";
+import { useAuth } from "../context/authContext";
 import PopUpComponent from "../components/PopUpComponent";
 import SearchBar from "../components/SearchBar";
 
 function Header({pageName}){
+    const { user, logout, isAuthenticated } = useAuth();
+
     return (
       <header
         className={`
@@ -25,9 +28,11 @@ function Header({pageName}){
         </div>
 
         <span className="d-flex align-items-center gap-2 mt-2 mt-md-0">
-          <span className="fw-bold">Nome do Usuário</span>
+          <span className="fw-bold">
+            {isAuthenticated ? user?.nome || user?.name || 'Usuário' : 'Não logado'}
+          </span>
           {/* Icon representing the user's profile */}
-          <i className="bi bi-person-circle fs-1" />
+          <i className="bi bi-person-circle fs-1" style={{ cursor: 'pointer' }} onClick={logout} />
         </span>
       </header>
     )

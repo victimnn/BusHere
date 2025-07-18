@@ -21,4 +21,4 @@ CREATE TABLE UsuariosEmpresa (
 );
 
 INSERT INTO UsuariosEmpresa (nome, login_usuario, email, senha_hash, telefone)
-VALUES ('Administrador', 'admin', 'admin@admin', 'admin', '40028992')
+VALUES ('Administrador', 'admin', 'admin@admin.com', '$2b$10$kBr60Aku0AOarw0M4g1fmet96mxvEUYeKEH3s/5sBvDVrh8V1rr.W', '40028992')

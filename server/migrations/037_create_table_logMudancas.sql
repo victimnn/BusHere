@@ -1,5 +1,8 @@
+-- Down
+DROP TABLE IF EXISTS LogMudancas;
+
 -- Up
-CREATE TABLE LogMudanca (
+CREATE TABLE LogMudancas (
   mudanca_id INT AUTO_INCREMENT PRIMARY KEY, -- ID único para cada mudança
   usuario_id INT NOT NULL, -- ID do usuário que fez a mudança
   tabela VARCHAR(255) NOT NULL, -- Nome da tabela onde a mudança ocorreu
@@ -15,4 +18,4 @@ CREATE TABLE LogMudanca (
   INDEX idx_tabela (tabela),
   INDEX idx_operacao (operacao),
   INDEX idx_timestamp (timestamp)
-)
+);

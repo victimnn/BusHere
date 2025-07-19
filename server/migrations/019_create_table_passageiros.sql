@@ -20,7 +20,7 @@ CREATE TABLE Passageiros (
     cep VARCHAR(8) NOT NULL,
     tipo_passageiro_id INT DEFAULT 1, -- Referente a tipo_passageiro_id no DER, assumindo que 1 é o padrão
     rota_id INT, -- Referente a id_rota_passageiro
-    status_pagamento_id INT,
+    ponto_id INT, -- Referente a id_ponto_passageiro
     notificacoes_json JSON DEFAULT '{}',
     configuracoes_json JSON DEFAULT '{}',
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -28,7 +28,8 @@ CREATE TABLE Passageiros (
     ativo BOOLEAN DEFAULT TRUE,
 
     FOREIGN KEY (tipo_passageiro_id) REFERENCES TipoPassageiro(tipo_passageiro_id),
- -- FOREIGN KEY (rota_id) REFERENCES Rotas(rota_id), -- Supondo que exista uma tabela Rotas
+    FOREIGN KEY (rota_id) REFERENCES Rotas(rota_id),
+    FOREIGN KEY (ponto_id) REFERENCES Pontos(ponto_id),
 
     INDEX idx_passageiros_cpf (cpf), -- It's often good practice to index UNIQUE columns too
     INDEX idx_passageiros_email (email),

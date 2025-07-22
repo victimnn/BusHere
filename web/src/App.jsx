@@ -15,6 +15,9 @@ import ReportsPage from "./pages/ReportsPage";
 import SettingsPage from "./pages/SettingsPage";
 import SearchPage from "./pages/SearchPage";
 import StopsPage from "./pages/StopsPage";
+
+import BusDetail from "./pages/details/BusDetail";
+
 import SideBar from "./components/SideBar";
 import Header from "./components/Header";
 
@@ -69,6 +72,8 @@ function App() {
                   <Route path="/settings" element={<SettingsPage pageFunctions={pageFunctions}/>} />
                   <Route path="/login" element={<LoginPage pageFunctions={pageFunctions}/>} />
                   <Route path="/register" element={<RegisterPage pageFunctions={pageFunctions}/>} />
+
+                  <Route path="/buses/:busId" element={<BusDetail pageFunctions={pageFunctions}/>} />
 
                   <Route path="/search/:searchTerm" element={<SearchPage pageFunctions={pageFunctions}  />} />
                 </Routes>

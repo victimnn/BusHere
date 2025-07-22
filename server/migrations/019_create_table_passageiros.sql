@@ -36,7 +36,3 @@ CREATE TABLE Passageiros (
     INDEX idx_passageiros_tipo (tipo_passageiro_id),
     INDEX idx_passageiros_ativo (ativo)
 );
-
--- Inserindo dados de exemplo na tabela Passageiros
-INSERT INTO Passageiros (
-);

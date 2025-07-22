@@ -17,6 +17,10 @@ import SearchPage from "./pages/SearchPage";
 import StopsPage from "./pages/StopsPage";
 
 import BusDetail from "./pages/details/BusDetail";
+import PassengerDetail from "./pages/details/PassengerDetail";
+import DriverDetail from "./pages/details/DriverDetail";
+import RouteDetail from "./pages/details/RouteDetail";
+import StopDetail from "./pages/details/StopDetail";
 
 import SideBar from "./components/SideBar";
 import Header from "./components/Header";
@@ -74,6 +78,10 @@ function App() {
                   <Route path="/register" element={<RegisterPage pageFunctions={pageFunctions}/>} />
 
                   <Route path="/buses/:busId" element={<BusDetail pageFunctions={pageFunctions}/>} />
+                  <Route path="/passengers/:passengerId" element={<PassengerDetail pageFunctions={pageFunctions}/>} />
+                  <Route path="/drivers/:driverId" element={<DriverDetail pageFunctions={pageFunctions}/>} />
+                  <Route path="/routes/:routeId" element={<RouteDetail pageFunctions={pageFunctions}/>} />
+                  <Route path="/stops/:stopId" element={<StopDetail pageFunctions={pageFunctions}/>} />
 
                   <Route path="/search/:searchTerm" element={<SearchPage pageFunctions={pageFunctions}  />} />
                 </Routes>

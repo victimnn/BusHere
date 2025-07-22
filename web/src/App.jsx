@@ -70,7 +70,7 @@ function App() {
                   <Route path="/login" element={<LoginPage pageFunctions={pageFunctions}/>} />
                   <Route path="/register" element={<RegisterPage pageFunctions={pageFunctions}/>} />
 
-                  <Route path="/search/:searchTerm" element={<SearchPage   />} />
+                  <Route path="/search/:searchTerm" element={<SearchPage pageFunctions={pageFunctions}  />} />
                 </Routes>
               </div>
             </main>

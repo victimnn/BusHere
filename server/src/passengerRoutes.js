@@ -113,12 +113,11 @@ module.exports = (pool) => {
       res.status(500).json({ error: 'Erro ao buscar detalhes do passageiro' });
     }
   });
-
   // Rota para criar um novo passageiro
   // O usuário deve fornecer os seguintes campos no corpo da requisição:
   // nome_completo, cpf, email, senha_hash, telefone, data_nascimento, logradouro,
   // numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
-  // tipo_passageiro_id, rota_id, status_pagamento_id, notificacoes_json, configuracoes_json, ativo
+  // tipo_passageiro_id, rota_id, notificacoes_json, configuracoes_json, ativo
   // Retorna:
   // O objeto do passageiro recém-criado
   router.post('/', async (req, res) => {
@@ -128,12 +127,11 @@ module.exports = (pool) => {
       if (!req.body[field]) {
         return res.status(400).json({ error: `Campo obrigatório faltando: ${field}`, request: req.body });
       }
-    }
-
+    }    
     const {
       nome_completo, cpf, email, senha_hash, telefone, data_nascimento, pcd,
       logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
-      tipo_passageiro_id, rota_id, status_pagamento_id, notificacoes_json, configuracoes_json, ativo
+      tipo_passageiro_id, rota_id, notificacoes_json, configuracoes_json, ativo
     } = req.body;
 
     const newPassengerData = {
@@ -150,10 +148,9 @@ module.exports = (pool) => {
       bairro,
       cidade,
       uf,
-      cep,
+      cep,      
       tipo_passageiro_id: tipo_passageiro_id || null,
       rota_id: rota_id || null,
-      status_pagamento_id: status_pagamento_id || null,
       notificacoes_json: notificacoes_json || '{}',
       configuracoes_json: configuracoes_json || '{}',
       ativo: ativo !== undefined ? ativo : true
@@ -172,12 +169,10 @@ module.exports = (pool) => {
         return res.status(409).json({ error: `${field} já cadastrado` });
       }
 
-      const [result] = await pool.query('INSERT INTO Passageiros SET ?', newPassengerData);
-
-      const [newPassenger] = await pool.execute(
+      const [result] = await pool.query('INSERT INTO Passageiros SET ?', newPassengerData);      const [newPassenger] = await pool.execute(
         `SELECT passageiro_id, nome_completo, cpf, email, telefone, data_nascimento, pcd,
         logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
-        tipo_passageiro_id, rota_id, status_pagamento_id, data_criacao, data_atualizacao, ativo
+        tipo_passageiro_id, rota_id, data_criacao, data_atualizacao, ativo
         FROM Passageiros WHERE passageiro_id = ?`,
         [result.insertId]
       );
@@ -195,17 +190,16 @@ module.exports = (pool) => {
   // Retorna:
   // O objeto do passageiro atualizado
   router.put('/:id', async (req, res) => {
-    const { id } = req.params;
-    const {
+    const { id } = req.params;    const {
       nome_completo, cpf, email, senha_hash, telefone, data_nascimento, pcd,
       logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
-      tipo_passageiro_id, rota_id, status_pagamento_id, notificacoes_json, configuracoes_json, ativo
+      tipo_passageiro_id, rota_id, notificacoes_json, configuracoes_json, ativo
     } = req.body;
 
     const updatedPassengerData = {
       nome_completo, cpf, email, senha_hash, telefone, data_nascimento, pcd,
       logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
-      tipo_passageiro_id, rota_id, status_pagamento_id, notificacoes_json, configuracoes_json, ativo
+      tipo_passageiro_id, rota_id, notificacoes_json, configuracoes_json, ativo
     };
 
     // Remove campos undefined para que o SET ? não tente atualizá-los com 'undefined'
@@ -243,12 +237,11 @@ module.exports = (pool) => {
         await pool.query('UPDATE Passageiros SET ? WHERE passageiro_id = ?', [updatedPassengerData, id]);
       } else {
         return res.status(400).json({ error: 'Nenhum campo para atualizar fornecido' });
-      }
-
+      }      
       const [updatedRows] = await pool.execute(
         `SELECT passageiro_id, nome_completo, cpf, email, telefone, data_nascimento, pcd,
         logradouro, numero_endereco, complemento_endereco, bairro, cidade, uf, cep,
-        tipo_passageiro_id, rota_id, status_pagamento_id, data_criacao, data_atualizacao, ativo
+        tipo_passageiro_id, rota_id, data_criacao, data_atualizacao, ativo
         FROM Passageiros WHERE passageiro_id = ?`,
         [id]
       );
@@ -311,7 +304,8 @@ module.exports = (pool) => {
         data: rows,
         count: rows.length,
         query
-      });    } catch (error) {
+      });    
+    } catch (error) {
       console.error('Erro ao pesquisar passageiros:', error);
       res.status(500).json({ error: 'Erro ao pesquisar passageiros' });
     }

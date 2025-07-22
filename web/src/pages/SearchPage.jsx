@@ -3,6 +3,10 @@ import { useParams } from 'react-router-dom';
 import autoComplete from "../api/autocomplete.js"; // Importa a função de autocomplete
 
 function SearchPages({ pageFunctions }) {
+    useEffect(() => {
+      pageFunctions.set("Pesquisa", true, true);
+    }, [pageFunctions]);
+
     const { searchTerm } = useParams(); // Obtém o termo de pesquisa da URL
 
     const [suggestions, setSuggestions] = useState([]); // Estado para armazenar as sugestões
@@ -21,9 +25,7 @@ function SearchPages({ pageFunctions }) {
       fetchSugestions(); // Chama a função para buscar sugestões
     }, [searchTerm]); // Executa quando a página é carregada
 
-    useEffect(() => {
-      pageFunctions.set("Pesquisa", true, true);
-    }, [pageFunctions]);
+
 
     return (
       <main>

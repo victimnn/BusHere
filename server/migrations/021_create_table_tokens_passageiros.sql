@@ -12,8 +12,3 @@ CREATE TABLE TokensLogin (
     -- Índice para buscas mais rápidas
     INDEX idx_passageiros_id (passageiro_id)
 );
-
---  Cria tokens para os usuarios de exemplo
-INSERT INTO TokensLogin (passageiro_id, token, expiration_timestamp) VALUES
-(1, 'token_abc123', DATE_ADD(NOW(), INTERVAL 1 HOUR)), -- Token para o usuário 1 com expiração em 1 hora
-(2, 'token_xyz456', DATE_ADD(NOW(), INTERVAL 2 HOUR)); -- Token para o usuário 2 com expiração em 2 horas

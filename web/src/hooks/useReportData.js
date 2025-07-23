@@ -7,7 +7,7 @@ export const useReportData = () => {
     buses: [],
     stops: [],
     routes: [],
-    passengerTypes: []
+    passengerCities: []
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,7 +31,7 @@ export const useReportData = () => {
         buses: [],
         stops: chartData.stopsByCity || [],  // Carregar dados dos pontos do chartData
         routes: [],
-        passengerTypes: chartData.passengersByType || [],
+        passengerCities: chartData.passengersByCity || [],
         chartData,
         stats
       });
@@ -43,12 +43,11 @@ export const useReportData = () => {
       
       // Fallback para a API antiga se a nova falhar
       try {
-        const [passengersRes, busesRes, stopsRes, routesRes, typesRes] = await Promise.all([
+        const [passengersRes, busesRes, stopsRes, routesRes] = await Promise.all([
           api.passengers.list(1, 1000),
           api.buses.list(1, 1000),
           api.stops.list(),
           api.routes.list(1, 1000),
-          api.passengers.getTypes()
         ]);
 
         setReportData({
@@ -56,7 +55,7 @@ export const useReportData = () => {
           buses: busesRes?.data || [],
           stops: stopsRes?.data || [],
           routes: routesRes?.data || [],
-          passengerTypes: typesRes?.data || []
+          passengerCities: []
         });
         
         setError(null);

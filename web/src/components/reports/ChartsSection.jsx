@@ -73,7 +73,7 @@ const ChartsSection = ({ chartData }) => {
         iconClass="fas fa-chart-pie"
         iconBg="bg-primary"
       >
-        <Pie data={chartData.passengersByCity} options={pieOptions} />
+        <Pie data={chartData.passengersByCity} options={pieOptions} id="chart-passengersByCity" />
       </ChartCard>
 
       <ChartCard
@@ -82,7 +82,7 @@ const ChartsSection = ({ chartData }) => {
         iconClass="fas fa-chart-bar"
         iconBg="bg-success"
       >
-        <Bar data={chartData.busStatus} options={chartOptions} />
+        <Bar data={chartData.busStatus} options={chartOptions} id="chart-busStatus" />
       </ChartCard>
 
       <ChartCard
@@ -91,7 +91,7 @@ const ChartsSection = ({ chartData }) => {
         iconClass="fas fa-map"
         iconBg="bg-info"
       >
-        <Bar data={chartData.stopsByCity} options={chartOptions} />
+        <Bar data={chartData.stopsByCity} options={chartOptions} id="chart-stopsByCity" />
       </ChartCard>
 
       <ChartCard
@@ -100,7 +100,7 @@ const ChartsSection = ({ chartData }) => {
         iconClass="fas fa-route"
         iconBg="bg-warning"
       >
-        <Bar data={chartData.routeStatus} options={chartOptions} />
+        <Bar data={chartData.routeStatus} options={chartOptions} id="chart-routeStatus" />
       </ChartCard>
     </div>
   );

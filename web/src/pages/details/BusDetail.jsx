@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import api from '../../api/api'; // Import your API functions
-import PopUpComponent from '../../components/PopUpComponent';
+import api from '@web/api/api'; // Import your API functions
+import PopUpComponent from '@web/components/PopUpComponent';
 
 function BusDetail( {pageFunctions} ) {
   useEffect(() => { pageFunctions.set("Ônibus", true, true); }, [pageFunctions]);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import api from '../../api/api';
-import PopUpComponent from '../../components/PopUpComponent';
+import api from '@web/api/api';
+import PopUpComponent from '@web/components/PopUpComponent';
 
 function PassengerDetail({ pageFunctions }) {
   useEffect(() => { pageFunctions.set("Passageiro", true, true); }, [pageFunctions]);

@@ -6,6 +6,14 @@ import * as path from 'path';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      '@web': path.resolve(__dirname, './src'),
+      '@mobile': path.resolve(__dirname, '../mobile'),
+      '@server': path.resolve(__dirname, '../server/src'),
+      '@shared': path.resolve(__dirname, '../shared'),
+    }
+  },
   css: {
     preprocessorOptions: {
       scss: {

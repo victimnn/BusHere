@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { useParams, Link } from 'react-router-dom';
-import autoComplete from "../api/autocomplete.js"; // Importa a função de autocomplete
+import autoComplete from "../api/autocomplete"; // Importa a função de autocomplete
 
 function SearchPage({ pageFunctions }) {
     useEffect(() => {

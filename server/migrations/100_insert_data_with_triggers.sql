@@ -70,7 +70,7 @@ INSERT INTO Passageiros (
 ) VALUES (
     'Leticia Aparecida Moraes Fructoso',
     '17551394036',
-    'llett.moraes@euteamo.com',
+    'llett.moraes@blabla.com',
     'hashed_password_xyz456',
     '19988880002',
     '1985-11-20',

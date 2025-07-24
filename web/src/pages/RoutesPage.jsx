@@ -134,6 +134,7 @@ function RoutesPage({ pageFunctions }) {
       try {
         await api.routes.delete(id);
         fetchRoutes(); // Recarrega a lista
+        await popUpRef.current //evita que o popUpRef seja null
         popUpRef.current.hide(); // Fecha o popup se estiver aberto
       } catch (err) {
         console.error("Erro ao excluir rota:", err);

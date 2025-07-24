@@ -96,7 +96,7 @@ const createTitlePage = (doc, reportData, logoBase64) => {
   doc.setTextColor('#34495e');
   doc.text("Análise Operacional Completa", pageWidth / 2, pageHeight * 0.52, { align: 'center' });
 
-  // Linha decorativa
+  // Linha 
   doc.setDrawColor('#1abc9c');
   doc.setLineWidth(1);
   doc.line(pageWidth * 0.3, pageHeight * 0.56, pageWidth * 0.7, pageHeight * 0.56);

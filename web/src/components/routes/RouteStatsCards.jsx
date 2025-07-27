@@ -29,28 +29,28 @@ const STATS_CONFIG = {
     gradient: "linear-gradient(135deg, #12BE4D 0%, #0E8F3A 100%)",
     popupTitle: 'Rotas Ativas'
   },
-  inactive: {
-    title: "Inativas",
-    iconClass: "bi bi-x-circle-fill",
-    gradient: "linear-gradient(135deg, #DC3545 0%, #C82333 100%)",
-    popupTitle: 'Rotas Inativas'
-  },
   planning: {
     title: "Em Planejamento",
     iconClass: "bi bi-pencil-fill",
     gradient: "linear-gradient(135deg, #FFC107 0%, #E0A800 100%)",
     popupTitle: 'Rotas em Planejamento'
+  },
+  inactive: {
+    title: "Inativas",
+    iconClass: "bi bi-x-circle-fill",
+    gradient: "linear-gradient(135deg, #DC3545 0%, #C82333 100%)",
+    popupTitle: 'Rotas Inativas'
   }
 };
 
 const filterRoutesByCategory = (routes, category) => {
   switch (category) {
     case 'active':
-      return routes.filter(route => route.status_rota_id === 1);
+      return routes.filter(route => route.status_nome === "Ativa");
     case 'inactive':
-      return routes.filter(route => route.status_rota_id === 2);
+      return routes.filter(route => route.status_nome === "Inativa");
     case 'planning':
-      return routes.filter(route => route.status_rota_id === 3);
+      return routes.filter(route => route.status_nome === "Em Planejamento");
     case 'total':
     default:
       return routes;
@@ -60,15 +60,15 @@ const filterRoutesByCategory = (routes, category) => {
 const RoutesListPopup = ({ routes, category }) => {
   const tableHeaders = useMemo(() => [
     { id: "nome", label: "Nome", sortable: true },
-    { id: "origem", label: "Origem", sortable: true },
-    { id: "destino", label: "Destino", sortable: true },
-    { id: "status_rota", label: "Status", sortable: true }
+    { id: "origem_descricao", label: "Origem", sortable: true },
+    { id: "destino_descricao", label: "Destino", sortable: true },
+    { id: "status", label: "Status", sortable: true }
   ], []);
 
   const processedRoutes = useMemo(() => 
     routes.map(route => ({
       ...route,
-      status_rota: route.status_rota || STATUS_MAP[route.status_rota_id] || 'Não informado'
+      status_nome: STATUS_MAP[route.status_rota_id] || 'Não informado'
     })), [routes]
   );
 

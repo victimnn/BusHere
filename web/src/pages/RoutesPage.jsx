@@ -23,17 +23,33 @@ function RoutesPage({ pageFunctions }) {
     pageFunctions.set("Rotas", true, true);
   }, []);
   
-  const popUpRef = useRef(null);
-  const [routes, setRoutes] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const popUpRef = useRef(null); // Referência para o componente PopUpComponent
+  const [routes, setRoutes] = useState([]); // Estado para armazenar as rotas
+  const [isLoading, setIsLoading] = useState(true); // Estado para controlar o carregamento
+  const [error, setError] = useState(null); // Estado para armazenar erros
+  const [currentPage, setCurrentPage] = useState(1); // Controle de paginação
+  const [searchTerm, setSearchTerm] = useState(''); // Termo de busca
 
+  // Função para buscar as rotas do servidor
   const fetchRoutes = async () => {
     try {
       setIsLoading(true);
-      const response = await api.routes.list();
-      setRoutes(response.data);
+      const response = await api.routes.list(currentPage, 100, searchTerm);
+      
+      // Adaptar os dados do servidor para o formato esperado pelo frontend
+      let routesData = [];
+      if (response && response.data && Array.isArray(response.data)) {
+        routesData = response.data.map(route => ({ 
+          ...route, 
+          status: route.status_nome 
+        }));
+      }
+      
+      setRoutes(routesData);
       setError(null);
+      
+      console.log('Dados recebidos da API:', response);
+      console.log('Dados transformados:', routesData);
     } catch (err) {
       console.error("Erro ao buscar rotas:", err);
       setError("Não foi possível carregar as rotas. Tente novamente mais tarde.");
@@ -44,8 +60,8 @@ function RoutesPage({ pageFunctions }) {
 
   useEffect(() => {
     fetchRoutes();
-  }, []);
-
+  }, [currentPage, searchTerm]); // Recarrega quando mudar a página ou termo de busca
+  // Handler para criar uma nova rota
   const handleCreateRoute = () => {
     popUpRef.current.show({
       title: "Nova Rota",
@@ -53,12 +69,24 @@ function RoutesPage({ pageFunctions }) {
       props: {
         onSubmit: async (formData) => {
           try {
+            console.log('Enviando dados:', formData);
             await api.routes.create(formData);
             popUpRef.current.hide();
-            fetchRoutes();
+            fetchRoutes(); // Recarrega a lista
           } catch (err) {
             console.error("Erro ao criar rota:", err);
-            alert("Erro ao criar rota: " + (err.message || "Tente novamente mais tarde"));
+            
+            // Provide more specific error messages
+            let errorMessage = "Erro ao criar rota: ";
+            if (err.message && err.message.includes('já cadastrado')) {
+              errorMessage += err.message;
+            } else if (err.message && err.message.includes('409')) {
+              errorMessage += "Código de rota já cadastrado no sistema.";
+            } else {
+              errorMessage += err.message || "Tente novamente mais tarde";
+            }
+            
+            alert(errorMessage);
           }
         },
         onCancel: popUpRef.current.hide,
@@ -66,7 +94,8 @@ function RoutesPage({ pageFunctions }) {
       }
     });
   };
-
+  
+  // Handler para editar uma rota
   const handleEditRoute = (route) => {
     popUpRef.current.show({
       title: `Editar Rota: ${route.nome}`,
@@ -75,12 +104,24 @@ function RoutesPage({ pageFunctions }) {
         initialData: route,
         onSubmit: async (formData) => {
           try {
+            console.log('Enviando dados para atualização:', formData);
             await api.routes.update(route.rota_id, formData);
             popUpRef.current.hide();
-            fetchRoutes();
+            fetchRoutes(); // Recarrega a lista
           } catch (err) {
             console.error("Erro ao atualizar rota:", err);
-            alert("Erro ao atualizar rota: " + (err.message || "Tente novamente mais tarde"));
+            
+            // Provide more specific error messages
+            let errorMessage = "Erro ao atualizar rota: ";
+            if (err.message && err.message.includes('já está sendo usado')) {
+              errorMessage += err.message;
+            } else if (err.message && err.message.includes('409')) {
+              errorMessage += "Código de rota já está sendo usado por outra rota.";
+            } else {
+              errorMessage += err.message || "Tente novamente mais tarde";
+            }
+            
+            alert(errorMessage);
           }
         },
         onCancel: popUpRef.current.hide,
@@ -88,12 +129,14 @@ function RoutesPage({ pageFunctions }) {
     });
   };
 
+  // Handler para excluir uma rota
   const handleDeleteRoute = async (id) => {
     if (confirm("Tem certeza que deseja excluir esta rota?")) {
       try {
         await api.routes.delete(id);
-        fetchRoutes();
-        popUpRef.current.hide();
+        fetchRoutes(); // Recarrega a lista
+        await popUpRef.current //evita que o popUpRef seja null
+        popUpRef.current.hide(); // Fecha o popup se estiver aberto
       } catch (err) {
         console.error("Erro ao excluir rota:", err);
         alert("Erro ao excluir rota: " + (err.message || "Tente novamente mais tarde"));
@@ -101,6 +144,7 @@ function RoutesPage({ pageFunctions }) {
     }
   };
 
+  // Handler para quando uma linha for clicada
   const handleRowClick = (route) => {
     popUpRef.current.show({
       title: `Rota: ${route.nome}`,

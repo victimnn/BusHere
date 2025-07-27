@@ -278,7 +278,7 @@ function Stops({ pageFunctions }) {
   }, [stops]); // Executa quando stops muda
 
   return (
-    <main style={{ height: '100vh', maxWidth: "100%", overflowX: 'hidden' }} className="d-flex flex-column">
+    <main style={{ height: '100vh', maxWidth: "100%", overflowX: 'hidden' }} className="d-flex flex-column ps-3 pe-3">
       <div className="d-flex flex-row m-3 w-100 h-50 gap-4" style={{ overflowY: 'hidden', maxHeight: '35%' }}>
         <MapComponent 
           className="w-100 h-100 rounded-3"

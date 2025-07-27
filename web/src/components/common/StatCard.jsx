@@ -19,11 +19,11 @@ const StatCard = ({
         }}
         onClick={onClick}
       >
-        <div className="card-body text-white p-3">
+        <div className="card-body text-white">
           <div className="d-flex justify-content-between align-items-center">
             <div>
               <h6 className="card-title mb-2 opacity-75 fw-normal">{title}</h6>
-              <h2 className="fw-bold mb-0" style={{fontSize: '2rem'}}>
+              <h2 className="fw-bold mb-0 stats-value">
                 <AnimatedCounter endValue={value || 0} />
               </h2>
             </div>

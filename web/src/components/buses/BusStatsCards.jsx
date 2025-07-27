@@ -155,7 +155,7 @@ const BusStatsCards = ({ buses = [] }) => {
             iconClass={config.iconClass}
             gradient={config.gradient}
             onClick={() => showBusesPopup(category)}
-            className="col-lg-3 col-md-6 mb-4"
+            className="col-xl-3 col-md-6 mb-4"
           />
         ))}
       </div>

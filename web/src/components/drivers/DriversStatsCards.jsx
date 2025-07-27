@@ -5,7 +5,12 @@ import StatCard from '../common/StatCard';
 import { formatCPF, formatPhoneNumber, formatDateFromDatabase } from '../../utils/formatters';
 
 // Constantes
-const STATUS_MAP = { 1: 'Ativo', 2: 'Férias', 3: 'Afastado', 4: 'Inativo' };
+const STATUS_MAP = { 
+  1: 'Ativo', 
+  2: 'Férias', 
+  3: 'Afastado', 
+  4: 'Inativo' 
+};
 
 const STATS_MESSAGE = {
   total: (count) => `Total de ${count} motorista(s) cadastrado(s)`,
@@ -50,10 +55,8 @@ const filterDriversByCategory = (drivers, stats) => {
   switch (stats) {
     case 'active':
       return drivers.filter(driver => driver.status_motorista_id === 1);
-
     case 'holiday':
       return drivers.filter(driver => driver.status_motorista_id === 2);
-    
     case 'expiring':
       return drivers.filter(driver => {
         if (!driver.cnh_validade) return false;

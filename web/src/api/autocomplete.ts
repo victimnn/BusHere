@@ -5,7 +5,6 @@ import api from './api.js';
  * @returns 
  */
 function autoComplete(query: string): Promise<object[]> {
-  console.log("usando typescript");
   return api.get(`/autocomplete?search=${encodeURIComponent(query)}`);
 }
 

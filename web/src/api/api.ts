@@ -1,14 +1,16 @@
 import { findStateByLabel } from "@shared/brazilianStates";
+import { Merge } from "chart.js/dist/types/utils";
 
 function getBearerToken() {
-    const token = localStorage.getItem('token');
-    return token ? `Bearer ${token}` : null;
+  const token = localStorage.getItem('token');
+  return token ? `Bearer ${token}` : null;
 }
 
+// @ts-ignore
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 const api = {
-  _request: async (method, url, data = null, options = {}) => {
+  _request: async (method: string, url: string, data: any = null, options: RequestInit = {}) => {
     const token = getBearerToken(); // Obtém o token a cada requisição
     const headers = {
       'Content-Type': 'application/json',
@@ -34,7 +36,7 @@ const api = {
       console.log(`Fazendo ${method} ${url}`, data, config, response);
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: response.statusText }));
-        const error = new Error(errorData.message || 'Ocorreu um erro na requisição');
+        const error = new Error(errorData.message || 'Ocorreu um erro na requisição') as Error & { status: number; data: any };
         error.status = response.status;
         error.data = errorData;
         
@@ -59,19 +61,19 @@ const api = {
     }
   },
   
-  get: (url, options) => api._request('GET', url, null, options),
-  post: (url, data, options) => api._request('POST', url, data, options),
-  put: (url, data, options) => api._request('PUT', url, data, options),
-  patch: (url, data, options) => api._request('PATCH', url, data, options),
-  delete: (url, options) => api._request('DELETE', url, null, options),
+  get: (url, options?) => api._request('GET', url, null, options),
+  post: (url, data?, options?) => api._request('POST', url, data, options),
+  put: (url, data, options?) => api._request('PUT', url, data, options),
+  patch: (url, data, options?) => api._request('PATCH', url, data, options),
+  delete: (url, options?) => api._request('DELETE', url, null, options),
 
   // Funções específicas para passageiros
   passengers: {
     // Listar todos os passageiros (com suporte à paginação e busca)
     list: (page = 1, limit = 10, search = '') => {
       const queryParams = new URLSearchParams();
-      queryParams.append('page', page);
-      queryParams.append('limit', limit);
+      queryParams.append('page', String(page));
+      queryParams.append('limit', String(limit));
       if (search) queryParams.append('search', search);
       
       return api.get(`/passengers?${queryParams.toString()}`);
@@ -108,8 +110,8 @@ const api = {
     // Listar todos os motoristas (com suporte à paginação e busca)
     list: (page = 1, limit = 10, search = '') => {
       const queryParams = new URLSearchParams();
-      queryParams.append('page', page);
-      queryParams.append('limit', limit);
+      queryParams.append('page', String(page));
+      queryParams.append('limit', String(limit));
       if (search) queryParams.append('search', search);
       
       return api.get(`/drivers?${queryParams.toString()}`);
@@ -143,7 +145,11 @@ const api = {
 
   routes: {
     list: (page = 1, limit = 10, search = '') => {
-      const queryParams = new URLSearchParams({ page, limit, search });
+      const queryParams = new URLSearchParams({ 
+        page: String(page), 
+        limit: String(limit), 
+        search: String(search) 
+      });
       return api.get(`/routes?${queryParams.toString()}`);
     },
     getById: (id) => api.get(`/routes/${id}`),
@@ -155,7 +161,11 @@ const api = {
 
   buses: {
     list: (page = 1, limit = 10, search = '') => {
-      const queryParams = new URLSearchParams({ page, limit, search });
+      const queryParams = new URLSearchParams({ 
+        page: String(page), 
+        limit: String(limit), 
+        search: String(search) 
+      });
       return api.get(`/buses?${queryParams.toString()}`);
     },
     getById: (id) => api.get(`/buses/${id}`),
@@ -281,12 +291,12 @@ const api = {
         }
 
         const queryParams = new URLSearchParams({
-          format: "json",
-          lat: parseFloat(lat).toFixed(6),
-          lon: parseFloat(lon).toFixed(6),
-          addressdetails: 1,
-          extratags: 1,
-          limit: 1
+          format: String("json"),
+          lat: String(parseFloat(lat).toFixed(6)),
+          lon: String(parseFloat(lon).toFixed(6)),
+          addressdetails: String(1),
+          extratags: String(1),
+          limit: String(1)
         });
 
         // Adiciona um tempo de 5 segundos para a requisição
@@ -392,7 +402,7 @@ const api = {
       }
     },
 
-    logout: async () => {
+    logout: async (): Promise<void> => {
       try {
         await api.post('/auth/logout'); // Chama a API para logout
         localStorage.removeItem('token'); // Remove o token do localStorage

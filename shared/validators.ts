@@ -4,7 +4,7 @@
  * @param {string} email - O endereço de e-mail a ser validado (formato: (XX) XXXXX-XXXX)
  * @return {boolean} - Retorna true se o e-mail for válido, caso contrário, false
  */
-export function validateEmail(email) {
+export function validateEmail(email: string): boolean {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
 }
@@ -16,7 +16,7 @@ export function validateEmail(email) {
  * @return {boolean} - Retorna true se o número de telefone for válido, caso contrário, false
  * 
  */
-export function validatePhoneNumber(phone) {
+export function validatePhoneNumber(phone: string): boolean {
     const re = /^\(\d{2}\) \d{5}-\d{4}$/;
     return re.test(String(phone));
 } 
@@ -27,7 +27,7 @@ export function validatePhoneNumber(phone) {
  * @param {string} cpf - O CPF a ser validado (formato: XXX.XXX.XXX-XX)
  * @return {boolean} - Retorna true se o CPF for válido, caso contrário, false
  */
-export function validateCPF(cpf) {
+export function validateCPF(cpf: string): boolean {
     const re = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/; // Verifica se o CPF está no formato XXX.XXX.XXX-XX
     if (!re.test(cpf)) return false;
 
@@ -43,7 +43,7 @@ export function validateCPF(cpf) {
  * @param {string} cpf - O CPF a ser validado (formato: XXXXXXXXXXX)
  * @return {boolean} - Retorna true se o CPF for válido, caso contrário, false
  */
-export function validadeRawCPF(cpf) {
+export function validadeRawCPF(cpf: string): boolean {
     const re = /^\d{11}$/; // Verifica se o CPF tem 11 dígitos
     if (!re.test(cpf)) return false;
 
@@ -81,7 +81,7 @@ export function validadeRawCPF(cpf) {
  * @param {string} cep - O CEP a ser validado (formato: XXXXX-XXX)
  * @return {boolean} - Retorna true se o CEP for válido, caso contrário, false
  */
-export function validateCEP(cep) {
+export function validateCEP(cep: string): boolean {
     if (!cep || !cep.trim()) return false;
     
     // Remove caracteres que não são números ou hífen
@@ -114,7 +114,7 @@ export function validateCEP(cep) {
  * @param {number} maxYear - Ano máximo permitido (padrão: 2100)
  * @return {boolean} - Retorna true se a data for válida, caso contrário, false
  */
-export function validateDate(date, minYear = 1990, maxYear = 2100) {
+export function validateDate(date: string, minYear: number = 1990, maxYear: number = 2100): boolean {
     if (!date || !date.trim()) return false;
     
     // Verifica o formato DD/MM/AAAA

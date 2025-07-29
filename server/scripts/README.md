@@ -4,22 +4,6 @@ Esta pasta contém scripts utilitários para desenvolvimento e testes do sistema
 
 ## Scripts Disponíveis
 
-### `insertData.js`
-Script para inserir dados de exemplo nas tabelas do banco de dados. Útil para desenvolvimento e testes.
-
-**Como usar:**
-```bash
-node scripts/insertData.js
-```
-
-### `insert_sample_data.sql`
-Script SQL com comandos para inserir dados de exemplo diretamente no banco de dados.
-
-**Como usar:**
-```bash
-mysql -u root -p tcc < scripts/insert_sample_data.sql
-```
-
 ### `testQueries.js`
 Script para testar queries individuais do banco de dados e validar o funcionamento dos endpoints.
 

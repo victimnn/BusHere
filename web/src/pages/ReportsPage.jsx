@@ -11,6 +11,11 @@ import {
   LineElement,
   PointElement,
 } from 'chart.js';
+
+// Utils
+import { generateReportPDF } from "../utils/pdfReport";
+
+// Componentes
 import PopUpComponent from "../components/PopUpComponent";
 
 // Componentes modulares
@@ -52,19 +57,7 @@ function Reports({ pageFunctions }) {
 
   // Função para exportar dados
   const handleExport = () => {
-    const dataToExport = {
-      geradoEm: new Date().toLocaleString('pt-BR'),
-      estatisticas: reportData.stats || {},
-      dadosGraficos: reportData.chartData || {}
-    };
-    
-    const dataStr = JSON.stringify(dataToExport, null, 2);
-    const dataBlob = new Blob([dataStr], {type: 'application/json'});
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `relatorio-${new Date().toISOString().split('T')[0]}.json`;
-    link.click();
+    generateReportPDF(reportData);
   };
 
   if (isLoading) {
@@ -93,7 +86,7 @@ function Reports({ pageFunctions }) {
 
   return (
     <main className="reports-main py-2">
-      <div className="container-fluid px-4">
+      <div className="container-fluid px-4" id="relatorio-pdf">
         <ReportHeader 
           isLoading={isLoading}
           onRefresh={() => window.location.reload()}

@@ -7,15 +7,14 @@ function RouteDetail({ pageFunctions }) {
   useEffect(() => { pageFunctions.set("Rota", true, true); }, [pageFunctions]);
   const navigate = useNavigate();
   const { routeId } = useParams();
-  const [routeDetails, setRouteDetails] = useState(null);
+  const [route, setRoute] = useState(null);
   const [loading, setLoading] = useState(true);
   const popUpRef = useRef(null);
-
   const fetchRouteDetails = async () => {
     try {
       const response = await api.routes.getById(routeId);
       if (response) {
-        setRouteDetails(response);
+        setRoute(response);
       } else {
         console.error("Dados da rota não encontrados", response);
       }
@@ -41,9 +40,8 @@ function RouteDetail({ pageFunctions }) {
       </div>
     </div>
   );
-
-  const RouteDetails = () => {
-    if (!routeDetails) {
+  const Details = () => {
+    if (!route) {
       return <div>Nenhum dado encontrado</div>;
     }
 
@@ -54,17 +52,16 @@ function RouteDetail({ pageFunctions }) {
           <div className="card-body">
             <h5 className="card-title">Dados JSON</h5>
             <pre className="bg-light p-3 rounded">
-              {JSON.stringify(routeDetails, null, 2)}
+              {JSON.stringify(route, null, 2)}
             </pre>
           </div>
         </div>
       </div>
     );
   };
-
   return (
     <main className='p-3'>
-      {loading ? <LoadingDetails /> : <RouteDetails />}
+      {loading ? <LoadingDetails /> : <Details />}
       <PopUpComponent ref={popUpRef} />
     </main>
   );

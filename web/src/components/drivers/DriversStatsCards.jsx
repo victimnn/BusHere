@@ -5,7 +5,12 @@ import StatCard from '../common/StatCard';
 import { formatCPF, formatPhoneNumber, formatDateFromDatabase } from '@shared/formatters';
 
 // Constantes
-const STATUS_MAP = { 1: 'Ativo', 2: 'Férias', 3: 'Afastado', 4: 'Inativo' };
+const STATUS_MAP = { 
+  1: 'Ativo', 
+  2: 'Férias', 
+  3: 'Afastado', 
+  4: 'Inativo' 
+};
 
 const STATS_MESSAGE = {
   total: (count) => `Total de ${count} motorista(s) cadastrado(s)`,
@@ -43,7 +48,11 @@ const STATS_CONFIG = {
 
 // Função utilitária para filtrar motoristas por stats
 const filterDriversByCategory = (drivers, stats) => {
+  // Define a data de hoje, zerando o horário para evitar problemas de fuso horário
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Define a data limite de 6 meses a partir de hoje
   const sixMonthsFromNow = new Date();
   sixMonthsFromNow.setMonth(today.getMonth() + 6);
 
@@ -53,17 +62,29 @@ const filterDriversByCategory = (drivers, stats) => {
 
     case 'holiday':
       return drivers.filter(driver => driver.status_motorista_id === 2);
-    
+
     case 'expiring':
       return drivers.filter(driver => {
+        // Ignora motoristas sem data de validade
         if (!driver.cnh_validade) return false;
+
+        // Converte a data no formato 'DD/MM/YYYY' para um objeto Date
+        const parts = driver.cnh_validade.split('/');
+        if (parts.length !== 3) return false; // Formato inválido
+
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; // Mês no JavaScript é de 0 a 11
+        const year = parseInt(parts[2], 10);
         
-        try {
-          const cnhExpiration = new Date(driver.cnh_validade);
-          return cnhExpiration <= sixMonthsFromNow && cnhExpiration >= today;
-        } catch (error) {
+        const cnhExpiration = new Date(year, month, day);
+
+        // Verifica se a data é válida antes de comparar
+        if (isNaN(cnhExpiration.getTime())) {
           return false;
         }
+        
+        // Retorna true se a CNH expira nos próximos 6 meses e ainda não venceu
+        return cnhExpiration <= sixMonthsFromNow && cnhExpiration >= today;
       });
     
     case 'total':

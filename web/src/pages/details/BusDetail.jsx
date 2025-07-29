@@ -7,15 +7,14 @@ function BusDetail( {pageFunctions} ) {
   useEffect(() => { pageFunctions.set("Ônibus", true, true); }, [pageFunctions]);
   const navigate = useNavigate();
   const { busId } = useParams(); // Obtém o ID do ônibus da URL
-  const [busDetails, setBusDetails] = useState(null);
+  const [bus, setBus] = useState(null);
   const [loading, setLoading] = useState(true);
   const popUpRef = useRef(null); // Referência para o componente PopUpComponent
-
   const fetchBusDetails = async () => {
     try {
       const response = await api.buses.getById(busId);
       if (response) {
-        setBusDetails(response);
+        setBus(response);
       } else {
         console.error("Dados do ônibus não encontrados", response);
       }
@@ -67,8 +66,7 @@ function BusDetail( {pageFunctions} ) {
       </div>
     </div>
   )
-
-  const BusDetails = () => {
+  const Details = () => {
     const prettyDate = (date) => {
       if (!date) return "N/A";
       const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -87,10 +85,8 @@ function BusDetail( {pageFunctions} ) {
       )
       return (<>{dateStr}<Icon /></>);
     }
-    const { nome, placa, modelo, marca, ano_fabricacao, capacidade, data_ultima_manutencao, data_proxima_manutencao, quilometragem, status } = busDetails;
-
-    return (
-      //<>{JSON.stringify(busDetails)}</>
+    const { nome, placa, modelo, marca, ano_fabricacao, capacidade, data_ultima_manutencao, data_proxima_manutencao, quilometragem, status } = bus;    return (
+      //<>{JSON.stringify(bus)}</>
       <>
       <div className="container">
         <h2>Detalhes do Ônibus {busId}</h2>
@@ -112,10 +108,9 @@ function BusDetail( {pageFunctions} ) {
       </>
     )
   }
-
   return (
     <main className='p-3'>
-      {loading ? <LoadingDetails /> : <BusDetails />}
+      {loading ? <LoadingDetails /> : <Details />}
       
       <PopUpComponent ref={popUpRef} />
     </main>

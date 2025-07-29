@@ -7,15 +7,14 @@ function DriverDetail({ pageFunctions }) {
   useEffect(() => { pageFunctions.set("Motorista", true, true); }, [pageFunctions]);
   const navigate = useNavigate();
   const { driverId } = useParams();
-  const [driverDetails, setDriverDetails] = useState(null);
+  const [driver, setDriver] = useState(null);
   const [loading, setLoading] = useState(true);
   const popUpRef = useRef(null);
-
   const fetchDriverDetails = async () => {
     try {
       const response = await api.drivers.getById(driverId);
       if (response) {
-        setDriverDetails(response);
+        setDriver(response);
       } else {
         console.error("Dados do motorista não encontrados", response);
       }
@@ -41,9 +40,8 @@ function DriverDetail({ pageFunctions }) {
       </div>
     </div>
   );
-
-  const DriverDetails = () => {
-    if (!driverDetails) {
+  const Details = () => {
+    if (!driver) {
       return <div>Nenhum dado encontrado</div>;
     }
 
@@ -54,17 +52,16 @@ function DriverDetail({ pageFunctions }) {
           <div className="card-body">
             <h5 className="card-title">Dados JSON</h5>
             <pre className="bg-light p-3 rounded">
-              {JSON.stringify(driverDetails, null, 2)}
+              {JSON.stringify(driver, null, 2)}
             </pre>
           </div>
         </div>
       </div>
     );
   };
-
   return (
     <main className='p-3'>
-      {loading ? <LoadingDetails /> : <DriverDetails />}
+      {loading ? <LoadingDetails /> : <Details />}
       <PopUpComponent ref={popUpRef} />
     </main>
   );

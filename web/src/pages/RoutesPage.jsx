@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import PopUpComponent from "../components/PopUpComponent";
 import RouteDetails from "../components/routes/RouteDetails";
 import RouteForm from "../components/routes/RouteForm";
+import RouteStatsCards from "../components/routes/RouteStatsCards";
 import Table from "../components/Table";
 import api from "../api/api";
 
@@ -134,6 +135,7 @@ function RoutesPage({ pageFunctions }) {
       try {
         await api.routes.delete(id);
         fetchRoutes(); // Recarrega a lista
+        await popUpRef.current //evita que o popUpRef seja null
         popUpRef.current.hide(); // Fecha o popup se estiver aberto
       } catch (err) {
         console.error("Erro ao excluir rota:", err);
@@ -156,8 +158,11 @@ function RoutesPage({ pageFunctions }) {
   };
 
   return (
-    <main className="container p-3">
-      <div className="card border-0 shadow-sm mb-4">
+    <main className="ps-3 pe-3 pt-3">
+      <RouteStatsCards routes={routes} />
+      
+      <div className="container-fluid">
+        <div className="card border-0 shadow-sm mb-4">
         <div className="card-header bg-white py-3">
           <div className="d-flex justify-content-between align-items-center">
             <div className="d-flex align-items-center">
@@ -220,6 +225,7 @@ function RoutesPage({ pageFunctions }) {
       <PopUpComponent 
         ref={popUpRef}
       />
+      </div>
     </main>
   );
 }

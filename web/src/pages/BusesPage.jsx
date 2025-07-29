@@ -171,7 +171,7 @@ function Buses({ pageFunctions }) {
   };
 
   return (
-    <main className="ps-5 pe-5 pt-3">
+    <main className="ps-3 pe-3 pt-3">
       {/* Cards de Estatísticas */}
       <BusStatsCards buses={buses} />
       

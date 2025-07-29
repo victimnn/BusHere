@@ -2,20 +2,22 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '@web/api/api';
 import PopUpComponent from '@web/components/PopUpComponent';
+import MapComponent from '@web/components/MapComponent';
+import StopDetails from '@web/components/stops/StopDetails';
+
 
 function StopDetail({ pageFunctions }) {
   useEffect(() => { pageFunctions.set("Ponto", true, true); }, [pageFunctions]);
   const navigate = useNavigate();
   const { stopId } = useParams();
-  const [stopDetails, setStopDetails] = useState(null);
+  const [stop, setStop] = useState(null);
   const [loading, setLoading] = useState(true);
   const popUpRef = useRef(null);
-
-  const fetchStopDetails = async () => {
+  const fetchDetails = async () => {
     try {
       const response = await api.stops.getById(stopId);
       if (response) {
-        setStopDetails(response);
+        setStop(response);
       } else {
         console.error("Dados do ponto não encontrados", response);
       }
@@ -30,7 +32,7 @@ function StopDetail({ pageFunctions }) {
   };
 
   useEffect(() => {
-    fetchStopDetails();
+    fetchDetails();
   }, [stopId]);
 
   const LoadingDetails = () => (
@@ -41,30 +43,45 @@ function StopDetail({ pageFunctions }) {
       </div>
     </div>
   );
-
-  const StopDetails = () => {
-    if (!stopDetails) {
+  const Details = () => {
+    if (!stop) {
       return <div>Nenhum dado encontrado</div>;
     }
+    const center = [stop.latitude, stop.longitude];
 
     return (
+      <>
+      <div className='container d-flex flex-row' style={{ minHeight: "80vh" }}>
+        <MapComponent 
+          className="w-100 h-100"
+          center={center}
+          zoom={15}
+        />
+
+        <StopDetails
+          stop={stop}
+        />
+
+      </div>
+
+
       <div className="container">
-        <h2>Detalhes do Ponto {stopId}</h2>
         <div className="card">
           <div className="card-body">
             <h5 className="card-title">Dados JSON</h5>
             <pre className="bg-light p-3 rounded">
-              {JSON.stringify(stopDetails, null, 2)}
+              {JSON.stringify(stop, null, 2)}
             </pre>
           </div>
         </div>
       </div>
+      </>
     );
   };
 
   return (
-    <main className='p-3'>
-      {loading ? <LoadingDetails /> : <StopDetails />}
+    <main className='p-3 container-fluid'>
+      {loading ? <LoadingDetails /> : <Details />}
       <PopUpComponent ref={popUpRef} />
     </main>
   );

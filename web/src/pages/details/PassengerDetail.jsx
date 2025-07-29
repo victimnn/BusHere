@@ -1,13 +1,48 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Component } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '@web/api/api';
 import PopUpComponent from '@web/components/PopUpComponent';
+import PassengerDetails from "@components/passengers/PassengerDetails"
+import PassengerForm from "@components/passengers/PassengerForm"
 
-function PassengerDetail({ pageFunctions }) {
+
+/**
+ * 
+ * @param {string | Component} title
+ * @param {{name, value, link?}[]} items
+ * @returns 
+ */
+function DetailsListGroup({title, items}) {
+  function toRealString(str) {
+    if(!str) return "Não informado";
+    if(typeof str === "object") return JSON.stringify(str, null, 2);
+    return str;
+  }
+
+  function useLinkIfExists(item) {
+    if(!item.link) return <span>{toRealString(item.value)}</span>;
+    return <a href={item.link} target="_blank" rel="noopener noreferrer">{toRealString(item.value)}</a>;
+  }
+  return (
+    <div className="container mt-4">
+      <h2>{title}</h2>
+      <ul className="list-group">
+        {items.map((item, index) => (
+          <li key={index} className="list-group-item">
+            <strong>{item.name}:</strong> {useLinkIfExists(item)}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+
+}
+
+function PassengerDetailPage({ pageFunctions }) {
   useEffect(() => { pageFunctions.set("Passageiro", true, true); }, [pageFunctions]);
   const navigate = useNavigate();
   const { passengerId } = useParams();
-  const [passengerDetails, setPassengerDetails] = useState(null);
+  const [passenger, setPassenger] = useState(null);
   const [loading, setLoading] = useState(true);
   const popUpRef = useRef(null);
 
@@ -15,7 +50,7 @@ function PassengerDetail({ pageFunctions }) {
     try {
       const response = await api.passengers.getById(passengerId);
       if (response) {
-        setPassengerDetails(response);
+        setPassenger(response);
       } else {
         console.error("Dados do passageiro não encontrados", response);
       }
@@ -42,32 +77,35 @@ function PassengerDetail({ pageFunctions }) {
     </div>
   );
 
-  const PassengerDetails = () => {
-    if (!passengerDetails) {
+  const Details = () => {
+    if (!passenger) {
       return <div>Nenhum dado encontrado</div>;
     }
-
+    const correctedPassenger = {
+      nome: passenger.nome_completo, 
+      tipo_passageiro: 2,
+      ...passenger
+    }
     return (
-      <div className="container">
-        <h2>Detalhes do Passageiro {passengerId}</h2>
-        <div className="card">
-          <div className="card-body">
-            <h5 className="card-title">Dados JSON</h5>
-            <pre className="bg-light p-3 rounded">
-              {JSON.stringify(passengerDetails, null, 2)}
-            </pre>
-          </div>
-        </div>
-      </div>
+      <>
+      <PassengerDetails 
+        passenger={correctedPassenger}
+        onEdit={()=>alert("edit")}
+        onDelete={()=>alert("edit")}
+      />
+      <pre>
+        {JSON.stringify(passenger,"",2)}
+      </pre>
+      </>
     );
   };
 
   return (
-    <main className='p-3'>
-      {loading ? <LoadingDetails /> : <PassengerDetails />}
+    <main className=''>
+      {loading ? <LoadingDetails /> : <Details />}
       <PopUpComponent ref={popUpRef} />
     </main>
   );
 }
 
-export default PassengerDetail;
+export default PassengerDetailPage;

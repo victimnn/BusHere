@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import { useAuth } from "../context/authContext";
 import PopUpComponent from "../components/PopUpComponent";
-import {validateEmail} from "../utils/validators";
+import {validateEmail} from "@shared/validators";
 
 function Login({pageFunctions}){
   const { login, isAuthenticated } = useAuth();

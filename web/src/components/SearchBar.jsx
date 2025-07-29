@@ -2,7 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useParams } from 'react-router-dom';
-import autoComplete from '../api/autocomplete';
+import autoComplete from "@web/api/autocomplete"; // Importa a função de autocomplete
 
 
 const fetchAutocompleteSuggestions = async (term) => {

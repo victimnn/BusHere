@@ -2,7 +2,7 @@ import React, { useRef, useMemo } from 'react';
 import PopUpComponent from '../PopUpComponent';
 import Table from '../Table';
 import StatCard from '../common/StatCard';
-import { formatCPF, formatPhoneNumber } from '../../utils/formatters';
+import { formatCPF, formatPhoneNumber } from '@shared/formatters';
 
 // Constantes
 const TIPO_PASSAGEIRO_MAP = { 1: 'Estudante', 2: 'Corporativo' };

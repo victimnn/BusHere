@@ -3,7 +3,7 @@ import api from '../../../api/api';
 import { validateCPF, validateEmail, validatePhoneNumber, validateCEP, validateDate } from '@shared/validators';
 import { formatCPF, formatPhoneNumber, formatCEP, formatDate, formatDateFromDatabase } from '@shared/formatters';
 import { createFakePassengerData, createFakeBusData, createFakeRouteData, createFakeStopData, createFakeDriverData } from '../../../utils/fakers';
-import { BRAZILIAN_STATES, isValidUF } from '../../../utils/brazilianStates';
+import { BRAZILIAN_STATES, isValidUF } from '@shared/brazilianStates';
 
 export const passengerFormConfig = {
   fields: [

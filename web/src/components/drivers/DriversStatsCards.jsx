@@ -2,7 +2,7 @@ import React, { useRef, useMemo } from 'react';
 import PopUpComponent from '../PopUpComponent';
 import Table from '../Table';
 import StatCard from '../common/StatCard';
-import { formatCPF, formatPhoneNumber, formatDateFromDatabase } from '../../utils/formatters';
+import { formatCPF, formatPhoneNumber, formatDateFromDatabase } from '@shared/formatters';
 
 // Constantes
 const STATUS_MAP = { 1: 'Ativo', 2: 'Férias', 3: 'Afastado', 4: 'Inativo' };

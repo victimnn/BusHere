@@ -1,20 +1,41 @@
-export function formatPhoneNumber(phone) {
+
+/**
+ * Formata um número de telefone no padrão (XX) XXXXX-XXXX
+ * @param {string} phone  - Número de telefone
+ * @returns {string} - Número de telefone formatado
+ */
+export function formatPhoneNumber(phone: string): string {
   if (!phone) return '';
   return phone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
 }
 
-export function formatCPF(cpf) {
+/**
+ * Formata um CPF no padrão XXX.XXX.XXX-XX
+ * @param {string} cpf - CPF a ser formatado
+ * @returns {string} - CPF formatado
+ */
+export function formatCPF(cpf: string): string {
   if (!cpf) return '';
   cpf = cpf.replace(/\D/g, '');
   return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
 }
 
-export function removeFormatting(value) {
+/**
+ * Remove formatação de um CPF ou telefone
+ * @param {string} value - Valor a ser desformatado
+ * @returns {string} - Valor sem formatação
+ */
+export function removeFormatting(value: string): string {
   if (!value) return value;
   return value.replace(/\D/g, '');
 }
 
-export function formatCEP(value) {
+/**
+ * Formata um CEP no padrão XXXXX-XXX
+ * @param {string} value - CEP a ser formatado
+ * @returns {string} - CEP formatado
+ */
+export function formatCEP(value: string): string {
   if (!value) return '';
   // Remove tudo que não é número
   const numbers = value.replace(/\D/g, '');
@@ -26,7 +47,12 @@ export function formatCEP(value) {
   }
 }
 
-export function formatDate(value) {
+/**
+ * Formata uma data no formato DD/MM/AAAA
+ * @param {string} value - Data a ser formatada
+ * @returns {string} - Data formatada ou string vazia se inválida
+ */
+export function formatDate(value: string): string {
   if (!value) return '';
   // Remove tudo que não é número
   const numbers = value.replace(/\D/g, '');
@@ -45,7 +71,7 @@ export function formatDate(value) {
  * @param {string} dateValue - Data no formato DD/MM/AAAA
  * @return {string} - Data no formato AAAA-MM-DD ou string vazia se inválida
  */
-export function formatDateForDatabase(dateValue) {
+export function formatDateForDatabase(dateValue: string): string {
   if (!dateValue) return '';
   
   // Verifica se está no formato DD/MM/AAAA
@@ -65,7 +91,7 @@ export function formatDateForDatabase(dateValue) {
  * @param {string} dateValue - Data no formato AAAA-MM-DD ou ISO completo
  * @return {string} - Data no formato DD/MM/AAAA ou string vazia se inválida
  */
-export function formatDateFromDatabase(dateValue) {
+export function formatDateFromDatabase(dateValue: any): string {
   if (!dateValue) return '';
   
   // Se for um objeto Date, converte para string ISO

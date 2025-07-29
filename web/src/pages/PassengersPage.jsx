@@ -6,7 +6,7 @@ import PassengerStatsCards from "../components/passengers/PassengerStatsCards";
 import Table from "../components/Table";
 import api from "../api/api";
 
-import { formatCPF, formatPhoneNumber, removeFormatting } from "../utils/formatters";
+import { formatCPF, formatPhoneNumber, removeFormatting } from "@shared/formatters";
 
 // header da tabela
 const tableHeaders = [

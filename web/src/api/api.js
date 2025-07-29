@@ -1,4 +1,4 @@
-import { findStateByLabel } from "../utils/brazilianStates";
+import { findStateByLabel } from "@shared/brazilianStates";
 
 function getBearerToken() {
     const token = localStorage.getItem('token');

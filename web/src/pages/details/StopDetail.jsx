@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import api from '../../api/api';
-import PopUpComponent from '../../components/PopUpComponent';
-import MapComponent from '../../components/MapComponent';
-import StopDetails from '../../components/stops/StopDetails';
+import api from '@web/api/api';
+import PopUpComponent from '@web/components/PopUpComponent';
+import MapComponent from '@web/components/MapComponent';
+import StopDetails from '@web/components/stops/StopDetails';
+
 
 function StopDetail({ pageFunctions }) {
   useEffect(() => { pageFunctions.set("Ponto", true, true); }, [pageFunctions]);

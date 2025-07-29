@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { formatPhoneNumber } from './formatters';
+import { formatPhoneNumber } from '@shared/formatters';
 
 function createFakePassengerData() {
   function generateValidCPF() {

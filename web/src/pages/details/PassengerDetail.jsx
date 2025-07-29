@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef, Component } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import api from '../../api/api';
-import PopUpComponent from '../../components/PopUpComponent';
-import PassengerDetails from "../../components/passengers/PassengerDetails"
-import PassengerForm from "../../components/passengers/PassengerForm"
+import api from '@web/api/api';
+import PopUpComponent from '@web/components/PopUpComponent';
+import PassengerDetails from "@components/passengers/PassengerDetails"
+import PassengerForm from "@components/passengers/PassengerForm"
+
 
 /**
  * 

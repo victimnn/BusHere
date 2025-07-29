@@ -1,5 +1,5 @@
 // Lista de estados do Brasil
-export const BRAZILIAN_STATES = [
+export const BRAZILIAN_STATES= [
   { value: 'AC', label: 'Acre' },
   { value: 'AL', label: 'Alagoas' },
   { value: 'AP', label: 'Amapá' },
@@ -30,16 +30,16 @@ export const BRAZILIAN_STATES = [
 ];
 
 // Função utilitária para encontrar um estado pela sigla
-export const findStateByValue = (value) => {
+export const findStateByValue = (value: string) => {
   return BRAZILIAN_STATES.find(state => state.value === value);
 };
 
 // Função utilitária para encontrar um estado pelo nome
-export const findStateByLabel = (label) => {
+export const findStateByLabel = (label: string) => {
   return BRAZILIAN_STATES.find(state => state.label.toLowerCase() === label.toLowerCase());
 };
 
 // Função para validar se uma UF é válida
-export const isValidUF = (uf) => {
+export const isValidUF = (uf: string) => {
   return BRAZILIAN_STATES.some(state => state.value === uf);
 };

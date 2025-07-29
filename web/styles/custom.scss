@@ -294,9 +294,112 @@ $theme-colors: (
   &:hover {
     background-color: $bg-medium;
     border-left: 2px solid $primary;
+    transform: translateX(2px);
 
     i {
-      size: 110%;
+      transform: scale(1.1);
+      color: $primary-dark !important;
+    }
+  }
+}
+
+// Estilos específicos para páginas de detalhes
+.detail-page {
+  .card-header {
+    border-bottom: 3px solid $primary-light;
+    
+    &.bg-primary {
+      background: linear-gradient(135deg, $primary 0%, $analogous-2 100%) !important;
+    }
+  }
+  
+  .avatar {
+    box-shadow: 0 4px 12px rgba(18, 190, 77, 0.2);
+    transition: $btn-transition;
+    
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(18, 190, 77, 0.3);
+    }
+  }
+  
+  .badge {
+    transition: $btn-transition;
+    
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+  
+  .detail-item {
+    border-radius: 8px !important;
+    border: 1px solid transparent;
+    
+    &:hover {
+      border-color: $primary-light;
+      box-shadow: 0 2px 8px rgba(18, 190, 77, 0.1);
+    }
+  }
+  
+  .btn-group {
+    .btn:not(:last-child) {
+      margin-right: 0.5rem;
+    }
+  }
+  
+  // Responsividade para dispositivos móveis
+  @media (max-width: 768px) {
+    .card-header {
+      .d-flex {
+        flex-direction: column;
+        text-align: center;
+        
+        .avatar {
+          margin-right: 0 !important;
+          margin-bottom: 1rem;
+        }
+      }
+      
+      h3 {
+        font-size: 1.5rem;
+      }
+      
+      .d-flex.gap-3 {
+        flex-direction: column;
+        gap: 0.5rem !important;
+      }
+    }
+    
+    .d-flex.justify-content-between {
+      flex-direction: column;
+      gap: 1rem;
+      
+      .d-flex.gap-3 {
+        flex-direction: column;
+        gap: 0.5rem !important;
+        
+        .btn {
+          width: 100%;
+        }
+      }
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .detail-item {
+      padding: 0.75rem !important;
+      
+      i {
+        font-size: 1.1rem !important;
+      }
+      
+      small {
+        font-size: 0.8rem;
+      }
+    }
+    
+    .card-body {
+      padding: 1rem !important;
     }
   }
 }

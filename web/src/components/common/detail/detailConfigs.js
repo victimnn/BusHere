@@ -15,7 +15,8 @@ export const passengerConfig = {
     {
       key: "cpf",
       label: "CPF",
-      icon: "bi bi-card-text"
+      icon: "bi bi-card-text",
+      formatter: (value) => value ? value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4") : "Não informado"
     },
     {
       key: "email",
@@ -25,12 +26,31 @@ export const passengerConfig = {
     {
       key: "telefone",
       label: "Telefone",
-      icon: "bi bi-telephone"
+      icon: "bi bi-telephone",
+      formatter: (value) => value ? value.replace(/(\d{2})(\d{4,5})(\d{4})/, "($1) $2-$3") : "Não informado"
     },
     {
       key: "tipo_passageiro",
       label: "Tipo",
-      icon: "bi bi-person-badge"
+      icon: "bi bi-person-badge",
+      formatter: (value) => {
+        const types = {
+          1: "Estudante",
+          2: "Corporativo", 
+        };
+        return types[value] || "Não informado";
+      }
+    },
+    {
+      key: "data_nascimento",
+      label: "Data de Nascimento",
+      icon: "bi bi-calendar-event",
+      formatter: (value) => value ? new Date(value).toLocaleDateString('pt-BR') : "Não informado"
+    },
+    {
+      key: "endereco",
+      label: "Endereço",
+      icon: "bi bi-geo-alt"
     }
   ]
 };

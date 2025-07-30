@@ -1,12 +1,11 @@
 import { findStateByLabel } from "@shared/brazilianStates";
-import { Merge } from "chart.js/dist/types/utils";
 
 function getBearerToken() {
   const token = localStorage.getItem('token');
   return token ? `Bearer ${token}` : null;
 }
 
-// @ts-ignore
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 const api = {

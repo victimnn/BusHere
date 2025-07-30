@@ -4,6 +4,7 @@ import { validateCPF, validateEmail, validatePhoneNumber, validateCEP, validateD
 import { formatCPF, formatPhoneNumber, formatCEP, formatDate, formatDateFromDatabase } from '@shared/formatters';
 import { createFakePassengerData, createFakeBusData, createFakeRouteData, createFakeStopData, createFakeDriverData } from '../../../utils/fakers';
 import { BRAZILIAN_STATES, isValidUF } from '@shared/brazilianStates';
+import { formatters } from '../detail/detailConfigs';
 
 export const passengerFormConfig = {
   fields: [
@@ -72,6 +73,48 @@ export const passengerFormConfig = {
       formatter: formatPhoneNumber,
       validator: (value) => {
         if (value && !validatePhoneNumber(value)) return 'Formato: (00) 00000-0000';
+        return null;
+      }
+    },
+    {
+      name: 'data_nascimento',
+      type: 'text',
+      label: 'Data de Nascimento',
+      labelIcon: 'bi bi-calendar-plus-fill',
+      inputIcon: 'bi bi-calendar-plus',
+      placeholder: 'DD/MM/AAAA',
+      maxLength: 10,
+      size: 'lg',
+      formatter: formatDate,
+      transform: (value) => {
+        // Converte DD/MM/AAAA para AAAA-MM-DD antes de enviar ao banco
+        if (!value) return value;
+        const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+        if (dateRegex.test(value)) {
+          const [day, month, year] = value.split('/');
+          return `${year}-${month}-${day}`;
+        }
+        return value;
+      },
+      reverseTransform: formatDateFromDatabase,
+      additionalProps: { 
+        autoComplete: 'new-password',
+        'data-form-type': 'other',
+        'data-lpignore': 'true',
+        'data-1p-ignore': 'true'
+      },
+      validator: (value) => {
+        if (!value) return null; // Campo opcional
+        // Valida o formato e a data
+        if (!validateDate(value, 1910, new Date().getFullYear())) {
+          return 'Data inválida. Use o formato DD/MM/AAAA e verifique se a data existe';
+        }            
+        // Verifica se a data não é futura
+        const [day, month, year] = value.split('/').map(num => parseInt(num, 10));
+        const admissaoDate = new Date(year, month - 1, day);
+        const today = new Date();
+            
+        if (admissaoDate > today) return 'Data de admissão não pode ser futura';
         return null;
       }
     },

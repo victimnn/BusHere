@@ -40,7 +40,11 @@ module.exports = (pool) => {
           P.cpf, 
           P.email, 
           P.telefone,
+          P.data_nascimento,
+          P.data_criacao,
           P.tipo_passageiro_id,
+          P.ativo,
+          P.pcd,
           COUNT(*) OVER() as total_passengers_found
         FROM Passageiros P
         ${whereClause}

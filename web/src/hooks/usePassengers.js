@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import api from '@web/api/api';
-import { formatCPF, formatPhoneNumber, removeFormatting } from '@shared/formatters';
+import { formatCPF, formatPhoneNumber, removeFormatting, formatDateFromDatabase} from '@shared/formatters';
 
 // Tipos padrão como fallback
 const DEFAULT_PASSENGER_TYPES = [
@@ -11,12 +11,18 @@ const DEFAULT_PASSENGER_TYPES = [
 // Função para transformar dados do backend para frontend
 const transformPassengerData = (passenger, getTipoPassageiroNome) => ({
   id: passenger.passageiro_id,
+  passageiro_id: passenger.passageiro_id,
   nome: passenger.nome_completo,
+  nome_completo: passenger.nome_completo,
   cpf: formatCPF(passenger.cpf),
   email: passenger.email,
   telefone: formatPhoneNumber(passenger.telefone),
   tipo_passageiro_id: passenger.tipo_passageiro_id,
-  tipo_passageiro: getTipoPassageiroNome(passenger.tipo_passageiro_id)
+  tipo_passageiro: getTipoPassageiroNome(passenger.tipo_passageiro_id),
+  ativo: passenger.ativo,
+  pcd: passenger.pcd,
+  data_nascimento: passenger.data_nascimento ? formatDateFromDatabase(passenger.data_nascimento) : null,
+  data_criacao: passenger.data_criacao ? formatDateFromDatabase(passenger.data_criacao) : null,
 });
 
 // Função para preparar dados para o backend
@@ -26,7 +32,8 @@ const prepareBackendData = (formData, isCreate = false) => {
     cpf: removeFormatting(formData.cpf),
     telefone: removeFormatting(formData.telefone),
     email: formData.email || '',
-    tipo_passageiro_id: formData.tipo_passageiro
+    tipo_passageiro_id: formData.tipo_passageiro,
+    data_nascimento: formData.data_nascimento || null
   };
 
   // Adicionar campos obrigatórios apenas para criação

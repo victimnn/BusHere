@@ -1,7 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 const Notification = ({ notification, onClose }) => {
+  const [exiting, setExiting] = useState(false);
+
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => {
+        setExiting(true);
+        setTimeout(onClose, 500); // Tempo para a animação de fade-out
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [notification, onClose]);
+
   if (!notification) return null;
 
   const { message, type } = notification;
@@ -9,14 +22,14 @@ const Notification = ({ notification, onClose }) => {
   const getTypeClasses = () => {
     switch (type) {
       case 'success':
-        return 'alert-success';
+        return 'notification-success';
       case 'error':
-        return 'alert-danger';
+        return 'notification-error';
       case 'warning':
-        return 'alert-warning';
+        return 'notification-warning';
       case 'info':
       default:
-        return 'alert-info';
+        return 'notification-info';
     }
   };
 
@@ -34,28 +47,27 @@ const Notification = ({ notification, onClose }) => {
     }
   };
 
+  const handleClose = () => {
+    setExiting(true);
+    setTimeout(onClose, 500);
+  };
+
   return (
     <div 
-      className={`alert ${getTypeClasses()} alert-dismissible fade show position-fixed`}
-      style={{ 
-        top: '20px', 
-        right: '20px', 
-        zIndex: 9999,
-        minWidth: '300px',
-        maxWidth: '500px'
-      }}
+      className={`notification-container ${getTypeClasses()} ${exiting ? 'fade-out' : 'fade-in'}`}
       role="alert"
     >
-      <div className="d-flex align-items-center">
-        <i className={`bi ${getIcon()} me-2 fs-5`}></i>
+      <div className="d-flex align-items-center notification-content">
+        <i className={`bi ${getIcon()} me-3 fs-4`}></i>
         <div className="flex-grow-1">{message}</div>
         <button
           type="button"
           className="btn-close"
-          onClick={onClose}
+          onClick={handleClose}
           aria-label="Close"
         ></button>
       </div>
+      <div className="notification-progress-bar"></div>
     </div>
   );
 };

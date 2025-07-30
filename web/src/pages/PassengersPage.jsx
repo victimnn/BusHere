@@ -11,7 +11,6 @@ import ActionButton from "@web/components/common/ActionButton";
 import { usePassengers } from "@web/hooks/usePassengers";
 import { useNotification } from "@web/hooks/useNotification";
 
-// Constantes movidas para fora do componente para evitar recriação
 const TABLE_HEADERS = [
   { id: "id", label: "ID", sortable: true },
   { id: "nome", label: "Nome", sortable: true },
@@ -38,11 +37,10 @@ function Passengers({ pageFunctions }) {
   // Hook para notificações
   const { notification, hideNotification, showSuccess, showError } = useNotification();
 
-  // Configurar título da página
   useEffect(() => {
     pageFunctions.set("Passageiros", true, true);
   }, [pageFunctions]);
-  // Handler otimizado para criar passageiro
+
   const handleCreatePassenger = useCallback(() => {
     popUpRef.current.show({
       title: "Novo Passageiro",
@@ -63,7 +61,6 @@ function Passengers({ pageFunctions }) {
     });
   }, [createPassenger, showSuccess, showError]);
 
-  // Handler otimizado para editar passageiro
   const handleEditPassenger = useCallback((passenger) => {
     const initialData = {
       nome: passenger.nome,
@@ -92,7 +89,6 @@ function Passengers({ pageFunctions }) {
     });
   }, [updatePassenger, showSuccess, showError]);
 
-  // Handler otimizado para excluir passageiro
   const handleDeletePassenger = useCallback(async (id) => {
     if (window.confirm("Tem certeza que deseja excluir este passageiro?")) {
       const result = await deletePassenger(id);
@@ -105,7 +101,6 @@ function Passengers({ pageFunctions }) {
     }
   }, [deletePassenger, showSuccess, showError]);
 
-  // Handler otimizado para clique na linha
   const handleRowClick = useCallback((passenger) => {
     popUpRef.current.show({
       title: `Passageiro: ${passenger.nome}`,

@@ -51,10 +51,10 @@ export const passengerConfig = {
       formatter: formatters.phone
     },
     {
-      key: "tipo_passageiro_id",
+      key: "tipo_passageiro",
       label: "Tipo de Passageiro",
       icon: "bi bi-person-badge",
-      formatter: formatters.passengerType
+      formatter: formatters.defaultValue
     },
     {
       key: "data_nascimento",

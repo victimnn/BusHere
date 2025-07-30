@@ -131,7 +131,6 @@ $theme-colors: (
   $border-color: $border-color,
   $border-radius: $border-radius,
 
-  // Mapeando algumas cores nomeadas do Bootstrap para suas novas definições, se desejado
   $green: $primary,
   $red: $danger,
   $yellow: $warning,
@@ -185,6 +184,8 @@ $theme-colors: (
   }
 }
 
+
+//Form de Login
 .login-form form {
   display: flex;
   flex-direction: column;
@@ -219,7 +220,7 @@ $theme-colors: (
     height: 1.2em;
     background-color: #444;
     border: 1px solid #777;
-    border-radius: 2px; // mais quadrado, sem ser 100% rígido
+    border-radius: 2px;
     appearance: none;
     cursor: pointer;
 
@@ -277,6 +278,34 @@ $theme-colors: (
 }
 
 //table
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  
+  thead th {
+    background-color: $bg-medium;
+    border-bottom: 1px solid $primary-light;
+    color: $primary-dark;
+    font-weight: 600;
+    font-size: 0.8rem;
+  }
+  
+  tbody {
+    tr {
+      cursor: pointer;
+      
+      &:hover {
+        background-color: rgba(18, 190, 77, 0.05);
+      }
+    }
+  }
+}
+
+/* Linhas alternadas */
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: $bg-medium;
+}
+
 .card {
   margin-bottom: 1rem;
 }
@@ -303,7 +332,7 @@ $theme-colors: (
   }
 }
 
-// Estilos específicos para páginas de detalhes
+// Pagina de detalhes
 .detail-page {
   .card-header {
     border-bottom: 3px solid $primary-light;
@@ -402,34 +431,6 @@ $theme-colors: (
       padding: 1rem !important;
     }
   }
-}
-
-.table {
-  border-collapse: collapse;
-  width: 100%;
-  
-  thead th {
-    background-color: $bg-medium;
-    border-bottom: 1px solid $primary-light;
-    color: $primary-dark;
-    font-weight: 600;
-    font-size: 0.8rem;
-  }
-  
-  tbody {
-    tr {
-      cursor: pointer;
-      
-      &:hover {
-        background-color: rgba(18, 190, 77, 0.05);
-      }
-    }
-  }
-}
-
-/* Linhas alternadas */
-.table-striped tbody tr:nth-of-type(odd) {
-  background-color: $bg-medium;
 }
 
 .logo-primary {

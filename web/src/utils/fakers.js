@@ -25,11 +25,25 @@ function createFakePassengerData() {
     return cpfBase.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
   }
 
+  // Função auxiliar para gerar data de nascimento
+  function generateBirthDate() {
+    // Gera uma data de nascimento entre 18 e 80 anos atrás
+    const today = new Date();
+    const minAge = 18;
+    const maxAge = 80;
+    const birthYear = today.getFullYear() - faker.number.int({ min: minAge, max: maxAge });
+    const birthMonth = faker.number.int({ min: 1, max: 12 });
+    const birthDay = faker.number.int({ min: 1, max: 28 }); // 28 para evitar problemas com fevereiro
+    
+    return `${String(birthDay).padStart(2, '0')}/${String(birthMonth).padStart(2, '0')}/${birthYear}`;
+  }
+
   return {
     nome: faker.person.fullName(),
     cpf: generateValidCPF(),
     telefone: `(${faker.string.numeric(2)}) ${faker.string.numeric(5)}-${faker.string.numeric(4)}`, // Formato (XX) XXXXX-XXXX
     email: faker.internet.email(),
+    data_nascimento: generateBirthDate(),
     tipo_passageiro: faker.helpers.arrayElement(['1', '2'])
   }
 }

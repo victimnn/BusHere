@@ -27,30 +27,36 @@ const transformPassengerData = (passenger, getTipoPassageiroNome) => ({
 
 // Função para preparar dados para o backend
 const prepareBackendData = (formData, isCreate = false) => {
-  const baseData = {
+  // Campos obrigatórios para backend
+  const backendData = {
     nome_completo: formData.nome,
     cpf: removeFormatting(formData.cpf),
     telefone: removeFormatting(formData.telefone),
     email: formData.email || '',
-    tipo_passageiro_id: formData.tipo_passageiro,
-    data_nascimento: formData.data_nascimento || null
+    tipo_passageiro_id: formData.tipo_passageiro ? Number(formData.tipo_passageiro) : null,
+    data_nascimento: formData.data_nascimento || null,
+    senha_hash: isCreate ? ('temp_hash_' + Date.now()) : (formData.senha_hash || 'temp_hash'),
+    logradouro: formData.logradouro || 'Endereço não informado',
+    numero_endereco: formData.numero_endereco ? Number(formData.numero_endereco) : 1,
+    bairro: formData.bairro || 'Não informado',
+    cidade: formData.cidade || 'Amparo',
+    uf: formData.uf || 'XX',
+    cep: formData.cep || '00000000',
+    complemento_endereco: formData.complemento_endereco || null,
+    pcd: !!formData.pcd,
+    rota_id: formData.rota_id ? Number(formData.rota_id) : null,
+    ponto_id: formData.ponto_id ? Number(formData.ponto_id) : null,
+    notificacoes_json: formData.notificacoes_json || '{}',
+    configuracoes_json: formData.configuracoes_json || '{}',
+    ativo: formData.ativo !== undefined ? formData.ativo : true
   };
-
-  // Adicionar campos obrigatórios apenas para criação
-  if (isCreate) {
-    return {
-      ...baseData,
-      senha_hash: 'temp_hash_' + Date.now(),
-      logradouro: 'Endereço não informado',
-      numero_endereco: '1',
-      bairro: 'Não informado',
-      cidade: 'Não informada',
-      uf: 'XX',
-      cep: '00000000'
-    };
-  }
-
-  return baseData;
+  // Remove campos nulos ou undefined
+  Object.keys(backendData).forEach(key => {
+    if (backendData[key] === null || backendData[key] === undefined) {
+      delete backendData[key];
+    }
+  });
+  return backendData;
 };
 
 // Função utilitária para processar mensagens de erro

@@ -8,7 +8,7 @@ const PASSENGER_TYPES = {
 };
 
 // Formatadores reutilizáveis
-const formatters = {
+export const formatters = {
   cpf: (value) => value ? formatCPF(value) : "Não informado",
   phone: (value) => value ? formatPhoneNumber(value) : "Não informado",
   date: (value) => value ? formatDateFromDatabase(value) : "Não informado",
@@ -51,12 +51,6 @@ export const passengerConfig = {
       formatter: formatters.phone
     },
     {
-      key: "tipo_passageiro",
-      label: "Tipo de Passageiro",
-      icon: "bi bi-person-badge",
-      formatter: formatters.defaultValue
-    },
-    {
       key: "data_nascimento",
       label: "Data de Nascimento",
       icon: "bi bi-calendar-event",
@@ -67,6 +61,12 @@ export const passengerConfig = {
       label: "Data de Cadastro",
       icon: "bi bi-calendar-plus",
       formatter: formatters.date
+    },
+    {
+      key: "tipo_passageiro",
+      label: "Tipo de Passageiro",
+      icon: "bi bi-person-badge",
+      formatter: formatters.defaultValue
     }
   ]
 };

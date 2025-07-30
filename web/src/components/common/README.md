@@ -1,3 +1,230 @@
+# Componentes Comuns - Biblioteca de Componentes Reutilizáveis
+
+Esta pasta contém componentes React genéricos e reutilizáveis que podem ser utilizados em toda a aplicação para manter consistência visual e de comportamento.
+
+## 📋 Índice de Componentes
+
+- [ActionButton](#actionbutton---botão-de-ação-genérico)
+- [DetailCard](#detailcard---componente-genérico-de-detalhes)
+- [ErrorAlert](#erroralert---componente-de-alerta-de-erro)
+- [GenericForm](#genericform---componente-de-formulários)
+- [LoadingSpinner](#loadingspinner---componente-de-carregamento)
+- [Notification](#notification---componente-de-notificação)
+- [StatCard](#statcard---componente-de-estatísticas)
+
+---
+
+# ActionButton - Botão de Ação Genérico
+
+## Descrição
+O `ActionButton` é um componente de botão reutilizável com suporte a ícones, estados de carregamento e diferentes variantes de estilo.
+
+## Uso
+
+### Importação
+```jsx
+import ActionButton from '../common/ActionButton';
+```
+
+### Exemplo de Uso
+```jsx
+// Botão básico
+<ActionButton
+  text="Salvar"
+  icon="bi bi-check"
+  onClick={handleSave}
+/>
+
+// Botão com carregamento
+<ActionButton
+  text="Enviando"
+  icon="bi bi-send"
+  loading={isLoading}
+  onClick={handleSubmit}
+  variant="success"
+/>
+
+// Botão de perigo
+<ActionButton
+  text="Excluir"
+  icon="bi bi-trash"
+  onClick={handleDelete}
+  variant="danger"
+  size="sm"
+/>
+```
+
+## Props
+
+- `onClick` (function, obrigatório): Função chamada ao clicar no botão
+- `text` (string, obrigatório): Texto do botão
+- `icon` (string): Classe CSS do ícone
+- `variant` (string): Variante do botão ('primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark', 'outline-primary')
+- `size` (string): Tamanho do botão ('sm', 'lg')
+- `disabled` (boolean): Se o botão está desabilitado
+- `loading` (boolean): Se o botão está em estado de carregamento
+- `className` (string): Classes CSS adicionais
+
+## Funcionalidades
+
+- ✅ **Estados de Carregamento**: Spinner automático quando `loading=true`
+- ✅ **Ícones**: Suporte nativo a ícones Bootstrap
+- ✅ **Variantes**: Múltiplas opções de estilo
+- ✅ **Acessibilidade**: Estrutura semântica adequada
+- ✅ **Performance**: Componente memoizado
+
+---
+
+# ErrorAlert - Componente de Alerta de Erro
+
+## Descrição
+O `ErrorAlert` é um componente para exibir mensagens de erro com opções de retry e dismiss.
+
+## Uso
+
+### Importação
+```jsx
+import ErrorAlert from '../common/ErrorAlert';
+```
+
+### Exemplo de Uso
+```jsx
+// Alerta básico
+<ErrorAlert error="Erro ao carregar dados" />
+
+// Alerta com retry
+<ErrorAlert 
+  error={errorMessage}
+  onRetry={handleRetry}
+  onDismiss={handleDismiss}
+/>
+
+// Alerta customizado
+<ErrorAlert
+  error={error}
+  variant="warning"
+  icon="bi-exclamation-circle-fill"
+  onRetry={refetchData}
+/>
+```
+
+## Props
+
+- `error` (string/object): Mensagem de erro ou objeto de erro
+- `onRetry` (function): Callback para tentar novamente
+- `onDismiss` (function): Callback para fechar o alerta
+- `variant` (string): Tipo do alerta ('danger', 'warning', 'info')
+- `icon` (string): Classe do ícone Bootstrap
+- `className` (string): Classes CSS adicionais
+
+## Funcionalidades
+
+- ✅ **Flexibilidade**: Aceita string ou objeto de erro
+- ✅ **Ações**: Botões de retry e dismiss opcionais
+- ✅ **Customização**: Ícones e variantes configuráveis
+- ✅ **Layout Responsivo**: Design adaptável
+
+---
+
+# LoadingSpinner - Componente de Carregamento
+
+## Descrição
+O `LoadingSpinner` é um componente para exibir indicadores de carregamento com diferentes tamanhos e estilos.
+
+## Uso
+
+### Importação
+```jsx
+import LoadingSpinner from '../common/LoadingSpinner';
+```
+
+### Exemplo de Uso
+```jsx
+// Spinner padrão
+<LoadingSpinner />
+
+// Spinner pequeno
+<LoadingSpinner 
+  size="small"
+  message="Salvando..."
+  centered={false}
+/>
+
+// Spinner customizado
+<LoadingSpinner
+  size="large"
+  message="Carregando dados..."
+  variant="success"
+  className="my-3"
+/>
+```
+
+## Props
+
+- `size` (string): Tamanho do spinner ('small', 'medium', 'large')
+- `message` (string): Mensagem de carregamento
+- `centered` (boolean): Se deve ser centralizado
+- `className` (string): Classes CSS adicionais
+- `variant` (string): Cor do spinner (cores Bootstrap)
+
+## Funcionalidades
+
+- ✅ **Tamanhos**: Três opções de tamanho
+- ✅ **Centralização**: Opção de centralizar ou alinhar inline
+- ✅ **Mensagens**: Texto customizável
+- ✅ **Cores**: Suporte a todas as variantes Bootstrap
+
+---
+
+# Notification - Componente de Notificação
+
+## Descrição
+O `Notification` é um componente para exibir notificações toast posicionadas no canto da tela.
+
+## Uso
+
+### Importação
+```jsx
+import Notification from '../common/Notification';
+```
+
+### Exemplo de Uso
+```jsx
+// Notificação de sucesso
+<Notification 
+  notification={{
+    message: "Dados salvos com sucesso!",
+    type: "success"
+  }}
+  onClose={handleClose}
+/>
+
+// Notificação de erro
+<Notification 
+  notification={{
+    message: "Erro ao processar solicitação",
+    type: "error"
+  }}
+  onClose={closeNotification}
+/>
+```
+
+## Props
+
+- `notification` (object): Objeto com `message` e `type`
+  - `message` (string): Texto da notificação
+  - `type` (string): Tipo ('success', 'error', 'warning', 'info')
+- `onClose` (function): Callback para fechar a notificação
+
+## Funcionalidades
+
+- ✅ **Posicionamento**: Fixed no canto superior direito
+- ✅ **Tipos**: Success, error, warning, info com ícones apropriados
+- ✅ **Auto-dismiss**: Botão de fechar integrado
+- ✅ **Responsivo**: Largura adaptável
+
+---
+
 # DetailCard - Componente Genérico de Detalhes
 
 ## Descrição
@@ -317,3 +544,81 @@ import StatCard from '../common/StatCard';
 - ✅ Interface visual idêntica
 - ✅ Todos os eventos e interações preservados
 - ✅ Responsividade mantida
+
+---
+
+# StatCard - Componente de Estatísticas
+
+## Descrição
+O `StatCard` é um componente reutilizável para exibir cartões de estatísticas com animação de contador, ícones e gradientes personalizáveis.
+
+## Uso
+
+### Importação
+```jsx
+import StatCard from '../common/StatCard';
+```
+
+### Exemplo de Uso
+```jsx
+// Para relatórios (4 colunas)
+<StatCard
+  title="Total de Passageiros"
+  value={1250}
+  iconClass="fas fa-users"
+  gradient="linear-gradient(135deg, #12BE4D 0%, #0E8F3A 100%)"
+  className="col-lg-3 col-md-6 mb-4"
+/>
+
+// Para motoristas (3 colunas) com clique
+<StatCard
+  title="Motoristas Ativos" 
+  value={85}
+  iconClass="bi bi-person-check-fill"
+  gradient="linear-gradient(135deg, #12BEA0 0%, #12BE18 100%)"
+  onClick={() => showPopup()}
+  className="col-lg-4 col-md-6 mb-4"
+/>
+
+// Card clicável para detalhes
+<StatCard
+  title="Rotas Ativas"
+  value={42}
+  iconClass="bi bi-geo-alt-fill"
+  gradient="linear-gradient(135deg, #FF6B6B 0%, #FF5252 100%)"
+  onClick={handleRouteDetails}
+/>
+```
+
+## Props
+
+- `title` (string, obrigatório): Título do cartão estatístico
+- `value` (number, obrigatório): Valor numérico a ser exibido com animação
+- `iconClass` (string, obrigatório): Classe CSS do ícone (Bootstrap Icons ou Font Awesome)
+- `gradient` (string, obrigatório): Gradiente CSS para o fundo do cartão
+- `onClick` (function): Callback para tornar o cartão clicável
+- `className` (string): Classes CSS para layout responsivo (padrão: "col-lg-4 col-md-6 mb-4")
+
+## Funcionalidades
+
+- ✅ **Animação de Contador**: Usa `AnimatedCounter` para animar valores
+- ✅ **Gradientes Personalizáveis**: Suporte completo a gradientes CSS
+- ✅ **Interatividade**: Efeito hover e clique opcional
+- ✅ **Layout Flexível**: Configurável para 3 ou 4 colunas
+- ✅ **Ícones**: Suporte a Bootstrap Icons e Font Awesome
+- ✅ **Performance**: Componente otimizado para re-renderizações
+
+## Vantagens
+
+1. **Reutilização**: Um único componente para todos os cartões de estatística
+2. **Consistência**: Layout e comportamento padronizados
+3. **Performance**: Memoização e otimizações integradas
+4. **Flexibilidade**: Altamente configurável
+5. **Animação**: Contadores animados automáticos
+6. **Responsividade**: Design adaptável a diferentes telas
+
+## Impacto na Performance
+
+- **Antes**: Múltiplos cálculos a cada render
+- **Depois**: Cálculos memoizados, re-executados apenas quando necessário
+- **Resultado**: Redução significativa de processamento desnecessário

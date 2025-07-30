@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useParams } from 'react-router-dom';
 import autoComplete from "@web/api/autocomplete"; // Importa a função de autocomplete
@@ -58,6 +58,7 @@ function SearchBar() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState(params.searchTerm || ""); // Inicializa o estado com o termo de pesquisa
   const [suggestions, setSuggestions] = useState([]); // Estado para armazenar as sugestões
+  const searchBarRef = useRef(null); // Ref para referenciar o container da SearchBar
 
   const icons = {
     "Passenger": "bi bi-person-check",
@@ -89,6 +90,23 @@ function SearchBar() {
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm]); // O efeito é re-executado sempre que 'searchTerm' muda
 
+  // Efeito para detectar cliques fora da SearchBar
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
+        setSuggestions([]); // Esconde as sugestões quando clicar fora
+      }
+    };
+
+    // Adiciona o event listener
+    document.addEventListener('mousedown', handleClickOutside);
+
+    // Função de limpeza
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []); // Este efeito só roda uma vez ao montar o componente
+
   const handleSearch = (e) => {
     e.preventDefault();  // Evita o comportamento padrão do formulário
     if (searchTerm.trim() !== "") {   
@@ -111,7 +129,7 @@ function SearchBar() {
 
   return (
     <div className="search-bar-container w-100 d-flex justify-content-center">
-    <form onSubmit={handleSearch} className="search-form d-flex position-relative w-50 mx-auto">
+    <form onSubmit={handleSearch} className="search-form d-flex position-relative w-50 mx-auto" ref={searchBarRef}>
       <div className="input-group shadow-sm border rounded-pill overflow-hidden">
         <input
           type="text"

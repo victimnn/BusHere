@@ -1,14 +1,18 @@
-import React, { useRef, useState, useEffect } from "react";
-import PopUpComponent from "../components/PopUpComponent";
-import DriverDetails from "../components/drivers/DriverDetails";
-import DriverForm from "../components/drivers/DriverForm";
-import DriversStatsCards from "../components/drivers/DriversStatsCards";
-import Table from "../components/Table";
-import api from "../api/api";
+import React, { useRef, useEffect, useCallback } from "react";
+import PopUpComponent from "@web/components/PopUpComponent";
+import DriverForm from "@web/components/drivers/DriverForm";
+import DriverDetails from "@web/components/drivers/DriverDetails";
+import DriversStatsCards from "@web/components/drivers/DriversStatsCards";
+import Table from "@web/components/Table";
+import Notification from "@web/components/common/Notification";
+import LoadingSpinner from "@web/components/common/LoadingSpinner";
+import ErrorAlert from "@web/components/common/ErrorAlert";
+import ActionButton from "@web/components/common/ActionButton";
+import { useDrivers } from "@web/hooks/useDrivers";
+import { useNotification } from "@web/hooks/useNotification";
 
-// header da tabela
-const tableHeaders = [
-  { id: "motorista_id", label: "ID", sortable: true },
+const TABLE_HEADERS = [
+  { id: "id", label: "ID", sortable: true },
   { id: "nome", label: "Nome", sortable: true },
   { id: "cpf", label: "CPF", sortable: true },
   { id: "cnh_numero", label: "CNH", sortable: true },
@@ -21,177 +25,90 @@ const tableHeaders = [
 ];
 
 function Drivers({ pageFunctions }) {
+  const popUpRef = useRef(null);
+  
+  // Usar hook customizado para gerenciar dados dos motoristas
+  const {
+    drivers,
+    isLoading,
+    error,
+    createDriver,
+    updateDriver,
+    deleteDriver,
+    refetch
+  } = useDrivers();
+
+  // Hook para notificações
+  const { notification, hideNotification, showSuccess, showError } = useNotification();
+
   useEffect(() => {
     pageFunctions.set("Motoristas", true, true);
-  }, []);
-  
-  const popUpRef = useRef(null); // Referência para o componente PopUpComponent
-  const [drivers, setDrivers] = useState([]); // Estado para armazenar os motoristas
-  const [isLoading, setIsLoading] = useState(true); // Estado para controlar o carregamento
-  const [error, setError] = useState(null); // Estado para armazenar erros
-  const [currentPage, setCurrentPage] = useState(1); // Controle de paginação
-  const [searchTerm, setSearchTerm] = useState(''); // Termo de busca
-
-  // Função para buscar os motoristas do servidor
-  const fetchDrivers = async () => {
-    try {
-      setIsLoading(true);
-      const response = await api.drivers.list(currentPage, 100, searchTerm);
-      
-      // Adaptar os dados do servidor para o formato esperado pelo frontend
-      let driversData = [];
-      if (response && response.data && Array.isArray(response.data)) {
-        driversData = response.data.map(driver => {
-          // Função para formatar a data para DD/MM/AAAA
-          const formatDate = (dateString) => {
-            if (!dateString) return "N/A";
-            const date = new Date(dateString);
-            return date.toLocaleDateString('pt-BR');
-          };
-
-          // Função para formatar CPF: XXX.XXX.XXX-XX
-          const formatCPF = (cpf) => {
-            if (!cpf) return "N/A";
-            return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-          };
-
-          // Função para formatar telefone: (XX) XXXXX-XXXX
-          const formatPhoneNumber = (phone) => {
-            if (!phone) return "N/A";
-            return phone.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
-          };
-
-          return {
-            ...driver,
-            cpf: formatCPF(driver.cpf),
-            telefone: formatPhoneNumber(driver.telefone),
-            cnh_validade: formatDate(driver.cnh_validade),
-            data_admissao: formatDate(driver.data_admissao)
-          };
-        });
-      }
-      
-      setDrivers(driversData);
-      setError(null);
-      
-      console.log('Dados recebidos da API:', response);
-      console.log('Dados transformados:', driversData);
-    } catch (err) {
-      console.error("Erro ao buscar motoristas:", err);
-      setError("Não foi possível carregar os motoristas. Tente novamente mais tarde.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchDrivers();
-  }, [currentPage, searchTerm]); // Recarrega quando mudar a página ou termo de busca
-  // Handler para criar um novo motorista
-  const handleCreateDriver = () => {
+  }, [pageFunctions]);
+  const handleCreateDriver = useCallback(() => {
     popUpRef.current.show({
       title: "Novo Motorista",
       content: DriverForm,
       props: {
         onSubmit: async (formData) => {
-          try {
-            const backendData = {
-              nome: formData.nome,
-              cpf: formData.cpf.replace(/\D/g, ''), // Remove pontos e traço
-              cnh_numero: formData.cnh_numero,
-              cnh_categoria: formData.cnh_categoria,
-              cnh_validade: formData.cnh_validade,
-              telefone: formData.telefone.replace(/\D/g, ''), // Remove parênteses, espaço e traço
-              email: formData.email || null,
-              data_admissao: formData.data_admissao || null,
-              status_motorista_id: formData.status_motorista_id
-            };
-
-            console.log('Enviando dados:', backendData);
-            await api.drivers.create(backendData);
+          const result = await createDriver(formData);
+          if (result.success) {
             popUpRef.current.hide();
-            fetchDrivers(); // Recarrega a lista
-          } catch (err) {
-            console.error("Erro ao criar motorista:", err);
-            
-            let errorMessage = "Erro ao criar motorista: ";
-            if (err.message && err.message.includes('já cadastrado')) {
-              errorMessage += err.message;
-            } else if (err.message && err.message.includes('409')) {
-              errorMessage += "CPF, CNH ou email já cadastrado no sistema.";
-            } else {
-              errorMessage += err.message || "Tente novamente mais tarde";
-            }
-            
-            alert(errorMessage);
+            showSuccess("Motorista criado com sucesso!");
+          } else {
+            showError(result.error);
           }
         },
-        onCancel: popUpRef.current.hide,        isCreateForm: true
+        onCancel: () => popUpRef.current.hide(),
+        isCreateForm: true
       }
     });
-  };
+  }, [createDriver, showSuccess, showError]);
 
-  // Handler para editar um motorista
-  const handleEditDriver = (driver) => {
+  const handleEditDriver = useCallback((driver) => {
+    const initialData = {
+      nome: driver.nome,
+      cpf: driver.cpf,
+      cnh_numero: driver.cnh_numero,
+      cnh_categoria: driver.cnh_categoria,
+      cnh_validade: driver.cnh_validade,
+      telefone: driver.telefone,
+      email: driver.email,
+      data_admissao: driver.data_admissao,
+      status_motorista_id: driver.status_motorista_id
+    };
+
     popUpRef.current.show({
       title: `Editar Motorista: ${driver.nome}`,
       content: DriverForm,
       props: {
-        initialData: driver,
+        initialData: initialData,
         onSubmit: async (formData) => {
-          try {
-            const backendData = {
-              nome: formData.nome,
-              cpf: formData.cpf.replace(/\D/g, ''),
-              cnh_numero: formData.cnh_numero,
-              cnh_categoria: formData.cnh_categoria,
-              cnh_validade: formData.cnh_validade,
-              telefone: formData.telefone.replace(/\D/g, ''),
-              email: formData.email,
-              data_admissao: formData.data_admissao,
-              status_motorista_id: formData.status_motorista_id
-            };
-
-            console.log('Enviando dados para atualização:', backendData);
-            await api.drivers.update(driver.motorista_id, backendData);
+          const result = await updateDriver(driver.id, formData);
+          if (result.success) {
             popUpRef.current.hide();
-            fetchDrivers(); // Recarrega a lista
-          } catch (err) {
-            console.error("Erro ao atualizar motorista:", err);
-            
-            let errorMessage = "Erro ao atualizar motorista: ";
-            if (err.message && err.message.includes('já está sendo usado')) {
-              errorMessage += err.message;
-            } else if (err.message && err.message.includes('409')) {
-              errorMessage += "CPF, CNH ou email já está sendo usado por outro motorista.";
-            } else {
-              errorMessage += err.message || "Tente novamente mais tarde";
-            }
-            
-            alert(errorMessage);
+            showSuccess("Motorista atualizado com sucesso!");
+          } else {
+            showError(result.error);
           }
         },
-        onCancel: popUpRef.current.hide,
+        onCancel: () => popUpRef.current.hide(),
       }
     });
-  };
+  }, [updateDriver, showSuccess, showError]);
 
-  // Handler para excluir um motorista
-  const handleDeleteDriver = async (id) => {
-    if (confirm("Tem certeza que deseja excluir este motorista?")) {
-      try {
-        await api.drivers.delete(id);
-        fetchDrivers(); // Recarrega a lista
-        popUpRef.current.hide(); // Fecha o popup se estiver aberto
-      } catch (err) {
-        console.error("Erro ao excluir motorista:", err);
-        alert("Erro ao excluir motorista: " + (err.message || "Tente novamente mais tarde"));
+  const handleDeleteDriver = useCallback(async (id) => {
+    if (window.confirm("Tem certeza que deseja excluir este motorista?")) {
+      const result = await deleteDriver(id);
+      if (result.success) {
+        popUpRef.current.hide();
+        showSuccess("Motorista excluído com sucesso!");
+      } else {
+        showError(result.error);
       }
     }
-  };
+  }, [deleteDriver, showSuccess, showError]);
 
-  // Handler para quando uma linha for clicada
-  const handleRowClick = (driver) => {
+  const handleRowClick = useCallback((driver) => {
     popUpRef.current.show({
       title: `Motorista: ${driver.nome}`,
       content: DriverDetails,
@@ -201,7 +118,7 @@ function Drivers({ pageFunctions }) {
         onDelete: handleDeleteDriver,
       }
     });
-  };
+  }, [handleEditDriver, handleDeleteDriver]);
 
   return (
     <main className="ps-3 pe-3 pt-3">
@@ -219,35 +136,37 @@ function Drivers({ pageFunctions }) {
                 <h1 className="h3 mb-0 fw-semibold">Motoristas</h1>
               </div>
               
-              <button
+              <ActionButton
                 onClick={handleCreateDriver}
-                className="btn btn-primary btn-lg d-flex align-items-center"
-              >
-                <i className="bi bi-plus-circle me-2"></i>
-                <span>Novo Motorista</span>
-              </button>
+                icon="bi bi-plus-circle"
+                text="Novo Motorista"
+                variant="primary"
+                size="lg"
+                disabled={isLoading}
+              />
             </div>
           </div>
           
           <div className="card-body p-3">
             {error && (
-              <div className="alert alert-danger d-flex align-items-center mb-4" role="alert">
-                <i className="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
-                <div>{error}</div>
-              </div>
+              <ErrorAlert 
+                error={error}
+                onRetry={refetch}
+                onDismiss={() => {}} // O hook gerencia o estado do erro
+                variant="danger"
+              />
             )}
             
             {isLoading ? (
-              <div className="d-flex flex-column justify-content-center align-items-center my-5 py-5">
-                <div className="spinner-border text-primary mb-3" role="status" style={{width: '3rem', height: '3rem'}}>
-                  <span className="visually-hidden">Carregando...</span>
-                </div>
-                <p className="text-muted">Carregando motoristas...</p>
-              </div>
+              <LoadingSpinner 
+                size="large" 
+                message="Carregando motoristas..." 
+                variant="primary"
+              />
             ) : (
               <div className="table-responsive">
                 <Table 
-                  headers={tableHeaders}
+                  headers={TABLE_HEADERS}
                   data={drivers}
                   itemsPerPage={10}
                   searchable={true}
@@ -271,6 +190,12 @@ function Drivers({ pageFunctions }) {
 
         <PopUpComponent 
           ref={popUpRef}
+        />
+
+        {/* Componente de Notificação */}
+        <Notification 
+          notification={notification} 
+          onClose={hideNotification} 
         />
       </div>
     </main>

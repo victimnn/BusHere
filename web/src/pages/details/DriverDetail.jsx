@@ -1,69 +1,196 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import api from '@web/api/api';
+import { useDrivers } from '@web/hooks/useDrivers';
+import { useDetailPage } from '@web/hooks/useDetailPage';
 import PopUpComponent from '@web/components/PopUpComponent';
+import { formatCPF, formatPhoneNumber, formatDateFromDatabase } from '@shared/formatters';
+import DriverForm from "@web/components/drivers/DriverForm";
+import {
+  DetailPage,
+  DetailHeader,
+  DetailSection,
+  DetailItem,
+  DetailActions,
+  DetailContainer,
+  DetailDebug
+} from '@web/components/details';
 
 function DriverDetail({ pageFunctions }) {
   useEffect(() => { pageFunctions.set("Motorista", true, true); }, [pageFunctions]);
   const navigate = useNavigate();
   const { driverId } = useParams();
-  const [driver, setDriver] = useState(null);
-  const [loading, setLoading] = useState(true);
   const popUpRef = useRef(null);
-  const fetchDriverDetails = async () => {
-    try {
-      const response = await api.drivers.getById(driverId);
-      if (response) {
-        setDriver(response);
-      } else {
-        console.error("Dados do motorista não encontrados", response);
+  
+  // Usar o hook de motoristas
+  const { getDriverById, updateDriver, deleteDriver, getStatusMotoristaName } = useDrivers();
+  
+  // Usar o hook de detail page
+  const { data: driver, loading, error, refetch } = useDetailPage(getDriverById, driverId);
+
+  const handleDeleteDriver = async () => {
+    if (window.confirm("Tem certeza que deseja excluir este motorista? Esta ação não pode ser desfeita.")) {
+      try {
+        const result = await deleteDriver(driver.id || driver.motorista_id);
+        if (result.success) {
+          navigate('/drivers'); // Redireciona para a lista de motoristas
+        } else {
+          popUpRef.current.show({
+            title: "Erro",
+            content: () => <div>{result.error}</div>,
+          });
+        }
+      } catch (error) {
+        console.error("Erro ao excluir motorista:", error);
+        popUpRef.current.show({
+          title: "Erro",
+          content: () => <div>Não foi possível excluir o motorista. Tente novamente mais tarde.</div>,
+        });
       }
-    } catch (error) {
-      console.error("Erro ao buscar detalhes do motorista:", error);
-      popUpRef.current.show({
-        title: "Erro",
-        content: () => <div>Não foi possível carregar os detalhes do motorista. Tente novamente mais tarde.</div>,
-      });
     }
-    setLoading(false);
   };
 
-  useEffect(() => {
-    fetchDriverDetails();
-  }, [driverId]);
-
-  const LoadingDetails = () => (
-    <div className="text-center">
-      <p>Carregando detalhes do motorista...</p>
-      <div className="spinner-border" role="status">
-        <span className="visually-hidden">Carregando...</span>
-      </div>
-    </div>
-  );
-  const Details = () => {
-    if (!driver) {
-      return <div>Nenhum dado encontrado</div>;
-    }
-
-    return (
-      <div className="container">
-        <h2>Detalhes do Motorista {driverId}</h2>
-        <div className="card">
-          <div className="card-body">
-            <h5 className="card-title">Dados JSON</h5>
-            <pre className="bg-light p-3 rounded">
-              {JSON.stringify(driver, null, 2)}
-            </pre>
-          </div>
-        </div>
-      </div>
-    );
+  const handleEditDriver = () => {
+    const initialData = {
+      nome: driver.nome,
+      cpf: driver.cpf,
+      cnh_numero: driver.cnh_numero,
+      cnh_categoria: driver.cnh_categoria,
+      cnh_validade: driver.cnh_validade,
+      telefone: driver.telefone,
+      email: driver.email,
+      data_admissao: driver.data_admissao,
+      status_motorista_id: driver.status_motorista_id
+    };
+    
+    popUpRef.current.show({
+      title: `Editar Motorista: ${driver.nome}`,
+      content: DriverForm,
+      props: {
+        initialData,
+        onSubmit: async (formData) => {
+          try {
+            const result = await updateDriver(driver.id || driver.motorista_id, formData);
+            if (result.success) {
+              popUpRef.current.hide();
+              refetch(); // Recarrega os dados usando o hook
+            } else {
+              alert(result.error);
+            }
+          } catch (err) {
+            alert(`Erro ao atualizar motorista: ${err.message || "Tente novamente mais tarde"}`);
+          }
+        },
+        onCancel: () => popUpRef.current.hide(),
+      }
+    });
   };
+
+  // Configurar ações do motorista
+  const actions = [
+    {
+      text: "Excluir",
+      icon: "bi-trash",
+      variant: "btn-outline-danger",
+      onClick: handleDeleteDriver
+    },
+    {
+      text: "Editar",
+      icon: "bi-pencil-square",
+      variant: "btn-primary",
+      onClick: handleEditDriver
+    }
+  ];
+
   return (
-    <main className='p-3'>
-      {loading ? <LoadingDetails /> : <Details />}
+    <DetailPage loading={loading} error={error} onRetry={refetch}>
+      {driver && (
+        <>
+          <DetailHeader
+            title={driver.nome}
+            icon="bi-person-fill-gear"
+            badges={[
+              {
+                icon: "bi-award",
+                text: driver.status_nome || getStatusMotoristaName(driver.status_motorista_id)
+              },
+              ...(driver.cpf ? [{
+                icon: "bi-card-text",
+                text: driver.cpf
+              }] : [])
+            ]}
+          />
+
+          <DetailContainer columns={2}>
+            <DetailSection 
+              title="Informações Pessoais" 
+              icon="bi-person-vcard"
+            >
+              <DetailItem 
+                icon="bi-person" 
+                label="Nome Completo" 
+                value={driver.nome} 
+              />
+              <DetailItem 
+                icon="bi-card-text" 
+                label="CPF" 
+                value={driver.cpf} 
+              />
+              <DetailItem 
+                icon="bi-telephone" 
+                label="Telefone" 
+                value={driver.telefone} 
+              />
+              <DetailItem 
+                icon="bi-envelope" 
+                label="E-mail" 
+                value={driver.email} 
+              />
+              <DetailItem 
+                icon="bi-calendar-plus" 
+                label="Data de Admissão" 
+                value={driver.data_admissao} 
+              />
+            </DetailSection>
+
+            <DetailSection 
+              title="Informações da CNH" 
+              icon="bi-credit-card"
+            >
+              <DetailItem 
+                icon="bi-credit-card" 
+                label="Número da CNH" 
+                value={driver.cnh_numero} 
+              />
+              <DetailItem 
+                icon="bi-award" 
+                label="Categoria" 
+                value={driver.cnh_categoria} 
+              />
+              <DetailItem 
+                icon="bi-calendar-event" 
+                label="Validade da CNH" 
+                value={driver.cnh_validade} 
+              />
+              <DetailItem 
+                icon="bi-info-circle" 
+                label="Status" 
+                value={driver.status_nome || getStatusMotoristaName(driver.status_motorista_id)} 
+              />
+            </DetailSection>
+          </DetailContainer>
+
+          <DetailActions
+            title="Ações do Motorista"
+            description="Editar informações ou remover motorista do sistema"
+            actions={actions}
+          />
+
+          <DetailDebug data={driver} />
+        </>
+      )}
+      
       <PopUpComponent ref={popUpRef} />
-    </main>
+    </DetailPage>
   );
 }
 

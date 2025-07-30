@@ -21,8 +21,8 @@ const transformPassengerData = (passenger, getTipoPassageiroNome) => ({
   tipo_passageiro: getTipoPassageiroNome(passenger.tipo_passageiro_id),
   ativo: passenger.ativo,
   pcd: passenger.pcd,
-  data_nascimento: passenger.data_nascimento ? formatDateFromDatabase(passenger.data_nascimento) : '',
-  data_criacao: passenger.data_criacao ? formatDateFromDatabase(passenger.data_criacao) : '',
+  data_nascimento: passenger.data_nascimento ? formatDateFromDatabase(passenger.data_nascimento) : null,
+  data_criacao: passenger.data_criacao ? formatDateFromDatabase(passenger.data_criacao) : null,
 });
 
 // Função para preparar dados para o backend
@@ -32,7 +32,8 @@ const prepareBackendData = (formData, isCreate = false) => {
     cpf: removeFormatting(formData.cpf),
     telefone: removeFormatting(formData.telefone),
     email: formData.email || '',
-    tipo_passageiro_id: formData.tipo_passageiro
+    tipo_passageiro_id: formData.tipo_passageiro,
+    data_nascimento: formData.data_nascimento || null
   };
 
   // Adicionar campos obrigatórios apenas para criação

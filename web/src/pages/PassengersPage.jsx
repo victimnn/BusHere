@@ -67,7 +67,8 @@ function Passengers({ pageFunctions }) {
       cpf: passenger.cpf,
       email: passenger.email,
       telefone: passenger.telefone,
-      tipo_passageiro: passenger.tipo_passageiro_id
+      tipo_passageiro: passenger.tipo_passageiro_id,
+      data_nascimento: passenger.data_nascimento
     };
 
     popUpRef.current.show({

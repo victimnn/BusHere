@@ -96,12 +96,6 @@ function PassengerDetailPage({ pageFunctions }) {
       );
     }
 
-    const correctedPassenger = {
-      nome: passenger.nome_completo, 
-      tipo_passageiro: 2,
-      ...passenger
-    }
-
     const formatCPFWithDefault = (cpf) => {
       if (!cpf) return "Não informado";
       return formatCPF(cpf);
@@ -135,16 +129,16 @@ function PassengerDetailPage({ pageFunctions }) {
                 <i className="bi bi-person-fill fs-2"></i>
               </div>
               <div>
-                <h3 className="mb-1 fw-bold">{correctedPassenger.nome || "Nome não informado"}</h3>
+                <h3 className="mb-1 fw-bold">{passenger.nome_completo || "Nome não informado"}</h3>
                 <div className="d-flex gap-3 mb-0">
                   <span className="badge bg-light text-primary fs-6">
                     <i className="bi bi-person-badge me-1"></i>
-                    {getPassengerTypeText(correctedPassenger.tipo_passageiro)}
+                    {getPassengerTypeText(passenger.tipo_passageiro)}
                   </span>
-                  {correctedPassenger.cpf && (
+                  {passenger.cpf && (
                     <span className="badge bg-light text-primary fs-6">
                       <i className="bi bi-card-text me-1"></i>
-                      {formatCPFWithDefault(correctedPassenger.cpf)}
+                      {formatCPFWithDefault(passenger.cpf)}
                     </span>
                   )}
                 </div>
@@ -171,7 +165,7 @@ function PassengerDetailPage({ pageFunctions }) {
                       <i className="bi bi-person text-primary me-3 fs-5"></i>
                       <div>
                         <small className="text-muted d-block">Nome Completo</small>
-                        <span className="fw-medium">{correctedPassenger.nome || "Não informado"}</span>
+                        <span className="fw-medium">{passenger.nome_completo || "Não informado"}</span>
                       </div>
                     </div>
                   </div>
@@ -180,7 +174,7 @@ function PassengerDetailPage({ pageFunctions }) {
                       <i className="bi bi-card-text text-primary me-3 fs-5"></i>
                       <div>
                         <small className="text-muted d-block">CPF</small>
-                        <span className="fw-medium">{formatCPFWithDefault(correctedPassenger.cpf)}</span>
+                        <span className="fw-medium">{formatCPFWithDefault(passenger.cpf)}</span>
                       </div>
                     </div>
                   </div>
@@ -189,17 +183,17 @@ function PassengerDetailPage({ pageFunctions }) {
                       <i className="bi bi-calendar-event text-primary me-3 fs-5"></i>
                       <div>
                         <small className="text-muted d-block">Data de Nascimento</small>
-                        <span className="fw-medium">{formatDateWithDefault(correctedPassenger.data_nascimento)}</span>
+                        <span className="fw-medium">{formatDateWithDefault(passenger.data_nascimento)}</span>
                       </div>
                     </div>
                   </div>
-                  {correctedPassenger.data_cadastro && (
+                  {passenger.data_cadastro && (
                     <div className="col-12">
                       <div className="detail-item d-flex align-items-center p-3 rounded bg-light">
                         <i className="bi bi-calendar-plus text-primary me-3 fs-5"></i>
                         <div>
                           <small className="text-muted d-block">Data de Cadastro</small>
-                          <span className="fw-medium">{formatDateWithDefault(correctedPassenger.data_cadastro)}</span>
+                          <span className="fw-medium">{formatDateWithDefault(passenger.data_cadastro)}</span>
                         </div>
                       </div>
                     </div>
@@ -225,7 +219,7 @@ function PassengerDetailPage({ pageFunctions }) {
                       <i className="bi bi-envelope text-primary me-3 fs-5"></i>
                       <div>
                         <small className="text-muted d-block">E-mail</small>
-                        <span className="fw-medium">{correctedPassenger.email || "Não informado"}</span>
+                        <span className="fw-medium">{passenger.email || "Não informado"}</span>
                       </div>
                     </div>
                   </div>
@@ -234,7 +228,7 @@ function PassengerDetailPage({ pageFunctions }) {
                       <i className="bi bi-telephone text-primary me-3 fs-5"></i>
                       <div>
                         <small className="text-muted d-block">Telefone</small>
-                        <span className="fw-medium">{formatPhoneWithDefault(correctedPassenger.telefone)}</span>
+                        <span className="fw-medium">{formatPhoneWithDefault(passenger.telefone)}</span>
                       </div>
                     </div>
                   </div>
@@ -244,18 +238,18 @@ function PassengerDetailPage({ pageFunctions }) {
                       <div>
                         <small className="text-muted d-block">Endereço</small>
                         <span className="fw-medium">
-                          {correctedPassenger.endereco || "Não informado"}
+                          {passenger.endereco || "Não informado"}
                         </span>
                       </div>
                     </div>
                   </div>
-                  {correctedPassenger.observacoes && (
+                  {passenger.observacoes && (
                     <div className="col-12">
                       <div className="detail-item d-flex align-items-start p-3 rounded bg-light">
                         <i className="bi bi-chat-text text-primary me-3 fs-5 mt-1"></i>
                         <div>
                           <small className="text-muted d-block">Observações</small>
-                          <span className="fw-medium">{correctedPassenger.observacoes}</span>
+                          <span className="fw-medium">{passenger.observacoes}</span>
                         </div>
                       </div>
                     </div>

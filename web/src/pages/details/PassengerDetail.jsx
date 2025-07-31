@@ -1,10 +1,15 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import PopUpComponent from '@web/components/PopUpComponent';
+import PassengerForm from '@web/components/passengers/PassengerForm';
+import Notification from '@web/components/common/Notification';
+
 import { usePassengers } from '@web/hooks/usePassengers';
 import { useDetailPage } from '@web/hooks/useDetailPage';
-import PopUpComponent from '@web/components/PopUpComponent';
+import { useNotification } from '@web/hooks/useNotification';
+
 import { formatCPF, formatPhoneNumber, formatDateFromDatabase } from '@shared/formatters';
-import PassengerForm from "@web/components/passengers/PassengerForm";
+
 import {
   DetailPage,
   DetailHeader,
@@ -23,33 +28,14 @@ function PassengerDetailPage({ pageFunctions }) {
   
   // Usar o hook de passageiros
   const { getPassengerById, updatePassenger, deletePassenger, getTipoPassageiroNome } = usePassengers();
-  
+
   // Usar o hook de detail page
   const { data: passenger, loading, error, refetch } = useDetailPage(getPassengerById, passengerId);
 
-  const handleDeletePassenger = async () => {
-    if (window.confirm("Tem certeza que deseja excluir este passageiro? Esta ação não pode ser desfeita.")) {
-      try {
-        const result = await deletePassenger(passengerId);
-        if (result.success) {
-          navigate('/passengers'); // Redireciona para a lista de passageiros
-        } else {
-          popUpRef.current.show({
-            title: "Erro",
-            content: () => <div>{result.error}</div>,
-          });
-        }
-      } catch (error) {
-        console.error("Erro ao excluir passageiro:", error);
-        popUpRef.current.show({
-          title: "Erro",
-          content: () => <div>Não foi possível excluir o passageiro. Tente novamente mais tarde.</div>,
-        });
-      }
-    }
-  };
+  // Hook para notificações
+  const { notification, hideNotification, showSuccess, showError } = useNotification();
 
-  const handleEditPassenger = () => {
+    const handleEditPassenger = () => {
     const initialData = {
       nome: passenger.nome_completo,
       cpf: passenger.cpf,
@@ -70,6 +56,7 @@ function PassengerDetailPage({ pageFunctions }) {
             if (result.success) {
               popUpRef.current.hide();
               refetch(); // Recarrega os dados usando o hook
+              showSuccess("Passageiro atualizado com sucesso!");
             } else {
               alert(result.error);
             }
@@ -80,6 +67,31 @@ function PassengerDetailPage({ pageFunctions }) {
         onCancel: () => popUpRef.current.hide(),
       }
     });
+  };
+
+  const handleDeletePassenger = async () => {
+    if (window.confirm("Tem certeza que deseja excluir este passageiro?")) {
+      try {
+        const result = await deletePassenger(passengerId);
+        if (result.success) {
+          showSuccess("Passageiro excluido com sucesso!");
+          setTimeout(() => {
+            navigate('/passengers'); // Redireciona para a lista de passageiros
+          }, 1000); // tempo para o usuário ver a notificação
+        } else {
+          popUpRef.current.show({
+            title: "Erro",
+            content: () => <div>{result.error}</div>,
+          });
+        }
+      } catch (error) {
+        console.error("Erro ao excluir passageiro:", error);
+        popUpRef.current.show({
+          title: "Erro",
+          content: () => <div>Não foi possível excluir o passageiro. Tente novamente mais tarde.</div>,
+        });
+      }
+    }
   };
 
   const formatAddress = (p) => {
@@ -197,6 +209,9 @@ function PassengerDetailPage({ pageFunctions }) {
       )}
       
       <PopUpComponent ref={popUpRef} />
+
+      <Notification notification={notification} onClose={hideNotification} />
+
     </DetailPage>
   );
 }

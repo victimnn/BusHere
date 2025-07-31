@@ -9,7 +9,6 @@ export const isBusActive = (statusNome) => {
   if (!statusNome) return false;
   const status = statusNome.toLowerCase();
   return status.includes('operação') || 
-         status.includes('operando') ||
          status === 'ativo';
 };
 
@@ -22,8 +21,7 @@ export const isRouteActive = (statusNome) => {
   if (!statusNome) return false;
   const status = statusNome.toLowerCase();
   return status === 'ativa' || 
-         status.includes('operação') ||
-         status.includes('operando');
+         status.includes('operação');
 };
 
 /**

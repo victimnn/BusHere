@@ -47,16 +47,9 @@ module.exports = (pool) => {
         params
       );
 
-      const totalBuses = rows.length > 0 ? rows[0].total_buses_found : 0;
-      const totalPages = limit > 0 ? Math.ceil(totalBuses / limit) : 1;
+      const data = rows.map(({ total_buses_found, ...rest }) => rest);
 
-      res.json({
-        data: rows.map(({ total_buses_found, ...rest }) => rest),
-        total: totalBuses,
-        page: parseInt(page),
-        limit: parseInt(limit),
-        totalPages
-      });
+      res.json(data);
     } catch (error) {
       console.error('Erro ao buscar onibus:', error);
       res.status(500).json({ error: 'Erro ao buscar onibus' });
@@ -72,9 +65,7 @@ module.exports = (pool) => {
         ORDER BY nome`
       );
 
-      res.json({
-         data: rows 
-        });
+      res.json(rows);
     } catch (error) {
       console.error('Erro ao buscar status de onibus:', error);
       res.status(500).json({ error: 'Erro ao buscar status de onibus', details: error.message });

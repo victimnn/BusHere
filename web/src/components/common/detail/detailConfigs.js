@@ -133,7 +133,7 @@ export const busConfig = {
       formatter: formatters.date
     },
     {
-      key: "status_nome",
+      key: "status",
       label: "Status",
       icon: "bi bi-flag",
       formatter: formatters.defaultValue

@@ -65,7 +65,9 @@ module.exports = (pool) => {
         ORDER BY nome`
       );
 
-      res.json(rows);
+      res.json({ 
+        data: rows 
+      });
     } catch (error) {
       console.error('Erro ao buscar status de onibus:', error);
       res.status(500).json({ error: 'Erro ao buscar status de onibus', details: error.message });

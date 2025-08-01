@@ -20,7 +20,9 @@ import {
 } from '@web/components/details';
 
 function DriverDetail({ pageFunctions }) {
-  useEffect(() => { pageFunctions.set("Motorista", true, true); }, [pageFunctions]);
+  useEffect(() => { 
+    pageFunctions.set("Motorista", true, true); }, [pageFunctions]);
+  
   const navigate = useNavigate();
   const { driverId } = useParams();
   const popUpRef = useRef(null);
@@ -60,10 +62,10 @@ function DriverDetail({ pageFunctions }) {
               refetch(); // Recarrega os dados usando o hook
               showSuccess("Motorista atualizado com sucesso!");
             } else {
-              alert(result.error);
+              showError(result.error);
             }
           } catch (err) {
-            alert(`Erro ao atualizar motorista: ${err.message || "Tente novamente mais tarde"}`);
+            showError(`Erro ao atualizar motorista: ${err.message || "Tente novamente mais tarde"}`);
           }
         },
         onCancel: () => popUpRef.current.hide(),
@@ -76,22 +78,16 @@ function DriverDetail({ pageFunctions }) {
       try {
         const result = await deleteDriver(driver.id || driver.motorista_id);
         if (result.success) {
-          showSuccess("Motorista excluido com sucesso!");
+          showSuccess("Motorista excluído com sucesso!");
           setTimeout(() => {
             navigate('/drivers'); // Redireciona para a lista de motoristas
           }, 1000); // tempo para o usuário ver a notificação 
         } else {
-          popUpRef.current.show({
-            title: "Erro",
-            content: () => <div>{result.error}</div>,
-          });
+          showError(result.error);
         }
       } catch (error) {
         console.error("Erro ao excluir motorista:", error);
-        popUpRef.current.show({
-          title: "Erro",
-          content: () => <div>Não foi possível excluir o motorista. Tente novamente mais tarde.</div>,
-        });
+        showError("Não foi possível excluir o motorista. Tente novamente mais tarde.");
       }
     }
   };

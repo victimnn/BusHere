@@ -2,18 +2,26 @@ import React, { useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import PopUpComponent from '@web/components/PopUpComponent';
 import BusForm from '@web/components/buses/BusForm';
-import BusDetails from '@web/components/buses/BusDetails';
-import LoadingSpinner from '@web/components/common/LoadingSpinner';
-import ErrorAlert from '@web/components/common/ErrorAlert';
 import Notification from '@web/components/common/Notification';
+
 import { useBuses } from '@web/hooks/useBuses';
 import { useDetailPage } from '@web/hooks/useDetailPage';
 import { useNotification } from '@web/hooks/useNotification';
+import { formatDateFromDatabase } from '@shared/formatters';
+
+import {
+  DetailPage,
+  DetailHeader,
+  DetailSection,
+  DetailItem,
+  DetailActions,
+  DetailContainer,
+  DetailDebug
+} from '@web/components/details';
 
 function BusDetail({ pageFunctions }) {
   useEffect(() => { 
-    pageFunctions.set("Ônibus", true, true); 
-  }, [pageFunctions]);
+    pageFunctions.set("Ônibus", true, true); }, [pageFunctions]);
   
   const navigate = useNavigate();
   const { busId } = useParams();
@@ -85,57 +93,109 @@ function BusDetail({ pageFunctions }) {
     }
   };
 
-  if (loading) {
-    return (
-      <main className="p-3 d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
-        <LoadingSpinner 
-          size="large" 
-          message="Carregando detalhes do ônibus..." 
-          variant="primary"
-        />
-      </main>
-    );
-  }
-
-  if (error) {
-    return (
-      <main className="p-3">
-        <ErrorAlert 
-          error={error}
-          onRetry={refetch}
-          variant="danger"
-        />
-      </main>
-    );
-  }
-
-  if (!bus) {
-    return (
-      <main className="p-3">
-        <div className="alert alert-warning">
-          <i className="bi bi-exclamation-triangle me-2"></i>
-          Ônibus não encontrado.
-        </div>
-      </main>
-    );
-  }
+  // Configurar ações do ônibus
+  const actions = [
+    {
+      text: "Excluir",
+      icon: "bi-trash",
+      variant: "btn-outline-danger",
+      onClick: handleDeleteBus
+    },
+    {
+      text: "Editar",
+      icon: "bi-pencil-square",
+      variant: "btn-primary",
+      onClick: handleEditBus
+    }
+  ];
 
   return (
-    <main className="p-3">
-      <BusDetails 
-        bus={bus}
-        onEdit={handleEditBus}
-        onDelete={handleDeleteBus}
-      />
-      
+    <DetailPage loading={loading} error={error} onRetry={refetch}>
+      {bus && (
+        <>
+          <DetailHeader 
+            title={bus.nome}
+            icon="bi-bus-front-fill"
+            subtitle={`Placa: ${bus.placa}`}
+            badges={[
+              ...(bus.status_onibus ? [{
+                icon: "bi-reward", 
+                text: bus.status_onibus.nome, 
+                variant: bus.status_onibus.cor 
+              }] : []),
+              {
+                icon: "bi-calendar-event",
+                text: formatDateFromDatabase(bus.data_proxima_manutencao)
+              }
+            ]}
+          />
+
+          <DetailContainer columns={2}>
+            <DetailSection 
+              title="Detalhes do Ônibus"
+              icon="bi-info-circle"
+            >
+              <DetailItem 
+                icon="bi-bus-front-fill"
+                label="Modelo" 
+                value={bus.modelo} 
+              />
+              <DetailItem 
+                icon="bi-bus-front-fill" 
+                label="Marca" 
+                value={bus.marca} 
+              />
+              <DetailItem 
+                icon="bi-calendar-event" 
+                label="Ano de Fabricação" 
+                value={bus.ano_fabricacao} 
+              />
+              <DetailItem 
+                icon="bi-people" 
+                label="Capacidade" 
+                value={`${bus.capacidade} passageiros`} 
+              />
+            </DetailSection>
+
+            <DetailSection 
+              title="Manutenção"
+              icon="bi-gear-wide-connected"
+            >
+              <DetailItem 
+                icon="bi-speedometer" 
+                label="Quilometragem" 
+                value={`${bus.quilometragem} km`} 
+              />
+              <DetailItem 
+                icon="bi-calendar-check" 
+                label="Última Manutenção" 
+                value={formatDateFromDatabase(bus.data_ultima_manutencao)} 
+              />
+              <DetailItem 
+                icon="bi-calendar-event" 
+                label="Próxima Manutenção" 
+                value={formatDateFromDatabase(bus.data_proxima_manutencao)} 
+              />
+            </DetailSection>
+          </DetailContainer>
+
+          <DetailActions
+            title="Ações do Ônibus"
+            description="Editar informações ou remover ônibus do sistema"
+            actions={actions}
+          />
+
+          <DetailDebug data={bus} />
+        </>
+      )}
+
       <PopUpComponent ref={popUpRef} />
-      
-      {/* Componente de Notificação */}
-      <Notification 
-        notification={notification} 
-        onClose={hideNotification} 
+
+      <Notification
+        notification={notification}
+        onClose={hideNotification}
       />
-    </main>
+    </DetailPage>
   );
 }
 

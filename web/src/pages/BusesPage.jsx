@@ -1,15 +1,15 @@
-import React, { useRef, useState, useEffect, useCallback, use } from "react";
-import PopUpComponent from "../components/PopUpComponent";
-import BusDetails from "../components/buses/BusDetails";
-import BusForm from "../components/buses/BusForm";
-import BusStatsCards from "../components/buses/BusStatsCards";
-import Table from "../components/Table";
+import React, { useRef, useEffect, useCallback } from "react";
+import PopUpComponent from "@web/components/PopUpComponent";
+import BusForm from "@web/components/buses/BusForm";
+import BusDetails from "@web/components/buses/BusDetails";
+import BusStatsCards from "@web/components/buses/BusStatsCards";
+import Table from "@web/components/Table";
 import Notification from "@web/components/common/Notification";
 import LoadingSpinner from "@web/components/common/LoadingSpinner";
 import ErrorAlert from "@web/components/common/ErrorAlert";
 import ActionButton from "@web/components/common/ActionButton";
-import { useBuses } from "../hooks/useBusesData";
-import { useNotification } from "../hooks/useNotification";
+import { useBuses } from "@web/hooks/useBuses";
+import { useNotification } from "@web/hooks/useNotification";
 
 const TABLE_HEADERS = [
   { id: "id", label: "ID", sortable: true },
@@ -26,7 +26,9 @@ const TABLE_HEADERS = [
 ];
 
 function Buses({ pageFunctions }) {
-  const popUpRef = useRef(null); // Referência para o componente PopUpComponent
+  const popUpRef = useRef(null);
+  
+  // Usar hook customizado para gerenciar dados dos ônibus
   const {
     buses,
     isLoading,
@@ -37,8 +39,8 @@ function Buses({ pageFunctions }) {
     refetch
   } = useBuses();
 
-   // Hook para notificações
-    const { notification, hideNotification, showSuccess, showError } = useNotification();
+  // Hook para notificações
+  const { notification, hideNotification, showSuccess, showError } = useNotification();
 
   useEffect(() => {
     pageFunctions.set("Ônibus", true, true);
@@ -58,7 +60,7 @@ function Buses({ pageFunctions }) {
             showError(result.error);
           }
         },
-        onCancel: popUpRef.current.hide(),
+        onCancel: () => popUpRef.current.hide(),
         isCreateForm: true
       }
     });
@@ -75,7 +77,7 @@ function Buses({ pageFunctions }) {
       data_ultima_manutencao: bus.data_ultima_manutencao,
       data_proxima_manutencao: bus.data_proxima_manutencao,
       quilometragem: bus.quilometragem,
-      status_onibus: bus.status_onibus_id,
+      status_onibus_id: bus.status_onibus_id,
     };
 
     popUpRef.current.show({
@@ -92,7 +94,7 @@ function Buses({ pageFunctions }) {
             showError(result.error);
           }
         },
-        onCancel: popUpRef.current.hide(),
+        onCancel: () => popUpRef.current.hide(),
       }
     });
   }, [updateBus, showSuccess, showError]);
@@ -130,75 +132,76 @@ function Buses({ pageFunctions }) {
       
       <div className="container-fluid">
         <div className="card border-0 shadow-sm mb-4">
-        <div className="card-header bg-white py-3">
-          <div className="d-flex justify-content-between align-items-center">
-            <div className="d-flex align-items-center">
-              <div className="text-primary rounded-circle p-2 me-3">
-                <i className="bi bi-bus-front-fill fs-3"></i>
+          <div className="card-header bg-white py-3">
+            <div className="d-flex justify-content-between align-items-center">
+              <div className="d-flex align-items-center">
+                <div className="text-primary rounded-circle p-2 me-3">
+                  <i className="bi bi-bus-front-fill fs-3"></i>
+                </div>
+                <h1 className="h3 mb-0 fw-semibold">Ônibus</h1>
               </div>
-              <h1 className="h3 mb-0 fw-semibold">Ônibus</h1>
+              
+              <ActionButton
+                onClick={handleCreateBus}
+                icon="bi bi-plus-circle"
+                text="Novo Ônibus"
+                variant="primary"
+                size="lg"
+                disabled={isLoading}
+              />
             </div>
+          </div>
+          
+          <div className="card-body p-3">
+            {error && (
+              <ErrorAlert 
+                error={error}
+                onRetry={refetch}
+                onDismiss={() => {}} // O hook gerencia o estado do erro
+                variant="danger"
+              />
+            )}
             
-            <ActionButton
-              onClick={handleCreateBus}
-              icon="bi bi-plus-circle"
-              text="Novo Ônibus"
-              variant="primary"
-              size="lg"
-              disabled={isLoading}
-            />
+            {isLoading ? (
+              <LoadingSpinner 
+                size="large" 
+                message="Carregando ônibus..." 
+                variant="primary"
+              />
+            ) : (
+              <div className="table-responsive">
+                <Table 
+                  headers={TABLE_HEADERS}
+                  data={buses}
+                  itemsPerPage={10}
+                  searchable={true}
+                  className="table-striped table-hover"
+                  onRowClick={handleRowClick}
+                />
+              </div>
+            )}          
           </div>
         </div>
         
-        <div className="card-body p-3">
-          {error && (
-            <ErrorAlert 
-              error={error}
-              onRetry={refetch}
-              onDismiss={() => {}} // O hook gerencia o estado do erro
-              variant="danger"
-            />
-          )}
-            
-          {isLoading ? (
-            <LoadingSpinner 
-              size="large" 
-              message="Carregando ônibus..." 
-              variant="primary"
-            />
-            ) : (
-            <div className="table-responsive">
-              <Table 
-                headers={TABLE_HEADERS}
-                data={buses}
-                itemsPerPage={10}
-                searchable={true}
-                className="table-striped table-hover"
-                onRowClick={handleRowClick}
-              />
-            </div>
-          )}          
+        <div className="card border-0 bg-light shadow-sm mt-4 p-3">
+          <div className="d-flex align-items-center">
+            <i className="bi bi-info-circle-fill text-primary me-3 fs-4"></i>
+            <p className="mb-0 text-muted">
+              <strong>Dica:</strong> Clique em uma linha da tabela para ver os detalhes completos do ônibus.
+              Para adicionar um novo ônibus, clique no botão "Novo Ônibus".
+            </p>
+          </div>
         </div>
-      </div>
-      
-      <div className="card border-0 bg-light shadow-sm mt-4 p-3">
-        <div className="d-flex align-items-center">
-          <i className="bi bi-info-circle-fill text-primary me-3 fs-4"></i>
-          <p className="mb-0 text-muted">
-            <strong>Dica:</strong> Clique em uma linha da tabela para ver os detalhes completos do ônibus.
-            Para adicionar um novo ônibus, clique no botão "Novo Ônibus".
-          </p>
-        </div>
-      </div>
 
-      <PopUpComponent 
-        ref={popUpRef}
-      />
+        <PopUpComponent 
+          ref={popUpRef}
+        />
 
-      <Notification
-        notification={notification}
-        onClose={hideNotification}
-      />
+        {/* Componente de Notificação */}
+        <Notification 
+          notification={notification} 
+          onClose={hideNotification} 
+        />
       </div>
     </main>
   );

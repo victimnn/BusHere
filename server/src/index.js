@@ -57,6 +57,7 @@ const stopRoutes = require("./stopRoutes")(pool);
 const busRoutes = require("./busRoutes")(pool);
 const routeRoutes = require("./routeRoutes")(pool);
 const reportsRoutes = require("./reportsRoutes")(pool);
+const lastChangeRoutes = require("./lastChangeRoutes")(pool);
 //const XXXXRoutes = require("./XXXX")(pool);
 //const YYYYRoutes = require("./YYYY")(pool);
 
@@ -69,6 +70,7 @@ app.use("/api/stops", stopRoutes);
 app.use("/api/buses", busRoutes);
 app.use("/api/routes", routeRoutes);
 app.use("/api/reports", reportsRoutes);
+app.use("/api/lastChanges", lastChangeRoutes);
 //app.use("/api/XXXX", XXXXRoutes);
 //app.use("/api/YYYY", YYYYRoutes);
 

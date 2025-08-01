@@ -48,8 +48,16 @@ module.exports = (pool) => {
       );
 
       const data = rows.map(({ total_buses_found, ...rest }) => rest);
+      const totalBuses = rows.length > 0 ? rows[0].total_buses_found : 0;
+      const totalPages = limit > 0 ? Math.ceil(totalBuses / limit) : 1;
 
-      res.json(data);
+      res.json({
+        data: data,
+        total: totalBuses,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        totalPages
+      });
     } catch (error) {
       console.error('Erro ao buscar onibus:', error);
       res.status(500).json({ error: 'Erro ao buscar onibus' });

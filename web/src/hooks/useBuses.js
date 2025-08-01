@@ -75,7 +75,7 @@ export const useBuses = () => {
 
   // Memoizar transformação dos dados dos ônibus
   const transformedBuses = useMemo(() => {
-    if (!buses.length || !statusOnibus.length) return [];
+    if (!buses.length) return [];
     return buses.map(bus => 
       transformBusData(bus, getStatusOnibusNome)
     );
@@ -85,6 +85,7 @@ export const useBuses = () => {
   const fetchStatusOnibus = useCallback(async () => {
     try {
       const response = await api.buses.getStatus();
+      
       if (response?.data && Array.isArray(response.data)) {
         setStatusOnibus(response.data);
       } else {
@@ -98,8 +99,6 @@ export const useBuses = () => {
 
   // Função otimizada para buscar ônibus
   const fetchBuses = useCallback(async (showLoadingState = true) => {
-    if (!statusOnibus.length) return;
-
     try {
       if (showLoadingState) {
         setIsLoading(true);
@@ -122,7 +121,7 @@ export const useBuses = () => {
         setIsLoading(false);
       }
     }
-  }, [statusOnibus.length]);
+  }, []);
 
   // Função de retry para recarregar dados
   const refetch = useCallback(() => {
@@ -206,11 +205,8 @@ export const useBuses = () => {
   // Carregar dados iniciais
   useEffect(() => {
     fetchStatusOnibus();
-  }, [fetchStatusOnibus]);
-
-  useEffect(() => {
     fetchBuses();
-  }, [fetchBuses]);
+  }, [fetchStatusOnibus, fetchBuses]);
 
   return {
     // Estados
@@ -230,4 +226,3 @@ export const useBuses = () => {
     getStatusOnibusNome
   };
 };
-

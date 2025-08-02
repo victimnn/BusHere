@@ -443,6 +443,21 @@ const api = {
         throw error; // Propaga o erro para ser tratado onde for chamado
       }
     }
+  },
+  recentActivity: {
+    // Método para obter a atividade recente
+    get: async (limit = 100) => {
+      const queryParams = new URLSearchParams({
+        limit: String(limit)
+      });
+      try {
+        const response = await api.get(`/lastChanges?${queryParams.toString()}`);
+        return response; // Retorna os dados da atividade recente
+      } catch (error) {
+        console.error("Erro ao obter atividade recente:", error);
+        throw error; // Propaga o erro para ser tratado onde for chamado
+      }
+    }
   }
 };
 

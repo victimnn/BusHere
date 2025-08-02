@@ -25,9 +25,10 @@ DROP TRIGGER IF EXISTS after_passageiros_delete_log;
 CREATE TRIGGER after_pontos_insert_log
 AFTER INSERT ON Pontos
 FOR EACH ROW
-BEGIN    INSERT INTO LogMudancas (tabela, operacao, dados_antigos, dados_novos, usuario_id)
+BEGIN    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
         'Pontos', 
+        NEW.ponto_id,
         'INSERT', 
         NULL, 
         JSON_OBJECT(
@@ -53,9 +54,10 @@ CREATE TRIGGER after_pontos_update_log
 AFTER UPDATE ON Pontos
 FOR EACH ROW
 BEGIN
-    INSERT INTO LogMudancas (tabela, operacao, dados_antigos, dados_novos, usuario_id)
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
         'Pontos', 
+        OLD.ponto_id,
         'UPDATE', 
         JSON_OBJECT(
             'ponto_id', OLD.ponto_id,
@@ -96,9 +98,10 @@ CREATE TRIGGER after_pontos_delete_log
 AFTER DELETE ON Pontos
 FOR EACH ROW
 BEGIN
-    INSERT INTO LogMudancas (tabela, operacao, dados_antigos, dados_novos, usuario_id)
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
         'Pontos', 
+        OLD.ponto_id,
         'DELETE', 
         JSON_OBJECT(
             'ponto_id', OLD.ponto_id,
@@ -125,9 +128,10 @@ CREATE TRIGGER after_motoristas_insert_log
 AFTER INSERT ON Motoristas
 FOR EACH ROW
 BEGIN
-    INSERT INTO LogMudancas (tabela, operacao, dados_antigos, dados_novos, usuario_id)
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
         'Motoristas', 
+        NEW.motorista_id,
         'INSERT', 
         NULL, 
         JSON_OBJECT(
@@ -152,9 +156,10 @@ CREATE TRIGGER after_motoristas_update_log
 AFTER UPDATE ON Motoristas
 FOR EACH ROW
 BEGIN
-    INSERT INTO LogMudancas (tabela, operacao, dados_antigos, dados_novos, usuario_id)
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
         'Motoristas', 
+        NEW.motorista_id,
         'UPDATE', 
         JSON_OBJECT(
             'motorista_id', OLD.motorista_id,
@@ -193,9 +198,10 @@ CREATE TRIGGER after_motoristas_delete_log
 AFTER DELETE ON Motoristas
 FOR EACH ROW
 BEGIN
-    INSERT INTO LogMudancas (tabela, operacao, dados_antigos, dados_novos, usuario_id)
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
         'Motoristas', 
+        OLD.motorista_id,
         'DELETE', 
         JSON_OBJECT(
             'motorista_id', OLD.motorista_id,
@@ -222,9 +228,10 @@ CREATE TRIGGER after_rotas_insert_log
 AFTER INSERT ON Rotas
 FOR EACH ROW
 BEGIN
-    INSERT INTO LogMudancas (tabela, operacao, dados_antigos, dados_novos, usuario_id)
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
         'Rotas', 
+        NEW.rota_id,
         'INSERT', 
         NULL, 
         JSON_OBJECT(
@@ -248,9 +255,10 @@ CREATE TRIGGER after_rotas_update_log
 AFTER UPDATE ON Rotas
 FOR EACH ROW
 BEGIN
-    INSERT INTO LogMudancas (tabela, operacao, dados_antigos, dados_novos, usuario_id)
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
         'Rotas', 
+        NEW.rota_id,
         'UPDATE', 
         JSON_OBJECT(
             'rota_id', OLD.rota_id,
@@ -287,9 +295,10 @@ CREATE TRIGGER after_rotas_delete_log
 AFTER DELETE ON Rotas
 FOR EACH ROW
 BEGIN
-    INSERT INTO LogMudancas (tabela, operacao, dados_antigos, dados_novos, usuario_id)
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
         'Rotas', 
+        OLD.rota_id,
         'DELETE', 
         JSON_OBJECT(
             'rota_id', OLD.rota_id,
@@ -314,9 +323,10 @@ CREATE TRIGGER after_onibus_insert_log
 AFTER INSERT ON Onibus
 FOR EACH ROW
 BEGIN
-    INSERT INTO LogMudancas (tabela, operacao, dados_antigos, dados_novos, usuario_id)
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
         'Onibus', 
+        NEW.onibus_id,
         'INSERT', 
         NULL, 
         JSON_OBJECT(
@@ -342,9 +352,10 @@ CREATE TRIGGER after_onibus_update_log
 AFTER UPDATE ON Onibus
 FOR EACH ROW
 BEGIN
-    INSERT INTO LogMudancas (tabela, operacao, dados_antigos, dados_novos, usuario_id)
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
         'Onibus', 
+        NEW.onibus_id,
         'UPDATE', 
         JSON_OBJECT(
             'onibus_id', OLD.onibus_id,
@@ -385,9 +396,10 @@ CREATE TRIGGER after_onibus_delete_log
 AFTER DELETE ON Onibus
 FOR EACH ROW
 BEGIN
-    INSERT INTO LogMudancas (tabela, operacao, dados_antigos, dados_novos, usuario_id)
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
         'Onibus', 
+        OLD.onibus_id,
         'DELETE', 
         JSON_OBJECT(
             'onibus_id', OLD.onibus_id,
@@ -415,9 +427,10 @@ CREATE TRIGGER after_usuarios_empresa_insert_log
 AFTER INSERT ON UsuariosEmpresa
 FOR EACH ROW
 BEGIN
-    INSERT INTO LogMudancas (tabela, operacao, dados_antigos, dados_novos, usuario_id)
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
         'UsuariosEmpresa', 
+        NEW.usuario_empresa_id,
         'INSERT', 
         NULL, 
         JSON_OBJECT(
@@ -440,9 +453,10 @@ CREATE TRIGGER after_usuarios_empresa_update_log
 AFTER UPDATE ON UsuariosEmpresa
 FOR EACH ROW
 BEGIN
-    INSERT INTO LogMudancas (tabela, operacao, dados_antigos, dados_novos, usuario_id)
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
         'UsuariosEmpresa', 
+        NEW.usuario_empresa_id,
         'UPDATE', 
         JSON_OBJECT(
             'usuario_empresa_id', OLD.usuario_empresa_id,
@@ -476,9 +490,10 @@ CREATE TRIGGER after_usuarios_empresa_delete_log
 AFTER DELETE ON UsuariosEmpresa
 FOR EACH ROW
 BEGIN
-    INSERT INTO LogMudancas (tabela, operacao, dados_antigos, dados_novos, usuario_id)
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
         'UsuariosEmpresa', 
+        OLD.usuario_empresa_id,
         'DELETE', 
         JSON_OBJECT(
             'usuario_empresa_id', OLD.usuario_empresa_id,
@@ -503,9 +518,10 @@ CREATE TRIGGER after_passageiros_insert_log
 AFTER INSERT ON Passageiros
 FOR EACH ROW
 BEGIN
-    INSERT INTO LogMudancas (tabela, operacao, dados_antigos, dados_novos, usuario_id)
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
         'Passageiros', 
+        NEW.passageiro_id,
         'INSERT', 
         NULL, 
         JSON_OBJECT(
@@ -539,9 +555,10 @@ CREATE TRIGGER after_passageiros_update_log
 AFTER UPDATE ON Passageiros
 FOR EACH ROW
 BEGIN
-    INSERT INTO LogMudancas (tabela, operacao, dados_antigos, dados_novos, usuario_id)
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
         'Passageiros', 
+        NEW.passageiro_id,
         'UPDATE', 
         JSON_OBJECT(
             'passageiro_id', OLD.passageiro_id,
@@ -598,9 +615,10 @@ CREATE TRIGGER after_passageiros_delete_log
 AFTER DELETE ON Passageiros
 FOR EACH ROW
 BEGIN
-    INSERT INTO LogMudancas (tabela, operacao, dados_antigos, dados_novos, usuario_id)
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
         'Passageiros', 
+        OLD.passageiro_id,
         'DELETE', 
         JSON_OBJECT(
             'passageiro_id', OLD.passageiro_id,

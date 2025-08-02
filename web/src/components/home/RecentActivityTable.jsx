@@ -5,6 +5,7 @@ import { useRecentActivities } from "@web/hooks/useRecentActivities";
 const TABLE_HEADERS = [
   { id: "operacao", label: "Operação", sortable: true },
   { id: "tabela", label: "Tabela", sortable: true },
+  { id: "registro_id", label: "ID do Registro", sortable: true },
   { id: "timestamp", label: "Data/Hora", sortable: true },
   { id: "usuario_id", label: "Usuário", sortable: true }
 ];

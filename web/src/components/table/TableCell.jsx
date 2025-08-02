@@ -12,36 +12,36 @@ function TableCell({ value, popUpRef }) {
   const showArrOrValueButton = (value) => {
     const popUpContent = () => (
       <div>
-        <ul>
-          {value.map((item, index) => (
-            <li key={index}>{item}</li>
-          ))}
+        <ul className="p-0">
+          {/*Array*/Array.isArray(value) && (
+            value.map((item, index) => (
+              <p key={index}>{item}</p>
+            ))
+          )}
+          {/*Objeto*/typeof value === 'object' && !Array.isArray(value) && (
+            Object.entries(value).map(([key, val], index) => (
+              <p key={index}>
+                <strong>{key}:</strong> {val}
+              </p>
+            ))
+          )}
+          {/*simples*/typeof value !== 'object' && !Array.isArray(value) && (
+            <p>{value}</p>
+          )}
         </ul>
       </div>
     );
 
-    if (popUpRef && Array.isArray(value)) {
+    if (popUpRef && (Array.isArray(value) || typeof value === 'object')) {
       return (
         <button 
-          className="btn btn-secondary circle"
+          className="btn btn-secondary ps-2 pe-2 pt-0 pb-0"
           data-circle="true"
           onClick={(e) => {
             e.stopPropagation(); // previne o evento de click na linha
-            popUpRef.current.show(popUpContent, {}, 'Valores');
+            popUpRef.current.show({ content: popUpContent, title: 'Valores' });
           }}
-          style={{
-            width: '32px',
-            height: '32px',
-            borderRadius: '50%',
-            padding: '0',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '0.875rem',
-            lineHeight: '1',
-            fontWeight: 'bold',
-            minWidth: '32px'
-          }}
+          data-circle="false"
         >
           ...
         </button>

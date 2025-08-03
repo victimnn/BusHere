@@ -10,6 +10,12 @@ import ErrorAlert from "@web/components/common/ErrorAlert";
 import ActionButton from "@web/components/common/ActionButton";
 import { usePassengers } from "@web/hooks/usePassengers";
 import { useNotification } from "@web/hooks/useNotification";
+import { formatCPF, formatPhoneNumber, formatDateFromDatabase, getTypeFormat } from "@shared/formatters";
+
+const formatType = (value) => {
+  const { className, text } = getTypeFormat(value);
+  return React.createElement('span', { className }, text);
+}
 
 const TABLE_HEADERS = [
   { id: "id", label: "ID", sortable: true },
@@ -17,7 +23,12 @@ const TABLE_HEADERS = [
   { id: "cpf", label: "CPF", sortable: true },
   { id: "email", label: "E-mail", sortable: true },
   { id: "telefone", label: "Telefone", sortable: false },
-  { id: "tipo_passageiro", label: "Tipo", sortable: true }
+  { id: "data_nascimento", label: "Data Nascimento", sortable: true },
+  { id: "tipo_passageiro", 
+    label: "Tipo", 
+    sortable: true,
+    formatter: (value) => formatType(value)
+  }
 ];
 
 function Passengers({ pageFunctions }) {

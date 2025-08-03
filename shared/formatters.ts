@@ -97,6 +97,16 @@ export function formatKilometers(value: number): string {
 }
 
 /**
+ * Formata o tempo
+ * @param {number} value - Valor da capacidade
+ * @returns {string} - Capacidade formatada ou "N/A"
+ */
+export function formatTime(value: number): string {
+  if (!value && value !== 0) return 'N/A';
+  return `${value} minutos`;
+}
+
+/**
  * Formata capacidade de passageiros
  * @param {number} value - Valor da capacidade
  * @returns {string} - Capacidade formatada ou "N/A"
@@ -126,11 +136,40 @@ export function getStatusFormat(value: string): { className: string; text: strin
   
   if (status.includes('inativo') || status.includes('inativa') || status.includes('desativado') || status.includes('afastado')) {
     className = 'bg-danger';
-  } else if (status.includes('operação') || status.includes('ativo') || status.includes('ativa')) {
+  } else if (status.includes('operação') || status.includes('ativo') || status.includes('ativa') || status.includes('estudante')) {
     className = 'bg-success';
   } else if (status.includes('manutenção') || status.includes('férias') || status.includes('planejamento')) {
     className = 'bg-warning text-dark';
-  } 
+  } else if (status.includes('corporativo')) {
+    className = 'bg-info';
+  }
+
+  return { className: `badge ${className}`, text: value };
+}
+
+/**
+ * Retorna informações de formatação para tipo (classe CSS e texto)
+ * 
+ * Exemplo de uso em React:
+ * ```jsx
+ * const { className, text } = getTypeFormat(tipo);
+ * return <span className={className}>{text}</span>;
+ * ```
+ * 
+ * @param {string} value - Valor do tipo
+ * @returns {object} - Objeto com classe CSS e valor para renderização
+ */
+export function getTypeFormat(value: string): { className: string; text: string } {
+  if (!value) return { className: 'bg-secondary', text: 'N/A' };
+  
+  let className = 'bg-secondary';
+  const tipo = value.toLowerCase();
+
+  if (tipo.includes('estudante') ) {
+    className = 'bg-success';
+  } else if (tipo.includes('corporativo')) {
+    className = 'bg-info';
+  }
 
   return { className: `badge ${className}`, text: value };
 }

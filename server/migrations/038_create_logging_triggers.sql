@@ -185,7 +185,7 @@ BEGIN
             'criacao', NEW.criacao,
             'atualizacao', NEW.atualizacao
         ),
-        NEW.motorista_id
+        1
     );
 END;
 

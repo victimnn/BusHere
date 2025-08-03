@@ -5,11 +5,17 @@ import PropTypes from 'prop-types';
  * Componente de célula da tabela
  * @param {Object} props - propriedades do componente
  * @param {*} props.value - valor a ser exibido na célula
+ * @param {Object} props.header - configuração do header da coluna (incluindo formatter)
  * @param {Object} props.popUpRef - referência para o popup
  * @returns {JSX.Element} componente da célula da tabela
  */
-function TableCell({ value, popUpRef }) {
-  const showArrOrValueButton = (value) => {
+function TableCell({ value, header, popUpRef }) {
+  // Aplica o formatador se disponível
+  const displayValue = header?.formatter && value !== null && value !== undefined 
+    ? header.formatter(value) 
+    : value;
+
+  const showArrOrValueButton = (displayValue) => {
     const popUpContent = () => (
       <div>
         <ul className="p-0">
@@ -26,7 +32,7 @@ function TableCell({ value, popUpRef }) {
             ))
           )}
           {/*simples*/typeof value !== 'object' && !Array.isArray(value) && (
-            <p>{value}</p>
+            <p>{displayValue}</p>
           )}
         </ul>
       </div>
@@ -47,15 +53,20 @@ function TableCell({ value, popUpRef }) {
         </button>
       );
     } else {
-      return value;
+      return displayValue;
     }
   };
 
-  return <td>{showArrOrValueButton(value)}</td>;
+  return <td>{showArrOrValueButton(displayValue)}</td>;
 }
 
 TableCell.propTypes = {
   value: PropTypes.any,
+  header: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    formatter: PropTypes.func
+  }),
   popUpRef: PropTypes.object,
 };
 

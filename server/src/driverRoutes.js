@@ -197,6 +197,11 @@ module.exports = (pool) => {
       data_admissao, status_motorista_id, ativo
     } = req.body;
 
+    // Validação básica
+    if (!id || isNaN(parseInt(id))) {
+      return res.status(400).json({ error: 'ID do motorista inválido' });
+    }
+
     try {
       // Verificar se o motorista existe
       const [existingDriver] = await pool.execute(
@@ -210,34 +215,50 @@ module.exports = (pool) => {
 
       // Verificar duplicatas
       if (cpf || cnh_numero || email) {
-        const [duplicateRows] = await pool.execute(
-          `SELECT motorista_id, cpf, cnh_numero, email 
-           FROM Motoristas 
-           WHERE motorista_id != ? AND (cpf = ? OR cnh_numero = ? OR (email IS NOT NULL AND email = ?))`,
-          [id, cpf || '', cnh_numero || '', email || '']
-        );
+        let duplicateQuery = `SELECT motorista_id, cpf, cnh_numero, email FROM Motoristas WHERE motorista_id != ?`;
+        let duplicateParams = [id];
+        let conditions = [];
 
-        if (duplicateRows.length > 0) {
-          let field = 'unknown';
-          if (duplicateRows[0].cpf === cpf) field = 'CPF';
-          else if (duplicateRows[0].cnh_numero === cnh_numero) field = 'CNH';
-          else if (duplicateRows[0].email === email) field = 'email';
+        if (cpf) {
+          conditions.push('cpf = ?');
+          duplicateParams.push(cpf);
+        }
+        if (cnh_numero) {
+          conditions.push('cnh_numero = ?');
+          duplicateParams.push(cnh_numero);
+        }
+        if (email) {
+          conditions.push('email = ?');
+          duplicateParams.push(email);
+        }
 
-          return res.status(409).json({ error: `${field} já está sendo usado por outro motorista` });
+        if (conditions.length > 0) {
+          duplicateQuery += ' AND (' + conditions.join(' OR ') + ')';
+          
+          const [duplicateRows] = await pool.execute(duplicateQuery, duplicateParams);
+
+          if (duplicateRows.length > 0) {
+            let field = 'unknown';
+            if (duplicateRows[0].cpf === cpf) field = 'CPF';
+            else if (duplicateRows[0].cnh_numero === cnh_numero) field = 'CNH';
+            else if (duplicateRows[0].email === email) field = 'email';
+
+            return res.status(409).json({ error: `${field} já está sendo usado por outro motorista` });
+          }
         }
       }
 
       // Preparar dados para atualização
       const updateData = {};
-      if (nome !== undefined) updateData.nome = nome;
-      if (cpf !== undefined) updateData.cpf = cpf;
-      if (cnh_numero !== undefined) updateData.cnh_numero = cnh_numero;
-      if (cnh_categoria !== undefined) updateData.cnh_categoria = cnh_categoria;
-      if (cnh_validade !== undefined) updateData.cnh_validade = cnh_validade;
-      if (telefone !== undefined) updateData.telefone = telefone;
-      if (email !== undefined) updateData.email = email;
-      if (data_admissao !== undefined) updateData.data_admissao = data_admissao;
-      if (status_motorista_id !== undefined) updateData.status_motorista_id = status_motorista_id;
+      if (nome !== undefined && nome !== null && nome.trim() !== '') updateData.nome = nome.trim();
+      if (cpf !== undefined && cpf !== null && cpf.trim() !== '') updateData.cpf = cpf.trim();
+      if (cnh_numero !== undefined && cnh_numero !== null && cnh_numero.trim() !== '') updateData.cnh_numero = cnh_numero.trim();
+      if (cnh_categoria !== undefined && cnh_categoria !== null && cnh_categoria.trim() !== '') updateData.cnh_categoria = cnh_categoria.trim();
+      if (cnh_validade !== undefined && cnh_validade !== null && cnh_validade.trim() !== '') updateData.cnh_validade = cnh_validade.trim();
+      if (telefone !== undefined) updateData.telefone = telefone ? telefone.trim() : null;
+      if (email !== undefined) updateData.email = email ? email.trim() : null;
+      if (data_admissao !== undefined) updateData.data_admissao = data_admissao ? data_admissao.trim() : null;
+      if (status_motorista_id !== undefined) updateData.status_motorista_id = parseInt(status_motorista_id) || 1;
       if (ativo !== undefined) updateData.ativo = ativo;
 
       if (Object.keys(updateData).length === 0) {
@@ -269,7 +290,13 @@ module.exports = (pool) => {
       res.json(updatedDriver[0]);
     } catch (error) {
       console.error('Erro ao atualizar motorista:', error);
-      res.status(500).json({ error: 'Erro ao atualizar motorista' });
+      console.error('Stack trace:', error.stack);
+      console.error('SQL Error Code:', error.code);
+      console.error('SQL Error SQL State:', error.sqlState);
+      res.status(500).json({ 
+        error: 'Erro ao atualizar motorista',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
     }
   });
 

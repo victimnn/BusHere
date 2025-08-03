@@ -10,18 +10,36 @@ import ErrorAlert from "@web/components/common/ErrorAlert";
 import ActionButton from "@web/components/common/ActionButton";
 import { useDrivers } from "@web/hooks/useDrivers";
 import { useNotification } from "@web/hooks/useNotification";
+import { formatCPF, formatPhoneNumber, formatDateFromDatabase, getStatusFormat } from "@shared/formatters";
+
+const formatStatus = (value) => {
+  const { className, text } = getStatusFormat(value);
+  return React.createElement('span', { className }, text);
+}
 
 const TABLE_HEADERS = [
   { id: "id", label: "ID", sortable: true },
   { id: "nome", label: "Nome", sortable: true },
-  { id: "cpf", label: "CPF", sortable: true },
+  { id: "cpf", 
+    label: "CPF", 
+    sortable: true,
+    formatter: (value) => formatCPF(value)
+  },
   { id: "cnh_numero", label: "CNH", sortable: true },
   { id: "cnh_categoria", label: "Categoria", sortable: true },
   { id: "cnh_validade", label: "Validade CNH", sortable: true },
-  { id: "telefone", label: "Telefone", sortable: true },
+  { id: "telefone", 
+    label: "Telefone", 
+    sortable: true,
+    formatter: (value) => formatPhoneNumber(value)
+  },
   { id: "email", label: "Email", sortable: true },
   { id: "data_admissao", label: "Data Admissão", sortable: true },
-  { id: "status_nome", label: "Status", sortable: true }
+  { id: "status_nome", 
+    label: "Status", 
+    sortable: true,
+    formatter: (value) => formatStatus(value)
+  },
 ];
 
 function Drivers({ pageFunctions }) {
@@ -74,7 +92,7 @@ function Drivers({ pageFunctions }) {
       telefone: driver.telefone,
       email: driver.email,
       data_admissao: driver.data_admissao,
-      status_motorista_id: driver.status_motorista_id
+      status_motorista_id: parseInt(driver.status_motorista_id) || 1
     };
 
     popUpRef.current.show({

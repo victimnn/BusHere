@@ -5,6 +5,12 @@ import RouteForm from "../components/routes/RouteForm";
 import RouteStatsCards from "../components/routes/RouteStatsCards";
 import Table from "../components/Table";
 import api from "../api/api";
+import { formatDateFromDatabase, getStatusFormat, formatKilometers, formatTime } from "@shared/formatters";
+
+const formatStatus = (value) => {
+  const { className, text } = getStatusFormat(value);
+  return React.createElement('span', { className }, text);
+};
 
 // header da tabela
 const tableHeaders = [
@@ -13,9 +19,21 @@ const tableHeaders = [
   { id: "nome", label: "Nome", sortable: true },
   { id: "origem_descricao", label: "Origem", sortable: true },
   { id: "destino_descricao", label: "Destino", sortable: true },
-  { id: "distancia_km", label: "Distância (km)", sortable: true },
-  { id: "tempo_viagem_estimado_minutos", label: "Tempo de Viagem (min)", sortable: true },
-  { id: "status", label: "Status", sortable: true },
+  { id: "distancia_km", 
+    label: "Distância", 
+    sortable: true,
+    formatter: (value) => formatKilometers(value)
+  },
+  { id: "tempo_viagem_estimado_minutos", 
+    label: "Tempo de Viagem", 
+    sortable: true,
+    formatter: (value) => formatTime(value)
+  },
+  { id: "status", 
+    label: "Status", 
+    sortable: true,
+    formatter: (value) => formatStatus(value)
+  },
 ];
 
 function RoutesPage({ pageFunctions }) {

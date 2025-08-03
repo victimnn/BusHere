@@ -39,13 +39,13 @@ const TABLE_HEADERS = [
   { 
     id: "data_ultima_manutencao", 
     label: "Última Manutenção", 
-    sortable: true,
+    sortable: false,
     formatter: (value) => value ? formatDateFromDatabase(value) : 'N/A'
   },
   { 
     id: "data_proxima_manutencao", 
     label: "Próxima Manutenção", 
-    sortable: true,
+    sortable: false,
     formatter: (value) => value ? formatDateFromDatabase(value) : 'N/A'
   },
   { 

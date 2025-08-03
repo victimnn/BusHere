@@ -23,7 +23,7 @@ const TABLE_HEADERS = [
   { id: "cpf", label: "CPF", sortable: true },
   { id: "email", label: "E-mail", sortable: true },
   { id: "telefone", label: "Telefone", sortable: false },
-  { id: "data_nascimento", label: "Data Nascimento", sortable: true },
+  { id: "data_nascimento", label: "Data Nascimento", sortable: false },
   { id: "tipo_passageiro", 
     label: "Tipo", 
     sortable: true,

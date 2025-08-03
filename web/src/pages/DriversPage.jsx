@@ -15,7 +15,7 @@ import { formatCPF, formatPhoneNumber, formatDateFromDatabase, getStatusFormat }
 const formatStatus = (value) => {
   const { className, text } = getStatusFormat(value);
   return React.createElement('span', { className }, text);
-}
+};
 
 const TABLE_HEADERS = [
   { id: "id", label: "ID", sortable: true },

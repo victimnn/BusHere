@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import PopUpComponent from "../components/PopUpComponent";
 import StopDetails from "../components/stops/StopDetails";
 import StopForm from "../components/stops/StopForm";
@@ -8,6 +8,12 @@ import MapComponent from "../components/MapComponent";
 import Table from "../components/Table";
 import api from "../api/api";
 import { getColorBasedOnValue } from "../utils/mapIcons";
+import { formatCapacity, getStatusFormat } from "@shared/formatters";
+
+const formatStatus = (value) => {
+  const { className, text } = getStatusFormat(value);
+  return React.createElement('span', { className }, text);
+};
 
 /** 
 * Função para sincronizar os marcadores com os pontos buscados
@@ -152,7 +158,7 @@ function Stops({ pageFunctions }) {
   };
 
   const handleDeleteStop = async (id) => {
-    if (confirm("Você tem certeza que deseja deletar este ponto? Esta ação não pode ser desfeita.")) {
+    if (confirm("Você tem certeza que deseja excluir este ponto?")) {
       try {
         await api.stops.delete(id); // Chama a API para deletar o ponto
         
@@ -178,8 +184,12 @@ function Stops({ pageFunctions }) {
     {id: "cep", label: "CEP", sortable: false},
     {id: "coordinates", label: "Cordenadas", sortable: false},
     {id: "routesView", label: "Rotas", sortable: false}, 
-    {id: "address", label: "Endereço", sortable: false},
-    {id: "status", label: "Status", sortable: true}
+    {id: "address", label: "Endereço", sortable: true},
+    {id: "status", 
+    label: "Status", 
+    sortable: true,
+    formatter: (value) => formatStatus(value)
+  }
   ]
   
   const tableData = stops.map((stop) => ({

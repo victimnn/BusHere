@@ -1,7 +1,7 @@
 // Configurações para o componente GenericForm
 import api from '../../../api/api';
 import { validateCPF, validateEmail, validatePhoneNumber, validateCEP, validateDate } from '@shared/validators';
-import { formatCPF, formatPhoneNumber, formatCEP, formatDate, formatDateFromDatabase } from '@shared/formatters';
+import { formatCPF, formatPhoneNumber, formatCEP, formatDate, formatDateFromDatabase, formatPlate } from '@shared/formatters';
 import { createFakePassengerData, createFakeBusData, createFakeRouteData, createFakeStopData, createFakeDriverData } from '../../../utils/fakers';
 import { BRAZILIAN_STATES, isValidUF } from '@shared/brazilianStates';
 import { formatters } from '../detail/detailConfigs';
@@ -166,14 +166,15 @@ export const busFormConfig = {
       labelIcon: 'bi bi-card-text',
       inputIcon: 'bi bi-signpost',
       placeholder: 'ABC-1234 ou ABC1D23',
-      maxLength: 8,
+      maxLength: 7,
       required: true,
       size: 'lg',
-      formatter: (value) => value.toUpperCase(),
+      formatter: (value) => formatPlate(value),
       validator: (value) => {
         if (!value.trim()) return 'Placa é obrigatória';
-        const placaRegex = /^[A-Z]{3}-?\d{4}$|^[A-Z]{3}\d[A-Z]\d{2}$/;
-        if (!placaRegex.test(value.toUpperCase().replace(/[^A-Z0-9]/g, ''))) {
+        const cleanValue = value.replace(/[-\s]/g, '').toUpperCase();
+        const placaRegex = /^[A-Z]{3}\d{4}$|^[A-Z]{3}\d[A-Z]\d{2}$/;
+        if (!placaRegex.test(cleanValue)) {
           return 'Formato de placa inválido (ex: ABC-1234 ou ABC1D23)';
         }
         return null;

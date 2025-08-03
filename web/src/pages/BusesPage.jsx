@@ -10,19 +10,56 @@ import ErrorAlert from "@web/components/common/ErrorAlert";
 import ActionButton from "@web/components/common/ActionButton";
 import { useBuses } from "@web/hooks/useBuses";
 import { useNotification } from "@web/hooks/useNotification";
+import { formatPlate, formatDateFromDatabase, formatKilometers, formatCapacity, getStatusFormat } from "@shared/formatters";
+
+// Função para formatar status como JSX usando a função utilitária
+const formatStatus = (value) => {
+  const { className, text } = getStatusFormat(value);
+  return React.createElement('span', { className }, text);
+};
 
 const TABLE_HEADERS = [
   { id: "id", label: "ID", sortable: true },
   { id: "nome", label: "Nome", sortable: true },
-  { id: "placa", label: "Placa", sortable: true },
+  { 
+    id: "placa", 
+    label: "Placa", 
+    sortable: true,
+    formatter: (value) => formatPlate(value)
+  },
   { id: "modelo", label: "Modelo", sortable: true },
   { id: "marca", label: "Marca", sortable: true },
   { id: "ano_fabricacao", label: "Ano", sortable: true },
-  { id: "capacidade", label: "Capacidade", sortable: true },
-  { id: "data_ultima_manutencao", label: "Última Manutenção", sortable: true },
-  { id: "data_proxima_manutencao", label: "Próxima Manutenção", sortable: true },
-  { id: "quilometragem", label: "Quilometragem", sortable: true },
-  { id: "status", label: "Status", sortable: true },
+  { 
+    id: "capacidade", 
+    label: "Capacidade", 
+    sortable: true,
+    formatter: (value) => formatCapacity(value)
+  },
+  { 
+    id: "data_ultima_manutencao", 
+    label: "Última Manutenção", 
+    sortable: true,
+    formatter: (value) => value ? formatDateFromDatabase(value) : 'N/A'
+  },
+  { 
+    id: "data_proxima_manutencao", 
+    label: "Próxima Manutenção", 
+    sortable: true,
+    formatter: (value) => value ? formatDateFromDatabase(value) : 'N/A'
+  },
+  { 
+    id: "quilometragem", 
+    label: "Quilometragem", 
+    sortable: true,
+    formatter: (value) => formatKilometers(value)
+  },
+  { 
+    id: "status", 
+    label: "Status", 
+    sortable: true,
+    formatter: (value) => formatStatus(value)
+  },
 ];
 
 function Buses({ pageFunctions }) {

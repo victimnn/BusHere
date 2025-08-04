@@ -32,7 +32,7 @@ function DetailContainer({
           // Se o child é um DetailSection, envolvê-lo com col
           if (child && child.type && child.type.name === 'DetailSection') {
             return (
-              <div key={index} className={`${getColumnClass()} d-flex`}>
+              <div key={index} className={getColumnClass()}>
                 {child}
               </div>
             );

@@ -1,19 +1,25 @@
-import React, { useRef, useState, useEffect } from "react";
-import PopUpComponent from "../components/PopUpComponent";
-import RouteDetails from "../components/routes/RouteDetails";
-import RouteForm from "../components/routes/RouteForm";
-import RouteStatsCards from "../components/routes/RouteStatsCards";
-import Table from "../components/Table";
-import api from "../api/api";
+import React, { useRef, useEffect, useCallback } from "react";
+import PopUpComponent from "@web/components/PopUpComponent";
+import RouteDetails from "@web/components/routes/RouteDetails";
+import RouteForm from "@web/components/routes/RouteForm";
+import RouteStatsCards from "@web/components/routes/RouteStatsCards";
+import Table from "@web/components/Table";
+import Notification from "@web/components/common/Notification";
+import LoadingSpinner from "@web/components/common/LoadingSpinner";
+import ErrorAlert from "@web/components/common/ErrorAlert";
+import ActionButton from "@web/components/common/ActionButton";
+import { useRoutes } from "@web/hooks/useRoutes";
+import { useNotification } from "@web/hooks/useNotification";
 import { formatDateFromDatabase, getStatusFormat, formatKilometers, formatTime } from "@shared/formatters";
 
+// Função para formatar status como JSX usando a função utilitária
 const formatStatus = (value) => {
   const { className, text } = getStatusFormat(value);
   return React.createElement('span', { className }, text);
 };
 
 // header da tabela
-const tableHeaders = [
+const TABLE_HEADERS = [
   { id: "rota_id", label: "ID", sortable: true },
   { id: "codigo_rota", label: "Código", sortable: true },
   { id: "nome", label: "Nome", sortable: true },
@@ -37,133 +43,91 @@ const tableHeaders = [
 ];
 
 function RoutesPage({ pageFunctions }) {
+  const popUpRef = useRef(null);
+  
+  // Usar hook customizado para gerenciar dados das rotas
+  const {
+    routes,
+    isLoading,
+    error,
+    createRoute,
+    updateRoute,
+    deleteRoute,
+    refetch
+  } = useRoutes();
+
+  // Hook para notificações
+  const { notification, hideNotification, showSuccess, showError } = useNotification();
+
   useEffect(() => {
     pageFunctions.set("Rotas", true, true);
-  }, []);
-  
-  const popUpRef = useRef(null); // Referência para o componente PopUpComponent
-  const [routes, setRoutes] = useState([]); // Estado para armazenar as rotas
-  const [isLoading, setIsLoading] = useState(true); // Estado para controlar o carregamento
-  const [error, setError] = useState(null); // Estado para armazenar erros
-  const [currentPage, setCurrentPage] = useState(1); // Controle de paginação
-  const [searchTerm, setSearchTerm] = useState(''); // Termo de busca
-
-  // Função para buscar as rotas do servidor
-  const fetchRoutes = async () => {
-    try {
-      setIsLoading(true);
-      const response = await api.routes.list(currentPage, 100, searchTerm);
-      
-      // Adaptar os dados do servidor para o formato esperado pelo frontend
-      let routesData = [];
-      if (response && response.data && Array.isArray(response.data)) {
-        routesData = response.data.map(route => ({ 
-          ...route, 
-          status: route.status_nome 
-        }));
-      }
-      
-      setRoutes(routesData);
-      setError(null);
-      
-      console.log('Dados recebidos da API:', response);
-      console.log('Dados transformados:', routesData);
-    } catch (err) {
-      console.error("Erro ao buscar rotas:", err);
-      setError("Não foi possível carregar as rotas. Tente novamente mais tarde.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchRoutes();
-  }, [currentPage, searchTerm]); // Recarrega quando mudar a página ou termo de busca
-  // Handler para criar uma nova rota
-  const handleCreateRoute = () => {
+  }, [pageFunctions]);
+  const handleCreateRoute = useCallback(() => {
     popUpRef.current.show({
       title: "Nova Rota",
       content: RouteForm,
       props: {
         onSubmit: async (formData) => {
-          try {
-            console.log('Enviando dados:', formData);
-            await api.routes.create(formData);
+          const result = await createRoute(formData);
+          if (result.success) {
             popUpRef.current.hide();
-            fetchRoutes(); // Recarrega a lista
-          } catch (err) {
-            console.error("Erro ao criar rota:", err);
-            
-            // Provide more specific error messages
-            let errorMessage = "Erro ao criar rota: ";
-            if (err.message && err.message.includes('já cadastrado')) {
-              errorMessage += err.message;
-            } else if (err.message && err.message.includes('409')) {
-              errorMessage += "Código de rota já cadastrado no sistema.";
-            } else {
-              errorMessage += err.message || "Tente novamente mais tarde";
-            }
-            
-            alert(errorMessage);
+            showSuccess("Rota criada com sucesso!");
+          } else {
+            showError(result.error);
           }
         },
-        onCancel: popUpRef.current.hide,
+        onCancel: () => popUpRef.current.hide(),
         isCreateForm: true
       }
     });
-  };
+  }, [createRoute, showSuccess, showError]);
   
   // Handler para editar uma rota
-  const handleEditRoute = (route) => {
+  const handleEditRoute = useCallback((route) => {
+    const initialData = {
+      codigo_rota: route.codigo_rota,
+      nome: route.nome,
+      origem_descricao: route.origem_descricao,
+      destino_descricao: route.destino_descricao,
+      distancia_km: route.distancia_km,
+      tempo_viagem_estimado_minutos: route.tempo_viagem_estimado_minutos,
+      status_rota_id: route.status_rota_id,
+    };
+
     popUpRef.current.show({
       title: `Editar Rota: ${route.nome}`,
       content: RouteForm,
       props: {
-        initialData: route,
+        initialData: initialData,
         onSubmit: async (formData) => {
-          try {
-            console.log('Enviando dados para atualização:', formData);
-            await api.routes.update(route.rota_id, formData);
+          const result = await updateRoute(route.rota_id, formData);
+          if (result.success) {
             popUpRef.current.hide();
-            fetchRoutes(); // Recarrega a lista
-          } catch (err) {
-            console.error("Erro ao atualizar rota:", err);
-            
-            // Provide more specific error messages
-            let errorMessage = "Erro ao atualizar rota: ";
-            if (err.message && err.message.includes('já está sendo usado')) {
-              errorMessage += err.message;
-            } else if (err.message && err.message.includes('409')) {
-              errorMessage += "Código de rota já está sendo usado por outra rota.";
-            } else {
-              errorMessage += err.message || "Tente novamente mais tarde";
-            }
-            
-            alert(errorMessage);
+            showSuccess("Rota atualizada com sucesso!");
+          } else {
+            showError(result.error);
           }
         },
-        onCancel: popUpRef.current.hide,
+        onCancel: () => popUpRef.current.hide(),
       }
     });
-  };
+  }, [updateRoute, showSuccess, showError]);
 
   // Handler para excluir uma rota
-  const handleDeleteRoute = async (id) => {
-    if (confirm("Tem certeza que deseja excluir esta rota?")) {
-      try {
-        await api.routes.delete(id);
-        fetchRoutes(); // Recarrega a lista
-        await popUpRef.current //evita que o popUpRef seja null
-        popUpRef.current.hide(); // Fecha o popup se estiver aberto
-      } catch (err) {
-        console.error("Erro ao excluir rota:", err);
-        alert("Erro ao excluir rota: " + (err.message || "Tente novamente mais tarde"));
+  const handleDeleteRoute = useCallback(async (id) => {
+    if (window.confirm("Tem certeza que deseja excluir esta rota?")) {
+      const result = await deleteRoute(id);
+      if (result.success) {
+        popUpRef.current.hide();
+        showSuccess("Rota excluída com sucesso!");
+      } else {
+        showError(result.error);
       }
     }
-  };
+  }, [deleteRoute, showSuccess, showError]);
 
   // Handler para quando uma linha for clicada
-  const handleRowClick = (route) => {
+  const handleRowClick = useCallback((route) => {
     popUpRef.current.show({
       title: `Rota: ${route.nome}`,
       content: RouteDetails,
@@ -173,7 +137,7 @@ function RoutesPage({ pageFunctions }) {
         onDelete: handleDeleteRoute,
       }
     });
-  };
+  }, [handleEditRoute, handleDeleteRoute]);
 
   return (
     <main className="ps-3 pe-3 pt-3">
@@ -190,35 +154,37 @@ function RoutesPage({ pageFunctions }) {
               <h1 className="h3 mb-0 fw-semibold">Rotas</h1>
             </div>
             
-            <button
+            <ActionButton
               onClick={handleCreateRoute}
-              className="btn btn-primary btn-lg d-flex align-items-center"
-            >
-              <i className="bi bi-plus-circle me-2"></i>
-              <span>Nova Rota</span>
-            </button>
+              icon="bi bi-plus-circle"
+              text="Nova Rota"
+              variant="primary"
+              size="lg"
+              disabled={isLoading}
+            />
           </div>
         </div>
         
         <div className="card-body p-3">
           {error && (
-            <div className="alert alert-danger d-flex align-items-center mb-4" role="alert">
-              <i className="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
-              <div>{error}</div>
-            </div>
+            <ErrorAlert 
+              error={error}
+              onRetry={refetch}
+              onDismiss={() => {}} // O hook gerencia o estado do erro
+              variant="danger"
+            />
           )}
           
           {isLoading ? (
-            <div className="d-flex flex-column justify-content-center align-items-center my-5 py-5">
-              <div className="spinner-border text-primary mb-3" role="status" style={{width: '3rem', height: '3rem'}}>
-                <span className="visually-hidden">Carregando...</span>
-              </div>
-              <p className="text-muted">Carregando rotas...</p>
-            </div>
+            <LoadingSpinner 
+              size="large" 
+              message="Carregando rotas..." 
+              variant="primary"
+            />
           ) : (
             <div className="table-responsive">
               <Table 
-                headers={tableHeaders}
+                headers={TABLE_HEADERS}
                 data={routes}
                 itemsPerPage={10}
                 searchable={true}
@@ -242,6 +208,12 @@ function RoutesPage({ pageFunctions }) {
 
       <PopUpComponent 
         ref={popUpRef}
+      />
+
+      {/* Componente de Notificação */}
+      <Notification 
+        notification={notification} 
+        onClose={hideNotification} 
       />
       </div>
     </main>

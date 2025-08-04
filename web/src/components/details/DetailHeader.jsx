@@ -18,7 +18,7 @@ function DetailHeader({
         <div className="d-flex align-items-center">
           <div className="avatar bg-white text-primary rounded-circle me-4 d-flex align-items-center justify-content-center" 
                style={{width: '64px', height: '64px'}}>
-            <i className={`bi ${icon} fs-2`}></i>
+            <i className={`bi ${icon} fs-4`}></i>
           </div>
           <div>
             <h3 className="mb-1 fw-bold">{title || "Título não informado"}</h3>

@@ -458,6 +458,22 @@ const api = {
         throw error; // Propaga o erro para ser tratado onde for chamado
       }
     }
+  },
+
+  enterpriseUsers: {
+    // Método para listar usuários de uma empresa
+    get: async (enterpriseUserId: number) => {
+      if (!enterpriseUserId) {
+        throw new Error('ID do usuario-empresa é obrigatório para listar usuários');
+      }
+      try {
+        const response = await api.get(`/enterpriseUsers/${enterpriseUserId}`);
+        return response; // Retorna os dados dos usuários da empresa
+      } catch (error) {
+        console.error("Erro ao obter usuários da empresa:", error);
+        throw error; // Propaga o erro para ser tratado onde for chamado
+      }
+    },
   }
 };
 

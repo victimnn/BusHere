@@ -18,11 +18,11 @@ module.exports = (pool) => {
     // Aqui você pode adicionar a lógica para buscar o usuário pelo ID
     // Por exemplo:
     try {
-      const user = await pool.query("SELECT * FROM users WHERE id = ?", [id]);
-      if (user.rows.length === 0) {
+      const [userResults] = await pool.query("SELECT * FROM UsuariosEmpresa WHERE usuario_empresa_id = ?", [id]);
+      if (userResults.length === 0) {
         return res.status(404).json({ error: "Usuário não encontrado" });
       }
-      res.json(user.rows[0]);
+      res.json(userResults[0]);
     } catch (error) {
       console.error("Erro ao buscar usuário:", error);
       res.status(500).json({ error: "Erro interno do servidor" });

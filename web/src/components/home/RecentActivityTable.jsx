@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import Table from "@web/components/Table";
 import { useRecentActivities } from "@web/hooks/useRecentActivities";
+import api from "@web/api/api";
 
 const TABLE_HEADERS = [
   { id: "operacao", label: "Operação", sortable: true },
@@ -8,6 +9,7 @@ const TABLE_HEADERS = [
   { id: "registro_id", label: "ID do Registro", sortable: true },
   { id: "timestamp", label: "Data/Hora", sortable: true },
   { id: "usuario_id", label: "Usuário", sortable: true },
+  { id: "usuario" , label: "Usuário", sortable: true },
   { id: "dados_antigos", label: "Dados Antigos", sortable: false },
   { id: "dados_novos", label: "Dados Novos", sortable: false },
 ];
@@ -40,12 +42,15 @@ const getOperationBadge = (operation) => {
 };
 
 function RecentActivityTable({ data = [], itemsPerPage = 5, popUpRef = null }) {
+
+
   // Transformar os dados para incluir formatação
   const transformedData = data.map(item => ({
     ...item,
     timestamp: formatTimestamp(item.timestamp),
     dados_antigos: item.dados_antigos ? JSON.parse(item.dados_antigos) : '-',
     dados_novos: item.dados_novos ? JSON.parse(item.dados_novos) : '-',
+    usuario: {nome:"tem q fazer ainda"},
     operacao: (
       <span className={getOperationBadge(item.operacao)}>
         {item.operacao}

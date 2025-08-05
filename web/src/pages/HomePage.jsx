@@ -1,17 +1,29 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StatCard from '../components/common/StatCard';
 import { useDashboardData } from '../hooks/useDashboardData';
-import QuickAccess from '../components/home/quickAccess';
-import HomeStatsCards from '../components/home/homeStatsCards';
+import { useRecentActivities } from '@web/hooks/useRecentActivities';
+import PopUpComponent from '@web/components/PopUpComponent';
+
+import QuickAccess from '@web/components/home/quickAccess';
+import HomeStatsCards from '@web/components/home/homeStatsCards';
+import RecentActivityTable from '@web/components/home/RecentActivityTable';
 
 function HomePage({pageFunctions}) {
+    const popUpRef = useRef(null);
+
     useEffect(() => {
         pageFunctions.set("Início", true, true);
-    }, []);
-
-    const navigate = useNavigate();
+    }, []);    const navigate = useNavigate();
     const { stats, isLoading, error, refetch } = useDashboardData();
+    const { activities, isLoading: activitiesLoading, error: activitiesError } = useRecentActivities();
+
+    // Debug log para verificar se os dados estão chegando
+    useEffect(() => {
+        console.log('Activities data:', activities);
+        console.log('Activities loading:', activitiesLoading);
+        console.log('Activities error:', activitiesError);
+    }, [activities, activitiesLoading, activitiesError]);
 
     const quickAccessItems = [
         { title: 'Passageiros', icon: 'bi-people-fill', path: '/passengers', color: 'primary' },
@@ -83,8 +95,32 @@ function HomePage({pageFunctions}) {
                 <HomeStatsCards stats={stats} />
 
                 {/* Quick Access */}
-                <QuickAccess quickAccessItems={quickAccessItems} />
+                <QuickAccess quickAccessItems={quickAccessItems} />                {/* Recent Activity Table */}
+                <RecentActivityTable 
+                  data={activities} 
+                  itemsPerPage={5} 
+                  popUpRef={popUpRef}
+                />
+                
+                {/* Debug info - remover em produção */}
+                {activitiesError && (
+                    <div className="alert alert-warning" role="alert">
+                        <i className="bi bi-exclamation-triangle me-2"></i>
+                        Erro ao carregar atividades: {activitiesError.message || activitiesError}
+                    </div>
+                )}
+                
+                {activitiesLoading && (
+                    <div className="text-center my-3">
+                        <div className="spinner-border spinner-border-sm text-primary" role="status">
+                            <span className="visually-hidden">Carregando atividades...</span>
+                        </div>
+                    </div>
+                )}
             </div>
+            <PopUpComponent 
+                ref={popUpRef}
+            />
         </main>
     );
 };

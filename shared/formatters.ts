@@ -174,6 +174,15 @@ export function getTypeFormat(value: string): { className: string; text: string 
   return { className: `badge ${className}`, text: value };
 }
 
+export function getOperationBadge(operation: string): string {
+  const badges = {
+    'INSERT': 'badge bg-success',
+    'UPDATE': 'badge bg-warning text-dark',
+    'DELETE': 'badge bg-danger'
+  };
+  return badges[operation] || 'badge bg-secondary';
+};
+
 /**
  * Formata um CEP no padrão XXXXX-XXX
  * @param {string} value - CEP a ser formatado

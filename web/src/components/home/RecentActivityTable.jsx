@@ -3,6 +3,8 @@ import Table from "@web/components/Table";
 import { useRecentActivities } from "@web/hooks/useRecentActivities";
 import api from "@web/api/api";
 
+import { getOperationBadge } from "@shared/formatters";
+
 const TABLE_HEADERS = [
   { id: "operacao", label: "Operação", sortable: true },
   { id: "tabela", label: "Tabela", sortable: true },
@@ -29,16 +31,6 @@ const formatTimestamp = (timestamp) => {
   } catch (error) {
     return timestamp;
   }
-};
-
-// Função para mapear operações para cores
-const getOperationBadge = (operation) => {
-  const badges = {
-    'INSERT': 'badge bg-success',
-    'UPDATE': 'badge bg-warning text-dark',
-    'DELETE': 'badge bg-danger'
-  };
-  return badges[operation] || 'badge bg-secondary';
 };
 
 function RecentActivityTable({ data = [], itemsPerPage = 5, popUpRef = null }) {

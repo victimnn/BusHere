@@ -40,6 +40,141 @@ export function removeFormatting(value: string): string {
 }
 
 /**
+ * Remove formatação de uma placa de veículo (remove apenas hífen e espaços)
+ * @param {string} value - Placa a ser desformatada
+ * @returns {string} - Placa sem formatação (mantém letras e números)
+ */
+export function removePlateFormatting(value: string): string {
+  if (!value) return value;
+  return value.replace(/[-\s]/g, '').toUpperCase();
+}
+
+/**
+ * Formata uma placa de veículo brasileira
+ * Suporta formato antigo (ABC-1234) e Mercosul (ABC1D23)
+ * @param {string} value - Placa a ser formatada
+ * @returns {string} - Placa formatada com hífen quando aplicável
+ */
+export function formatPlate(value: string): string {
+  if (!value) return '';
+  
+  // Remove formatação existente e converte para maiúsculo
+  const cleanPlate = value.replace(/[-\s]/g, '').toUpperCase();
+  
+  // Verifica se tem o comprimento adequado (7 caracteres)
+  if (cleanPlate.length !== 7) {
+    return cleanPlate; // Retorna como está se não tiver 7 caracteres
+  }
+  
+  // Verifica se é formato antigo (ABC1234 -> ABC-1234)
+  const oldFormatRegex = /^[A-Z]{3}\d{4}$/;
+  if (oldFormatRegex.test(cleanPlate)) {
+    return cleanPlate.slice(0, 3) + '-' + cleanPlate.slice(3);
+  }
+  
+  // Verifica se é formato Mercosul (ABC1D23)
+  const mercosulFormatRegex = /^[A-Z]{3}\d[A-Z]\d{2}$/;
+  if (mercosulFormatRegex.test(cleanPlate)) {
+    // Formato Mercosul não usa hífen, retorna como está
+    return cleanPlate;
+  }
+  
+  // Se não se encaixa em nenhum formato, retorna como está
+  return cleanPlate;
+}
+
+/**
+ * Formata quilometragem no padrão brasileiro com "km"
+ * @param {number} value - Valor da quilometragem
+ * @returns {string} - Quilometragem formatada ou "N/A"
+ */
+export function formatKilometers(value: number): string {
+  if (!value && value !== 0) return 'N/A';
+  return new Intl.NumberFormat('pt-BR', { 
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2 
+  }).format(value) + ' km';
+}
+
+/**
+ * Formata o tempo
+ * @param {number} value - Valor da capacidade
+ * @returns {string} - Capacidade formatada ou "N/A"
+ */
+export function formatTime(value: number): string {
+  if (!value && value !== 0) return 'N/A';
+  return `${value} minutos`;
+}
+
+/**
+ * Formata capacidade de passageiros
+ * @param {number} value - Valor da capacidade
+ * @returns {string} - Capacidade formatada ou "N/A"
+ */
+export function formatCapacity(value: number): string {
+  if (!value && value !== 0) return 'N/A';
+  return `${value} passageiros`;
+}
+
+/**
+ * Retorna informações de formatação para status (classe CSS e texto)
+ * 
+ * Exemplo de uso em React:
+ * ```jsx
+ * const { className, text } = getStatusFormat(status);
+ * return <span className={className}>{text}</span>;
+ * ```
+ * 
+ * @param {string} value - Valor do status
+ * @returns {object} - Objeto com classe CSS e valor para renderização
+ */
+export function getStatusFormat(value: string): { className: string; text: string } {
+  if (!value) return { className: 'bg-secondary', text: 'N/A' };
+  
+  let className = 'bg-secondary';
+  const status = value.toLowerCase();
+  
+  if (status.includes('inativo') || status.includes('inativa') || status.includes('desativado') || status.includes('afastado')) {
+    className = 'bg-danger';
+  } else if (status.includes('operação') || status.includes('ativo') || status.includes('ativa') || status.includes('estudante')) {
+    className = 'bg-success';
+  } else if (status.includes('manutenção') || status.includes('férias') || status.includes('planejamento')) {
+    className = 'bg-warning text-dark';
+  } else if (status.includes('corporativo')) {
+    className = 'bg-info';
+  }
+
+  return { className: `badge ${className}`, text: value };
+}
+
+/**
+ * Retorna informações de formatação para tipo (classe CSS e texto)
+ * 
+ * Exemplo de uso em React:
+ * ```jsx
+ * const { className, text } = getTypeFormat(tipo);
+ * return <span className={className}>{text}</span>;
+ * ```
+ * 
+ * @param {string} value - Valor do tipo
+ * @returns {object} - Objeto com classe CSS e valor para renderização
+ */
+export function getTypeFormat(value: string): { className: string; text: string } {
+  if (!value) return { className: 'bg-secondary', text: 'N/A' };
+  
+  let className = 'bg-secondary';
+  const tipo = value.toLowerCase();
+
+  if (tipo.includes('estudante') ) {
+    className = 'bg-success';
+  } else if (tipo.includes('corporativo')) {
+    className = 'bg-info';
+  }
+
+  return { className: `badge ${className}`, text: value };
+}
+
+/**
  * Formata um CEP no padrão XXXXX-XXX
  * @param {string} value - CEP a ser formatado
  * @returns {string} - CEP formatado

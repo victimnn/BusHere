@@ -21,6 +21,7 @@ function TableRow({ row, headers, onRowClick, popUpRef }) {
         <TableCell
           key={header.id}
           value={row[header.id]}
+          header={header}
           popUpRef={popUpRef}
         />
       ))}

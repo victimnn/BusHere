@@ -1,5 +1,5 @@
 // Configurações para o componente DetailCard
-import { formatCPF, formatPhoneNumber, formatDateFromDatabase } from '@shared/formatters';
+import { formatCPF, formatPhoneNumber, formatPlate, formatDateFromDatabase } from '@shared/formatters';
 
 // Constantes para tipos de passageiro
 const PASSENGER_TYPES = {
@@ -16,7 +16,8 @@ export const formatters = {
   passengerType: (value) => PASSENGER_TYPES[value] || "Não informado",
   coordinates: (value) => value ? Number(value).toFixed(6) : "Não informado",
   kilometers: (value) => value ? `${Number(value).toLocaleString('pt-BR')} km` : "Não informado",
-  defaultValue: (value) => value || "Não informado"
+  defaultValue: (value) => value || "Não informado",
+  plate: (value) => value ? formatPlate(value) : "Não informado"
 };
 
 export const passengerConfig = {
@@ -88,7 +89,7 @@ export const busConfig = {
       key: "placa",
       label: "Placa",
       icon: "bi bi-card-text",
-      formatter: formatters.defaultValue
+      formatter: formatters.plate
     },
     {
       key: "modelo",

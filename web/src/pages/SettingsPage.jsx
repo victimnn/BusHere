@@ -2,6 +2,28 @@ import { useRef, useEffect, useState } from "react";
 import PopUpComponent from "../components/PopUpComponent";
 import { useAuth } from "../context/authContext";
 import api from "../api/api";
+import Table from "@web/components/Table";
+
+
+const testTableHeaders = [
+  { id: "foo", label: "Foo", sortable: true },
+  { id: "bar", label: "Bar", sortable: true },
+  { id: "baz", label: "Baz", sortable: false },
+]
+
+const testTableData = [
+  { 
+    foo: ["a","b","c","d"], 
+    bar: {
+      nome: (<b>teste</b>), 
+      idade: 30,
+      foo: "bar",
+      bar: "baz"
+    }, 
+    baz: "Valor Normal" 
+  }
+];
+
 
 function Settings({ pageFunctions }) {
   const { user, login, logout, isAuthenticated } = useAuth();
@@ -69,40 +91,22 @@ function Settings({ pageFunctions }) {
             </div>
           </div>
         ))}
-      </div>
+      </div>  
+      
+      <Table
+        headers={testTableHeaders}
+        data={testTableData}
+        itemsPerPage={5}
+        searchable={true}
+        popUpRef={popUpRef}
+        className="mb-4"
+      />
+
+      <PopUpComponent ref={popUpRef} />
     </main>
+
+
   );
 }
 
 export default Settings;
-
-
-
-
-  /* page antiga
-    <main>
-      <h1>Configuracoes</h1> 
-
-      <button
-        onClick={handleButtonClickForTests}
-        className="btn btn-primary"
-      >
-        Fazer login
-      </button>
-        
-      {/* texto com a cor secundaria }
-      <p className="text-secondary">Texto com a cor secundaria</p> 
-
-      {/* por enquanto printa o .env inteiro }
-      <pre>{JSON.stringify(import.meta.env, null, 2)}</pre>
-
-      {/* por enquanto printa o .env inteiro }
-      <pre>{JSON.stringify(user, null, 2)}</pre>
-
-
-      {/* Componente PopUpComponent }
-
-      
-      />
-    </main>
-    */

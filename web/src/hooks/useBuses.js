@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import api from '@web/api/api';
-import { removeFormatting, formatDateFromDatabase} from '@shared/formatters';
+import { removeFormatting, removePlateFormatting, formatDateFromDatabase} from '@shared/formatters';
 
 // Status padrão como fallback
 const DEFAULT_BUS_STATUS = [
@@ -32,7 +32,7 @@ const transformBusData = (bus, getStatusOnibusNome) => ({
 const prepareBackendData = (formData) => {
   return {
     nome: formData.nome,
-    placa: removeFormatting(formData.placa),
+    placa: removePlateFormatting(formData.placa),
     modelo: formData.modelo || null,
     marca: formData.marca || null,
     ano_fabricacao: formData.ano_fabricacao ? Number(formData.ano_fabricacao) : null,

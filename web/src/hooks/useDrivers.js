@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import api from '@web/api/api';
-import { formatCPF, formatPhoneNumber, removeFormatting, formatDateFromDatabase } from '@shared/formatters';
+import { formatCPF, formatPhoneNumber, removeFormatting, formatDateFromDatabase, formatDateForDatabase } from '@shared/formatters';
 
 // Status padrão como fallback
 const DEFAULT_DRIVER_STATUS = [
@@ -29,16 +29,34 @@ const transformDriverData = (driver, getStatusMotoristaName) => ({
 
 // Função para preparar dados para o backend
 const prepareBackendData = (formData) => {
+  // Função auxiliar para garantir formato de data correto para o backend
+  const ensureDatabaseDateFormat = (dateValue) => {
+    if (!dateValue) return null;
+    
+    // Se já está no formato YYYY-MM-DD, retorna como está
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
+      return dateValue;
+    }
+    
+    // Se está no formato DD/MM/YYYY, converte
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateValue)) {
+      return formatDateForDatabase(dateValue);
+    }
+    
+    // Para outros formatos, tenta converter
+    return formatDateForDatabase(dateValue) || dateValue;
+  };
+
   return {
     nome: formData.nome,
     cpf: removeFormatting(formData.cpf),
     cnh_numero: formData.cnh_numero,
     cnh_categoria: formData.cnh_categoria,
-    cnh_validade: formData.cnh_validade,
+    cnh_validade: ensureDatabaseDateFormat(formData.cnh_validade),
     telefone: removeFormatting(formData.telefone),
     email: formData.email || null,
-    data_admissao: formData.data_admissao || null,
-    status_motorista_id: formData.status_motorista_id
+    data_admissao: ensureDatabaseDateFormat(formData.data_admissao),
+    status_motorista_id: parseInt(formData.status_motorista_id) || 1
   };
 };
 

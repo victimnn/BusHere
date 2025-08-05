@@ -7,7 +7,9 @@ const TABLE_HEADERS = [
   { id: "tabela", label: "Tabela", sortable: true },
   { id: "registro_id", label: "ID do Registro", sortable: true },
   { id: "timestamp", label: "Data/Hora", sortable: true },
-  { id: "usuario_id", label: "Usuário", sortable: true }
+  { id: "usuario_id", label: "Usuário", sortable: true },
+  { id: "dados_antigos", label: "Dados Antigos", sortable: false },
+  { id: "dados_novos", label: "Dados Novos", sortable: false },
 ];
 
 // Função para formatar a data
@@ -42,12 +44,16 @@ function RecentActivityTable({ data = [], itemsPerPage = 5 }) {
   const transformedData = data.map(item => ({
     ...item,
     timestamp: formatTimestamp(item.timestamp),
+    dados_antigos: item.dados_antigos ? JSON.parse(item.dados_antigos) : '-',
+    dados_novos: {a: "1", b: "2"}, 
     operacao: (
       <span className={getOperationBadge(item.operacao)}>
         {item.operacao}
       </span>
     )
   }));
+
+  console.log("aaa",transformedData   )
 
   return (
     <div className="mb-4 mt-4">
@@ -62,7 +68,8 @@ function RecentActivityTable({ data = [], itemsPerPage = 5 }) {
         data={transformedData} 
         itemsPerPage={itemsPerPage}
         searchable={false}
-        className="table-striped table-hover"  
+        className="table-striped table-hover" 
+        onRowClick={(row)=> console.log('Row clicked:', row)} 
       />
     </div>
   );

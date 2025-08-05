@@ -1,14 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StatCard from '../components/common/StatCard';
 import { useDashboardData } from '../hooks/useDashboardData';
 import { useRecentActivities } from '@web/hooks/useRecentActivities';
+import PopUpComponent from '@web/components/PopUpComponent';
 
 import QuickAccess from '@web/components/home/quickAccess';
 import HomeStatsCards from '@web/components/home/homeStatsCards';
 import RecentActivityTable from '@web/components/home/RecentActivityTable';
 
 function HomePage({pageFunctions}) {
+    const popUpRef = useRef(null);
+
     useEffect(() => {
         pageFunctions.set("Início", true, true);
     }, []);    const navigate = useNavigate();
@@ -96,6 +99,7 @@ function HomePage({pageFunctions}) {
                 <RecentActivityTable 
                   data={activities} 
                   itemsPerPage={5} 
+                  popUpRef={popUpRef}
                 />
                 
                 {/* Debug info - remover em produção */}
@@ -114,6 +118,9 @@ function HomePage({pageFunctions}) {
                     </div>
                 )}
             </div>
+            <PopUpComponent 
+                ref={popUpRef}
+            />
         </main>
     );
 };

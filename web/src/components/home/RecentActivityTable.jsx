@@ -39,13 +39,13 @@ const getOperationBadge = (operation) => {
   return badges[operation] || 'badge bg-secondary';
 };
 
-function RecentActivityTable({ data = [], itemsPerPage = 5 }) {
+function RecentActivityTable({ data = [], itemsPerPage = 5, popUpRef = null }) {
   // Transformar os dados para incluir formatação
   const transformedData = data.map(item => ({
     ...item,
     timestamp: formatTimestamp(item.timestamp),
     dados_antigos: item.dados_antigos ? JSON.parse(item.dados_antigos) : '-',
-    dados_novos: {a: "1", b: "2"}, 
+    dados_novos: item.dados_novos ? JSON.parse(item.dados_novos) : '-',
     operacao: (
       <span className={getOperationBadge(item.operacao)}>
         {item.operacao}
@@ -69,7 +69,8 @@ function RecentActivityTable({ data = [], itemsPerPage = 5 }) {
         itemsPerPage={itemsPerPage}
         searchable={false}
         className="table-striped table-hover" 
-        onRowClick={(row)=> console.log('Row clicked:', row)} 
+        onRowClick={(row)=> console.log('Row clicked:', row)}
+        popUpRef={popUpRef} 
       />
     </div>
   );

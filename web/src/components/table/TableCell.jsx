@@ -10,12 +10,18 @@ import PropTypes from 'prop-types';
  * @returns {JSX.Element} componente da célula da tabela
  */
 function TableCell({ value, header, popUpRef }) {
+  console.log("cell", value)
   // Aplica o formatador se disponível
   const displayValue = header?.formatter && value !== null && value !== undefined 
     ? header.formatter(value) 
     : value;
 
   const showArrOrValueButton = (displayValue) => {
+    // Se for um elemento React válido, renderiza diretamente
+    if (React.isValidElement(value)) {
+      return value;
+    }
+
     const popUpContent = () => (
       <div>
         <ul className="p-0">
@@ -36,7 +42,7 @@ function TableCell({ value, header, popUpRef }) {
           )}
         </ul>
       </div>
-    );
+    );  
 
     if (popUpRef && (Array.isArray(value) || typeof value === 'object')) {
       return (

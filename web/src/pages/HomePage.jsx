@@ -34,90 +34,101 @@ function HomePage({pageFunctions}) {
 
     if (isLoading) {
         return (
-            <div className="container-fluid p-3 p-md-4">
-                <div className="row mb-3 mb-md-4">
-                    <div className="col">
-                        <h1 className="h2 h3-md">Painel de Controle</h1>
-                        <p className="text-muted small">Visão geral do sistema.</p>
+            <main className="ps-3 pe-3 pt-3">
+                <div className="container-fluid">
+                    <div className="text-center py-4">
+                        <div className="spinner-border text-primary mb-2" role="status">
+                            <span className="visually-hidden">Carregando...</span>
+                        </div>
+                        <p className="text-muted mb-0">Carregando painel...</p>
                     </div>
                 </div>
-            </div>
+            </main>
         );
     }
 
     if (error) {
         return (
-            <div className="container-fluid p-3 p-md-4">
-                <div className="row mb-3 mb-md-4">
-                    <div className="col">
-                        <h1 className="h2 h3-md">Painel de Controle</h1>
-                        <p className="text-muted small">Visão geral do sistema.</p>
+            <main className="ps-3 pe-3 pt-3">
+                <div className="container-fluid">
+                    <div className="alert alert-danger" role="alert">
+                        <div className="d-flex align-items-center justify-content-between">
+                            <div className="d-flex align-items-center">
+                                <i className="bi bi-exclamation-triangle-fill me-2"></i>
+                                <span>{error}</span>
+                            </div>
+                            <button 
+                                className="btn btn-outline-danger btn-sm"
+                                onClick={refetch}
+                            >
+                                <i className="bi bi-arrow-clockwise me-1"></i>
+                                Tentar Novamente
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div className="alert alert-danger" role="alert">
-                    <i className="bi bi-exclamation-triangle-fill me-2"></i>
-                    {error}
-                    <button 
-                        className="btn btn-outline-danger btn-sm ms-3"
-                        onClick={refetch}
-                    >
-                        Tentar Novamente
-                    </button>
-                </div>
-            </div>
+            </main>
         );
     }
 
     return (
         <main className="ps-3 pe-3 pt-3">
-            <div className="container-fluid p-3 p-md-4">
-                {/* Header */}
-                <div className="row mb-3 mb-md-4">
-                    <div className="col d-flex justify-content-between align-items-center flex-wrap gap-2">
-                        <div>
-                            <h1 className="h2 h3-md mb-1">Painel de Controle</h1>
-                            <p className="text-muted small mb-0">Visão geral do sistema.</p>
-                        </div>
-                        <button 
-                            className="btn btn-outline-primary btn-sm"
-                            onClick={refetch}
-                            disabled={isLoading}
-                        >
-                            <i className={`bi ${isLoading ? 'bi-arrow-clockwise spin' : 'bi-arrow-clockwise'}`}></i>
-                            <span className="d-none d-sm-inline ms-1">
-                                {isLoading ? 'Atualizando...' : 'Atualizar'}
-                            </span>
-                        </button>
+            <div className="container-fluid">
+                <div className="d-flex justify-content-between align-items-center mb-3 pb-2">
+                    <div className="d-flex align-items-center">
+                        <i className="bi bi-speedometer2 text-primary me-2 fs-4"></i>
+                        <h1 className="h4 mb-0 fw-semibold">Painel de Controle</h1>
                     </div>
+                    <button 
+                        className="btn btn-outline-primary btn-sm"
+                        onClick={refetch}
+                        disabled={isLoading}
+                    >
+                        <i className={`bi ${isLoading ? 'bi-arrow-clockwise spin' : 'bi-arrow-clockwise'}`}></i>
+                        <span className="d-none d-md-inline ms-1">Atualizar</span>
+                    </button>
                 </div>
 
                 {/* Stats Cards */}
                 <HomeStatsCards stats={stats} />
 
                 {/* Quick Access */}
-                <QuickAccess quickAccessItems={quickAccessItems} />                {/* Recent Activity Table */}
-                <RecentActivityTable 
-                  data={activities} 
-                  itemsPerPage={5} 
-                  popUpRef={popUpRef}
-                />
-                
-                {/* Debug info - remover em produção */}
-                {activitiesError && (
-                    <div className="alert alert-warning" role="alert">
-                        <i className="bi bi-exclamation-triangle me-2"></i>
-                        Erro ao carregar atividades: {activitiesError.message || activitiesError}
+                <div className="my-3">
+                    <QuickAccess quickAccessItems={quickAccessItems} />
+                </div>
+
+                {/* Recent Activity Section */}
+                {activitiesLoading ? (
+                    <div className="text-center py-3">
+                        <div className="spinner-border spinner-border-sm text-primary me-2" role="status">
+                            <span className="visually-hidden">Carregando...</span>
+                        </div>
+                        <span className="text-muted">Carregando atividades...</span>
                     </div>
-                )}
-                
-                {activitiesLoading && (
-                    <div className="text-center my-3">
-                        <div className="spinner-border spinner-border-sm text-primary" role="status">
-                            <span className="visually-hidden">Carregando atividades...</span>
+                ) : activitiesError ? (
+                    <div className="alert alert-warning py-2" role="alert">
+                        <div className="d-flex align-items-center justify-content-between">
+                            <div className="d-flex align-items-center">
+                                <i className="bi bi-exclamation-triangle me-2"></i>
+                                <small>Erro ao carregar atividades</small>
+                            </div>
+                            <button 
+                                className="btn btn-outline-warning btn-sm"
+                                onClick={refetch}
+                            >
+                                <i className="bi bi-arrow-clockwise"></i>
+                            </button>
                         </div>
                     </div>
+                ) : (
+                    <RecentActivityTable 
+                        data={activities} 
+                        itemsPerPage={5} 
+                        popUpRef={popUpRef}
+                    />
                 )}
             </div>
+            
             <PopUpComponent 
                 ref={popUpRef}
             />

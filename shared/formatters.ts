@@ -267,3 +267,24 @@ export function formatDateFromDatabase(dateValue: any): string {
   // Retorna no formato DD/MM/AAAA
   return `${day}/${month}/${year}`;
 }
+
+/**
+ * Formata um timestamp para exibição em formato brasileiro (DD/MM/AAAA HH:MM)
+ * @param {string|Date} timestamp - Timestamp a ser formatado
+ * @returns {string} - Data/hora formatada no padrão brasileiro ou '-' se inválida
+ */
+export function formatTimestamp(timestamp: string | Date): string {
+  if (!timestamp) return '-';
+  try {
+    const date = new Date(timestamp);
+    return date.toLocaleString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } catch (error) {
+    return typeof timestamp === 'string' ? timestamp : '-';
+  }
+}

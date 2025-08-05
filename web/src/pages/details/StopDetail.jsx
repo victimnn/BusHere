@@ -1,89 +1,196 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import api from '@web/api/api';
 import PopUpComponent from '@web/components/PopUpComponent';
-import MapComponent from '@web/components/MapComponent';
-import StopDetails from '@web/components/stops/StopDetails';
+import StopForm from "@web/components/stops/StopForm";
+import Notification from '@web/components/common/Notification';
 
+import { useStops } from '@web/hooks/useStops';
+import { useDetailPage } from '@web/hooks/useDetailPage';
+import { useNotification } from '@web/hooks/useNotification';
+import { formatDateFromDatabase } from '@shared/formatters';
+
+import {
+  DetailPage,
+  DetailHeader,
+  DetailSection,
+  DetailItem,
+  DetailActions,
+  DetailContainer,
+  DetailDebug
+} from '@web/components/details';
 
 function StopDetail({ pageFunctions }) {
-  useEffect(() => { pageFunctions.set("Ponto", true, true); }, [pageFunctions]);
+  useEffect(() => { 
+    pageFunctions.set("Ponto", true, true); }, [pageFunctions]);
+  
   const navigate = useNavigate();
   const { stopId } = useParams();
-  const [stop, setStop] = useState(null);
-  const [loading, setLoading] = useState(true);
   const popUpRef = useRef(null);
-  const fetchDetails = async () => {
-    try {
-      const response = await api.stops.getById(stopId);
-      if (response) {
-        setStop(response);
-      } else {
-        console.error("Dados do ponto não encontrados", response);
+  
+  // Usar o hook de pontos
+  const { getStopById, updateStop, deleteStop } = useStops();
+  
+  // Usar o hook de detail page
+  const { data: stop, loading, error, refetch } = useDetailPage(getStopById, stopId);
+
+  // Hook para notificações
+    const { notification, hideNotification, showSuccess, showError } = useNotification();
+
+  const handleEditStop = () => {
+
+    // Garantir que as coordenadas estejam sempre presentes nos dados iniciais
+    const initialData = {
+      ...stop,
+      latitude: stop.latitude,
+      longitude: stop.longitude
+    };
+
+    popUpRef.current.show({
+      title: `Editar Ponto: ${stop.nome}`,
+      content: StopForm,
+      props: {
+        initialData: initialData,
+        onSubmit: async (formData) => {
+          // Garantir que as coordenadas originais sejam preservadas se não foram alteradas
+          const finalData = {
+            ...formData,
+            latitude: formData.latitude || stop.latitude,
+            longitude: formData.longitude || stop.longitude
+          };
+          
+          const result = await updateStop(stop.ponto_id, finalData);
+          
+          if (result.success) {
+            popUpRef.current.hide();
+            showSuccess("Ponto atualizado com sucesso!");
+            refetch(); // Atualiza os dados da página
+          } else {
+            showError(result.error);
+          }
+        },
+        onCancel: () => popUpRef.current.hide(),
       }
-    } catch (error) {
-      console.error("Erro ao buscar detalhes do ponto:", error);
-      popUpRef.current.show({
-        title: "Erro",
-        content: () => <div>Não foi possível carregar os detalhes do ponto. Tente novamente mais tarde.</div>,
-      });
-    }
-    setLoading(false);
+    });
   };
 
-  useEffect(() => {
-    fetchDetails();
-  }, [stopId]);
-
-  const LoadingDetails = () => (
-    <div className="text-center">
-      <p>Carregando detalhes do ponto...</p>
-      <div className="spinner-border" role="status">
-        <span className="visually-hidden">Carregando...</span>
-      </div>
-    </div>
-  );
-  const Details = () => {
-    if (!stop) {
-      return <div>Nenhum dado encontrado</div>;
+  const handleDeleteStop = async () => {
+    if (window.confirm("Tem certeza que deseja excluir este ponto?")) {
+      try {
+        const result = await deleteStop(stop.id || stop.ponto_id);
+        if (result.success) {
+          showSuccess("Ponto excluído com sucesso!");
+          setTimeout(() => {
+            navigate('/stops'); // Redireciona para a lista de pontos
+          }, 1000); // tempo para o usuário ver a notificação 
+        } else {
+          showError(result.error);
+        }
+      } catch (error) {
+        console.error("Erro ao excluir ponto:", error);
+        showError("Não foi possível excluir o ponto. Tente novamente mais tarde.");
+      }
     }
-    const center = [stop.latitude, stop.longitude];
-
-    return (
-      <>
-      <div className='container d-flex flex-row' style={{ minHeight: "80vh" }}>
-        <MapComponent 
-          className="w-100 h-100"
-          center={center}
-          zoom={15}
-        />
-
-        <StopDetails
-          stop={stop}
-        />
-
-      </div>
-
-
-      <div className="container">
-        <div className="card">
-          <div className="card-body">
-            <h5 className="card-title">Dados JSON</h5>
-            <pre className="bg-light p-3 rounded">
-              {JSON.stringify(stop, null, 2)}
-            </pre>
-          </div>
-        </div>
-      </div>
-      </>
-    );
   };
+
+  // Configurar ações do ponto
+  const actions = [
+    {
+      text: "Excluir",
+      icon: "bi-trash",
+      variant: "btn-outline-danger",
+      onClick: handleDeleteStop
+    },
+    {
+      text: "Editar",
+      icon: "bi-pencil-square",
+      variant: "btn-primary",
+      onClick: handleEditStop
+    }
+  ];
 
   return (
-    <main className='p-3 container-fluid'>
-      {loading ? <LoadingDetails /> : <Details />}
+    <DetailPage loading={loading} error={error} onRetry={refetch}>
+      {stop && (
+        <>
+          <DetailHeader
+            title={stop.nome}
+            icon="bi-geo-alt-fill"
+            badges={[
+              {
+                icon: "bi-info-circle",
+                text: stop.status || (stop.ativo ? 'Ativo' : 'Inativo')
+              }
+            ]}
+          />
+
+          <DetailContainer columns={2}>
+            <DetailSection 
+              title="Informações Básicas" 
+              icon="bi-geo"
+            >
+              <DetailItem 
+                icon="bi-signpost" 
+                label="Nome do Ponto" 
+                value={stop.nome} 
+              />
+              <DetailItem 
+                icon="bi-geo-alt" 
+                label="Coordenadas" 
+                value={stop.coordinates || `${Number(stop.latitude).toFixed(4)}, ${Number(stop.longitude).toFixed(4)}`} 
+              />
+              <DetailItem 
+                icon="bi-map" 
+                label="Endereço" 
+                value={stop.endereco || stop.address || 'Não informado'} 
+              />
+              <DetailItem 
+                icon="bi-info-circle" 
+                label="Referência" 
+                value={stop.referencia || 'Não informado'} 
+              />
+            </DetailSection>
+
+            <DetailSection 
+              title="Informações de Localização" 
+              icon="bi-pin-map"
+            >
+              <DetailItem 
+                icon="bi-geo" 
+                label="Logradouro/Número" 
+                value={`${stop.logradouro || 'Não informado'}, ${stop.numero_endereco || 'Não informado'}`} 
+              />
+              <DetailItem 
+                icon="bi-building" 
+                label="Bairro" 
+                value={stop.bairro || 'Não informado'} 
+              />
+              <DetailItem 
+                icon="bi-geo-alt" 
+                label="Cidade/UF" 
+                value={stop.cidade && stop.uf ? `${stop.cidade} - ${stop.uf}` : 'Não informado'} 
+              />
+              <DetailItem 
+                icon="bi-mailbox" 
+                label="CEP" 
+                value={stop.cep || 'Não informado'} 
+              />
+            </DetailSection>
+          </DetailContainer>
+
+          <DetailActions
+            title="Ações do Ponto"
+            description="Editar informações ou remover ponto do sistema"
+            actions={actions}
+          />
+
+          <DetailDebug data={stop} />
+        </>
+      )}
+      
       <PopUpComponent ref={popUpRef} />
-    </main>
+
+      <Notification notification={notification} onClose={hideNotification} />
+    </DetailPage>
   );
 }
 

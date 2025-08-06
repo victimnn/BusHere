@@ -5,7 +5,7 @@ import { useRecentActivities } from "@web/hooks/useRecentActivities";
 import { getOperationBadge, formatTimestamp } from "@shared/formatters";
 
 const TABLE_HEADERS = [
-  { id: "mudanca_id", label: "ID", sortable: true },
+  // { id: "mudanca_id", label: "ID", sortable: true },
   { id: "tabela", label: "Tabela", sortable: true },
   { id: "registro_id", label: "ID Registro", sortable: true },
   { id: "operacao", label: "Operação", sortable: true },

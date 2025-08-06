@@ -219,7 +219,7 @@ BEGIN
             'atualizacao', OLD.atualizacao
         ),
         NULL,
-        OLD.motorista_id
+        1
     );
 END;
 

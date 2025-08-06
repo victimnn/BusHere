@@ -243,16 +243,6 @@ function Stops({ pageFunctions }) {
     <main className="ps-3 pe-3 pt-3">
       <div className="container-fluid">
         <div className="card border-0 shadow-sm mb-4">
-          <div className="card-header bg-white py-3">
-            <div className="d-flex justify-content-between align-items-center">
-              <div className="d-flex align-items-center">
-                <div className="text-primary rounded-circle p-2 me-3">
-                  <i className="bi bi-geo-alt-fill fs-3"></i>
-                </div>
-                <h1 className="h3 mb-0 fw-semibold">Pontos de Parada</h1>
-              </div>
-            </div>
-          </div>
           
           <div className="card-body p-3">
             {error && (

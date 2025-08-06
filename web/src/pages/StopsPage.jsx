@@ -3,16 +3,16 @@ import PopUpComponent from "@web/components/PopUpComponent";
 import StopDetails from "@web/components/stops/StopDetails";
 import StopForm from "@web/components/stops/StopForm";
 import MarkerPopUpContent from "@web/components/stops/MarkerPopUpContent";
-import StopsContainer from "@web/components/stops/StopsContainer";
-import MapComponent from "@web/components/MapComponent";
-import Table from "@web/components/Table";
+import StopsMapSection from "@web/components/stops/StopsMapSection";
+import StopsListSection from "@web/components/stops/StopsListSection";
+import StopsTableSection from "@web/components/stops/StopsTableSection";
+import MapClickPopup from "@web/components/stops/MapClickPopup";
 import Notification from "@web/components/common/Notification";
 import LoadingSpinner from "@web/components/common/LoadingSpinner";
 import ErrorAlert from "@web/components/common/ErrorAlert";
 import ActionButton from "@web/components/common/ActionButton";
-import api from "../api/api";
 import { getColorBasedOnValue } from "../utils/mapIcons";
-import { formatCapacity, getStatusFormat } from "@shared/formatters";
+import { getStatusFormat } from "@shared/formatters";
 import { useStops } from "../hooks/useStops";
 import { useNotification } from "@web/hooks/useNotification";
 
@@ -55,10 +55,10 @@ export function sincronizeMarkers(stops, setMarkers, popUpRef, onDelete = null, 
       />,
     color: stop.ativo ? getColorBasedOnValue(String(stop.latitude) + String(stop.longitude)) : "gray", // Cor baseada na latitude e longitude, ou cinza se inativo
     size: 32,
-    id: stop.ponto_id // ID único para o marcador
+    id: stop.ponto_id
   }));
   setMarkers(newMarkers); // Atualiza os marcadores com os pontos buscados
-  return newMarkers; // Retorna os novos marcadores
+  return newMarkers;
 }
 
 function Stops({ pageFunctions }) {
@@ -80,7 +80,7 @@ function Stops({ pageFunctions }) {
   // Hook para notificações
   const { notification, hideNotification, showSuccess, showError } = useNotification();
 
-  // Estados para mapa
+  // Estados do mapa
   const [markers, setMarkers] = useState([]);
   const [polylines, setPolylines] = useState([]);
   const [zoom, setZoom] = useState(13);
@@ -90,23 +90,16 @@ function Stops({ pageFunctions }) {
   }, [pageFunctions]);
 
   const handleCreateStop = useCallback((initialData = {}) => {
-    console.log('🚀 Iniciando criação de ponto com dados iniciais:', initialData);
-    
     popUpRef.current.show({
       title: "Novo Ponto",
       content: StopForm,
       props: {
         initialData: initialData,
         onSubmit: async (formData) => {
-          console.log('📝 Formulário submetido com dados:', formData);
           
-          // GARANTIR que as coordenadas estejam presentes
-          // Se não estão no formData mas estão no initialData, adicionar
           if ((!formData.latitude || !formData.longitude) && initialData.latitude && initialData.longitude) {
-            console.log('🔧 Corrigindo coordenadas ausentes no formData');
             formData.latitude = initialData.latitude;
             formData.longitude = initialData.longitude;
-            console.log('✅ Coordenadas corrigidas:', { lat: formData.latitude, lng: formData.longitude });
           }
           
           const result = await createStop(formData);
@@ -131,7 +124,6 @@ function Stops({ pageFunctions }) {
       return;
     }
 
-    // Garantir que as coordenadas estejam sempre presentes nos dados iniciais
     const initialData = {
       ...stop,
       latitude: stop.latitude,
@@ -144,7 +136,6 @@ function Stops({ pageFunctions }) {
       props: {
         initialData: initialData,
         onSubmit: async (formData) => {
-          // Garantir que as coordenadas originais sejam preservadas se não foram alteradas
           const finalData = {
             ...formData,
             latitude: formData.latitude || stop.latitude,
@@ -170,12 +161,8 @@ function Stops({ pageFunctions }) {
       const result = await deleteStop(id);
       
       if (result.success) {
-        // Remove o marcador do mapa imediatamente
         setMarkers(prevMarkers => prevMarkers.filter(marker => marker.id !== id));
-        
-        // Fecha o pop-up
         popUpRef.current.hide(); 
-        
         showSuccess("Ponto excluído com sucesso!");
       } else {
         showError(result.error);
@@ -183,22 +170,7 @@ function Stops({ pageFunctions }) {
     }
   }, [deleteStop, showSuccess, showError]);
 
-  //id,nome,cep,coordenadas,rotas,endereco,status
-  const tableHeaders = TABLE_HEADERS;
-  
-  const tableData = stops.map((stop) => ({
-    id: stop.ponto_id,
-    name: stop.nome,
-    cep: stop.cep || 'N/A',
-    coordinates: `${Number(stop.latitude).toFixed(4)}, ${Number(stop.longitude).toFixed(4)}`,
-    routesView: "Rotas",
-    address: `${stop.logradouro}, ${stop.numero_endereco} - ${stop.bairro}, ${stop.cidade} - ${stop.uf}`,
-    status: stop.ativo ? "Ativo" : "Inativo"
-  }));
-
-  // Handler para quando uma linha for clicada
   const handleRowClick = useCallback((rowData) => {
-    // Encontrar o objeto stop original baseado no ID da linha clicada
     const marker = findStopById(rowData.id);
     
     if (marker) {
@@ -217,105 +189,54 @@ function Stops({ pageFunctions }) {
   }, [findStopById, handleEditStop, handleDeleteStop]);
 
   const handleMapClick = useCallback((latlng) => {
-    const InitialComponent = () => (
-      <div className="p-4">
-        <div className="text-center mb-4">
-          <div className="mb-3">
-            <i className="bi bi-geo-alt-fill text-primary fs-1"></i>
-          </div>
-          
-          <h5 className="mb-2 fw-bold text-dark">
-            Novo Ponto de Parada
-          </h5>
-
-          <div className="bg-light rounded-pill px-3 py-2 d-inline-block">
-            <i className="bi bi-compass me-2 text-primary"></i>
-            <span className="font-monospace text-dark">
-              {latlng.lat.toFixed(6)}, {latlng.lng.toFixed(6)}
-            </span>
-          </div>
-        </div>
-        
-        <div className="d-flex gap-3 justify-content-center">
-          <button 
-            className="btn btn-primary btn-lg px-4 py-2"
-            onClick={async () => {
-              popUpRef.current.hide();
-              
-              try {
-                const data = await api.geolocation.getInfoFromCoordinates(latlng.lat, latlng.lng);
-                
-                const initialData = {
-                  latitude: latlng.lat,
-                  longitude: latlng.lng,
-                  logradouro: data.road || '',
-                  bairro: data.suburb || '',
-                  cidade: data.city || '',
-                  uf: data.uf || '',
-                  cep: data.cep || '',
-                };
-                
-                console.log('🗺️ Dados obtidos do mapa + geolocalização:', initialData);
-                handleCreateStop(initialData);
-              } catch (error) {
-                console.warn('⚠️ API de geolocalização falhou, usando apenas coordenadas:', error.message);
-                
-                // Se a API de geolocalização falhar, criar com apenas as coordenadas
-                const initialData = {
-                  latitude: latlng.lat,
-                  longitude: latlng.lng,
-                  logradouro: '',
-                  bairro: '',
-                  cidade: '',
-                  uf: '',
-                  cep: '',
-                };
-                
-                console.log('🗺️ Dados fallback (apenas coordenadas):', initialData);
-                handleCreateStop(initialData);
-              }
-            }}
-          >
-            <i className="bi bi-plus-circle me-2"></i>
-            <span>Criar Ponto</span>
-          </button>
-          <button 
-            type="button" 
-            className="btn btn-outline-secondary btn-lg px-4 py-2" 
-            onClick={() => {
-              popUpRef.current.hide();
-            }}
-          >
-            <i className="bi bi-x-circle me-2"></i>
-            Cancelar
-          </button>
-        </div>
-      </div>
-    );
-
-    popUpRef.current.show({ title: "Novo Ponto", content: InitialComponent });
+    popUpRef.current.show({ 
+      title: "Novo Ponto", 
+      content: () => (
+        <MapClickPopup 
+          latlng={latlng}
+          onCreateStop={handleCreateStop}
+          onCancel={() => popUpRef.current.hide()}
+        />
+      )
+    });
   }, [handleCreateStop]);
 
-  // Adicionar useEffect para sincronizar marcadores quando stops mudar
+  const handleZoomChange = useCallback((e) => {
+    // console.log("Zoom alterado para:", e.target._zoom); 
+    setZoom(e.target._zoom);
+  }, []);
+
+  // Preparar dados da tabela
+  const tableData = stops.map((stop) => ({
+    id: stop.ponto_id,
+    name: stop.nome,
+    cep: stop.cep || 'N/A',
+    coordinates: `${Number(stop.latitude).toFixed(4)}, ${Number(stop.longitude).toFixed(4)}`,
+    routesView: "Rotas",
+    address: `${stop.logradouro}, ${stop.numero_endereco} - ${stop.bairro}, ${stop.cidade} - ${stop.uf}`,
+    status: stop.ativo ? "Ativo" : "Inativo"
+  }));
+
+  // Sincronizar marcadores quando stops mudar
   useEffect(() => {
-    console.log('🔄 useEffect sincronizeMarkers disparado:', { stopsLength: stops.length, stops });
+    // console.log('🔄 useEffect sincronizeMarkers disparado:', { stopsLength: stops.length, stops });
     if (stops.length > 0) {
       sincronizeMarkers(stops, setMarkers, popUpRef, handleDeleteStop, handleEditStop);
     } else {
-      setMarkers([]); // Limpa marcadores quando não há pontos
+      setMarkers([]);
     }
-  }, [stops, handleDeleteStop, handleEditStop]); // Executa quando stops muda
+  }, [stops, handleDeleteStop, handleEditStop]);
 
   // Debug para verificar estados do mapa
   useEffect(() => {
-    console.log('🗺️ Estados do mapa:', {
-      mapCenter,
-      zoom,
-      markersLength: markers.length,
-      stopsLength: stops.length,
-      isLoading,
-      error
-    });
+    // console.log('🗺️ Estados do mapa:', {
+    //   mapCenter,
+    //   zoom,
+    //   markersLength: markers.length,
+    //   stopsLength: stops.length,
+    //   isLoading,
+    //   error
+    // });
   }, [mapCenter, zoom, markers, stops, isLoading, error]);
 
   return (
@@ -330,15 +251,6 @@ function Stops({ pageFunctions }) {
                 </div>
                 <h1 className="h3 mb-0 fw-semibold">Pontos de Parada</h1>
               </div>
-              
-              <ActionButton
-                onClick={() => handleCreateStop()}
-                icon="bi bi-plus-circle"
-                text="Novo Ponto"
-                variant="primary"
-                size="lg"
-                disabled={isLoading}
-              />
             </div>
           </div>
           
@@ -362,59 +274,24 @@ function Stops({ pageFunctions }) {
               <>
                 {/* Seção do Mapa e Lista de Pontos */}
                 <div className="row mb-4">
-                  <div className="col-lg-8 mb-3 mb-lg-0">
-                    <div className="card border-0 shadow-sm h-100">
-                      <div className="card-header bg-light py-2">
-                        <h6 className="mb-0 fw-semibold">
-                          <i className="bi bi-map me-2"></i>
-                          Mapa dos Pontos
-                        </h6>
-                      </div>
-                      <div className="card-body p-0">
-                        <div style={{ height: "400px" }}>
-                          <MapComponent 
-                            className="w-100 h-100"
-                            center={mapCenter}
-                            zoom={zoom}
-                            markers={markers}
-                            polylines={polylines}
-                            onMapClick={handleMapClick} 
-                            handleZoomChange={(e) => {
-                              console.log("Zoom alterado para:", e.target._zoom); 
-                              setZoom(e.target._zoom);
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <StopsMapSection 
+                    mapCenter={mapCenter}
+                    zoom={zoom}
+                    markers={markers}
+                    polylines={polylines}
+                    onMapClick={handleMapClick}
+                    onZoomChange={handleZoomChange}
+                  />
                   
-                  <div className="col-lg-4">
-                    <div className="card border-0 shadow-sm h-100">
-                      <div className="card-header bg-light py-2">
-                        <h6 className="mb-0 fw-semibold">
-                          <i className="bi bi-list-ul me-2"></i>
-                          Lista de Pontos
-                        </h6>
-                      </div>
-                      <div className="card-body p-0" style={{ height: "400px", overflowY: "auto" }}>
-                        <StopsContainer stops={stops} />
-                      </div>
-                    </div>
-                  </div>
+                  <StopsListSection stops={stops} />
                 </div>
 
                 {/* Tabela de Pontos */}
-                <div className="table-responsive">
-                  <Table 
-                    headers={tableHeaders}
-                    data={tableData}
-                    itemsPerPage={10}
-                    searchable={true}
-                    className="table-striped table-hover"
-                    onRowClick={handleRowClick}
-                  />
-                </div>
+                <StopsTableSection 
+                  tableHeaders={TABLE_HEADERS}
+                  tableData={tableData}
+                  onRowClick={handleRowClick}
+                />
               </>
             )}          
           </div>

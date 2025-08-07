@@ -34,7 +34,7 @@ function HomePage({pageFunctions}) {
 
     if (isLoading) {
         return (
-            <main className="ps-3 pe-3 pt-3">
+            <div className="ps-3 pe-3 pt-3">
                 <div className="container-fluid">
                     <div className="text-center py-4">
                         <div className="spinner-border text-primary mb-2" role="status">
@@ -43,13 +43,13 @@ function HomePage({pageFunctions}) {
                         <p className="text-muted mb-0">Carregando painel...</p>
                     </div>
                 </div>
-            </main>
+            </div>
         );
     }
 
     if (error) {
         return (
-            <main className="ps-3 pe-3 pt-3">
+            <div className="ps-3 pe-3 pt-3">
                 <div className="container-fluid">
                     <div className="alert alert-danger" role="alert">
                         <div className="d-flex align-items-center justify-content-between">
@@ -67,12 +67,12 @@ function HomePage({pageFunctions}) {
                         </div>
                     </div>
                 </div>
-            </main>
+            </div>
         );
     }
 
     return (
-        <main className="ps-3 pe-3 pt-3">
+        <div className="ps-3 pe-3 pt-3">
             <div className="container-fluid">
                 <div className="d-flex justify-content-between align-items-center mb-3 pb-2">
                     <div className="d-flex align-items-center">
@@ -132,7 +132,7 @@ function HomePage({pageFunctions}) {
             <PopUpComponent 
                 ref={popUpRef}
             />
-        </main>
+        </div>
     );
 };
 

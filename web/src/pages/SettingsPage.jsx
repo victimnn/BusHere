@@ -102,6 +102,36 @@ function Settings({ pageFunctions }) {
         className="mb-4"
       />
 
+      <button
+        onClick={async ()=>{
+          const response = await api.post("/routes/new",{
+            nome: "Rota Teste - Centro/Barão Geraldo",
+            codigo_rota: "RT001" + Math.random(),
+            descricao: "Rota de teste conectando o centro ao distrito de Barão Geraldo",
+            status_rota_id: 1, // 1 = Ativa
+            ativo: true,
+            pontos: [1, 2, 3] // IDs dos pontos: Terminal Central, Ponto Barão Geraldo, Ponto Taquaral
+          })
+          popUpRef.current.show({
+            content: () => <pre>{JSON.stringify(response, null, 2)}</pre>,
+            title: "Resposta da API",
+          });
+        }}
+      >
+        teste de pontos
+      </button>
+
+      <button
+        onClick={async ()=>{
+          const pontos = await api.routes.getStops(3);
+          popUpRef.current.show({
+            content: () => <pre>{JSON.stringify(pontos, null, 2)}</pre>,
+            title: "Pontos da Rota 3",
+          });
+        }}
+      >
+        ver pontos da rota 3
+      </button>
       <PopUpComponent ref={popUpRef} />
     </main>
 

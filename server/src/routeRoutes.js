@@ -59,6 +59,18 @@ module.exports = (pool) => {
     }
   });
 
+  // Rota para obter as paradas de uma rota
+  router.get('/stops/:id', async (req, res) => {
+    const {id} = req.params;
+    try {
+      const [rows] = await pool.execute("SELECT * FROM pontosrota WHERE rota_id = ? ORDER BY ordem", [id]);
+      res.json({ data: rows });
+    } catch (error) {
+      console.error('Erro ao buscar paradas da rota:', error);
+      res.status(500).json({ error: 'Erro ao buscar paradas da rota' });
+    }
+  });
+
   // Rota para buscar status de rotas
   router.get('/status', async (req, res) => {
     try {
@@ -113,6 +125,43 @@ module.exports = (pool) => {
       }
       res.status(500).json({ error: 'Erro ao criar rota' });
     }
+  });
+
+  //Rota de criar porem usa entidade assosiativa, no futuro mudar para o POST "/" normal
+  router.post("/new", async (req, res) => {
+    const requiredFields = ['nome', 'codigo_rota', 'pontos'];
+    for (const field of requiredFields) {
+      if (!req.body[field]) {
+        return res.status(400).json({ error: `Campo obrigatório faltando: ${field}` });
+      }
+    }
+    const { nome, codigo_rota, descricao, status_rota_id, ativo, pontos } = req.body;
+    if(!Array.isArray(pontos) || pontos.length < 2) {
+      return res.status(400).json({ error: "O campo 'pontos' deve ser um array com pelo menos dois IDs de pontos"});
+    }
+
+    const newRouteData = { nome, codigo_rota, descricao, status_rota_id, ativo };
+
+    try {
+      const [result] = await pool.query('INSERT INTO Rotas SET ?', newRouteData);
+      const rota_id = result.insertId;
+
+      const routePointsData = pontos.map((ponto_id, index) => [rota_id, ponto_id, index + 1]);
+      await pool.query('INSERT INTO PontosRota (rota_id, ponto_id, ordem) VALUES ?', [routePointsData]);
+      
+      console.log({result, rota_id, pontos});
+      res.status(201).json({ rota_id, nome, codigo_rota, descricao, status_rota_id, ativo, pontos });
+    } catch (error) {
+      console.error('Erro ao criar rota com pontos:', error);
+      if (error.code === 'ER_DUP_ENTRY') {
+        return res.status(409).json({ error: 'Código da rota já cadastrado.' });
+      }
+      res.status(500).json({ error: 'Erro ao criar rota com pontos' });
+    }
+
+
+
+
   });
 
   // Rota para atualizar uma rota existente

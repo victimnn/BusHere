@@ -156,6 +156,7 @@ const api = {
     update: (id, edits) => api.put(`/routes/${id}`, edits),
     delete: (id) => api.delete(`/routes/${id}`),
     getStatus: () => api.get('/routes/status'),
+    getStops: (id) => api.get(`/routes/stops/${id}`)
   },
 
   buses: {

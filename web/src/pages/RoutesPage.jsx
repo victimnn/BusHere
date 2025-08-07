@@ -1,9 +1,9 @@
 import React, { useRef, useEffect, useCallback } from "react";
-import PopUpComponent from "@web/components/PopUpComponent";
-import RouteDetails from "@web/components/routes/RouteDetails";
-import RouteForm from "@web/components/routes/RouteForm";
-import RouteStatsCards from "@web/components/routes/RouteStatsCards";
-import Table from "@web/components/Table";
+import PopUpComponent from "@web/components/ui/PopUpComponent";
+import RouteDetails from "@web/components/pageComponents/routes/RouteDetails";
+import RouteForm from "@web/components/pageComponents/routes/RouteForm";
+import RouteStatsCards from "@web/components/pageComponents/routes/RouteStatsCards";
+import Table from "@web/components/ui/Table";
 import Notification from "@web/components/common/Notification";
 import LoadingSpinner from "@web/components/common/LoadingSpinner";
 import ErrorAlert from "@web/components/common/ErrorAlert";

@@ -1,5 +1,5 @@
 import React from 'react';
-import AnimatedCounter from '../reports/AnimatedCounter';
+import AnimatedCounter from '../pageComponents/reports/AnimatedCounter';
 
 const StatCard = ({ 
   title, 

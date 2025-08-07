@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import PopUpComponent from '@web/components/PopUpComponent';
-import BusForm from '@web/components/buses/BusForm';
+import PopUpComponent from '@web/components/ui/PopUpComponent';
+import BusForm from '@web/components/pageComponents/buses/BusForm';
 import Notification from '@web/components/common/Notification';
 
 import { useBuses } from '@web/hooks/useBuses';
@@ -17,7 +17,7 @@ import {
   DetailActions,
   DetailContainer,
   DetailDebug
-} from '@web/components/details';
+} from '@web/components/pageComponents/details';
 
 function BusDetail({ pageFunctions }) {
   useEffect(() => { 

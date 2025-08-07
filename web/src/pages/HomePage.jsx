@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import StatCard from '../components/common/StatCard';
 import { useDashboardData } from '../hooks/useDashboardData';
 import { useRecentActivities } from '@web/hooks/useRecentActivities';
-import PopUpComponent from '@web/components/PopUpComponent';
+import PopUpComponent from '@web/components/ui/PopUpComponent';
 
-import QuickAccess from '@web/components/home/quickAccess';
-import HomeStatsCards from '@web/components/home/homeStatsCards';
-import RecentActivityTable from '@web/components/home/RecentActivityTable';
+import QuickAccess from '@web/components/pageComponents/home/quickAccess';
+import HomeStatsCards from '@web/components/pageComponents/home/homeStatsCards';
+import RecentActivityTable from '@web/components/pageComponents/home/RecentActivityTable';
 
 function HomePage({pageFunctions}) {
     const popUpRef = useRef(null);

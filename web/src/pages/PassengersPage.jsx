@@ -1,9 +1,9 @@
 import React, { useRef, useEffect, useCallback } from "react";
-import PopUpComponent from "@web/components/PopUpComponent";
-import PassengerForm from "@web/components/passengers/PassengerForm";
-import PassengerDetails from "@web/components/passengers/PassengerDetails";
-import PassengerStatsCards from "@web/components/passengers/PassengerStatsCards";
-import Table from "@web/components/Table";
+import PopUpComponent from "@web/components/ui/PopUpComponent";
+import PassengerForm from "@web/components/pageComponents/passengers/PassengerForm";
+import PassengerDetails from "@web/components/pageComponents/passengers/PassengerDetails";
+import PassengerStatsCards from "@web/components/pageComponents/passengers/PassengerStatsCards";
+import Table from "@web/components/ui/Table";
 import Notification from "@web/components/common/Notification";
 import LoadingSpinner from "@web/components/common/LoadingSpinner";
 import ErrorAlert from "@web/components/common/ErrorAlert";

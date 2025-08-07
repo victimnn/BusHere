@@ -6,17 +6,7 @@ function MajorStops({ stops = [] }) {
 
 function StopsContainer({ stops }) {
   return (
-     <div className="w-100 h-100 bg-white rounded-3 border" 
-         style={{ overflowY: "auto" }}>
-      
-      {/* Header */}
-      <div className="bg-primary rounded-top-3 p-3 text-white">
-        <div className="d-flex align-items-center">
-          <i className="bi bi-geo-alt-fill me-2"></i>
-          <h6 className="mb-0 fw-bold">Pontos ({stops.length})</h6>
-        </div>
-      </div>
-
+     <div className="w-100 h-100" style={{ overflowY: "auto" }}>
       {/* Content */}
       <div className="p-3">
         {stops.length > 0 ? (

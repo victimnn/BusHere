@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import PopUpComponent from '@web/components/PopUpComponent';
-import RouteForm from "@web/components/routes/RouteForm";
+import PopUpComponent from '@web/components/ui/PopUpComponent';
+import RouteForm from "@web/components/pageComponents/routes/RouteForm";
 import Notification from '@web/components/common/Notification';
 
 import { useRoutes } from '@web/hooks/useRoutes';
@@ -17,7 +17,7 @@ import {
   DetailActions,
   DetailContainer,
   DetailDebug
-} from '@web/components/details';
+} from '@web/components/pageComponents/details';
 
 function RouteDetail({ pageFunctions }) {
   useEffect(() => { 

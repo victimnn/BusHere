@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import PopUpComponent from '@web/components/PopUpComponent';
-import DriverForm from "@web/components/drivers/DriverForm";
+import PopUpComponent from '@web/components/ui/PopUpComponent';
+import DriverForm from "@web/components/pageComponents/drivers/DriverForm";
 import Notification from '@web/components/common/Notification';
 
 import { useDrivers } from '@web/hooks/useDrivers';
@@ -17,7 +17,7 @@ import {
   DetailActions,
   DetailContainer,
   DetailDebug
-} from '@web/components/details';
+} from '@web/components/pageComponents/details';
 
 function DriverDetail({ pageFunctions }) {
   useEffect(() => { 

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import { useAuth } from "../context/authContext";
-import PopUpComponent from "../components/PopUpComponent";
+import PopUpComponent from "../components/ui/PopUpComponent";
 import {validateEmail} from "@shared/validators";
 
 function Login({pageFunctions}){

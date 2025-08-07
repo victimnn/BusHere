@@ -158,10 +158,6 @@ module.exports = (pool) => {
       }
       res.status(500).json({ error: 'Erro ao criar rota com pontos' });
     }
-
-
-
-
   });
 
   // Rota para atualizar uma rota existente

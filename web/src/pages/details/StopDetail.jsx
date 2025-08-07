@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import PopUpComponent from '@web/components/PopUpComponent';
-import StopForm from "@web/components/stops/StopForm";
+import PopUpComponent from '@web/components/ui/PopUpComponent';
+import StopForm from "@web/components/pageComponents/stops/StopForm";
 import Notification from '@web/components/common/Notification';
 
 import { useStops } from '@web/hooks/useStops';
@@ -17,7 +17,7 @@ import {
   DetailActions,
   DetailContainer,
   DetailDebug
-} from '@web/components/details';
+} from '@web/components/pageComponents/details';
 
 function StopDetail({ pageFunctions }) {
   useEffect(() => { 

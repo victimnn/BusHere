@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import PopUpComponent from '@web/components/PopUpComponent';
-import PassengerForm from '@web/components/passengers/PassengerForm';
+import PopUpComponent from '@web/components/ui/PopUpComponent';
+import PassengerForm from '@web/components/pageComponents/passengers/PassengerForm';
 import Notification from '@web/components/common/Notification';
 
 import { usePassengers } from '@web/hooks/usePassengers';
@@ -18,7 +18,7 @@ import {
   DetailActions,
   DetailContainer,
   DetailDebug
-} from '@web/components/details';
+} from '@web/components/pageComponents/details';
 
 function PassengerDetailPage({ pageFunctions }) {
   useEffect(() => { pageFunctions.set("Passageiro", true, true); }, [pageFunctions]);

@@ -1,8 +1,8 @@
 import { useRef, useEffect, useState } from "react";
-import PopUpComponent from "../components/PopUpComponent";
+import PopUpComponent from "../components/ui/PopUpComponent";
 import { useAuth } from "../context/authContext";
 import api from "../api/api";
-import Table from "@web/components/Table";
+import Table from "@web/components/ui/Table";
 
 
 const testTableHeaders = [

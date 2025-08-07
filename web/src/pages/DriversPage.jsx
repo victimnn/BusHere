@@ -1,9 +1,9 @@
 import React, { useRef, useEffect, useCallback } from "react";
-import PopUpComponent from "@web/components/PopUpComponent";
-import DriverForm from "@web/components/drivers/DriverForm";
-import DriverDetails from "@web/components/drivers/DriverDetails";
-import DriversStatsCards from "@web/components/drivers/DriversStatsCards";
-import Table from "@web/components/Table";
+import PopUpComponent from "@web/components/ui/PopUpComponent";
+import DriverForm from "@web/components/pageComponents/drivers/DriverForm";
+import DriverDetails from "@web/components/pageComponents/drivers/DriverDetails";
+import DriversStatsCards from "@web/components/pageComponents/drivers/DriversStatsCards";
+import Table from "@web/components/ui/Table";
 import Notification from "@web/components/common/Notification";
 import LoadingSpinner from "@web/components/common/LoadingSpinner";
 import ErrorAlert from "@web/components/common/ErrorAlert";

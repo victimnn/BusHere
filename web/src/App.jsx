@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { useState, useEffect, useRef} from 'react'
 
 import { AuthProvider } from "./context/authContext";
-import PopUpComponent from "./components/PopUpComponent";
+import PopUpComponent from "./components/ui/PopUpComponent";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
@@ -22,8 +22,8 @@ import DriverDetail from "./pages/details/DriverDetail";
 import RouteDetail from "./pages/details/RouteDetail";
 import StopDetail from "./pages/details/StopDetail";
 
-import SideBar from "./components/SideBar";
-import Header from "./components/Header";
+import SideBar from "./components/ui/SideBar";
+import Header from "./components/ui/Header";
 
 function App() {
   const [pageName, setPageName] = useState("Giraldi");

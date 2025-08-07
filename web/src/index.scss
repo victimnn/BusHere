@@ -1,8 +1,15 @@
 @import '../styles/custom.scss';
 
+// Reset global para prevenir scroll desnecessário
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+}
+
 #root {
   margin: 0 auto;
   text-align: left;
+  height: 100%;
 }
 
 // Garantir que a sidebar não seja comprimida

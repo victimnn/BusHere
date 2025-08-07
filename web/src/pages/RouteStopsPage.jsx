@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useBuses } from '@web/hooks/useBuses';
 import { useDrivers} from '@web/hooks/useDrivers';
 import { useStops } from '@web/hooks/useStops';
-import MapComponent from '@web/components/MapComponent';
+import MapComponent from '@web/components/ui/MapComponent';
 import { popup } from 'leaflet';
 
 function MarkerDetails({ marker, onClick }) {
@@ -46,12 +46,12 @@ function RouteStopsPage({ pageFunctions }) {
 
 
     return (
-        <main className="w-100 h-100 d-flex flex-row" style={{ overflow: "hidden"}}>
+        <div className="w-100 d-flex flex-row" style={{ height: "calc(100vh - 120px)", overflow: "hidden"}}>
             <div className="border w-25">
                 <pre><code>{JSON.stringify(selectedStops, null, 2)}</code></pre>
             </div>
             <div className="border flex-grow-1">
-                <MapComponent className='w-100 h-75' 
+                <MapComponent className='w-100 h-100' 
                     center={{ lat: -23.5505, lng: -46.6333 }} // Ponto central do mapa
                     zoom={12} // Nível de zoom inicial
                     markers={markers} // Lista de marcadores
@@ -67,7 +67,7 @@ function RouteStopsPage({ pageFunctions }) {
                     }}
                 />
             </div>
-        </main>
+        </div>
     );
 }
 

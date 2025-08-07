@@ -55,17 +55,17 @@ function App() {
     <Router>
       <AuthProvider>
         <div>
-          <div className="d-flex w-100" style={{overflow: "hidden", minHeight:"100vh"}}> {/* Usando flex com min-height */}
+          <div className="d-flex w-100" style={{overflow: "hidden", height:"100vh"}}> {/* Usando flex com height fixo */}
 
             {/* Sidebar */}
             {showSideBar && <SideBar/>}
 
 
-            <main className="flex-grow-1" style={{overflow: "auto", maxHeight: "100vh"}}> {/* A main ocupará o espaço restante */}
+            <main className="flex-grow-1" style={{overflow: "auto", height: "100vh"}}> {/* A main ocupará o espaço restante */}
               {/* Header */}
               {showHeader && <Header pageName={pageName}/>}
 
-              <div className="py-0 w-100 h-100">
+              <div className="py-0 w-100" style={{flex: "1 1 0", minHeight: "0"}}>
                 <Routes>
                   <Route path="/" index element={<HomePage pageFunctions={pageFunctions} />} />
                   <Route path="/passengers" element={<PassengersPage pageFunctions={pageFunctions}/>} />

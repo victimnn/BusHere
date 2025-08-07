@@ -6,7 +6,7 @@ import L from 'leaflet';
 // Estilos customizados para o mapa
 const mapStyles = `
   .custom-popup .leaflet-popup-content-wrapper {
-    border-radius: 12px;
+    border-radius: 12px 0px 0px 12px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     border: 1px solid #e9ecef;
   }
@@ -185,11 +185,11 @@ function MapComponent({ center, zoom = 13, markers = [], polylines = [], onMapCl
 
   return (
     <div className={`map-container-wrapper ${className}`} style={{
-      borderRadius: '12px',
       overflow: 'hidden',
       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
       background: '#f8f9fa',
-      position: 'relative'
+      position: 'relative',
+      borderRadius: '0px 0px 12px 12px',
     }}>
       <MapContainer
         center={center}
@@ -199,9 +199,7 @@ function MapComponent({ center, zoom = 13, markers = [], polylines = [], onMapCl
         maxBoundsViscosity={1.0}
         worldCopyJump={false}
         className="w-100 h-100"
-        style={{
-          borderRadius: '10px'
-        }}
+        style={{borderRadius: '0px 0px 12px 12px'}}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

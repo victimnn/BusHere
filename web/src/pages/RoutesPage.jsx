@@ -11,6 +11,7 @@ import ActionButton from "@web/components/common/ActionButton";
 import { useRoutes } from "@web/hooks/useRoutes";
 import { useNotification } from "@web/hooks/useNotification";
 import { formatDateFromDatabase, getStatusFormat, formatKilometers, formatTime } from "@shared/formatters";
+import { useNavigate } from "react-router-dom";
 
 // Função para formatar status como JSX usando a função utilitária
 const formatStatus = (value) => {
@@ -44,7 +45,7 @@ const TABLE_HEADERS = [
 
 function RoutesPage({ pageFunctions }) {
   const popUpRef = useRef(null);
-  
+  const navigate = useNavigate();
   // Usar hook customizado para gerenciar dados das rotas
   const {
     routes,
@@ -153,7 +154,15 @@ function RoutesPage({ pageFunctions }) {
               </div>
               <h1 className="h3 mb-0 fw-semibold">Rotas</h1>
             </div>
-            
+            <ActionButton
+              onClick={()=>{navigate("/routes/new")}}
+              icon="bi bi-plus-circle"
+              text="Nova Rota com Pontos"
+              variant="primary"
+              size="lg"
+              disabled={isLoading}
+            />
+
             <ActionButton
               onClick={handleCreateRoute}
               icon="bi bi-plus-circle"

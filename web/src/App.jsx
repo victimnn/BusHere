@@ -21,6 +21,7 @@ import PassengerDetail from "./pages/details/PassengerDetail";
 import DriverDetail from "./pages/details/DriverDetail";
 import RouteDetail from "./pages/details/RouteDetail";
 import StopDetail from "./pages/details/StopDetail";
+import RouteStopsPage from "./pages/RouteStopsPage";
 
 import SideBar from "./components/SideBar";
 import Header from "./components/Header";
@@ -64,7 +65,7 @@ function App() {
               {/* Header */}
               {showHeader && <Header pageName={pageName}/>}
 
-              <div className="py-0" >
+              <div className="py-0 w-100 h-100">
                 <Routes>
                   <Route path="/" index element={<HomePage pageFunctions={pageFunctions} />} />
                   <Route path="/passengers" element={<PassengersPage pageFunctions={pageFunctions}/>} />
@@ -82,6 +83,7 @@ function App() {
                   <Route path="/drivers/:driverId" element={<DriverDetail pageFunctions={pageFunctions}/>} />
                   <Route path="/routes/:routeId" element={<RouteDetail pageFunctions={pageFunctions}/>} />
                   <Route path="/stops/:stopId" element={<StopDetail pageFunctions={pageFunctions}/>} />
+                  <Route path="/routes/new" element={<RouteStopsPage pageFunctions={pageFunctions}/>} />
 
                   <Route path="/search/:searchTerm" element={<SearchPage pageFunctions={pageFunctions}  />} />
                 </Routes>

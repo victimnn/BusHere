@@ -30,7 +30,8 @@ export const createSelectedStop = (stop, ordem) => ({
     logradouro: stop.logradouro,
     bairro: stop.bairro,
     cidade: stop.cidade,
-    ordem
+    ordem,
+    horario_previsto_passagem: null // Valor padrão para horário
 });
 
 /**
@@ -112,4 +113,36 @@ export const CONSTANTS = {
         MAX_INSTRUCTIONS_WIDTH: '300px',
         MIN_INSTRUCTIONS_WIDTH: '60px'
     }
+};
+
+/**
+ * Valida se os horários dos pontos estão em ordem cronológica
+ * @param {Array} pontosSelecionados - Lista de pontos selecionados
+ * @returns {Object} { isValid: boolean, error: string }
+ */
+export const validateTimeOrder = (pontosSelecionados) => {
+    const pontosComHorario = pontosSelecionados
+        .map((ponto, index) => ({ 
+            ...ponto, 
+            originalIndex: index 
+        }))
+        .filter(ponto => ponto.horario_previsto_passagem && ponto.horario_previsto_passagem.trim() !== '');
+
+    if (pontosComHorario.length <= 1) {
+        return { isValid: true, error: null };
+    }
+
+    for (let i = 1; i < pontosComHorario.length; i++) {
+        const pontoAnterior = pontosComHorario[i - 1];
+        const pontoAtual = pontosComHorario[i];
+        
+        if (pontoAtual.horario_previsto_passagem <= pontoAnterior.horario_previsto_passagem) {
+            return {
+                isValid: false,
+                error: `O horário do ponto "${pontoAtual.nome}" (${pontoAtual.horario_previsto_passagem}) deve ser posterior ao horário do ponto "${pontoAnterior.nome}" (${pontoAnterior.horario_previsto_passagem})`
+            };
+        }
+    }
+
+    return { isValid: true, error: null };
 };

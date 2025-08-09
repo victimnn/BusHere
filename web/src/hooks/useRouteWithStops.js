@@ -3,7 +3,7 @@ import { useApiOperation, useCoordinateUtils } from '@web/hooks/useCommonOperati
 import { 
     isStopAlreadySelected, 
     createSelectedStop, 
-    removeStopAndReorder 
+    removeStopAndReorder
 } from '@web/utils/routeStopsUtils';
 import api from '@web/api/api';
 
@@ -93,6 +93,7 @@ export function useRouteWithStops(
                 };
 
                 console.log('Enviando dados da rota:', dataToSend);
+                console.log('Pontos específicos:', routeData.pontos);
 
                 return await api.routes.createWithStops(dataToSend);
             },

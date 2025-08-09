@@ -1,12 +1,46 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import DraggableRoutePoint from '../DraggableRoutePoint';
+import { validateTimeOrder } from '@web/utils/routeStopsUtils';
 
 function SelectedPointsList({ 
     pontosSelecionados, 
     stats, 
     movePoint, 
-    removerPonto 
+    removerPonto,
+    onTimeChange
 }) {
+    // Memoizar o cálculo dos erros de validação para melhor performance
+    const timeValidationErrors = useMemo(() => {
+        const errors = {};
+        
+        pontosSelecionados.forEach((ponto, index) => {
+            if (ponto.horario_previsto_passagem && ponto.horario_previsto_passagem.trim() !== '') {
+                // Verificar se o horário anterior é posterior a este
+                if (index > 0) {
+                    const pontoAnterior = pontosSelecionados[index - 1];
+                    if (pontoAnterior.horario_previsto_passagem && 
+                        pontoAnterior.horario_previsto_passagem.trim() !== '' &&
+                        ponto.horario_previsto_passagem <= pontoAnterior.horario_previsto_passagem) {
+                        errors[index] = 'Horário deve ser posterior ao ponto anterior';
+                        return;
+                    }
+                }
+                
+                // Verificar se o próximo horário é anterior a este
+                if (index < pontosSelecionados.length - 1) {
+                    const proximoPonto = pontosSelecionados[index + 1];
+                    if (proximoPonto.horario_previsto_passagem && 
+                        proximoPonto.horario_previsto_passagem.trim() !== '' &&
+                        proximoPonto.horario_previsto_passagem <= ponto.horario_previsto_passagem) {
+                        errors[index] = 'Horário deve ser anterior ao próximo ponto';
+                    }
+                }
+            }
+        });
+        
+        return errors;
+    }, [pontosSelecionados]);
+
     const EmptyState = () => (
         <div className="d-flex align-items-center justify-content-center h-100 text-center text-muted py-5">
             <div>
@@ -38,6 +72,7 @@ function SelectedPointsList({
                         <div className="list-group route-points-list list-group-flush" style={{ maxHeight: '300px', overflowY: 'auto' }}>
                             {pontosSelecionados.map((ponto, index) => {
                                 const segmentInfo = stats.segments.find(seg => seg.index === index);
+                                const timeValidationError = timeValidationErrors[index] || null;
                                 
                                 return (
                                     <DraggableRoutePoint
@@ -47,6 +82,8 @@ function SelectedPointsList({
                                         movePoint={movePoint}
                                         onRemove={removerPonto}
                                         segmentInfo={segmentInfo}
+                                        onTimeChange={onTimeChange}
+                                        timeValidationError={timeValidationError}
                                     />
                                 );
                             })}

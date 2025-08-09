@@ -27,6 +27,7 @@ import MobileControlPanel from '@web/components/pageComponents/stopRoute/MobileC
  * @property {string} [logradouro]
  * @property {string} [bairro]
  * @property {string} [cidade]
+ * @property {string} [horario_previsto_passagem] - Horário previsto de passagem no formato HH:MM
  */
 
 /**

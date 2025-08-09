@@ -178,7 +178,39 @@ module.exports = (pool) => {
     } = req.body;
     
     if(!Array.isArray(pontos) || pontos.length < 2) {
-      return res.status(400).json({ error: "O campo 'pontos' deve ser um array com pelo menos dois IDs de pontos"});
+      return res.status(400).json({ error: "O campo 'pontos' deve ser um array com pelo menos dois elementos"});
+    }
+
+    // Validação dos horários em ordem cronológica
+    try {
+      const pontosComHorario = [];
+      
+      pontos.forEach((ponto, index) => {
+        const horario = typeof ponto === 'object' ? ponto.horario_previsto_passagem : null;
+        if (horario && horario.trim() !== '') {
+          pontosComHorario.push({
+            index: index + 1,
+            horario: horario.trim(),
+            ponto_id: typeof ponto === 'object' ? ponto.ponto_id : ponto
+          });
+        }
+      });
+
+      if (pontosComHorario.length > 1) {
+        for (let i = 1; i < pontosComHorario.length; i++) {
+          const pontoAnterior = pontosComHorario[i - 1];
+          const pontoAtual = pontosComHorario[i];
+          
+          if (pontoAtual.horario <= pontoAnterior.horario) {
+            return res.status(400).json({ 
+              error: `Horário inválido: o ponto na posição ${pontoAtual.index} (${pontoAtual.horario}) deve ter horário posterior ao ponto na posição ${pontoAnterior.index} (${pontoAnterior.horario})`
+            });
+          }
+        }
+      }
+    } catch (validationError) {
+      console.error('Erro na validação de horários:', validationError);
+      // Continuar mesmo com erro na validação de horários
     }
 
     const newRouteData = { 
@@ -197,8 +229,37 @@ module.exports = (pool) => {
       const [result] = await pool.query('INSERT INTO Rotas SET ?', newRouteData);
       const rota_id = result.insertId;
 
-      const routePointsData = pontos.map((ponto_id, index) => [rota_id, ponto_id, index + 1]);
-      await pool.query('INSERT INTO PontosRota (rota_id, ponto_id, ordem) VALUES ?', [routePointsData]);
+      console.log('Rota criada com ID:', rota_id);
+      console.log('Pontos recebidos:', pontos);
+
+      // Suporte para pontos com horário
+      const routePointsData = pontos.map((ponto, index) => {
+        console.log(`Processando ponto ${index + 1}:`, ponto);
+        // Se o ponto é um objeto com ponto_id e horario_previsto_passagem
+        if (typeof ponto === 'object' && ponto.ponto_id !== undefined) {
+          const data = [
+            rota_id, 
+            ponto.ponto_id, 
+            index + 1, 
+            ponto.horario_previsto_passagem || null
+          ];
+          console.log(`Dados do ponto objeto ${index + 1}:`, data);
+          return data;
+        }
+        // Se o ponto é apenas um ID (compatibilidade com versão anterior)
+        const data = [rota_id, ponto, index + 1, null];
+        console.log(`Dados do ponto ID ${index + 1}:`, data);
+        return data;
+      });
+      
+      console.log('Dados finais para inserir em PontosRota:', routePointsData);
+      
+      const resultPontos = await pool.query(
+        'INSERT INTO PontosRota (rota_id, ponto_id, ordem, horario_previsto_passagem) VALUES ?', 
+        [routePointsData]
+      );
+      
+      console.log('Resultado da inserção de pontos:', resultPontos);
       
       console.log({result, rota_id, pontos});
       res.status(201).json({ 

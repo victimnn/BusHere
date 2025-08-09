@@ -10,7 +10,9 @@ const DraggableRoutePoint = ({
   index, 
   movePoint, 
   onRemove, 
-  segmentInfo 
+  segmentInfo,
+  onTimeChange,
+  timeValidationError
 }) => {
   const ref = useRef(null);
 
@@ -86,16 +88,16 @@ const DraggableRoutePoint = ({
   return (
     <div 
       ref={ref} 
-      className={`list-group-item draggable-route-point border-0 ${isDragging ? 'is-dragging' : ''}`}
+      className={`list-group-item draggable-route-point border-0 ${isDragging ? 'is-dragging' : ''} ${timeValidationError ? 'has-time-error' : ''}`}
       style={{ opacity }}
       data-handler-id={handlerId}
     >
-      <div className="d-flex align-items-center py-2">
-        <div className="drag-handle me-3">
+      <div className="d-flex py-2">
+        <div className="drag-handle me-3 d-flex align-items-start pt-1">
           <i className="fas fa-grip-vertical text-muted"></i>
         </div>
         
-        <div className="position-relative me-3">
+        <div className="position-relative me-3 d-flex align-items-start pt-1">
           <span className="badge bg-primary rounded-circle d-flex align-items-center justify-content-center" style={{ width: '32px', height: '32px', fontSize: '0.875rem' }}>
             {index + 1}
           </span>
@@ -115,16 +117,45 @@ const DraggableRoutePoint = ({
               <span className="fw-medium">{segmentInfo.distance.toFixed(2)} km</span>
             </div>
           )}
+          
+          {/* Container para input de horário */}
+          <div className="time-input-container mt-2">
+            <div className="time-input-wrapper">
+              <i className="fas fa-clock text-primary" style={{ fontSize: '0.8rem' }}></i>
+              <label className="form-label mb-0 small text-muted" style={{ minWidth: 'fit-content' }}>
+                Horário:
+              </label>
+              <input
+                type="time"
+                className={`form-control form-control-sm ${timeValidationError ? 'is-invalid time-input-invalid' : ''}`}
+                style={{ width: '120px', fontSize: '0.85rem', flexShrink: 0 }}
+                value={ponto.horario_previsto_passagem || ''}
+                onChange={(e) => onTimeChange && onTimeChange(index, e.target.value)}
+                placeholder="--:--"
+                title="Horário previsto de passagem"
+              />
+            </div>
+            {timeValidationError && (
+              <div className="time-error-message">
+                <small className="text-danger d-block">
+                  <i className="fas fa-exclamation-triangle me-1"></i>
+                  {timeValidationError}
+                </small>
+              </div>
+            )}
+          </div>
         </div>
         
-        <button 
-          className="btn btn-sm btn-outline-danger rounded-circle d-flex align-items-center justify-content-center ms-2"
-          onClick={() => onRemove(index)}
-          title="Remover ponto"
-          style={{ width: '32px', height: '32px' }}
-        >
-          <i className="fas fa-times"></i>
-        </button>
+        <div className="remove-button-container d-flex align-items-start pt-1">
+          <button 
+            className="btn btn-sm btn-outline-danger rounded-circle d-flex align-items-center justify-content-center"
+            onClick={() => onRemove(index)}
+            title="Remover ponto"
+            style={{ width: '32px', height: '32px' }}
+          >
+            <i className="fas fa-times"></i>
+          </button>
+        </div>
       </div>
     </div>
   );

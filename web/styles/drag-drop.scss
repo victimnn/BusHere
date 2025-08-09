@@ -71,3 +71,43 @@
     }
   }
 }
+
+/* Estilos específicos para o layout do DraggableRoutePoint */
+.draggable-route-point {
+  .time-input-container {
+    min-height: 2.5rem; // Garante altura mínima para acomodar erro
+    
+    .time-input-wrapper {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .time-error-message {
+      width: 100%;
+      margin-top: 0.25rem;
+      font-size: 0.75rem;
+      line-height: 1.2;
+    }
+  }
+  
+  // Garantir que o botão de remover não seja sobreposto
+  .remove-button-container {
+    flex-shrink: 0;
+    min-width: 40px;
+  }
+  
+  // Melhorar o espaçamento quando há erro de validação
+  &.has-time-error {
+    .flex-grow-1 {
+      margin-right: 1rem; // Mais espaço para evitar sobreposição
+    }
+  }
+}
+
+/* Ajustes adicionais para inputs de horário com erro */
+.time-input-invalid {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}

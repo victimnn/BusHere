@@ -3,6 +3,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { useRouteWithStops } from '@web/hooks/useRouteWithStops';
 import { useRouteForm } from './controlPainel/useRouteForm';
+import { validateTimeOrder } from '@web/utils/routeStopsUtils';
 import RouteForm from './controlPainel/RouteForm';
 import RouteStatistics from './controlPainel/RouteStatistics';
 import SelectedPointsList from './controlPainel/SelectedPointsList';
@@ -37,6 +38,16 @@ function PainelControle({
         setPontosSelecionados(novosPontos);
     };
 
+    // Atualizar horário de um ponto específico
+    const handleTimeChange = useCallback((index, horario) => {
+        const novosPotnos = pontosSelecionados.map((ponto, i) => 
+            i === index 
+                ? { ...ponto, horario_previsto_passagem: horario }
+                : ponto
+        );
+        setPontosSelecionados(novosPotnos);
+    }, [pontosSelecionados, setPontosSelecionados]);
+
     // Salvar rota
     const handleSalvarRota = () => {
         if (!validateForm()) return;
@@ -46,9 +57,19 @@ function PainelControle({
             return;
         }
 
+        // Validar ordem dos horários
+        const timeValidation = validateTimeOrder(pontosSelecionados);
+        if (!timeValidation.isValid) {
+            alert(`Erro na validação dos horários:\n${timeValidation.error}`);
+            return;
+        }
+
         const dadosRota = {
             ...formData,
-            pontos: pontosSelecionados.map(ponto => ponto.ponto_id),
+            pontos: pontosSelecionados.map(ponto => ({
+                ponto_id: ponto.ponto_id,
+                horario_previsto_passagem: ponto.horario_previsto_passagem || null
+            })),
             ativo: true
         };
 
@@ -86,6 +107,7 @@ function PainelControle({
                     stats={stats}
                     movePoint={movePoint}
                     removerPonto={removerPonto}
+                    onTimeChange={handleTimeChange}
                 />
 
                 {/* Botões de Ação */}

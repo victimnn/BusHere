@@ -85,13 +85,13 @@ function RouteStops({ route }) {
               </p>
             </div>
           ) : (
-            <div className="list-group list-group-flush" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+            <div className="list-group list-group-flush" style={{ maxHeight: '450px', overflowY: 'auto' }}>
               {stops.map((stop, index) => (
                 <div key={stop.ponto_id || stop.id || index} className="list-group-item border-0 py-3">
                   <div className="d-flex align-items-start">
                     <div className="flex-shrink-0 me-3">
                       <div className="d-flex align-items-center justify-content-center bg-primary text-white rounded-circle" 
-                           style={{ width: '32px', height: '32px', fontSize: '14px', fontWeight: 'bold' }}>
+                           style={{ width: '36px', height: '36px', fontSize: '14px', fontWeight: 'bold' }}>
                         {stop.ordem || index + 1}
                       </div>
                     </div>
@@ -101,11 +101,25 @@ function RouteStops({ route }) {
                         <h6 className="mb-0 fw-semibold text-dark">
                           {stop.nome || `Ponto ${index + 1}`}
                         </h6>
-                        {stop.distancia_anterior && stop.distancia_anterior > 0 && (
-                          <small className="text-muted">
-                            {(stop.distancia_anterior / 1000).toFixed(2)} km do anterior
-                          </small>
-                        )}
+                        <div className="d-flex flex-column align-items-end gap-1">
+                          {stop.horario_previsto_passagem ? (
+                            <span className="badge bg-success text-white" style={{ fontSize: '0.75rem' }}>
+                              <i className="bi bi-clock me-1"></i>
+                              {stop.horario_previsto_passagem}
+                            </span>
+                          ) : (
+                            <span className="badge bg-light text-muted" style={{ fontSize: '0.7rem' }}>
+                              <i className="bi bi-clock me-1"></i>
+                              Sem horário
+                            </span>
+                          )}
+                          {stop.distancia_anterior && stop.distancia_anterior > 0 && (
+                            <small className="text-muted">
+                              <i className="bi bi-arrow-right me-1"></i>
+                              {(stop.distancia_anterior / 1000).toFixed(2)} km
+                            </small>
+                          )}
+                        </div>
                       </div>
                       
                       {(stop.logradouro || stop.endereco) && (
@@ -168,6 +182,24 @@ function RouteStops({ route }) {
                   <small className="text-muted">
                     <i className="bi bi-signpost me-1"></i>
                     {(stops.reduce((total, stop) => total + (stop.distancia_anterior || 0), 0) / 1000).toFixed(2)} km total
+                  </small>
+                </div>
+              )}
+              {stops.some(stop => stop.horario_previsto_passagem) && (
+                <div className="col">
+                  <small className="text-muted">
+                    <i className="bi bi-clock me-1"></i>
+                    {(() => {
+                      const pontosComHorario = stops.filter(stop => stop.horario_previsto_passagem);
+                      if (pontosComHorario.length === 0) return 'Sem horários';
+                      
+                      const primeiro = pontosComHorario[0].horario_previsto_passagem;
+                      const ultimo = pontosComHorario[pontosComHorario.length - 1].horario_previsto_passagem;
+                      
+                      return pontosComHorario.length === 1 
+                        ? `${primeiro}` 
+                        : `${primeiro} - ${ultimo}`;
+                    })()}
                   </small>
                 </div>
               )}

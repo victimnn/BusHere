@@ -48,13 +48,14 @@ export const useApiOperation = () => {
  * Extrai mensagem de erro padronizada
  */
 const getErrorMessage = (error) => {
-    if (error.message) {
-        return error.message;
-    } 
-    
+    // Priorizar mensagens específicas do backend
     if (error.data?.error) {
         return error.data.error;
     }
+    
+    if (error.message && error.message !== 'Ocorreu um erro na requisição') {
+        return error.message;
+    } 
     
     switch (error.status) {
         case 409:

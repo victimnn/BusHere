@@ -84,6 +84,7 @@ function App() {
                   <Route path="/routes/:routeId" element={<RouteDetail pageFunctions={pageFunctions}/>} />
                   <Route path="/stops/:stopId" element={<StopDetail pageFunctions={pageFunctions}/>} />
                   <Route path="/routes/new" element={<RouteStopsPage pageFunctions={pageFunctions}/>} />
+                  <Route path="/routes/:routeId/edit" element={<RouteStopsPage pageFunctions={pageFunctions}/>} />
 
                   <Route path="/search/:searchTerm" element={<SearchPage pageFunctions={pageFunctions}  />} />
                 </Routes>

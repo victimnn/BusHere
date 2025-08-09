@@ -141,41 +141,10 @@ function RoutesPage({ pageFunctions }) {
     });
   }, [createRoute, showSuccess, showError]);
   
-  // Handler para editar uma rota
+  // Handler para editar uma rota (navegar para página de edição com pontos)
   const handleEditRoute = useCallback((route) => {
-    const initialData = {
-      codigo_rota: route.codigo_rota,
-      nome: route.nome,
-      origem_descricao: route.origem_descricao,
-      destino_descricao: route.destino_descricao,
-      distancia_km: route.distancia_km,
-      tempo_viagem_estimado_minutos: route.tempo_viagem_estimado_minutos,
-      status_rota_id: route.status_rota_id,
-      onibus_id: route.onibus_id || '',
-      motorista_id: route.motorista_id || '',
-      observacoes_assignment: route.observacoes_assignment || ''
-    };
-
-    popUpRef.current.show({
-      title: `Editar Rota: ${route.nome}`,
-      content: RouteForm,
-      props: {
-        initialData: initialData,
-        onSubmit: async (formData) => {
-          const result = await updateRouteWithAssignment(route.rota_id, formData);
-          if (result.success) {
-            popUpRef.current.hide();
-            showSuccess("Rota atualizada com sucesso!");
-            // Recarregar os dados das rotas
-            refetch();
-          } else {
-            showError(result.error);
-          }
-        },
-        onCancel: () => popUpRef.current.hide(),
-      }
-    });
-  }, [updateRouteWithAssignment, refetch, showSuccess, showError]);
+    navigate(`/routes/${route.rota_id}/edit`);
+  }, [navigate]);
 
   // Handler para excluir uma rota
   const handleDeleteRoute = useCallback(async (id) => {

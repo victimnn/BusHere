@@ -152,9 +152,11 @@ const api = {
       return api.get(`/routes?${queryParams.toString()}`);
     },
     getById: (id) => api.get(`/routes/${id}`),
+    getByIdWithStops: (id) => api.get(`/routes/${id}?includeStops=true`),
     create: (routeData) => api.post('/routes', routeData),
     createWithStops: (routeData) => api.post('/routes/new', routeData),
     update: (id, edits) => api.put(`/routes/${id}`, edits),
+    updateWithStops: (id, routeData) => api.put(`/routes/${id}/with-stops`, routeData),
     delete: (id) => api.delete(`/routes/${id}`),
     getStatus: () => api.get('/routes/status'),
     getStops: (id) => api.get(`/routes/stops/${id}`),

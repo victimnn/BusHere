@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '@web/api/api';
 
-export function useRouteForm(stats) {
+export function useRouteForm(stats, initialData = null) {
     const [formData, setFormData] = useState({
         nome: '',
         codigo_rota: '',
@@ -9,7 +9,10 @@ export function useRouteForm(stats) {
         destino_descricao: '',
         distancia_km: 0,
         tempo_viagem_estimado_minutos: 0,
-        status_rota_id: 1
+        status_rota_id: 1,
+        onibus_id: null,
+        motorista_id: null,
+        observacoes_assignment: ''
     });
     
     const [statusOptions, setStatusOptions] = useState([
@@ -17,6 +20,25 @@ export function useRouteForm(stats) {
         { status_rota_id: 2, nome: 'Inativa', descricao: 'Rota temporariamente inativa' },
         { status_rota_id: 3, nome: 'Em Planejamento', descricao: 'Rota em fase de planejamento' }
     ]);
+
+    // Carregar dados iniciais se fornecidos (modo de edição)
+    useEffect(() => {
+        if (initialData) {
+            setFormData(prev => ({
+                ...prev,
+                nome: initialData.nome || '',
+                codigo_rota: initialData.codigo_rota || '',
+                origem_descricao: initialData.origem_descricao || '',
+                destino_descricao: initialData.destino_descricao || '',
+                distancia_km: initialData.distancia_km || 0,
+                tempo_viagem_estimado_minutos: initialData.tempo_viagem_estimado_minutos || 0,
+                status_rota_id: initialData.status_rota_id || 1,
+                onibus_id: initialData.onibus_id || null,
+                motorista_id: initialData.motorista_id || null,
+                observacoes_assignment: initialData.observacoes_assignment || ''
+            }));
+        }
+    }, [initialData]);
 
     // Atualizar distância e tempo quando pontos mudarem
     useEffect(() => {

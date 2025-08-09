@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useStops } from '@web/hooks/useStops';
 import { useNotification } from '@web/hooks/useNotification';
 import { useRouteWithStops } from '@web/hooks/useRouteWithStops';
@@ -40,6 +40,9 @@ import MobileControlPanel from '@web/components/pageComponents/stopRoute/MobileC
 
 function RouteStopsPage({ pageFunctions }) {
     const navigate = useNavigate();
+    const { routeId } = useParams(); // Para capturar ID da rota em caso de edição
+    const isEditMode = Boolean(routeId); // Determina se está em modo de edição
+    
     const { stops, loading: stopsLoading, error: stopsError } = useStops();
     const { showNotification } = useNotification();
     
@@ -52,12 +55,16 @@ function RouteStopsPage({ pageFunctions }) {
     const [rota, setRota] = useState(null);
     const [instructionsMinimized, setInstructionsMinimized] = useState(false);
     const [mapCenter, setMapCenter] = useState([CONSTANTS.MAP_CENTER.lat, CONSTANTS.MAP_CENTER.lng]);
+    const [initialDataLoaded, setInitialDataLoaded] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
 
     // Hook unificado para gerenciar rotas e handlers
     const { 
         loading: routeLoading, 
         error: routeError, 
         createRouteWithStops,
+        updateRouteWithAssignment,
+        getRouteWithAssignments,
         calculateRouteStats,
         setError: setRouteError,
         handleSelectExistingStop,
@@ -83,9 +90,13 @@ function RouteStopsPage({ pageFunctions }) {
     // Handler para abrir o tutorial
     const handleOpenTutorial = () => {
         if (popUpRef.current) {
+            const tutorialTitle = isEditMode 
+                ? 'Tutorial - Edição de Rotas' 
+                : 'Tutorial - Criação de Rotas';
+            
             popUpRef.current.show({
                 content: (props) => <TutorialContent {...props} />,
-                title: 'Tutorial - Criação de Rotas'
+                title: tutorialTitle
             });
         }
     };
@@ -97,8 +108,101 @@ function RouteStopsPage({ pageFunctions }) {
 
     // Efeito para configurar página
     useEffect(() => {
-        pageFunctions.set("Nova Rota", true, true);
-    }, [pageFunctions]);
+        const pageTitle = isEditMode ? "Editar Rota" : "Nova Rota";
+        pageFunctions.set(pageTitle, true, true);
+    }, [pageFunctions, isEditMode]);
+
+    // Efeito para detectar mudanças no tamanho da tela
+    useEffect(() => {
+        const handleResize = () => {
+            const newIsMobile = window.innerWidth < 992;
+            setIsMobile(newIsMobile);
+            
+            // Fechar offcanvas se mudou para desktop
+            if (!newIsMobile) {
+                const offcanvasElement = document.getElementById('mobileControls');
+                if (offcanvasElement) {
+                    const offcanvas = window.bootstrap?.Offcanvas.getInstance(offcanvasElement);
+                    if (offcanvas) {
+                        offcanvas.hide();
+                    }
+                }
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    // Efeito para carregar dados da rota em modo de edição
+    useEffect(() => {
+        if (isEditMode && routeId && !initialDataLoaded) {
+            loadRouteData();
+        }
+    }, [isEditMode, routeId, initialDataLoaded]);
+
+    // Função para carregar dados da rota existente
+    const loadRouteData = async () => {
+        try {
+            setRouteError(null);
+            const routeData = await getRouteWithAssignments(routeId);
+            
+            if (routeData.success) {
+                const route = routeData.data;
+                
+                // Definir dados básicos da rota
+                setRota({
+                    nome: route.nome,
+                    codigo_rota: route.codigo_rota,
+                    origem_descricao: route.origem_descricao,
+                    destino_descricao: route.destino_descricao,
+                    distancia_km: route.distancia_km,
+                    tempo_viagem_estimado_minutos: route.tempo_viagem_estimado_minutos,
+                    status_rota_id: route.status_rota_id,
+                    ativo: route.ativo,
+                    onibus_id: route.onibus_id,
+                    motorista_id: route.motorista_id,
+                    observacoes_assignment: route.observacoes_assignment || ''
+                });
+
+                // Carregar pontos da rota se existirem
+                if (route.pontos && route.pontos.length > 0) {
+                    const pontosFormatados = route.pontos.map((ponto, index) => ({
+                        id: `existing-${ponto.ponto_id}`,
+                        ponto_id: ponto.ponto_id,
+                        latitude: parseFloat(ponto.latitude),
+                        longitude: parseFloat(ponto.longitude),
+                        nome: ponto.nome,
+                        ordem: ponto.ordem || index + 1,
+                        logradouro: ponto.logradouro || '',
+                        bairro: ponto.bairro || '',
+                        cidade: ponto.cidade || '',
+                        horario_previsto_passagem: ponto.horario_previsto_passagem || ''
+                    }));
+
+                    // Ordenar pontos pela ordem
+                    pontosFormatados.sort((a, b) => a.ordem - b.ordem);
+                    setPontosSelecionados(pontosFormatados);
+
+                    // Centralizar mapa nos pontos da rota
+                    if (pontosFormatados.length > 0) {
+                        const center = centerMapWithStops(pontosFormatados);
+                        setMapCenter(center);
+                    }
+                }
+
+                setInitialDataLoaded(true);
+                showNotification(`Dados da rota "${route.nome}" carregados para edição`, 'success');
+            } else {
+                setRouteError(routeData.error || 'Erro ao carregar dados da rota');
+                showNotification('Erro ao carregar dados da rota', 'error');
+            }
+        } catch (error) {
+            console.error('Erro ao carregar rota:', error);
+            setRouteError('Erro inesperado ao carregar dados da rota');
+            showNotification('Erro inesperado ao carregar dados da rota', 'error');
+        }
+    };
 
     // Efeito para centralizar o mapa com base nos pontos existentes
     useEffect(() => {
@@ -106,7 +210,7 @@ function RouteStopsPage({ pageFunctions }) {
         setMapCenter(novoCenter);
     }, [stops]);
 
-    // Handler para salvar rota
+    // Handler para salvar rota (criação ou atualização)
     const handleSalvarRota = async (dadosRota) => {
         try {
             setRouteError(null);
@@ -114,24 +218,47 @@ function RouteStopsPage({ pageFunctions }) {
             // Calcular estatísticas da rota
             const stats = calculateRouteStats(pontosSelecionados);
             
-            // Adicionar estatísticas aos dados da rota
+            // Preparar pontos para envio ao backend
+            const pontosParaBackend = pontosSelecionados.map(ponto => ({
+                ponto_id: ponto.ponto_id,
+                ordem: ponto.ordem,
+                horario_previsto_passagem: ponto.horario_previsto_passagem || null
+            }));
+            
+            // Adicionar estatísticas e pontos aos dados da rota
             const rotaComEstatisticas = {
                 ...dadosRota,
                 distancia_km: stats.totalDistance,
-                tempo_viagem_estimado_minutos: Math.round(stats.estimatedTime)
+                tempo_viagem_estimado_minutos: Math.round(stats.estimatedTime),
+                pontos: pontosParaBackend
             };
 
-            const resultado = await createRouteWithStops(rotaComEstatisticas);
+            let resultado;
+
+            if (isEditMode) {
+                // Modo de edição - atualizar rota existente
+                resultado = await updateRouteWithAssignment(routeId, rotaComEstatisticas);
+            } else {
+                // Modo de criação - criar nova rota
+                resultado = await createRouteWithStops(rotaComEstatisticas);
+            }
 
             if (resultado.success) {
-                showNotification(resultado.message, 'success');
+                const action = isEditMode ? 'atualizada' : 'criada';
+                showNotification(resultado.message || `Rota ${action} com sucesso!`, 'success');
 
                 // Limpar formulário e voltar para página de rotas
-                setPontosSelecionados([]);
-                setRota(null);
+                if (!isEditMode) {
+                    setPontosSelecionados([]);
+                    setRota(null);
+                }
                 
                 setTimeout(() => {
-                    navigate('/routes');
+                    if (isEditMode) {
+                        navigate(-1); // Voltar para a página anterior
+                    } else {
+                        navigate('/routes'); // Voltar para lista de rotas
+                    }
                 }, 1500);
             } else {
                 showNotification(resultado.error, 'error');
@@ -139,15 +266,19 @@ function RouteStopsPage({ pageFunctions }) {
 
         } catch (error) {
             console.error('Erro inesperado ao salvar rota:', error);
-            showNotification('Erro inesperado ao salvar rota', 'error');
+            const action = isEditMode ? 'atualizar' : 'salvar';
+            showNotification(`Erro inesperado ao ${action} rota`, 'error');
         }
     };
 
     // Renderização
-    if (stopsLoading) {
+    if (stopsLoading || (isEditMode && !initialDataLoaded)) {
         return (
             <div className="d-flex justify-content-center align-items-center" style={{ height: '400px' }}>
                 <LoadingSpinner />
+                <div className="ms-3">
+                    {stopsLoading ? 'Carregando pontos...' : 'Carregando dados da rota...'}
+                </div>
             </div>
         );
     }
@@ -164,7 +295,7 @@ function RouteStopsPage({ pageFunctions }) {
     }
 
     return (
-        <div className="route-stops-page w-100 h-100 d-flex flex-column flex-lg-row">
+        <div className="route-stops-page w-100 h-100 d-flex flex-column flex-lg-row position-relative">
             {/* Painel de Controle Desktop */}
             <div 
                 className="painel-controle d-none d-lg-block border-end" 
@@ -182,6 +313,8 @@ function RouteStopsPage({ pageFunctions }) {
                     rota={rota}
                     setRota={setRota}
                     instanceId="desktop"
+                    initialData={rota}
+                    isEditMode={isEditMode}
                 />
             </div>
 
@@ -194,6 +327,8 @@ function RouteStopsPage({ pageFunctions }) {
                 loading={routeLoading}
                 rota={rota}
                 setRota={setRota}
+                initialData={rota}
+                isEditMode={isEditMode}
             />
 
             {/* Mapa */}

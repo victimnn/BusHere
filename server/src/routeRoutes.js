@@ -126,11 +126,53 @@ module.exports = (pool) => {
   router.get('/:id', async (req, res) => {
     try {
       const { id } = req.params;
+      const { includeStops = 'false' } = req.query; // Parâmetro opcional para incluir pontos
+      
+      // Buscar dados básicos da rota
       const [rows] = await pool.execute('SELECT * FROM Rotas WHERE rota_id = ?', [id]);
       if (rows.length === 0) {
         return res.status(404).json({ error: 'Rota não encontrada' });
       }
-      res.json(rows[0]);
+      
+      const route = rows[0];
+      
+      // Se solicitado, incluir pontos da rota
+      if (includeStops === 'true') {
+        const stopQuery = `
+          SELECT 
+            pr.ponto_rota_id,
+            pr.rota_id,
+            pr.ponto_id,
+            pr.ordem,
+            pr.horario_previsto_passagem,
+            pr.distancia_do_ponto_anterior_km as distancia_anterior,
+            pr.criacao as ponto_rota_criacao,
+            pr.atualizacao as ponto_rota_atualizacao,
+            pr.ativo as ponto_rota_ativo,
+            p.nome,
+            p.latitude,
+            p.longitude,
+            p.logradouro,
+            p.numero_endereco,
+            p.bairro,
+            p.cidade,
+            p.uf,
+            p.cep,
+            p.referencia,
+            p.criacao,
+            p.atualizacao,
+            p.ativo
+          FROM PontosRota pr
+          INNER JOIN Pontos p ON pr.ponto_id = p.ponto_id
+          WHERE pr.rota_id = ? AND pr.ativo = TRUE AND p.ativo = TRUE
+          ORDER BY pr.ordem
+        `;
+        
+        const [stopRows] = await pool.execute(stopQuery, [id]);
+        route.pontos = stopRows;
+      }
+      
+      res.json(route);
     } catch (error) {
       console.error('Erro ao buscar detalhes da rota:', error);
       res.status(500).json({ error: 'Erro ao buscar detalhes da rota' });
@@ -322,6 +364,153 @@ module.exports = (pool) => {
         return res.status(409).json({ error: 'Código da rota já cadastrado.' });
       }
       res.status(500).json({ error: 'Erro ao atualizar rota' });
+    }
+  });
+
+  // Rota para atualizar uma rota com pontos
+  router.put('/:id/with-stops', async (req, res) => {
+    const { id } = req.params;
+    const {
+      nome, 
+      codigo_rota, 
+      descricao, 
+      origem_descricao, 
+      destino_descricao, 
+      distancia_km, 
+      tempo_viagem_estimado_minutos, 
+      status_rota_id, 
+      ativo,
+      pontos
+    } = req.body;
+
+    const connection = await pool.getConnection();
+    
+    try {
+      await connection.beginTransaction();
+
+      // Verificar se a rota existe
+      const [routeExists] = await connection.execute('SELECT rota_id FROM Rotas WHERE rota_id = ?', [id]);
+      if (routeExists.length === 0) {
+        await connection.rollback();
+        return res.status(404).json({ error: 'Rota não encontrada' });
+      }
+
+      // Atualizar dados básicos da rota
+      const updatedRouteData = {
+        nome, codigo_rota, descricao, origem_descricao, destino_descricao, 
+        distancia_km, tempo_viagem_estimado_minutos, status_rota_id, ativo
+      };
+
+      // Remover campos undefined
+      Object.keys(updatedRouteData).forEach(key => 
+        updatedRouteData[key] === undefined && delete updatedRouteData[key]
+      );
+
+      if (Object.keys(updatedRouteData).length > 0) {
+        await connection.query('UPDATE Rotas SET ? WHERE rota_id = ?', [updatedRouteData, id]);
+      }
+
+      // Se pontos foram fornecidos, atualizar associações
+      if (pontos && Array.isArray(pontos)) {
+        // Remover todas as associações existentes
+        await connection.execute('DELETE FROM PontosRota WHERE rota_id = ?', [id]);
+
+        // Inserir novas associações se houver pontos
+        if (pontos.length > 0) {
+          // Validação dos horários em ordem cronológica
+          const pontosComHorario = [];
+          
+          pontos.forEach((ponto, index) => {
+            const horario = typeof ponto === 'object' ? ponto.horario_previsto_passagem : null;
+            
+            if (horario) {
+              pontosComHorario.push({
+                horario,
+                ordem: typeof ponto === 'object' ? ponto.ordem : index + 1
+              });
+            }
+          });
+
+          // Verificar se horários estão em ordem cronológica
+          if (pontosComHorario.length > 1) {
+            for (let i = 1; i < pontosComHorario.length; i++) {
+              if (pontosComHorario[i].horario <= pontosComHorario[i - 1].horario) {
+                await connection.rollback();
+                return res.status(400).json({ 
+                  error: `Horário do ponto ${pontosComHorario[i].ordem} deve ser posterior ao ponto anterior` 
+                });
+              }
+            }
+          }
+
+          // Preparar dados para inserção
+          const routePointsData = pontos.map((ponto, index) => {
+            const pontoId = typeof ponto === 'object' ? ponto.ponto_id : ponto;
+            const ordem = typeof ponto === 'object' ? ponto.ordem : index + 1;
+            const horario = typeof ponto === 'object' ? ponto.horario_previsto_passagem : null;
+            
+            return [id, pontoId, ordem, horario];
+          });
+
+          await connection.query(
+            'INSERT INTO PontosRota (rota_id, ponto_id, ordem, horario_previsto_passagem) VALUES ?', 
+            [routePointsData]
+          );
+        }
+      }
+
+      await connection.commit();
+
+      // Buscar rota atualizada com pontos
+      const [updatedRoute] = await connection.execute('SELECT * FROM Rotas WHERE rota_id = ?', [id]);
+      
+      // Buscar pontos da rota atualizada
+      const stopQuery = `
+        SELECT 
+          pr.ponto_rota_id,
+          pr.rota_id,
+          pr.ponto_id,
+          pr.ordem,
+          pr.horario_previsto_passagem,
+          pr.distancia_do_ponto_anterior_km as distancia_anterior,
+          p.nome,
+          p.latitude,
+          p.longitude,
+          p.logradouro,
+          p.numero_endereco,
+          p.bairro,
+          p.cidade,
+          p.uf,
+          p.cep,
+          p.referencia
+        FROM PontosRota pr
+        INNER JOIN Pontos p ON pr.ponto_id = p.ponto_id
+        WHERE pr.rota_id = ? AND pr.ativo = TRUE AND p.ativo = TRUE
+        ORDER BY pr.ordem
+      `;
+      
+      const [stopRows] = await connection.execute(stopQuery, [id]);
+      const routeWithStops = {
+        ...updatedRoute[0],
+        pontos: stopRows
+      };
+
+      res.json({
+        message: 'Rota atualizada com sucesso',
+        rota_id: id,
+        data: routeWithStops
+      });
+
+    } catch (error) {
+      await connection.rollback();
+      console.error('Erro ao atualizar rota com pontos:', error);
+      
+      if (error.code === 'ER_DUP_ENTRY') {
+        return res.status(409).json({ error: 'Código da rota já cadastrado.' });
+      }
+      res.status(500).json({ error: 'Erro ao atualizar rota com pontos' });
+    } finally {
+      connection.release();
     }
   });
 

@@ -17,11 +17,13 @@ function PainelControle({
     loading,
     rota,
     setRota,
-    instanceId = 'default'
+    instanceId = 'default',
+    initialData = null, // Adicionar dados iniciais para modo de edição
+    isEditMode = false // Indicar se está em modo de edição
 }) {
     const { calculateRouteStats } = useRouteWithStops();
     const stats = calculateRouteStats(pontosSelecionados);
-    const { formData, statusOptions, handleInputChange, validateForm } = useRouteForm(stats);
+    const { formData, statusOptions, handleInputChange, validateForm } = useRouteForm(stats, initialData);
 
     // Função para mover pontos (drag and drop)
     const movePoint = useCallback((dragIndex, hoverIndex) => {
@@ -29,13 +31,28 @@ function PainelControle({
         const newPoints = [...pontosSelecionados];
         newPoints.splice(dragIndex, 1);
         newPoints.splice(hoverIndex, 0, draggedPoint);
-        setPontosSelecionados(newPoints);
+        
+        // Atualizar a ordem dos pontos após o movimento
+        const pointsWithUpdatedOrder = newPoints.map((ponto, index) => ({
+            ...ponto,
+            ordem: index + 1
+        }));
+        
+        console.log('Ordem atualizada após movimento:', pointsWithUpdatedOrder.map(p => ({ nome: p.nome, ordem: p.ordem })));
+        setPontosSelecionados(pointsWithUpdatedOrder);
     }, [pontosSelecionados, setPontosSelecionados]);
 
     // Remover ponto específico
     const removerPonto = (index) => {
         const novosPontos = pontosSelecionados.filter((_, i) => i !== index);
-        setPontosSelecionados(novosPontos);
+        
+        // Atualizar a ordem dos pontos restantes
+        const pontosComOrdemAtualizada = novosPontos.map((ponto, newIndex) => ({
+            ...ponto,
+            ordem: newIndex + 1
+        }));
+        
+        setPontosSelecionados(pontosComOrdemAtualizada);
     };
 
     // Atualizar horário de um ponto específico
@@ -118,6 +135,7 @@ function PainelControle({
                     loading={loading}
                     formData={formData}
                     handleSalvarRota={handleSalvarRota}
+                    isEditMode={isEditMode}
                 />
             </div>
         </DndProvider>

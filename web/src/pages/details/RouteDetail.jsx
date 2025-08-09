@@ -5,6 +5,7 @@ import RouteForm from "@web/components/pageComponents/routes/RouteForm";
 import Notification from '@web/components/common/Notification';
 
 import { useRoutes } from '@web/hooks/useRoutes';
+import { useRouteWithStops } from '@web/hooks/useRouteWithStops';
 import { useDetailPage } from '@web/hooks/useDetailPage';
 import { useNotification } from '@web/hooks/useNotification';
 import { formatDateFromDatabase } from '@shared/formatters';
@@ -28,10 +29,13 @@ function RouteDetail({ pageFunctions }) {
   const popUpRef = useRef(null);
   
   // Usar o hook de rotas
-  const { getRouteById, updateRoute, deleteRoute, getStatusRotaNome } = useRoutes();
+  const { updateRoute, deleteRoute, getStatusRotaNome } = useRoutes();
+  
+  // Usar o hook para buscar rota com pontos e associações
+  const { getRouteWithAssignments } = useRouteWithStops();
   
   // Usar o hook de detail page
-  const { data: route, loading, error, refetch } = useDetailPage(getRouteById, routeId);
+  const { data: route, loading, error, refetch } = useDetailPage(getRouteWithAssignments, routeId);
 
   // Hook para notificações
     const { notification, hideNotification, showSuccess, showError } = useNotification();
@@ -91,6 +95,12 @@ function RouteDetail({ pageFunctions }) {
     }
   };
 
+  // Função para navegar para edição completa da rota com pontos
+  const handleEditRouteWithStops = () => {
+    console.log('Navegando para edição de rota com pontos:', `/routes/${routeId}/edit`);
+    navigate(`/routes/${routeId}/edit`);
+  };
+
   // Configurar ações da rota
   const actions = [
     {
@@ -100,10 +110,10 @@ function RouteDetail({ pageFunctions }) {
       onClick: handleDeleteRoute
     },
     {
-      text: "Editar",
-      icon: "bi-pencil-square",
+      text: "Editar Rota e Pontos",
+      icon: "bi-map",
       variant: "btn-primary",
-      onClick: handleEditRoute
+      onClick: handleEditRouteWithStops
     }
   ];
 
@@ -174,6 +184,107 @@ function RouteDetail({ pageFunctions }) {
               />
             </DetailSection>
           </DetailContainer>
+
+          {/* Seção de Ônibus e Motorista */}
+          {(route.onibus_nome || route.motorista_nome) && (
+            <DetailContainer columns={2}>
+              {route.onibus_nome && (
+                <DetailSection 
+                  title="Ônibus Designado" 
+                  icon="bi-bus-front"
+                >
+                  <DetailItem 
+                    icon="bi-bus-front" 
+                    label="Nome do Ônibus" 
+                    value={route.onibus_nome} 
+                  />
+                  <DetailItem 
+                    icon="bi-card-text" 
+                    label="Placa" 
+                    value={route.onibus_placa || 'Não informado'} 
+                  />
+                </DetailSection>
+              )}
+
+              {route.motorista_nome && (
+                <DetailSection 
+                  title="Motorista Designado" 
+                  icon="bi-person-badge"
+                >
+                  <DetailItem 
+                    icon="bi-person" 
+                    label="Nome do Motorista" 
+                    value={route.motorista_nome} 
+                  />
+                  <DetailItem 
+                    icon="bi-credit-card" 
+                    label="CNH" 
+                    value={route.motorista_cnh || 'Não informado'} 
+                  />
+                </DetailSection>
+              )}
+            </DetailContainer>
+          )}
+
+          {/* Seção de Pontos da Rota */}
+          {route.pontos && route.pontos.length > 0 && (
+            <DetailSection 
+              title={`Pontos da Rota (${route.pontos.length})`}
+              icon="bi-geo-alt-fill"
+              className="mt-4"
+            >
+              <div className="row g-3">
+                {route.pontos.map((ponto, index) => (
+                  <div key={ponto.ponto_rota_id || index} className="col-md-6">
+                    <div className="card border-0 bg-light">
+                      <div className="card-body p-3">
+                        <div className="d-flex align-items-center mb-2">
+                          <div className="badge bg-primary rounded-circle me-2" style={{ width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            {ponto.ordem}
+                          </div>
+                          <h6 className="card-title mb-0 fw-semibold">{ponto.nome}</h6>
+                        </div>
+                        
+                        {(ponto.logradouro || ponto.bairro || ponto.cidade) && (
+                          <p className="card-text text-muted small mb-2">
+                            <i className="bi bi-geo-alt me-1"></i>
+                            {[ponto.logradouro, ponto.bairro, ponto.cidade].filter(Boolean).join(', ')}
+                          </p>
+                        )}
+                        
+                        {ponto.horario_previsto_passagem && (
+                          <p className="card-text text-muted small mb-0">
+                            <i className="bi bi-clock me-1"></i>
+                            Horário previsto: {ponto.horario_previsto_passagem}
+                          </p>
+                        )}
+                        
+                        <p className="card-text text-muted small mb-0">
+                          <i className="bi bi-geo me-1"></i>
+                          Lat: {ponto.latitude}, Lng: {ponto.longitude}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </DetailSection>
+          )}
+
+          {/* Observações da Associação */}
+          {route.observacoes_assignment && (
+            <DetailSection 
+              title="Observações" 
+              icon="bi-journal-text"
+              className="mt-4"
+            >
+              <DetailItem 
+                icon="bi-chat-text" 
+                label="Observações da Designação" 
+                value={route.observacoes_assignment} 
+              />
+            </DetailSection>
+          )}
 
           <DetailActions
             title="Ações da Rota"

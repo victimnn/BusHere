@@ -121,8 +121,11 @@ export function useRouteWithStops(
     const updateRouteWithAssignment = useCallback(async (routeId, routeData) => {
         return executeOperation(
             async () => {
-                // Usar função centralizada para preparar dados básicos da rota
-                const routeUpdateData = prepareRouteBackendData(routeData);
+                // Preparar dados da rota com pontos
+                const routeUpdateData = {
+                    ...prepareRouteBackendData(routeData),
+                    pontos: routeData.pontos || []
+                };
 
                 // Remover campos undefined
                 Object.keys(routeUpdateData).forEach(key => {
@@ -131,7 +134,8 @@ export function useRouteWithStops(
                     }
                 });
 
-                const routeResult = await api.routes.update(routeId, routeUpdateData);
+                // Atualizar rota com pontos
+                const routeResult = await api.routes.updateWithStops(routeId, routeUpdateData);
 
                 // Gerenciar associação de ônibus e motorista
                 if (routeData.onibus_id && routeData.motorista_id) {
@@ -183,7 +187,7 @@ export function useRouteWithStops(
         return executeOperation(
             async () => {
                 const [routeResponse, assignmentsResponse] = await Promise.all([
-                    api.routes.getById(routeId),
+                    api.routes.getByIdWithStops(routeId),
                     api.routes.getAssignments(routeId)
                 ]);
 

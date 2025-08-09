@@ -7,7 +7,8 @@ function ActionButtons({
     onLimparTudo, 
     loading, 
     formData, 
-    handleSalvarRota 
+    handleSalvarRota,
+    isEditMode = false
 }) {
     const isFormValid = formData.nome && 
                        formData.codigo_rota && 
@@ -56,8 +57,8 @@ function ActionButtons({
                     onClick={handleSalvarRota}
                     disabled={pontosSelecionados.length < 2 || loading || !isFormValid}
                     loading={loading}
-                    icon="bi bi-plus-circle"
-                    text="Criar Rota"
+                    icon={isEditMode ? "bi bi-pencil-square" : "bi bi-plus-circle"}
+                    text={isEditMode ? "Atualizar Rota" : "Criar Rota"}
                     className="w-100 justify-content-center"
                     style={{ minHeight: '50px' }}
                 />

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, forwardRef, useImperativeHandle} from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMapEvent, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -177,7 +177,74 @@ function ZoomChangeHandler({ handleZoomChange }) {
   return null;
 }
 
-function MapComponent({ center, zoom = 13, markers = [], polylines = [], onMapClick = null, onMarkerClick = null, className = '', handleZoomChange = null }) {
+// Component to handle popup control
+function PopupController({ onPopupClose }) {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (!onPopupClose) return;
+    
+    const handlePopupClose = () => {
+      onPopupClose();
+    };
+
+    map.on('popupclose', handlePopupClose);
+    return () => {
+      map.off('popupclose', handlePopupClose);
+    };
+  }, [map, onPopupClose]);
+
+  return null;
+}
+
+// Component to expose map methods to parent
+function MapRef({ onMapReady }) {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (onMapReady) {
+      onMapReady(map);
+    }
+  }, [map, onMapReady]);
+
+  return null;
+}
+
+// Component to handle center changes
+function CenterChangeHandler({ center }) {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (center && Array.isArray(center) && center.length === 2) {
+      map.setView(center, map.getZoom());
+    }
+  }, [map, center]);
+
+  return null;
+}
+
+const MapComponent = forwardRef(({ 
+  center, 
+  zoom = 13, 
+  markers = [], 
+  polylines = [], 
+  onMapClick = null, 
+  onMarkerClick = null, 
+  className = '', 
+  handleZoomChange = null,
+  onPopupClose = null
+}, ref) => {
+  const [mapInstance, setMapInstance] = useState(null);
+
+  // Expose map methods to parent component
+  useImperativeHandle(ref, () => ({
+    closePopup: () => {
+      if (mapInstance) {
+        mapInstance.closePopup();
+      }
+    }
+  }), [mapInstance]);
+
   const maxBounds = [
     [-90, -180], // Southwest (lat, lng) - whole world
     [90, 180],   // Northeast (lat, lng)
@@ -239,11 +306,17 @@ function MapComponent({ center, zoom = 13, markers = [], polylines = [], onMapCl
         {onMapClick && <MapClickHandler onMapClick={onMapClick} />}
         {/* Zoom change handler */}
         {handleZoomChange && <ZoomChangeHandler handleZoomChange={handleZoomChange} />}
+        {/* Popup controller */}
+        <PopupController onPopupClose={onPopupClose} />
+        {/* Map ref component */}
+        <MapRef onMapReady={setMapInstance} />
+        {/* Center change handler */}
+        <CenterChangeHandler center={center} />
 
         {/* Adicione mais marcadores ou polylines para rotas conforme necessário */}
       </MapContainer>
     </div>
   );
-}
+});
 
 export default MapComponent;

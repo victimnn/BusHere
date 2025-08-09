@@ -1,4 +1,5 @@
 @import '../styles/custom.scss';
+@import '../styles/drag-drop.scss';
 
 // Reset global para prevenir scroll desnecessário
 html, body {
@@ -16,6 +17,49 @@ html, body {
 #sidebar {
   flex-shrink: 0 !important;
   min-width: 70px !important;
+}
+
+// Estilos para a página RouteStopsPage
+.route-stops-page {
+  height: 100%;
+  overflow: hidden;
+
+  .map-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    
+    .leaflet-container {
+      height: 100% !important;
+      width: 100% !important;
+    }
+  }
+
+  .floating-element {
+    z-index: 1000 !important;
+    
+    &.high-priority {
+      z-index: 1001 !important;
+    }
+  }
+
+  .painel-controle {
+    height: 100%;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+  }
+
+  // Garantir que elementos flutuantes sejam visíveis
+  .position-absolute {
+    z-index: 1000;
+  }
+
+  // Correção para mobile
+  @media (max-width: 991.98px) {
+    .offcanvas {
+      z-index: 1055 !important;
+    }
+  }
 }
 
 // Garantir que container-fluid não quebre o layout

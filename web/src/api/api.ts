@@ -153,6 +153,7 @@ const api = {
     },
     getById: (id) => api.get(`/routes/${id}`),
     create: (routeData) => api.post('/routes', routeData),
+    createWithStops: (routeData) => api.post('/routes/new', routeData),
     update: (id, edits) => api.put(`/routes/${id}`, edits),
     delete: (id) => api.delete(`/routes/${id}`),
     getStatus: () => api.get('/routes/status'),

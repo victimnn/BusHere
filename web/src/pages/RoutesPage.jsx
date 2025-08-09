@@ -11,6 +11,7 @@ import LoadingSpinner from "@web/components/common/LoadingSpinner";
 import ErrorAlert from "@web/components/common/ErrorAlert";
 import ActionButton from "@web/components/common/ActionButton";
 import { useRoutes } from "@web/hooks/useRoutes";
+import { useRouteWithStops } from "@web/hooks/useRouteWithStops";
 import { useNotification } from "@web/hooks/useNotification";
 import { formatDateFromDatabase, getStatusFormat, formatKilometers, formatTime } from "@shared/formatters";
 import { useNavigate } from "react-router-dom";
@@ -34,6 +35,9 @@ function RoutesPage({ pageFunctions }) {
     deleteRoute,
     refetch
   } = useRoutes();
+
+  // Hook para operações com associações ônibus-motorista
+  const { updateRouteWithAssignment } = useRouteWithStops();
 
   // Hook para notificações
   const { notification, hideNotification, showSuccess, showError } = useNotification();
@@ -60,6 +64,32 @@ function RoutesPage({ pageFunctions }) {
     { id: "nome", label: "Nome", sortable: true },
     { id: "origem_descricao", label: "Origem", sortable: true },
     { id: "destino_descricao", label: "Destino", sortable: true },
+    { id: "onibus_nome", 
+      label: "Ônibus", 
+      sortable: true,
+      formatter: (value, route) => {
+        if (!value) return <span className="text-muted">Não atribuído</span>;
+        return (
+          <div className="d-flex flex-column">
+            <small className="fw-semibold">{value}</small>
+            {route.onibus_placa && <small className="text-muted">{route.onibus_placa}</small>}
+          </div>
+        );
+      }
+    },
+    { id: "motorista_nome", 
+      label: "Motorista", 
+      sortable: true,
+      formatter: (value, route) => {
+        if (!value) return <span className="text-muted">Não atribuído</span>;
+        return (
+          <div className="d-flex flex-column">
+            <small className="fw-semibold">{value}</small>
+            {route.motorista_cnh && <small className="text-muted">CNH: {route.motorista_cnh}</small>}
+          </div>
+        );
+      }
+    },
     { id: "distancia_km", 
       label: "Distância", 
       sortable: true,
@@ -121,6 +151,9 @@ function RoutesPage({ pageFunctions }) {
       distancia_km: route.distancia_km,
       tempo_viagem_estimado_minutos: route.tempo_viagem_estimado_minutos,
       status_rota_id: route.status_rota_id,
+      onibus_id: route.onibus_id || '',
+      motorista_id: route.motorista_id || '',
+      observacoes_assignment: route.observacoes_assignment || ''
     };
 
     popUpRef.current.show({
@@ -129,10 +162,12 @@ function RoutesPage({ pageFunctions }) {
       props: {
         initialData: initialData,
         onSubmit: async (formData) => {
-          const result = await updateRoute(route.rota_id, formData);
+          const result = await updateRouteWithAssignment(route.rota_id, formData);
           if (result.success) {
             popUpRef.current.hide();
             showSuccess("Rota atualizada com sucesso!");
+            // Recarregar os dados das rotas
+            refetch();
           } else {
             showError(result.error);
           }
@@ -140,7 +175,7 @@ function RoutesPage({ pageFunctions }) {
         onCancel: () => popUpRef.current.hide(),
       }
     });
-  }, [updateRoute, showSuccess, showError]);
+  }, [updateRouteWithAssignment, refetch, showSuccess, showError]);
 
   // Handler para excluir uma rota
   const handleDeleteRoute = useCallback(async (id) => {

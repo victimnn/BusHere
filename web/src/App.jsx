@@ -61,11 +61,11 @@ function App() {
             {showSideBar && <SideBar/>}
 
 
-            <main className="flex-grow-1" style={{overflow: "auto", height: "100vh"}}> {/* A main ocupará o espaço restante */}
+            <main className="flex-grow-1 d-flex flex-column" style={{overflow: "auto", height: "100vh"}}> {/* A main ocupará o espaço restante */}
               {/* Header */}
               {showHeader && <Header pageName={pageName}/>}
 
-              <div className="py-0 w-100" style={{flex: "1 1 0", minHeight: "0"}}>
+              <div className="py-0 w-100 flex-grow-1" style={{minHeight: "0"}}>
                 <Routes>
                   <Route path="/" index element={<HomePage pageFunctions={pageFunctions} />} />
                   <Route path="/passengers" element={<PassengersPage pageFunctions={pageFunctions}/>} />

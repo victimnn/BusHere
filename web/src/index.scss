@@ -59,6 +59,64 @@ html, body {
     .offcanvas {
       z-index: 1055 !important;
     }
+
+    // Garantir que o botão flutuante seja visível
+    .floating-element {
+      z-index: 1050 !important;
+    }
+
+    // Ajustar tamanho do mapa em mobile
+    .map-container {
+      height: 100vh !important;
+    }
+
+    // Melhorar usabilidade do offcanvas
+    .offcanvas-body {
+      padding: 0 !important;
+    }
+
+    .offcanvas-header {
+      padding: 1rem 1.5rem !important;
+      background-color: var(--bs-light) !important;
+    }
+
+    // Ajustar posicionamento do botão flutuante
+    .position-fixed.bottom-0 {
+      position: fixed !important;
+      bottom: 20px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+    }
+  }
+
+  // Ajustes específicos para telas muito pequenas
+  @media (max-width: 576px) {
+    .floating-element {
+      &.position-fixed {
+        bottom: 15px !important;
+      }
+    }
+
+    .offcanvas-bottom {
+      height: 70vh !important;
+    }
+
+    // Botão mobile menor em telas pequenas
+    .btn-lg.rounded-pill {
+      font-size: 0.9rem !important;
+      padding: 0.75rem 1.5rem !important;
+      min-width: 160px !important;
+    }
+  }
+
+  // Estilos para o offcanvas
+  .offcanvas-bottom {
+    border-top-left-radius: 1rem !important;
+    border-top-right-radius: 1rem !important;
+  }
+
+  .offcanvas-header {
+    border-bottom: 2px solid var(--bs-border-color) !important;
   }
 }
 

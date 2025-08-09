@@ -63,7 +63,36 @@ module.exports = (pool) => {
   router.get('/stops/:id', async (req, res) => {
     const {id} = req.params;
     try {
-      const [rows] = await pool.execute("SELECT * FROM pontosrota WHERE rota_id = ? ORDER BY ordem", [id]);
+      const query = `
+        SELECT 
+          pr.ponto_rota_id,
+          pr.rota_id,
+          pr.ponto_id,
+          pr.ordem,
+          pr.horario_previsto_passagem,
+          pr.distancia_do_ponto_anterior_km as distancia_anterior,
+          pr.criacao as ponto_rota_criacao,
+          pr.atualizacao as ponto_rota_atualizacao,
+          pr.ativo as ponto_rota_ativo,
+          p.nome,
+          p.latitude,
+          p.longitude,
+          p.logradouro,
+          p.numero_endereco,
+          p.bairro,
+          p.cidade,
+          p.uf,
+          p.cep,
+          p.referencia,
+          p.criacao,
+          p.atualizacao,
+          p.ativo
+        FROM PontosRota pr
+        INNER JOIN Pontos p ON pr.ponto_id = p.ponto_id
+        WHERE pr.rota_id = ? AND pr.ativo = TRUE AND p.ativo = TRUE
+        ORDER BY pr.ordem
+      `;
+      const [rows] = await pool.execute(query, [id]);
       res.json({ data: rows });
     } catch (error) {
       console.error('Erro ao buscar paradas da rota:', error);
@@ -129,18 +158,40 @@ module.exports = (pool) => {
 
   //Rota de criar porem usa entidade assosiativa, no futuro mudar para o POST "/" normal
   router.post("/new", async (req, res) => {
-    const requiredFields = ['nome', 'codigo_rota', 'pontos'];
+    const requiredFields = ['nome', 'codigo_rota', 'origem_descricao', 'destino_descricao', 'pontos'];
     for (const field of requiredFields) {
       if (!req.body[field]) {
         return res.status(400).json({ error: `Campo obrigatório faltando: ${field}` });
       }
     }
-    const { nome, codigo_rota, descricao, status_rota_id, ativo, pontos } = req.body;
+    const { 
+      nome, 
+      codigo_rota, 
+      descricao, 
+      origem_descricao, 
+      destino_descricao, 
+      distancia_km, 
+      tempo_viagem_estimado_minutos, 
+      status_rota_id, 
+      ativo, 
+      pontos 
+    } = req.body;
+    
     if(!Array.isArray(pontos) || pontos.length < 2) {
       return res.status(400).json({ error: "O campo 'pontos' deve ser um array com pelo menos dois IDs de pontos"});
     }
 
-    const newRouteData = { nome, codigo_rota, descricao, status_rota_id, ativo };
+    const newRouteData = { 
+      nome, 
+      codigo_rota, 
+      descricao, 
+      origem_descricao, 
+      destino_descricao, 
+      distancia_km, 
+      tempo_viagem_estimado_minutos, 
+      status_rota_id, 
+      ativo 
+    };
 
     try {
       const [result] = await pool.query('INSERT INTO Rotas SET ?', newRouteData);
@@ -150,7 +201,19 @@ module.exports = (pool) => {
       await pool.query('INSERT INTO PontosRota (rota_id, ponto_id, ordem) VALUES ?', [routePointsData]);
       
       console.log({result, rota_id, pontos});
-      res.status(201).json({ rota_id, nome, codigo_rota, descricao, status_rota_id, ativo, pontos });
+      res.status(201).json({ 
+        rota_id, 
+        nome, 
+        codigo_rota, 
+        descricao, 
+        origem_descricao, 
+        destino_descricao, 
+        distancia_km, 
+        tempo_viagem_estimado_minutos, 
+        status_rota_id, 
+        ativo, 
+        pontos 
+      });
     } catch (error) {
       console.error('Erro ao criar rota com pontos:', error);
       if (error.code === 'ER_DUP_ENTRY') {

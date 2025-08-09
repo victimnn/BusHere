@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useFormattedBusOptions, useFormattedDriverOptions } from '../../../../hooks/useFormOptions';
 
 const FormField = ({ 
     label, 
@@ -14,7 +15,9 @@ const FormField = ({
     options = null,
     step,
     min,
-    className = "input-group-lg"
+    className = "input-group-lg",
+    rows,
+    error = null
 }) => (
     <div className="mb-4">
         <label htmlFor={id} className="form-label fw-semibold">
@@ -28,23 +31,41 @@ const FormField = ({
             </span>
             {type === 'select' ? (
                 <select
-                    className={`form-select ${className.includes('lg') ? 'form-select-lg' : ''} is-valid`}
+                    className={`form-select ${className.includes('lg') ? 'form-select-lg' : ''} ${
+                        error ? 'is-invalid' : (value ? 'is-valid' : '')
+                    }`}
                     id={id}
-                    value={value}
-                    onChange={(e) => onChange(parseInt(e.target.value))}
+                    value={value || ''}
+                    onChange={(e) => onChange(e.target.value ? parseInt(e.target.value) : null)}
                 >
+                    <option value="">{placeholder}</option>
                     {options?.map(option => (
-                        <option key={option.status_rota_id} value={option.status_rota_id}>
-                            {option.nome}
+                        <option key={option.value} value={option.value}>
+                            {option.label}
                         </option>
                     ))}
                 </select>
+            ) : type === 'textarea' ? (
+                <textarea
+                    className={`form-control ${className.includes('lg') ? 'form-control-lg' : ''} ${
+                        error ? 'is-invalid' : (value ? 'is-valid' : '')
+                    }`}
+                    id={id}
+                    value={value || ''}
+                    onChange={(e) => onChange(e.target.value)}
+                    placeholder={placeholder}
+                    maxLength={maxLength}
+                    rows={rows || 3}
+                    readOnly={readOnly}
+                />
             ) : (
                 <input
                     type={type}
-                    className={`form-control ${className.includes('lg') ? 'form-control-lg' : ''} ${value ? 'is-valid' : ''}`}
+                    className={`form-control ${className.includes('lg') ? 'form-control-lg' : ''} ${
+                        error ? 'is-invalid' : (value ? 'is-valid' : '')
+                    }`}
                     id={id}
-                    value={value}
+                    value={value || ''}
                     onChange={(e) => onChange(type === 'number' ? 
                         (step ? parseFloat(e.target.value) || 0 : parseInt(e.target.value) || 0) : 
                         e.target.value
@@ -57,10 +78,46 @@ const FormField = ({
                 />
             )}
         </div>
+        {error && (
+            <div className="invalid-feedback d-block">
+                <i className="bi bi-exclamation-circle me-1"></i>
+                {error}
+            </div>
+        )}
     </div>
 );
 
 function RouteForm({ formData, handleInputChange, statusOptions, instanceId }) {
+    // Usar hooks customizados para carregar opções filtradas
+    const { options: busOptions, loading: loadingBuses } = useFormattedBusOptions();
+    const { options: driverOptions, loading: loadingDrivers } = useFormattedDriverOptions();
+    
+    // Estados para gerenciar erros de validação
+    const [errors, setErrors] = useState({});
+    
+    // Função para validar os campos
+    const validateFields = () => {
+        const newErrors = {};
+        
+        // Se ônibus foi selecionado, motorista é obrigatório
+        if (formData.onibus_id && !formData.motorista_id) {
+            newErrors.motorista_id = 'Motorista é obrigatório quando um ônibus é selecionado';
+        }
+        
+        // Se motorista foi selecionado, ônibus é obrigatório
+        if (formData.motorista_id && !formData.onibus_id) {
+            newErrors.onibus_id = 'Ônibus é obrigatório quando um motorista é selecionado';
+        }
+        
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+    
+    // Validar sempre que os valores mudarem
+    useEffect(() => {
+        validateFields();
+    }, [formData.onibus_id, formData.motorista_id]);
+
     return (
         <div className="mb-4">
             <FormField
@@ -144,9 +201,70 @@ function RouteForm({ formData, handleInputChange, statusOptions, instanceId }) {
                 type="select"
                 value={formData.status_rota_id}
                 onChange={(value) => handleInputChange('status_rota_id', value)}
-                options={statusOptions}
+                options={statusOptions?.map(status => ({
+                    value: status.status_rota_id,
+                    label: status.nome
+                })) || []}
+                placeholder="Selecione o status"
                 required
             />
+
+            {/* Seção de Associação Ônibus-Motorista */}
+            <div className="card mt-4">
+                <div className="card-header bg-light">
+                    <h6 className="mb-0 text-primary">
+                        <i className="bi bi-truck me-2"></i>
+                        Associação Ônibus e Motorista
+                    </h6>
+                </div>
+                <div className="card-body">
+                    <FormField
+                        label="Ônibus"
+                        icon="bi bi-bus-front"
+                        id={`onibus_id-${instanceId}`}
+                        type="select"
+                        value={formData.onibus_id}
+                        onChange={(value) => handleInputChange('onibus_id', value)}
+                        options={busOptions}
+                        placeholder={loadingBuses ? "Carregando ônibus..." : "Selecione um ônibus"}
+                        required={formData.motorista_id ? true : false}
+                        error={errors.onibus_id}
+                    />
+
+                    <FormField
+                        label="Motorista"
+                        icon="bi bi-person-badge"
+                        id={`motorista_id-${instanceId}`}
+                        type="select"
+                        value={formData.motorista_id}
+                        onChange={(value) => handleInputChange('motorista_id', value)}
+                        options={driverOptions}
+                        placeholder={loadingDrivers ? "Carregando motoristas..." : "Selecione um motorista"}
+                        required={formData.onibus_id ? true : false}
+                        error={errors.motorista_id}
+                    />
+
+                    <FormField
+                        label="Observações da Associação"
+                        icon="bi bi-chat-text"
+                        id={`observacoes_assignment-${instanceId}`}
+                        type="textarea"
+                        value={formData.observacoes_assignment}
+                        onChange={(value) => handleInputChange('observacoes_assignment', value)}
+                        placeholder="Observações sobre a associação do ônibus e motorista com esta rota"
+                        maxLength={500}
+                        rows={3}
+                        required={false}
+                    />
+
+                    {(errors.onibus_id || errors.motorista_id) && (
+                        <div className="alert alert-warning mt-2">
+                            <i className="bi bi-exclamation-triangle me-2"></i>
+                            Para uma associação completa, selecione tanto o ônibus quanto o motorista.
+                        </div>
+                    )}
+                </div>
+            </div>
         </div>
     );
 }

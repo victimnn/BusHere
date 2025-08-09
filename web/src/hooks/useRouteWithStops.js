@@ -1,5 +1,9 @@
 import { useCallback } from 'react';
-import { useApiOperation, useCoordinateUtils } from '@web/hooks/useCommonOperations';
+import { 
+    useApiOperation, 
+    useCoordinateUtils, 
+    prepareRouteBackendData
+} from '@web/hooks/useRouteOperations';
 import { 
     isStopAlreadySelected, 
     createSelectedStop, 
@@ -79,25 +83,164 @@ export function useRouteWithStops(
                     throw new Error('Selecione pelo menos 2 pontos para criar uma rota');
                 }
 
-                // Preparar dados para o backend
+                // Usar função centralizada para preparar dados básicos da rota
+                const baseRouteData = prepareRouteBackendData(routeData);
+                
+                // Adicionar pontos aos dados
                 const dataToSend = {
-                    nome: routeData.nome,
-                    codigo_rota: routeData.codigo_rota,
-                    origem_descricao: routeData.origem_descricao || null,
-                    destino_descricao: routeData.destino_descricao || null,
-                    distancia_km: routeData.distancia_km || null,
-                    tempo_viagem_estimado_minutos: routeData.tempo_viagem_estimado_minutos || null,
-                    status_rota_id: routeData.status_rota_id || 1,
-                    ativo: routeData.ativo !== false,
+                    ...baseRouteData,
                     pontos: routeData.pontos
                 };
 
-                console.log('Enviando dados da rota:', dataToSend);
-                console.log('Pontos específicos:', routeData.pontos);
+                const result = await api.routes.createWithStops(dataToSend);
+                
+                // Se ônibus e motorista foram selecionados, criar a associação
+                if (routeData.onibus_id && routeData.motorista_id && result.rota_id) {
+                    const assignmentData = {
+                        onibus_id: routeData.onibus_id,
+                        motorista_id: routeData.motorista_id,
+                        observacoes: routeData.observacoes_assignment || null
+                    };
+                    
+                    try {
+                        await api.routes.createAssignment(result.rota_id, assignmentData);
+                    } catch (assignmentError) {
+                        console.error('Erro na criação da associação:', assignmentError);
+                        // Não falhar toda a operação se apenas a associação falhar
+                        console.warn('Rota criada, mas associação falhou. Continuando...');
+                    }
+                }
 
-                return await api.routes.createWithStops(dataToSend);
+                return result;
             },
             `Rota "${routeData.nome}" criada com sucesso!`
+        );
+    }, [executeOperation]);
+
+    // Função para atualizar rota existente
+    const updateRouteWithAssignment = useCallback(async (routeId, routeData) => {
+        return executeOperation(
+            async () => {
+                // Usar função centralizada para preparar dados básicos da rota
+                const routeUpdateData = prepareRouteBackendData(routeData);
+
+                // Remover campos undefined
+                Object.keys(routeUpdateData).forEach(key => {
+                    if (routeUpdateData[key] === undefined) {
+                        delete routeUpdateData[key];
+                    }
+                });
+
+                const routeResult = await api.routes.update(routeId, routeUpdateData);
+
+                // Gerenciar associação de ônibus e motorista
+                if (routeData.onibus_id && routeData.motorista_id) {
+                    // Buscar associações existentes
+                    const assignmentsResponse = await api.routes.getAssignments(routeId);
+                    const existingAssignments = assignmentsResponse.data || [];
+                    
+                    // Verificar se já existe uma associação ativa
+                    const activeAssignment = existingAssignments.find(assignment => assignment.ativo);
+                    
+                    if (activeAssignment) {
+                        // Atualizar associação existente
+                        const assignmentData = {
+                            onibus_id: routeData.onibus_id,
+                            motorista_id: routeData.motorista_id,
+                            observacoes: routeData.observacoes_assignment || null
+                        };
+                        
+                        await api.routes.updateAssignment(routeId, activeAssignment.onibus_rota_id, assignmentData);
+                    } else {
+                        // Criar nova associação
+                        const assignmentData = {
+                            onibus_id: routeData.onibus_id,
+                            motorista_id: routeData.motorista_id,
+                            observacoes: routeData.observacoes_assignment || null
+                        };
+                        
+                        await api.routes.createAssignment(routeId, assignmentData);
+                    }
+                } else {
+                    // Se ônibus ou motorista foram removidos, desativar associação existente
+                    const assignmentsResponse = await api.routes.getAssignments(routeId);
+                    const existingAssignments = assignmentsResponse.data || [];
+                    const activeAssignment = existingAssignments.find(assignment => assignment.ativo);
+                    
+                    if (activeAssignment) {
+                        await api.routes.deleteAssignment(routeId, activeAssignment.onibus_rota_id);
+                    }
+                }
+
+                return routeResult;
+            },
+            `Rota "${routeData.nome}" atualizada com sucesso!`
+        );
+    }, [executeOperation]);
+
+    // Função para buscar dados completos da rota incluindo associações
+    const getRouteWithAssignments = useCallback(async (routeId) => {
+        return executeOperation(
+            async () => {
+                const [routeResponse, assignmentsResponse] = await Promise.all([
+                    api.routes.getById(routeId),
+                    api.routes.getAssignments(routeId)
+                ]);
+
+                const route = routeResponse;
+                const assignments = assignmentsResponse.data || [];
+                const activeAssignment = assignments.find(assignment => assignment.ativo);
+
+                // Combinar dados da rota com a associação ativa
+                const routeWithAssignment = {
+                    ...route,
+                    onibus_id: activeAssignment?.onibus_id || null,
+                    motorista_id: activeAssignment?.motorista_id || null,
+                    observacoes_assignment: activeAssignment?.observacoes || '',
+                    assignment_id: activeAssignment?.onibus_rota_id || null,
+                    onibus_nome: activeAssignment?.onibus_nome || null,
+                    onibus_placa: activeAssignment?.onibus_placa || null,
+                    motorista_nome: activeAssignment?.motorista_nome || null,
+                    motorista_cnh: activeAssignment?.motorista_cnh || null
+                };
+
+                return routeWithAssignment;
+            },
+            null // Sem mensagem de sucesso para operação de busca
+        );
+    }, [executeOperation]);
+
+    // Função para excluir rota com tratamento de dependências
+    const deleteRouteWithStops = useCallback(async (routeId) => {
+        return executeOperation(
+            async () => {
+                // 1. Buscar informações da rota
+                const route = await api.routes.getById(routeId);
+                
+                // 2. Remover associações de ônibus/motorista se existirem
+                try {
+                    const assignmentsResponse = await api.routes.getAssignments(routeId);
+                    const assignments = assignmentsResponse.data || [];
+                    
+                    for (const assignment of assignments) {
+                        if (assignment.ativo) {
+                            await api.routes.deleteAssignment(routeId, assignment.onibus_rota_id);
+                        }
+                    }
+                } catch (assignmentError) {
+                    console.warn('Erro ao remover associações:', assignmentError);
+                    // Continuar mesmo se a remoção de associações falhar
+                }
+                
+                // 3. Tentar excluir a rota
+                await api.routes.delete(routeId);
+                
+                return { 
+                    success: true,
+                    deletedRoute: route
+                };
+            },
+            `Rota "${route?.nome || 'ID: ' + routeId}" excluída com sucesso!`
         );
     }, [executeOperation]);
 
@@ -105,6 +248,9 @@ export function useRouteWithStops(
         loading,
         error,
         createRouteWithStops,
+        updateRouteWithAssignment,
+        getRouteWithAssignments,
+        deleteRouteWithStops,
         calculateDistance,
         calculateRouteStats,
         validateCoordinates,

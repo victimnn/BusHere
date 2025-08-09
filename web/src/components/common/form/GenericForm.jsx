@@ -62,6 +62,8 @@ function GenericForm({
                 .then(response => {
                   if (response && response.data) {
                     newSelectOptions[field.name] = response.data;
+                  } else if (response && Array.isArray(response)) {
+                    newSelectOptions[field.name] = response;
                   }
                 })
                 .catch(error => {
@@ -93,7 +95,7 @@ function GenericForm({
   }, [fieldsConfig]);
 
   // Validação em tempo real otimizada
-  const validateField = useCallback((name, value) => {
+  const validateField = useCallback((name, value, currentFormData = formData) => {
     const fieldConfig = getFieldConfig(name);
     if (!fieldConfig) return null;
 
@@ -104,11 +106,11 @@ function GenericForm({
 
     // Validação customizada
     if (fieldConfig.validator) {
-      return fieldConfig.validator(value);
+      return fieldConfig.validator(value, currentFormData);
     }
 
     return null;
-  }, [getFieldConfig]);
+  }, [getFieldConfig, formData]);
 
   // Manipulador de foco nos campos
   const handleBlur = useCallback((e) => {
@@ -116,7 +118,7 @@ function GenericForm({
     setTouchedFields(prev => ({ ...prev, [name]: true }));
     
     // Valida apenas campos que foram tocados
-    const errorMsg = validateField(name, value);
+    const errorMsg = validateField(name, value, formData);
     setErrors(prev => ({
       ...prev,
       [name]: errorMsg
@@ -142,7 +144,8 @@ function GenericForm({
     
     // Valida apenas campos que já foram tocados ou são obrigatórios
     if (touchedFields[name] || fieldConfig?.required) {
-      const errorMsg = validateField(name, processedValue);
+      const newFormData = { ...formData, [name]: processedValue };
+      const errorMsg = validateField(name, processedValue, newFormData);
       setErrors(prev => ({
         ...prev,
         [name]: errorMsg
@@ -156,7 +159,7 @@ function GenericForm({
     
     // Valida todos os campos
     fieldsConfig.forEach(field => {
-      const error = validateField(field.name, formData[field.name]);
+      const error = validateField(field.name, formData[field.name], formData);
       if (error) {
         newErrors[field.name] = error;
       }
@@ -169,7 +172,7 @@ function GenericForm({
   // Verifica se o formulário é válido
   const isFormValid = useMemo(() => {
     return fieldsConfig.every(field => {
-      const error = validateField(field.name, formData[field.name]);
+      const error = validateField(field.name, formData[field.name], formData);
       return !error;
     });
   }, [fieldsConfig, formData, validateField]);
@@ -366,11 +369,16 @@ function GenericForm({
                 {...(field.additionalProps || {})}
               >
                 <option value="">{field.placeholder || 'Selecione uma opção'}</option>
-                {(selectOptions[field.name] || []).map((option) => (
-                  <option key={option[field.optionValue]} value={option[field.optionValue]}>
-                    {option[field.optionLabel]}
-                  </option>
-                ))}
+                {(selectOptions[field.name] || []).map((option) => {
+                  const label = typeof field.optionLabel === 'function' 
+                    ? field.optionLabel(option) 
+                    : option[field.optionLabel];
+                  return (
+                    <option key={option[field.optionValue]} value={option[field.optionValue]}>
+                      {label}
+                    </option>
+                  );
+                })}
               </select>
               {showError && <div className="invalid-feedback">{error}</div>}
             </div>

@@ -157,7 +157,13 @@ const api = {
     update: (id, edits) => api.put(`/routes/${id}`, edits),
     delete: (id) => api.delete(`/routes/${id}`),
     getStatus: () => api.get('/routes/status'),
-    getStops: (id) => api.get(`/routes/stops/${id}`)
+    getStops: (id) => api.get(`/routes/stops/${id}`),
+    
+    // Endpoints para associações ônibus-motorista-rota
+    getAssignments: (routeId) => api.get(`/routes/${routeId}/assignments`),
+    createAssignment: (routeId, assignmentData) => api.post(`/routes/${routeId}/assignments`, assignmentData),
+    updateAssignment: (routeId, assignmentId, assignmentData) => api.put(`/routes/${routeId}/assignments/${assignmentId}`, assignmentData),
+    deleteAssignment: (routeId, assignmentId) => api.delete(`/routes/${routeId}/assignments/${assignmentId}`)
   },
 
   buses: {

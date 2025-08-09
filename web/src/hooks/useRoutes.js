@@ -1,95 +1,20 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import api from '@web/api/api';
-import { formatDateFromDatabase } from '@shared/formatters';
-
-// Status padrão como fallback
-const DEFAULT_ROUTE_STATUS = [
-  { status_rota_id: 1, nome: 'Ativa' },
-  { status_rota_id: 2, nome: 'Inativa' },
-  { status_rota_id: 3, nome: 'Em Manutenção' }
-];
-
-// Função para transformar dados do backend para frontend
-const transformRouteData = (route, getStatusRotaNome) => {
-  // Tentar obter o status de diferentes formas
-  let statusText = 'Não informado';
-  
-  if (route.status_nome) {
-    statusText = route.status_nome;
-  } else if (route.status) {
-    statusText = route.status;
-  } else if (route.status_rota_id) {
-    statusText = getStatusRotaNome(route.status_rota_id);
-  }
-  
-  return {
-    id: route.rota_id,
-    rota_id: route.rota_id, // Manter compatibilidade
-    codigo_rota: route.codigo_rota,
-    nome: route.nome,
-    origem_descricao: route.origem_descricao,
-    destino_descricao: route.destino_descricao,
-    distancia_km: route.distancia_km,
-    tempo_viagem_estimado_minutos: route.tempo_viagem_estimado_minutos,
-    status_rota_id: route.status_rota_id,
-    status: statusText,
-    status_nome: statusText,
-    ativo: route.ativo
-  };
-};
-
-// Função para preparar dados para o backend
-const prepareBackendData = (formData) => {
-  return {
-    codigo_rota: formData.codigo_rota,
-    nome: formData.nome,
-    origem_descricao: formData.origem_descricao || null,
-    destino_descricao: formData.destino_descricao || null,
-    distancia_km: formData.distancia_km ? Number(formData.distancia_km) : null,
-    tempo_viagem_estimado_minutos: formData.tempo_viagem_estimado_minutos ? Number(formData.tempo_viagem_estimado_minutos) : null,
-    status_rota_id: formData.status_rota_id || formData.status_rota ? Number(formData.status_rota_id || formData.status_rota) : null,
-    ativo: formData.ativo !== undefined ? formData.ativo : true
-  };
-};
-
-// Função utilitária para processar mensagens de erro
-const getErrorMessage = (error, action) => {
-  const baseMessage = `Erro ao ${action} rota: `;
-
-  if (error.message?.includes('já cadastrado') || error.message?.includes('já está sendo usado')) {
-    return baseMessage + error.message;
-  }
-  
-  if (error.message?.includes('409')) {
-    return baseMessage + "Código de rota já cadastrado no sistema.";
-  }
-  
-  return baseMessage + (error.message || "Tente novamente mais tarde");
-};
+import { 
+    transformRouteData, 
+    prepareRouteBackendData, 
+    getRouteErrorMessage, 
+    useRouteStatus 
+} from '@web/hooks/useRouteOperations';
 
 export const useRoutes = () => {
   // Estados
   const [routes, setRoutes] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [statusRota, setStatusRota] = useState([]);
 
-  // Memoizar função para obter nome do status da rota
-  const getStatusRotaNome = useCallback((statusId) => {
-    if (!statusId) return 'Não informado';
-    
-    // Converter para número se necessário
-    const numericId = typeof statusId === 'string' ? parseInt(statusId, 10) : statusId;
-    
-    const status = statusRota.find(s => 
-      s.status_rota_id === numericId || 
-      s.id === numericId ||
-      s.status_rota_id === statusId ||
-      s.id === statusId
-    );
-    
-    return status ? status.nome : 'Não informado';
-  }, [statusRota]);
+  // Usar hook de status de rotas
+  const { statusRota, setRouteStatus, getStatusRotaNome } = useRouteStatus();
 
   // Memoizar transformação dos dados das rotas
   const transformedRoutes = useMemo(() => {
@@ -105,24 +30,20 @@ export const useRoutes = () => {
     try {
       const response = await api.routes.getStatus();
       
-      console.log('Resposta da API de status de rotas:', response);
-      
       // Verificar diferentes estruturas de resposta
       let statusData = [];
       if (response?.data && Array.isArray(response.data)) {
         statusData = response.data;
       } else if (Array.isArray(response)) {
         statusData = response;
-      } else {
-        statusData = DEFAULT_ROUTE_STATUS;
       }
       
-      setStatusRota(statusData);
+      setRouteStatus(statusData);
     } catch (error) {
       console.error("Erro ao buscar status de rota:", error);
-      setStatusRota(DEFAULT_ROUTE_STATUS);
+      setRouteStatus([]); // Vai usar DEFAULT_ROUTE_STATUS
     }
-  }, []);
+  }, [setRouteStatus]);
 
   // Função otimizada para buscar rotas
   const fetchRoutes = useCallback(async (showLoadingState = true) => {
@@ -133,11 +54,8 @@ export const useRoutes = () => {
       setError(null);
 
       const response = await api.routes.list(1, 100, '');
-      
-      console.log('Resposta da API de rotas:', response);
 
       if (response?.data && Array.isArray(response.data)) {
-        console.log('Dados das rotas recebidos:', response.data);
         setRoutes(response.data);
       } else {
         setRoutes([]);
@@ -161,7 +79,7 @@ export const useRoutes = () => {
   // Função para criar rota
   const createRoute = useCallback(async (formData) => {
     try {
-      const backendData = prepareBackendData(formData);
+      const backendData = prepareRouteBackendData(formData);
       await api.routes.create(backendData);
       await fetchRoutes(false); // Recarregar sem loading state
       return { success: true };
@@ -169,7 +87,7 @@ export const useRoutes = () => {
       console.error("Erro ao criar rota:", error);
       return {
         success: false, 
-        error: getErrorMessage(error, "criar")
+        error: getRouteErrorMessage(error, "criar rota")
       };
     }
   }, [fetchRoutes]);
@@ -177,7 +95,7 @@ export const useRoutes = () => {
   // Função para atualizar rota
   const updateRoute = useCallback(async (id, formData) => {
     try {
-      const backendData = prepareBackendData(formData);
+      const backendData = prepareRouteBackendData(formData);
       await api.routes.update(id, backendData);
       await fetchRoutes(false); // Recarregar sem loading state
       return { success: true };
@@ -185,7 +103,7 @@ export const useRoutes = () => {
       console.error("Erro ao atualizar rota:", error);
       return {
         success: false,
-        error: getErrorMessage(error, "atualizar")
+        error: getRouteErrorMessage(error, "atualizar rota")
       };
     }
   }, [fetchRoutes]);
@@ -193,14 +111,61 @@ export const useRoutes = () => {
   // Função para excluir rota
   const deleteRoute = useCallback(async (id) => {
     try {
+        // Verificar se a rota existe e tem associações
+        let route;
+        try {
+            route = await api.routes.getById(id);
+        } catch (getError) {
+            console.error('Erro ao buscar rota para exclusão:', getError);
+            return {
+                success: false,
+                error: "Rota não encontrada ou não pode ser acessada."
+            };
+        }
+        
+        // Tentar remover associações de ônibus/motorista primeiro
+        if (route.onibus_id || route.motorista_id) {
+            try {
+                const assignmentsResponse = await api.routes.getAssignments(id);
+                const assignments = assignmentsResponse.data || [];
+                
+                // Remover todas as associações ativas
+                for (const assignment of assignments) {
+                    if (assignment.ativo) {
+                        await api.routes.deleteAssignment(id, assignment.onibus_rota_id);
+                    }
+                }
+            } catch (assignmentError) {
+                console.error('Erro ao remover associações:', assignmentError);
+                return {
+                    success: false,
+                    error: "Erro ao remover associações da rota. Verifique se não há dependências ativas."
+                };
+            }
+        }
+        
+        // Excluir a rota
         await api.routes.delete(id);
         await fetchRoutes(false); // Recarregar sem loading state
         return { success: true };
+        
     } catch (error) {
         console.error("Erro ao excluir rota:", error);
+        
+        // Mensagem específica baseada no erro
+        let errorMessage = getRouteErrorMessage(error, "excluir rota");
+        
+        if (error.status === 500) {
+            errorMessage = "Erro interno do servidor. A rota pode ter dependências que impedem sua exclusão (pontos da rota, logs de localização, etc.).";
+        } else if (error.message?.includes('constraint') || error.message?.includes('foreign key')) {
+            errorMessage = "Não é possível excluir esta rota pois existem dependências vinculadas (pontos, ônibus, motoristas ou dados históricos).";
+        } else if (error.status === 409) {
+            errorMessage = "Conflito: Esta rota está sendo utilizada e não pode ser excluída no momento.";
+        }
+        
         return {
             success: false,
-            error: getErrorMessage(error, "excluir")
+            error: errorMessage
         };
     }
   }, [fetchRoutes]);
@@ -227,7 +192,7 @@ export const useRoutes = () => {
       console.error("Erro ao buscar rota por ID:", error);
       return {
         success: false,
-        error: getErrorMessage(error, "buscar")
+        error: getRouteErrorMessage(error, "buscar rota")
       };
     }
   }, [getStatusRotaNome, statusRota.length]);

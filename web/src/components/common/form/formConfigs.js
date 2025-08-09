@@ -504,6 +504,76 @@ export const routeFormConfig = {
         if (!value) return 'Status da rota é obrigatório';
         return null;
       }
+    },
+    {
+      name: 'onibus_id',
+      type: 'select',
+      label: 'Ônibus',
+      labelIcon: 'bi bi-bus-front',
+      inputIcon: 'bi bi-truck',
+      placeholder: 'Selecione o ônibus',
+      required: false,
+      size: 'lg',
+      loadOptions: () => api.buses.list(1, 100).then(response => {
+        const allBuses = response.data || [];
+        // Filtrar apenas ônibus ativos e em operação
+        return allBuses.filter(bus => 
+          (bus.ativo === true || bus.ativo === 1) && // ativo = true
+          (bus.status_nome === 'Em Operação') // status = "Em Operação"
+        );
+      }),
+      defaultOptions: [],
+      optionValue: 'onibus_id',
+      optionLabel: (option) => `${option.nome} - ${option.placa} (${option.marca} ${option.modelo})`,
+      validator: (value) => {
+        // Ônibus é opcional durante a criação da rota
+        return null;
+      }
+    },
+    {
+      name: 'motorista_id',
+      type: 'select',
+      label: 'Motorista',
+      labelIcon: 'bi bi-person-badge',
+      inputIcon: 'bi bi-person-check',
+      placeholder: 'Selecione o motorista',
+      required: false,
+      size: 'lg',
+      loadOptions: () => api.drivers.list(1, 100).then(response => {
+        const allDrivers = response.data || [];
+        // Filtrar apenas motoristas ativos e com status "Ativo"
+        return allDrivers.filter(driver => 
+          (driver.ativo === true || driver.ativo === 1) && // ativo = true
+          (driver.status_nome === 'Ativo') // status = "Ativo"
+        );
+      }),
+      defaultOptions: [],
+      optionValue: 'motorista_id',
+      optionLabel: (option) => `${option.nome} - CNH: ${option.cnh_numero}`,
+      validator: (value, formData) => {
+        // Se um ônibus foi selecionado, o motorista também deve ser selecionado
+        if (formData && formData.onibus_id && !value) {
+          return 'Motorista é obrigatório quando um ônibus é selecionado';
+        }
+        return null;
+      }
+    },
+    {
+      name: 'observacoes_assignment',
+      type: 'textarea',
+      label: 'Observações da Associação',
+      labelIcon: 'bi bi-chat-text',
+      inputIcon: 'bi bi-pencil-square',
+      placeholder: 'Observações sobre a associação do ônibus e motorista com esta rota',
+      required: false,
+      size: 'lg',
+      rows: 3,
+      validator: (value) => {
+        if (value && value.length > 500) {
+          return 'Observações devem ter no máximo 500 caracteres';
+        }
+        return null;
+      }
     }
   ],
   fakeDataGenerator: createFakeRouteData

@@ -139,7 +139,7 @@ function Drivers({ pageFunctions }) {
   }, [handleEditDriver, handleDeleteDriver]);
 
   return (
-    <main className="ps-3 pe-3 pt-3">
+    <div className="ps-3 pe-3 pt-3">
       {/* Cards de Estatísticas */}
       <DriversStatsCards drivers={drivers} />
       
@@ -216,7 +216,7 @@ function Drivers({ pageFunctions }) {
           onClose={hideNotification} 
         />
       </div>
-    </main>
+    </div>
   );
 }
 

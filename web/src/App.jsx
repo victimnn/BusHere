@@ -21,6 +21,7 @@ import PassengerDetail from "./pages/details/PassengerDetail";
 import DriverDetail from "./pages/details/DriverDetail";
 import RouteDetail from "./pages/details/RouteDetail";
 import StopDetail from "./pages/details/StopDetail";
+import RouteStopsPage from "./pages/RouteStopsPage";
 
 import SideBar from "./components/ui/SideBar";
 import Header from "./components/ui/Header";
@@ -54,17 +55,17 @@ function App() {
     <Router>
       <AuthProvider>
         <div>
-          <div className="d-flex w-100" style={{overflow: "hidden", minHeight:"100vh"}}> {/* Usando flex com min-height */}
+          <div className="d-flex w-100" style={{overflow: "hidden", height:"100vh"}}> {/* Usando flex com height fixo */}
 
             {/* Sidebar */}
             {showSideBar && <SideBar/>}
 
 
-            <main className="flex-grow-1" style={{overflow: "auto", maxHeight: "100vh"}}> {/* A main ocupará o espaço restante */}
+            <main className="flex-grow-1 d-flex flex-column" style={{overflow: "auto", height: "100vh"}}> {/* A main ocupará o espaço restante */}
               {/* Header */}
               {showHeader && <Header pageName={pageName}/>}
 
-              <div className="py-0" >
+              <div className="py-0 w-100 flex-grow-1" style={{minHeight: "0"}}>
                 <Routes>
                   <Route path="/" index element={<HomePage pageFunctions={pageFunctions} />} />
                   <Route path="/passengers" element={<PassengersPage pageFunctions={pageFunctions}/>} />
@@ -82,6 +83,8 @@ function App() {
                   <Route path="/drivers/:driverId" element={<DriverDetail pageFunctions={pageFunctions}/>} />
                   <Route path="/routes/:routeId" element={<RouteDetail pageFunctions={pageFunctions}/>} />
                   <Route path="/stops/:stopId" element={<StopDetail pageFunctions={pageFunctions}/>} />
+                  <Route path="/routes/new" element={<RouteStopsPage pageFunctions={pageFunctions}/>} />
+                  <Route path="/routes/:routeId/edit" element={<RouteStopsPage pageFunctions={pageFunctions}/>} />
 
                   <Route path="/search/:searchTerm" element={<SearchPage pageFunctions={pageFunctions}  />} />
                 </Routes>

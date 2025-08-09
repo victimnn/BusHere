@@ -1,5 +1,6 @@
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import Table from "@web/components/ui/Table";
+import TableActionButton from "@web/components/common/table/TableActionButton";
 import { useRecentActivities } from "@web/hooks/useRecentActivities";
 
 import { getOperationBadge, formatTimestamp } from "@shared/formatters";
@@ -41,9 +42,7 @@ function RecentActivityTable({ data = [], itemsPerPage = 5, popUpRef = null }) {
       return <span className="text-muted">-</span>;
     }
 
-    const handleClick = (e) => {
-      e.stopPropagation();
-      
+    const handleClick = () => {
       if (popUpRef && popUpRef.current) {
         popUpRef.current.show({
           title: label,
@@ -67,14 +66,14 @@ function RecentActivityTable({ data = [], itemsPerPage = 5, popUpRef = null }) {
     };
 
     return (
-      <button 
-        type="button" 
-        className="btn btn-sm btn-outline-primary"
+      <TableActionButton
+        variant="outline-primary"
+        size="sm"
+        icon="bi bi-eye"
+        text="Ver"
         onClick={handleClick}
         title={`Ver ${label.toLowerCase()}`}
-      >
-        <i className="bi bi-eye me-1"></i>Ver
-      </button>
+      />
     );
   }, [popUpRef]);
 

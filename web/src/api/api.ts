@@ -35,7 +35,7 @@ const api = {
       console.log(`Fazendo ${method} ${url}`, data, config, response);
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: response.statusText }));
-        const error = new Error(errorData.message || 'Ocorreu um erro na requisição') as Error & { status: number; data: any };
+        const error = new Error(errorData.error || errorData.message || 'Ocorreu um erro na requisição') as Error & { status: number; data: any };
         error.status = response.status;
         error.data = errorData;
         
@@ -152,11 +152,20 @@ const api = {
       return api.get(`/routes?${queryParams.toString()}`);
     },
     getById: (id) => api.get(`/routes/${id}`),
+    getByIdWithStops: (id) => api.get(`/routes/${id}?includeStops=true`),
     create: (routeData) => api.post('/routes', routeData),
+    createWithStops: (routeData) => api.post('/routes/new', routeData),
     update: (id, edits) => api.put(`/routes/${id}`, edits),
+    updateWithStops: (id, routeData) => api.put(`/routes/${id}/with-stops`, routeData),
     delete: (id) => api.delete(`/routes/${id}`),
     getStatus: () => api.get('/routes/status'),
-    getStops: (id) => api.get(`/routes/stops/${id}`)
+    getStops: (id) => api.get(`/routes/stops/${id}`),
+    
+    // Endpoints para associações ônibus-motorista-rota
+    getAssignments: (routeId) => api.get(`/routes/${routeId}/assignments`),
+    createAssignment: (routeId, assignmentData) => api.post(`/routes/${routeId}/assignments`, assignmentData),
+    updateAssignment: (routeId, assignmentId, assignmentData) => api.put(`/routes/${routeId}/assignments/${assignmentId}`, assignmentData),
+    deleteAssignment: (routeId, assignmentId) => api.delete(`/routes/${routeId}/assignments/${assignmentId}`)
   },
 
   buses: {

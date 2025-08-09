@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, forwardRef, useImperativeHandle} from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMapEvent, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -6,7 +6,7 @@ import L from 'leaflet';
 // Estilos customizados para o mapa
 const mapStyles = `
   .custom-popup .leaflet-popup-content-wrapper {
-    border-radius: 12px;
+    border-radius: 12px 0px 0px 12px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     border: 1px solid #e9ecef;
   }
@@ -177,7 +177,74 @@ function ZoomChangeHandler({ handleZoomChange }) {
   return null;
 }
 
-function MapComponent({ center, zoom = 13, markers = [], polylines = [], onMapClick = null, onMarkerClick = null, className = '', handleZoomChange = null }) {
+// Component to handle popup control
+function PopupController({ onPopupClose }) {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (!onPopupClose) return;
+    
+    const handlePopupClose = () => {
+      onPopupClose();
+    };
+
+    map.on('popupclose', handlePopupClose);
+    return () => {
+      map.off('popupclose', handlePopupClose);
+    };
+  }, [map, onPopupClose]);
+
+  return null;
+}
+
+// Component to expose map methods to parent
+function MapRef({ onMapReady }) {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (onMapReady) {
+      onMapReady(map);
+    }
+  }, [map, onMapReady]);
+
+  return null;
+}
+
+// Component to handle center changes
+function CenterChangeHandler({ center }) {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (center && Array.isArray(center) && center.length === 2) {
+      map.setView(center, map.getZoom());
+    }
+  }, [map, center]);
+
+  return null;
+}
+
+const MapComponent = forwardRef(({ 
+  center, 
+  zoom = 13, 
+  markers = [], 
+  polylines = [], 
+  onMapClick = null, 
+  onMarkerClick = null, 
+  className = '', 
+  handleZoomChange = null,
+  onPopupClose = null
+}, ref) => {
+  const [mapInstance, setMapInstance] = useState(null);
+
+  // Expose map methods to parent component
+  useImperativeHandle(ref, () => ({
+    closePopup: () => {
+      if (mapInstance) {
+        mapInstance.closePopup();
+      }
+    }
+  }), [mapInstance]);
+
   const maxBounds = [
     [-90, -180], // Southwest (lat, lng) - whole world
     [90, 180],   // Northeast (lat, lng)
@@ -185,11 +252,11 @@ function MapComponent({ center, zoom = 13, markers = [], polylines = [], onMapCl
 
   return (
     <div className={`map-container-wrapper ${className}`} style={{
-      borderRadius: '12px',
       overflow: 'hidden',
       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
       background: '#f8f9fa',
-      position: 'relative'
+      position: 'relative',
+      borderRadius: '0px 0px 12px 12px',
     }}>
       <MapContainer
         center={center}
@@ -199,9 +266,7 @@ function MapComponent({ center, zoom = 13, markers = [], polylines = [], onMapCl
         maxBoundsViscosity={1.0}
         worldCopyJump={false}
         className="w-100 h-100"
-        style={{
-          borderRadius: '10px'
-        }}
+        style={{borderRadius: '0px 0px 12px 12px'}}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -241,11 +306,17 @@ function MapComponent({ center, zoom = 13, markers = [], polylines = [], onMapCl
         {onMapClick && <MapClickHandler onMapClick={onMapClick} />}
         {/* Zoom change handler */}
         {handleZoomChange && <ZoomChangeHandler handleZoomChange={handleZoomChange} />}
+        {/* Popup controller */}
+        <PopupController onPopupClose={onPopupClose} />
+        {/* Map ref component */}
+        <MapRef onMapReady={setMapInstance} />
+        {/* Center change handler */}
+        <CenterChangeHandler center={center} />
 
         {/* Adicione mais marcadores ou polylines para rotas conforme necessário */}
       </MapContainer>
     </div>
   );
-}
+});
 
 export default MapComponent;

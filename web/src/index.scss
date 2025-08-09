@@ -1,14 +1,123 @@
 @import '../styles/custom.scss';
+@import '../styles/drag-drop.scss';
+
+// Reset global para prevenir scroll desnecessário
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+}
 
 #root {
   margin: 0 auto;
   text-align: left;
+  height: 100%;
 }
 
 // Garantir que a sidebar não seja comprimida
 #sidebar {
   flex-shrink: 0 !important;
   min-width: 70px !important;
+}
+
+// Estilos para a página RouteStopsPage
+.route-stops-page {
+  height: 100%;
+  overflow: hidden;
+
+  .map-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    
+    .leaflet-container {
+      height: 100% !important;
+      width: 100% !important;
+    }
+  }
+
+  .floating-element {
+    z-index: 1000 !important;
+    
+    &.high-priority {
+      z-index: 1001 !important;
+    }
+  }
+
+  .painel-controle {
+    height: 100%;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+  }
+
+  // Garantir que elementos flutuantes sejam visíveis
+  .position-absolute {
+    z-index: 1000;
+  }
+
+  // Correção para mobile
+  @media (max-width: 991.98px) {
+    .offcanvas {
+      z-index: 1055 !important;
+    }
+
+    // Garantir que o botão flutuante seja visível
+    .floating-element {
+      z-index: 1050 !important;
+    }
+
+    // Ajustar tamanho do mapa em mobile
+    .map-container {
+      height: 100vh !important;
+    }
+
+    // Melhorar usabilidade do offcanvas
+    .offcanvas-body {
+      padding: 0 !important;
+    }
+
+    .offcanvas-header {
+      padding: 1rem 1.5rem !important;
+      background-color: var(--bs-light) !important;
+    }
+
+    // Ajustar posicionamento do botão flutuante
+    .position-fixed.bottom-0 {
+      position: fixed !important;
+      bottom: 20px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+    }
+  }
+
+  // Ajustes específicos para telas muito pequenas
+  @media (max-width: 576px) {
+    .floating-element {
+      &.position-fixed {
+        bottom: 15px !important;
+      }
+    }
+
+    .offcanvas-bottom {
+      height: 70vh !important;
+    }
+
+    // Botão mobile menor em telas pequenas
+    .btn-lg.rounded-pill {
+      font-size: 0.9rem !important;
+      padding: 0.75rem 1.5rem !important;
+      min-width: 160px !important;
+    }
+  }
+
+  // Estilos para o offcanvas
+  .offcanvas-bottom {
+    border-top-left-radius: 1rem !important;
+    border-top-right-radius: 1rem !important;
+  }
+
+  .offcanvas-header {
+    border-bottom: 2px solid var(--bs-border-color) !important;
+  }
 }
 
 // Garantir que container-fluid não quebre o layout

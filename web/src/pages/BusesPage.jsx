@@ -163,7 +163,7 @@ function Buses({ pageFunctions }) {
   }, [handleEditBus, handleDeleteBus]);
 
   return (
-    <main className="ps-3 pe-3 pt-3">
+    <div className="ps-3 pe-3 pt-3">
       {/* Cards de Estatísticas */}
       <BusStatsCards buses={buses} />
       
@@ -240,7 +240,7 @@ function Buses({ pageFunctions }) {
           onClose={hideNotification} 
         />
       </div>
-    </main>
+    </div>
   );
 }
 

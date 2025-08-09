@@ -6,20 +6,21 @@ import PropTypes from 'prop-types';
  * @param {Object} props - propriedades do componente
  * @param {*} props.value - valor a ser exibido na célula
  * @param {Object} props.header - configuração do header da coluna (incluindo formatter)
+ * @param {Object} props.row - dados completos da linha (para formatters que precisam de mais dados)
  * @param {Object} props.popUpRef - referência para o popup
  * @returns {JSX.Element} componente da célula da tabela
  */
-function TableCell({ value, header, popUpRef }) {
-  console.log("cell", value)
+function TableCell({ value, header, row, popUpRef }) {
   // Aplica o formatador se disponível
-  const displayValue = header?.formatter && value !== null && value !== undefined 
-    ? header.formatter(value) 
+  // Para colunas de ação, sempre aplica o formatter mesmo se value for undefined
+  const displayValue = header?.formatter 
+    ? header.formatter(value, row) 
     : value;
 
   const showArrOrValueButton = (displayValue) => {
     // Se for um elemento React válido, renderiza diretamente
-    if (React.isValidElement(value)) {
-      return value;
+    if (React.isValidElement(displayValue)) {
+      return displayValue;
     }
 
     const popUpContent = () => (
@@ -73,6 +74,7 @@ TableCell.propTypes = {
     label: PropTypes.string.isRequired,
     formatter: PropTypes.func
   }),
+  row: PropTypes.object,
   popUpRef: PropTypes.object,
 };
 

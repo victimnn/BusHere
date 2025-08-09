@@ -1,5 +1,5 @@
 import React from 'react';
-import { isBusActive, isRouteActive, getActiveCountFromStats, getActiveBuses, getActiveRoutes } from '../../../utils/reportFilters';
+import { isBusActive, isRouteActive, getActiveCountFromStats, getActiveBuses, getActiveRoutes } from '@web/utils/reportFilters';
 import StatCard from '../../common/StatCard';
 
 const StatsCards = ({ reportData }) => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { isRouteActive, getActiveCountFromStats, getActiveRoutes, getActiveStops } from '../../../utils/reportFilters';
+import { isRouteActive, getActiveCountFromStats, getActiveRoutes, getActiveStops } from '@web/utils/reportFilters';
 
 const PerformanceIndicator = ({ title, percentage, gradient, description }) => {
   return (

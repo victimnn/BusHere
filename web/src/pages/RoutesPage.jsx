@@ -2,8 +2,10 @@ import React, { useRef, useEffect, useCallback } from "react";
 import PopUpComponent from "@web/components/ui/PopUpComponent";
 import RouteDetails from "@web/components/pageComponents/routes/RouteDetails";
 import RouteForm from "@web/components/pageComponents/routes/RouteForm";
+import RouteStops from "@web/components/pageComponents/routes/RouteStops";
 import RouteStatsCards from "@web/components/pageComponents/routes/RouteStatsCards";
 import Table from "@web/components/ui/Table";
+import TableActionButton from "@web/components/common/table/TableActionButton";
 import Notification from "@web/components/common/Notification";
 import LoadingSpinner from "@web/components/common/LoadingSpinner";
 import ErrorAlert from "@web/components/common/ErrorAlert";
@@ -18,30 +20,6 @@ const formatStatus = (value) => {
   const { className, text } = getStatusFormat(value);
   return React.createElement('span', { className }, text);
 };
-
-// header da tabela
-const TABLE_HEADERS = [
-  { id: "rota_id", label: "ID", sortable: true },
-  { id: "codigo_rota", label: "Código", sortable: true },
-  { id: "nome", label: "Nome", sortable: true },
-  { id: "origem_descricao", label: "Origem", sortable: true },
-  { id: "destino_descricao", label: "Destino", sortable: true },
-  { id: "distancia_km", 
-    label: "Distância", 
-    sortable: true,
-    formatter: (value) => formatKilometers(value)
-  },
-  { id: "tempo_viagem_estimado_minutos", 
-    label: "Tempo de Viagem", 
-    sortable: true,
-    formatter: (value) => formatTime(value)
-  },
-  { id: "status", 
-    label: "Status", 
-    sortable: true,
-    formatter: (value) => formatStatus(value)
-  },
-];
 
 function RoutesPage({ pageFunctions }) {
   const popUpRef = useRef(null);
@@ -63,6 +41,56 @@ function RoutesPage({ pageFunctions }) {
   useEffect(() => {
     pageFunctions.set("Rotas", true, true);
   }, [pageFunctions]);
+
+  // Handler para visualizar pontos da rota
+  const handleViewStops = useCallback((route) => {
+    popUpRef.current.show({
+      title: `Pontos da Rota: ${route.nome}`,
+      content: RouteStops,
+      props: {
+        route: route,
+      }
+    });
+  }, []);
+
+  // header da tabela
+  const TABLE_HEADERS = [
+    { id: "rota_id", label: "ID", sortable: true },
+    { id: "codigo_rota", label: "Código", sortable: true },
+    { id: "nome", label: "Nome", sortable: true },
+    { id: "origem_descricao", label: "Origem", sortable: true },
+    { id: "destino_descricao", label: "Destino", sortable: true },
+    { id: "distancia_km", 
+      label: "Distância", 
+      sortable: true,
+      formatter: (value) => formatKilometers(value)
+    },
+    { id: "tempo_viagem_estimado_minutos", 
+      label: "Tempo de Viagem", 
+      sortable: true,
+      formatter: (value) => formatTime(value)
+    },
+    { id: "actions",
+      label: "Pontos",
+      sortable: false,
+      formatter: (value, route) => (
+        <TableActionButton
+          variant="outline-primary"
+          size="sm"
+          icon="bi bi-geo-alt"
+          text="Ver"
+          onClick={() => handleViewStops(route)}
+          title="Ver pontos da rota"
+        />
+      )
+    },
+    { id: "status", 
+      label: "Status", 
+      sortable: true,
+      formatter: (value) => formatStatus(value)
+    },
+  ];
+
   const handleCreateRoute = useCallback(() => {
     popUpRef.current.show({
       title: "Nova Rota",
@@ -157,20 +185,20 @@ function RoutesPage({ pageFunctions }) {
             <ActionButton
               onClick={()=>{navigate("/routes/new")}}
               icon="bi bi-plus-circle"
-              text="Nova Rota com Pontos"
+              text="Nova Rota"
               variant="primary"
               size="lg"
               disabled={isLoading}
             />
 
-            <ActionButton
+            {/* <ActionButton
               onClick={handleCreateRoute}
               icon="bi bi-plus-circle"
               text="Nova Rota"
               variant="primary"
               size="lg"
               disabled={isLoading}
-            />
+            /> */}
           </div>
         </div>
         

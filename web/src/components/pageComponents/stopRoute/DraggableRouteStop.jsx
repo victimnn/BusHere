@@ -2,13 +2,13 @@ import React, { useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 
 const ItemTypes = {
-  ROUTE_POINT: 'routePoint'
+  ROUTE_STOP: 'routeStop'
 };
 
-const DraggableRoutePoint = ({ 
+const DraggableRouteStop = ({ 
   ponto, 
   index, 
-  movePoint, 
+  moveStop, 
   onRemove, 
   segmentInfo,
   onTimeChange,
@@ -17,7 +17,7 @@ const DraggableRoutePoint = ({
   const ref = useRef(null);
 
   const [{ handlerId }, drop] = useDrop({
-    accept: ItemTypes.ROUTE_POINT,
+    accept: ItemTypes.ROUTE_STOP,
     collect(monitor) {
       return {
         handlerId: monitor.getHandlerId(),
@@ -62,7 +62,7 @@ const DraggableRoutePoint = ({
       }
 
       // Time to actually perform the action
-      movePoint(dragIndex, hoverIndex);
+      moveStop(dragIndex, hoverIndex);
 
       // Note: we're mutating the monitor item here!
       // Generally it's better to avoid mutations,
@@ -73,7 +73,7 @@ const DraggableRoutePoint = ({
   });
 
   const [{ isDragging }, drag] = useDrag({
-    type: ItemTypes.ROUTE_POINT,
+    type: ItemTypes.ROUTE_STOP,
     item: () => {
       return { id: ponto.id || ponto.ponto_id, index };
     },
@@ -161,4 +161,4 @@ const DraggableRoutePoint = ({
   );
 };
 
-export default DraggableRoutePoint;
+export default DraggableRouteStop;

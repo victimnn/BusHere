@@ -6,7 +6,7 @@ import { useRouteForm } from './controlPainel/useRouteForm';
 import { validateTimeOrder } from '@web/utils/routeStopsUtils';
 import RouteForm from './controlPainel/RouteForm';
 import RouteStatistics from './controlPainel/RouteStatistics';
-import SelectedPointsList from './controlPainel/SelectedPointsList';
+import SelectedStopsList from './controlPainel/SelectedStopsList';
 import ActionButtons from './controlPainel/ActionButtons';
 
 function PainelControle({ 
@@ -26,20 +26,20 @@ function PainelControle({
     const { formData, statusOptions, handleInputChange, validateForm } = useRouteForm(stats, initialData);
 
     // Função para mover pontos (drag and drop)
-    const movePoint = useCallback((dragIndex, hoverIndex) => {
-        const draggedPoint = pontosSelecionados[dragIndex];
-        const newPoints = [...pontosSelecionados];
-        newPoints.splice(dragIndex, 1);
-        newPoints.splice(hoverIndex, 0, draggedPoint);
-        
+    const moveStop = useCallback((dragIndex, hoverIndex) => {
+        const draggedStop = pontosSelecionados[dragIndex];
+        const newStops = [...pontosSelecionados];
+        newStops.splice(dragIndex, 1);
+        newStops.splice(hoverIndex, 0, draggedStop);
+
         // Atualizar a ordem dos pontos após o movimento
-        const pointsWithUpdatedOrder = newPoints.map((ponto, index) => ({
+        const stopsWithUpdatedOrder = newStops.map((ponto, index) => ({
             ...ponto,
             ordem: index + 1
         }));
-        
-        console.log('Ordem atualizada após movimento:', pointsWithUpdatedOrder.map(p => ({ nome: p.nome, ordem: p.ordem })));
-        setPontosSelecionados(pointsWithUpdatedOrder);
+
+        console.log('Ordem atualizada após movimento:', stopsWithUpdatedOrder.map(p => ({ nome: p.nome, ordem: p.ordem })));
+        setPontosSelecionados(stopsWithUpdatedOrder);
     }, [pontosSelecionados, setPontosSelecionados]);
 
     // Remover ponto específico
@@ -119,10 +119,10 @@ function PainelControle({
                 />
 
                 {/* Lista de Pontos Selecionados */}
-                <SelectedPointsList 
+                <SelectedStopsList 
                     pontosSelecionados={pontosSelecionados}
                     stats={stats}
-                    movePoint={movePoint}
+                    moveStop={moveStop}
                     removerPonto={removerPonto}
                     onTimeChange={handleTimeChange}
                 />

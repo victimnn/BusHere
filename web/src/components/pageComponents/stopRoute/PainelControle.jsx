@@ -8,6 +8,7 @@ import RouteForm from './controlPainel/RouteForm';
 import RouteStatistics from './controlPainel/RouteStatistics';
 import SelectedStopsList from './controlPainel/SelectedStopsList';
 import ActionButtons from './controlPainel/ActionButtons';
+import RouteSettings from './controlPainel/RouteSettings';
 
 function PainelControle({ 
     pontosSelecionados, 
@@ -19,11 +20,18 @@ function PainelControle({
     setRota,
     instanceId = 'default',
     initialData = null, // Adicionar dados iniciais para modo de edição
-    isEditMode = false // Indicar se está em modo de edição
+    isEditMode = false, // Indicar se está em modo de edição
+    useRealRoutes = true, // Controle de rotas reais
+    onToggleRealRoutes = () => {}, // Handler para toggle de rotas reais
+    routingLoading = false, // Loading de roteamento
+    cacheStats = { hits: 0, apiCalls: 0, hitRate: 0 }, // Estatísticas do cache
+    advancedStats = null, // Estatísticas avançadas
+    currentSpeed = 50, // Velocidade atual
+    onSpeedChange = () => {} // Handler para mudança de velocidade
 }) {
     const { calculateRouteStats } = useRouteWithStops();
     const stats = calculateRouteStats(pontosSelecionados);
-    const { formData, statusOptions, handleInputChange, validateForm } = useRouteForm(stats, initialData, pontosSelecionados);
+    const { formData, statusOptions, handleInputChange, validateForm } = useRouteForm(stats, initialData, pontosSelecionados, advancedStats);
 
     // Função para mover pontos (drag and drop)
     const moveStop = useCallback((dragIndex, hoverIndex) => {
@@ -110,12 +118,28 @@ function PainelControle({
                     handleInputChange={handleInputChange}
                     statusOptions={statusOptions}
                     instanceId={instanceId}
+                    useRealRoutes={useRealRoutes}
+                    advancedStats={advancedStats}
+                    pontosSelecionados={pontosSelecionados}
+                />
+
+                {/* Configurações da Rota */}
+                <RouteSettings 
+                    pontosSelecionados={pontosSelecionados}
+                    useRealRoutes={useRealRoutes}
+                    onToggleRealRoutes={onToggleRealRoutes}
+                    routingLoading={routingLoading}
+                    cacheStats={cacheStats}
+                    advancedStats={advancedStats}
+                    currentSpeed={currentSpeed}
+                    onSpeedChange={onSpeedChange}
                 />
 
                 {/* Estatísticas da Rota */}
                 <RouteStatistics 
                     stats={stats}
                     pontosSelecionados={pontosSelecionados}
+                    advancedStats={advancedStats}
                 />
 
                 {/* Lista de Pontos Selecionados */}

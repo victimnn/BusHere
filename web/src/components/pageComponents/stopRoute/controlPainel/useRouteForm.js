@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '@web/api/api';
 
-export function useRouteForm(stats, initialData = null, pontosSelecionados = []) {
+export function useRouteForm(stats, initialData = null, pontosSelecionados = [], advancedStats = null) {
     const [formData, setFormData] = useState({
         nome: '',
         codigo_rota: '',
@@ -42,18 +42,36 @@ export function useRouteForm(stats, initialData = null, pontosSelecionados = [])
 
     // Atualizar distância e tempo quando pontos mudarem
     useEffect(() => {
-        if (stats.totalDistance > 0) {
+        // Se há menos de 2 pontos, limpar os campos
+        if (!pontosSelecionados || pontosSelecionados.length < 2) {
+            setFormData(prev => ({
+                ...prev,
+                distancia_km: 0,
+                tempo_viagem_estimado_minutos: 0
+            }));
+            return;
+        }
+
+        // Priorizar dados das estatísticas avançadas se disponíveis e usando rotas reais
+        if (advancedStats && advancedStats.totalDistance > 0) {
+            setFormData(prev => ({
+                ...prev,
+                distancia_km: parseFloat(advancedStats.totalDistance.toFixed(2)),
+                tempo_viagem_estimado_minutos: Math.round(advancedStats.estimatedTime)
+            }));
+        } else if (stats.totalDistance > 0) {
+            // Fallback para estatísticas básicas se não houver rotas reais
             setFormData(prev => ({
                 ...prev,
                 distancia_km: parseFloat(stats.totalDistance.toFixed(2)),
                 tempo_viagem_estimado_minutos: Math.round(stats.estimatedTime)
             }));
         }
-    }, [stats.totalDistance, stats.estimatedTime]);
+    }, [stats.totalDistance, stats.estimatedTime, advancedStats, pontosSelecionados]);
 
     // Atualizar origem e destino automaticamente com base nos pontos selecionados
     useEffect(() => {
-        if (pontosSelecionados && pontosSelecionados.length > 0) {
+        if (pontosSelecionados && pontosSelecionados.length >= 2) {
             // Ordenar pontos por ordem para garantir que pegamos o primeiro e último corretos
             const pontosOrdenados = [...pontosSelecionados].sort((a, b) => a.ordem - b.ordem);
             
@@ -72,7 +90,7 @@ export function useRouteForm(stats, initialData = null, pontosSelecionados = [])
                 return prev;
             });
         } else {
-            // Se não há pontos, limpar as descrições apenas se não estiverem vazias
+            // Se há menos de 2 pontos, limpar as descrições
             setFormData(prev => {
                 if (prev.origem_descricao !== '' || prev.destino_descricao !== '') {
                     return {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useFormattedBusOptions, useFormattedDriverOptions } from '../../../../hooks/useFormOptions';
 
 const FormField = ({ 
@@ -87,7 +88,7 @@ const FormField = ({
     </div>
 );
 
-function RouteForm({ formData, handleInputChange, statusOptions, instanceId }) {
+function RouteForm({ formData, handleInputChange, statusOptions, instanceId, useRealRoutes = false, advancedStats = null, pontosSelecionados = [] }) {
     // Usar hooks customizados para carregar opções filtradas
     const { options: busOptions, loading: loadingBuses } = useFormattedBusOptions();
     const { options: driverOptions, loading: loadingDrivers } = useFormattedDriverOptions();
@@ -177,7 +178,26 @@ function RouteForm({ formData, handleInputChange, statusOptions, instanceId }) {
                         min="0"
                         readOnly
                         className=""
+                        placeholder={pontosSelecionados.length < 2 ? "Selecione ao menos 2 pontos" : "0.00"}
                     />
+                    {pontosSelecionados.length >= 2 && useRealRoutes && advancedStats?.method === 'real' && (
+                        <small className="text-success">
+                            <i className="bi bi-check-circle me-1"></i>
+                            Calculado com rotas reais (OSRM)
+                        </small>
+                    )}
+                    {pontosSelecionados.length >= 2 && (!useRealRoutes || advancedStats?.method !== 'real') && (
+                        <small className="text-muted">
+                            <i className="bi bi-info-circle me-1"></i>
+                            Calculado com linhas retas
+                        </small>
+                    )}
+                    {pontosSelecionados.length < 2 && (
+                        <small className="text-muted">
+                            <i className="bi bi-info-circle me-1"></i>
+                            Adicione ao menos 2 pontos para calcular distância
+                        </small>
+                    )}
                 </div>
                 <div className="col-6">
                     <FormField
@@ -190,7 +210,26 @@ function RouteForm({ formData, handleInputChange, statusOptions, instanceId }) {
                         min="0"
                         readOnly
                         className=""
+                        placeholder={pontosSelecionados.length < 2 ? "Selecione ao menos 2 pontos" : "0"}
                     />
+                    {pontosSelecionados.length >= 2 && useRealRoutes && advancedStats?.method === 'real' && (
+                        <small className="text-success">
+                            <i className="bi bi-check-circle me-1"></i>
+                            Calculado a 50 km/h em rotas reais
+                        </small>
+                    )}
+                    {pontosSelecionados.length >= 2 && (!useRealRoutes || advancedStats?.method !== 'real') && (
+                        <small className="text-muted">
+                            <i className="bi bi-info-circle me-1"></i>
+                            Estimativa com base em linhas retas
+                        </small>
+                    )}
+                    {pontosSelecionados.length < 2 && (
+                        <small className="text-muted">
+                            <i className="bi bi-info-circle me-1"></i>
+                            Adicione ao menos 2 pontos para calcular tempo
+                        </small>
+                    )}
                 </div>
             </div>
 
@@ -268,5 +307,21 @@ function RouteForm({ formData, handleInputChange, statusOptions, instanceId }) {
         </div>
     );
 }
+
+RouteForm.propTypes = {
+    formData: PropTypes.object.isRequired,
+    handleInputChange: PropTypes.func.isRequired,
+    statusOptions: PropTypes.array.isRequired,
+    instanceId: PropTypes.string.isRequired,
+    useRealRoutes: PropTypes.bool,
+    advancedStats: PropTypes.object,
+    pontosSelecionados: PropTypes.array
+};
+
+RouteForm.defaultProps = {
+    useRealRoutes: false,
+    advancedStats: null,
+    pontosSelecionados: []
+};
 
 export default RouteForm;

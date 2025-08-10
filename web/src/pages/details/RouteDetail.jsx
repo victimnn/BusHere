@@ -242,7 +242,7 @@ function RouteDetail({ pageFunctions }) {
                           <div className="badge bg-primary rounded-circle me-2" style={{ width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             {ponto.ordem}
                           </div>
-                          <h6 className="card-title mb-0 fw-semibold">{ponto.nome}</h6>
+                          <h6 className="card-title mb-0 text-secondary-dark fw-semibold">{ponto.nome}</h6>
                         </div>
                         
                         {(ponto.logradouro || ponto.bairro || ponto.cidade) && (

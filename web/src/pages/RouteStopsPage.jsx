@@ -15,6 +15,7 @@ import FloatingInstructions from '@web/components/pageComponents/stopRoute/Float
 import FloatingPointsCounter from '@web/components/pageComponents/stopRoute/FloatingPointsCounter';
 import FloatingMobileButton from '@web/components/pageComponents/stopRoute/FloatingMobileButton';
 import MobileControlPanel from '@web/components/pageComponents/stopRoute/MobileControlPanel';
+import { RouteControls } from '@web/components/pageComponents/stopRoute/RouteControls';
 
 /**
  * @typedef {Object} PontoSelecionado
@@ -57,6 +58,7 @@ function RouteStopsPage({ pageFunctions }) {
     const [mapCenter, setMapCenter] = useState([CONSTANTS.MAP_CENTER.lat, CONSTANTS.MAP_CENTER.lng]);
     const [initialDataLoaded, setInitialDataLoaded] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 992);
+    const [useRealRoutes, setUseRealRoutes] = useState(true);
 
     // Hook unificado para gerenciar rotas e handlers
     const { 
@@ -85,7 +87,7 @@ function RouteStopsPage({ pageFunctions }) {
     };
 
     // Marcadores e polylines do mapa
-    const { markers, polylines } = useMapMarkers(stops, pontosSelecionados, routeHandlers);
+    const { markers, polylines, routingLoading, cacheStats, advancedStats, currentSpeed, handleSpeedChange } = useMapMarkers(stops, pontosSelecionados, routeHandlers, useRealRoutes);
 
     // Handler para abrir o tutorial
     const handleOpenTutorial = () => {
@@ -215,8 +217,8 @@ function RouteStopsPage({ pageFunctions }) {
         try {
             setRouteError(null);
 
-            // Calcular estatísticas da rota
-            const stats = calculateRouteStats(pontosSelecionados);
+            // Usar estatísticas avançadas se disponíveis, senão calcular básicas
+            const stats = advancedStats || calculateRouteStats(pontosSelecionados);
             
             // Preparar pontos para envio ao backend
             const pontosParaBackend = pontosSelecionados.map(ponto => ({
@@ -228,7 +230,7 @@ function RouteStopsPage({ pageFunctions }) {
             // Adicionar estatísticas e pontos aos dados da rota
             const rotaComEstatisticas = {
                 ...dadosRota,
-                distancia_km: stats.totalDistance,
+                distancia_km: stats.totalDistance.toFixed(2), // Garantir formato correto
                 tempo_viagem_estimado_minutos: Math.round(stats.estimatedTime),
                 pontos: pontosParaBackend
             };
@@ -315,6 +317,13 @@ function RouteStopsPage({ pageFunctions }) {
                     instanceId="desktop"
                     initialData={rota}
                     isEditMode={isEditMode}
+                    useRealRoutes={useRealRoutes}
+                    onToggleRealRoutes={setUseRealRoutes}
+                    routingLoading={routingLoading}
+                    cacheStats={cacheStats}
+                    advancedStats={advancedStats}
+                    currentSpeed={currentSpeed}
+                    onSpeedChange={handleSpeedChange}
                 />
             </div>
 
@@ -329,6 +338,11 @@ function RouteStopsPage({ pageFunctions }) {
                 setRota={setRota}
                 initialData={rota}
                 isEditMode={isEditMode}
+                useRealRoutes={useRealRoutes}
+                onToggleRealRoutes={setUseRealRoutes}
+                routingLoading={routingLoading}
+                cacheStats={cacheStats}
+                advancedStats={advancedStats}
             />
 
             {/* Mapa */}
@@ -373,6 +387,31 @@ function RouteStopsPage({ pageFunctions }) {
                 />
 
                 <FloatingPointsCounter pontosSelecionados={pontosSelecionados} />
+
+                {/* Controles de Roteamento */}
+                {pontosSelecionados.length >= 2 && (
+                    <div 
+                        className="position-absolute" 
+                        style={{ 
+                            bottom: '120px', 
+                            right: '20px', 
+                            zIndex: 1000,
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            borderRadius: '8px',
+                            padding: '12px',
+                            boxShadow: '0 2px 10px rgba(0,0,0,0.15)',
+                            border: '1px solid #dee2e6'
+                        }}
+                    >
+                        <RouteControls
+                            useRealRoutes={useRealRoutes}
+                            onToggleRealRoutes={setUseRealRoutes}
+                            routingLoading={routingLoading}
+                            cacheStats={cacheStats}
+                            size="compact"
+                        />
+                    </div>
+                )}
             </div>
 
             {/* PopUp Component para Tutorial */}

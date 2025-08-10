@@ -23,7 +23,7 @@ function PainelControle({
 }) {
     const { calculateRouteStats } = useRouteWithStops();
     const stats = calculateRouteStats(pontosSelecionados);
-    const { formData, statusOptions, handleInputChange, validateForm } = useRouteForm(stats, initialData);
+    const { formData, statusOptions, handleInputChange, validateForm } = useRouteForm(stats, initialData, pontosSelecionados);
 
     // Função para mover pontos (drag and drop)
     const moveStop = useCallback((dragIndex, hoverIndex) => {

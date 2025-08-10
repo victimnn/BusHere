@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '@web/api/api';
 
-export function useRouteForm(stats, initialData = null) {
+export function useRouteForm(stats, initialData = null, pontosSelecionados = []) {
     const [formData, setFormData] = useState({
         nome: '',
         codigo_rota: '',
@@ -50,6 +50,41 @@ export function useRouteForm(stats, initialData = null) {
             }));
         }
     }, [stats.totalDistance, stats.estimatedTime]);
+
+    // Atualizar origem e destino automaticamente com base nos pontos selecionados
+    useEffect(() => {
+        if (pontosSelecionados && pontosSelecionados.length > 0) {
+            // Ordenar pontos por ordem para garantir que pegamos o primeiro e último corretos
+            const pontosOrdenados = [...pontosSelecionados].sort((a, b) => a.ordem - b.ordem);
+            
+            const primeiroNome = pontosOrdenados[0]?.nome || '';
+            const ultimoNome = pontosOrdenados[pontosOrdenados.length - 1]?.nome || '';
+            
+            // Só atualizar se os valores realmente mudaram para evitar renderizações desnecessárias
+            setFormData(prev => {
+                if (prev.origem_descricao !== primeiroNome || prev.destino_descricao !== ultimoNome) {
+                    return {
+                        ...prev,
+                        origem_descricao: primeiroNome,
+                        destino_descricao: ultimoNome
+                    };
+                }
+                return prev;
+            });
+        } else {
+            // Se não há pontos, limpar as descrições apenas se não estiverem vazias
+            setFormData(prev => {
+                if (prev.origem_descricao !== '' || prev.destino_descricao !== '') {
+                    return {
+                        ...prev,
+                        origem_descricao: '',
+                        destino_descricao: ''
+                    };
+                }
+                return prev;
+            });
+        }
+    }, [pontosSelecionados]);
 
     // Carregar opções de status da API
     useEffect(() => {

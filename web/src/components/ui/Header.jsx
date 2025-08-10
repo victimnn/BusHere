@@ -19,8 +19,25 @@ function Header({pageName}){
           py-2
         `}
       >
-        <div className="d-flex justify-content-center justify-content-md-start">
-          <h1 className="mb-2 mb-md-0">{pageName}</h1>
+        <div 
+          className="d-flex justify-content-center justify-content-md-start"
+          style={{ 
+            minWidth: '200px', 
+            maxWidth: '300px', 
+            width: '250px',
+            flexShrink: 0
+          }}
+        >
+          <h1 
+            className="mb-2 mb-md-0 w-100" 
+            style={{ 
+              fontSize: 'clamp(0.5rem, 2vw, 2rem)',
+              lineHeight: '1.2',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {pageName}
+          </h1>
         </div>
 
         <div className="flex-grow-1 d-flex justify-content-center px-md-4">

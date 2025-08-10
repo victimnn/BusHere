@@ -22,7 +22,7 @@ const QuickAccess = ({ quickAccessItems }) => {
                         >
                             <div className="card-body d-flex flex-column justify-content-center align-items-center p-2 p-md-3">
                                 <i className={`${item.icon} fs-2 fs-md-3 text-${item.color} mb-1 mb-md-2`}></i>
-                                <h6 className="card-title mb-0 small">{item.title}</h6>
+                                <h6 className={`card-title mb-0 small text-${item.color}`}>{item.title}</h6>
                             </div>
                         </div>
                     </div>

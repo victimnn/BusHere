@@ -30,9 +30,6 @@ import DetailedSummary from "@web/components/pageComponents/reports/DetailedSumm
 import { useReportData } from "@web/hooks/useReportData";
 import { useChartData } from "@web/hooks/useChartData";
 
-// Estilos
-import "../../styles/reportStyles.scss";
-
 // Registrar componentes do Chart.js
 ChartJS.register(
   CategoryScale,

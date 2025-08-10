@@ -34,6 +34,7 @@ function GenericForm({
   useEffect(() => {
     if (initialData) {
       const newFormData = {};
+      const newTouchedFields = {};
       fieldsConfig.forEach(field => {
         let value = initialData[field.name] || initialData[field.alternativeKey] || field.defaultValue || '';
         
@@ -43,10 +44,45 @@ function GenericForm({
         }
         
         newFormData[field.name] = value;
+        // Marca os campos preenchidos como tocados para validação na edição
+        if (value && value !== '' && value !== field.defaultValue) {
+          newTouchedFields[field.name] = true;
+        }
       });
       setFormData(newFormData);
+      setTouchedFields(newTouchedFields);
     }
   }, [initialData, fieldsConfig]);
+
+  // Valida os campos iniciais após carregar os dados (separado para evitar dependência circular)
+  useEffect(() => {
+    if (initialData && Object.keys(touchedFields).length > 0) {
+      const newErrors = {};
+      fieldsConfig.forEach(field => {
+        if (touchedFields[field.name]) {
+          // Validação inline para evitar dependência circular
+          const fieldConfig = fieldsConfig.find(f => f.name === field.name);
+          const value = formData[field.name];
+          let error = null;
+          
+          // Validação de campo obrigatório
+          if (fieldConfig?.required && (!value || value.toString().trim() === '')) {
+            error = `${fieldConfig.label} é obrigatório`;
+          }
+          
+          // Validação customizada
+          if (!error && fieldConfig?.validator) {
+            error = fieldConfig.validator(value, formData);
+          }
+          
+          if (error) {
+            newErrors[field.name] = error;
+          }
+        }
+      });
+      setErrors(newErrors);
+    }
+  }, [initialData, fieldsConfig, touchedFields, formData]);
 
   // Carrega opções para campos select de forma otimizada
   useEffect(() => {
@@ -137,21 +173,18 @@ function GenericForm({
       processedValue = fieldConfig.formatter(processedValue);
     }
     
-    setFormData(prev => ({
-      ...prev,
-      [name]: processedValue
-    }));
+    const newFormData = { ...formData, [name]: processedValue };
+    setFormData(newFormData);
     
-    // Valida apenas campos que já foram tocados ou são obrigatórios
-    if (touchedFields[name] || fieldConfig?.required) {
-      const newFormData = { ...formData, [name]: processedValue };
+    // Valida em tempo real apenas se o campo já foi tocado
+    if (touchedFields[name]) {
       const errorMsg = validateField(name, processedValue, newFormData);
       setErrors(prev => ({
         ...prev,
         [name]: errorMsg
       }));
     }
-  }, [getFieldConfig, touchedFields, validateField]);
+  }, [getFieldConfig, touchedFields, validateField, formData]);
 
   // Validação do formulário completo
   const validateForm = useCallback(() => {
@@ -226,14 +259,10 @@ function GenericForm({
       const fakeData = config.fakeDataGenerator();
       setFormData(fakeData);
       setErrors({});
-      // Marca todos os campos como tocados para permitir validação
-      const allTouched = {};
-      fieldsConfig.forEach(field => {
-        allTouched[field.name] = true;
-      });
-      setTouchedFields(allTouched);
+      // Não marca automaticamente como tocados - deixa o usuário validar conforme interage
+      setTouchedFields({});
     }
-  }, [config.fakeDataGenerator, fieldsConfig]);
+  }, [config.fakeDataGenerator]);
 
   // Reseta o formulário
   const handleReset = useCallback(() => {
@@ -252,9 +281,23 @@ function GenericForm({
     const value = formData[field.name] || '';
     const isFieldTouched = touchedFields[field.name];
     const showError = error && isFieldTouched;
+    
+    // Lógica melhorada para aplicar classes de validação
+    let validationClass = '';
+    if (isFieldTouched) {
+      if (error) {
+        validationClass = 'is-invalid';
+      } else if (value && value !== '' && field.required) {
+        validationClass = 'is-valid';
+      } else if (value && value !== '' && !field.required) {
+        // Para campos não obrigatórios, só aplica is-valid se não há erro
+        const fieldError = validateField(field.name, value, formData);
+        validationClass = fieldError ? 'is-invalid' : 'is-valid';
+      }
+    }
 
     const inputGroupClass = `input-group${field.size ? ` input-group-${field.size}` : ''}`;
-    const inputClass = `form-control${field.size ? ` form-control-${field.size}` : ''} ${showError ? 'is-invalid' : value ? 'is-valid' : ''}`;
+    const inputClass = `form-control${field.size ? ` form-control-${field.size}` : ''} ${validationClass}`;
     
     // Componente de ajuda/dica
     const helpText = field.helpText && (
@@ -325,7 +368,7 @@ function GenericForm({
           <div key={field.name} className="mb-4">
             <div className="form-check">
               <input
-                className={`form-check-input ${showError ? 'is-invalid' : ''}`}
+                className={`form-check-input ${validationClass}`}
                 type="checkbox"
                 id={field.name}
                 name={field.name}
@@ -450,7 +493,7 @@ function GenericForm({
       default:
         return null;
     }
-  }, [formData, errors, touchedFields, selectOptions, handleChange, handleBlur, isLoading]);
+  }, [formData, errors, touchedFields, selectOptions, handleChange, handleBlur, isLoading, validateField]);
 
   return (
     <div className={`card border-0 shadow-sm ${className}`}>

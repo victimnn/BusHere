@@ -1,0 +1,98 @@
+// =============================================================================
+// RESPONSIVE - UTILITÁRIOS RESPONSIVOS
+// =============================================================================
+
+@import '../base/variables';
+@import '../base/mixins';
+
+// -----------------------------------------------------------------------------
+// CLASSES RESPONSIVAS PARA TÍTULOS
+// -----------------------------------------------------------------------------
+.h3-md {
+  @include mobile-only {
+    font-size: 1.5rem !important;
+  }
+}
+
+.h6-md {
+  @include mobile-only {
+    font-size: 0.875rem !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ELEMENTOS FLUTUANTES
+// -----------------------------------------------------------------------------
+.floating-element {
+  z-index: 1000 !important;
+  
+  &.high-priority {
+    z-index: 1001 !important;
+  }
+
+  @include mobile-only {
+    z-index: 1050 !important;
+
+    &.position-fixed {
+      bottom: 15px !important;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// POSICIONAMENTO
+// -----------------------------------------------------------------------------
+.position-absolute {
+  z-index: 1000;
+}
+
+// Ajustar posicionamento do botão flutuante em mobile
+@include mobile-only {
+  .position-fixed.bottom-0 {
+    position: fixed !important;
+    bottom: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// OFFCANVAS
+// -----------------------------------------------------------------------------
+@include mobile-only {
+  .offcanvas {
+    z-index: 1055 !important;
+  }
+
+  .offcanvas-body {
+    padding: 0 !important;
+  }
+
+  .offcanvas-header {
+    padding: 1rem 1.5rem !important;
+    background-color: var(--bs-light) !important;
+  }
+}
+
+@include small-mobile {
+  .offcanvas-bottom {
+    height: 70vh !important;
+  }
+
+  // Botão mobile menor em telas pequenas
+  .btn-lg.rounded-pill {
+    font-size: 0.9rem !important;
+    padding: 0.75rem 1.5rem !important;
+    min-width: 160px !important;
+  }
+}
+
+// Estilos para o offcanvas
+.offcanvas-bottom {
+  border-top-left-radius: 1rem !important;
+  border-top-right-radius: 1rem !important;
+}
+
+.offcanvas-header {
+  border-bottom: 2px solid var(--bs-border-color) !important;
+}

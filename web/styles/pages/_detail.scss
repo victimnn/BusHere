@@ -1,0 +1,113 @@
+// =============================================================================
+// DETAIL PAGE - PÁGINA DE DETALHES
+// =============================================================================
+
+@import '../base/variables';
+@import '../base/mixins';
+
+// -----------------------------------------------------------------------------
+// PÁGINA DE DETALHES
+// -----------------------------------------------------------------------------
+.detail-page {
+  .card-header {
+    border-bottom: 3px solid $primary-light;
+    
+    &.bg-primary {
+      @include gradient-primary();
+    }
+
+    @include mobile-only {
+      .d-flex {
+        flex-direction: column;
+        text-align: center;
+        
+        .avatar {
+          margin-right: 0 !important;
+          margin-bottom: 1rem;
+        }
+      }
+      
+      h3 {
+        font-size: 1.5rem;
+      }
+      
+      .d-flex.gap-3 {
+        flex-direction: column;
+        gap: 0.5rem !important;
+      }
+    }
+  }
+  
+  .avatar {
+    width: $avatar-size;
+    height: $avatar-size;
+    box-shadow: 0 4px 12px rgba(18, 190, 77, 0.2);
+    @include hover-scale();
+  }
+  
+  .badge {
+    @include hover-scale();
+  }
+  
+  .detail-item {
+    padding: 8px;
+    border-left: 2px solid transparent;
+    border-radius: 8px !important;
+    border: 1px solid transparent;
+    transition: $btn-transition;
+    
+    &:hover {
+      background-color: $bg-medium;
+      border-left: 2px solid $primary;
+      border-color: $primary-light;
+      transform: translateX(2px);
+      box-shadow: 0 2px 8px rgba(18, 190, 77, 0.1);
+
+      i {
+        transform: scale(1.1);
+        color: $primary-dark !important;
+      }
+    }
+
+    @include small-mobile {
+      padding: 0.75rem !important;
+      
+      i {
+        font-size: 1.1rem !important;
+      }
+      
+      small {
+        font-size: 0.8rem;
+      }
+    }
+  }
+  
+  .btn-group {
+    .btn:not(:last-child) {
+      margin-right: 0.5rem;
+    }
+  }
+  
+  // Responsividade
+  @include mobile-only {
+    .d-flex.justify-content-between {
+      flex-direction: column;
+      gap: 1rem;
+      
+      .d-flex.gap-3 {
+        flex-direction: column;
+        gap: 0.5rem !important;
+        
+        .btn {
+          width: 100%;
+        }
+      }
+    }
+  }
+  
+  @include small-mobile {
+    .card-body {
+      padding: 1rem !important;
+    }
+  }
+}

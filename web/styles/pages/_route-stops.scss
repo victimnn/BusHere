@@ -1,0 +1,37 @@
+// =============================================================================
+// ROUTE STOPS PAGE - PÁGINA DE PONTOS DA ROTA
+// =============================================================================
+
+@import '../base/variables';
+@import '../base/mixins';
+
+// -----------------------------------------------------------------------------
+// PÁGINA DE PONTOS DA ROTA
+// -----------------------------------------------------------------------------
+.route-stops-page {
+  height: 100%;
+  overflow: hidden;
+
+  // Container do mapa
+  .map-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    
+    .leaflet-container {
+      height: 100% !important;
+      width: 100% !important;
+    }
+
+    @include mobile-only {
+      height: 100vh !important;
+    }
+  }
+
+  // Painel de controle
+  .painel-controle {
+    height: 100%;
+    overflow-y: auto;
+    background-color: $light;
+  }
+}

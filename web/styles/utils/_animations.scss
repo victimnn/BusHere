@@ -1,0 +1,70 @@
+// =============================================================================
+// ANIMATIONS - ANIMAÇÕES E TRANSIÇÕES
+// =============================================================================
+
+@import '../base/variables';
+
+// -----------------------------------------------------------------------------
+// ANIMAÇÃO DE ROTAÇÃO
+// -----------------------------------------------------------------------------
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ANIMAÇÕES GENÉRICAS
+// -----------------------------------------------------------------------------
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// CLASSES DE ANIMAÇÃO
+// -----------------------------------------------------------------------------
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.slide-in-up {
+  animation: slideInUp 0.3s ease-out;
+}
+
+.slide-in-right {
+  animation: slideInRight 0.3s ease-out;
+}

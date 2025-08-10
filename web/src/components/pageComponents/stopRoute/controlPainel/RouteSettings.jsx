@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { RouteControls } from '@web/components/ui/RouteControls';
-import { RouteComparison } from '@web/components/ui/RouteComparison';
+import { RouteControls } from '@web/components/pageComponents/stopRoute/RouteControls';
+import { RouteComparison } from '@web/components/pageComponents/stopRoute/RouteComparison';
 
 /**
  * Seção de configurações da rota no painel de controle
@@ -12,7 +12,9 @@ function RouteSettings({
     onToggleRealRoutes, 
     routingLoading,
     cacheStats = { hits: 0, apiCalls: 0, hitRate: 0 },
-    advancedStats = null
+    advancedStats = null,
+    currentSpeed = 50,
+    onSpeedChange = () => {}
 }) {
     if (pontosSelecionados.length < 2) {
         return null;
@@ -20,7 +22,7 @@ function RouteSettings({
 
     return (
         <>
-            <div className="mb-3">
+            {/* <div className="mb-3">
                 <div className="card border-0 shadow-sm">
                     <div className="card-header bg-light border-0 py-2">
                         <h6 className="mb-0 fw-bold text-dark">
@@ -47,13 +49,15 @@ function RouteSettings({
                         )}
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             {/* Comparação de Tempos - só aparece se tiver estatísticas avançadas */}
             {advancedStats && pontosSelecionados.length >= 2 && (
                 <RouteComparison 
-                    advancedStats={advancedStats} 
+                    advancedStats={advancedStats}
                     className="mb-3"
+                    currentSpeed={currentSpeed}
+                    onSpeedChange={onSpeedChange}
                 />
             )}
         </>
@@ -70,7 +74,9 @@ RouteSettings.propTypes = {
         apiCalls: PropTypes.number,
         hitRate: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     }),
-    advancedStats: PropTypes.object
+    advancedStats: PropTypes.object,
+    currentSpeed: PropTypes.number,
+    onSpeedChange: PropTypes.func
 };
 
 RouteSettings.defaultProps = {

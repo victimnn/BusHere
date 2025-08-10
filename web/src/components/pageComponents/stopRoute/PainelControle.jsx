@@ -25,7 +25,9 @@ function PainelControle({
     onToggleRealRoutes = () => {}, // Handler para toggle de rotas reais
     routingLoading = false, // Loading de roteamento
     cacheStats = { hits: 0, apiCalls: 0, hitRate: 0 }, // Estatísticas do cache
-    advancedStats = null // Estatísticas avançadas
+    advancedStats = null, // Estatísticas avançadas
+    currentSpeed = 50, // Velocidade atual
+    onSpeedChange = () => {} // Handler para mudança de velocidade
 }) {
     const { calculateRouteStats } = useRouteWithStops();
     const stats = calculateRouteStats(pontosSelecionados);
@@ -118,13 +120,7 @@ function PainelControle({
                     instanceId={instanceId}
                     useRealRoutes={useRealRoutes}
                     advancedStats={advancedStats}
-                />
-
-                {/* Estatísticas da Rota */}
-                <RouteStatistics 
-                    stats={stats}
                     pontosSelecionados={pontosSelecionados}
-                    advancedStats={advancedStats}
                 />
 
                 {/* Configurações da Rota */}
@@ -134,6 +130,15 @@ function PainelControle({
                     onToggleRealRoutes={onToggleRealRoutes}
                     routingLoading={routingLoading}
                     cacheStats={cacheStats}
+                    advancedStats={advancedStats}
+                    currentSpeed={currentSpeed}
+                    onSpeedChange={onSpeedChange}
+                />
+
+                {/* Estatísticas da Rota */}
+                <RouteStatistics 
+                    stats={stats}
+                    pontosSelecionados={pontosSelecionados}
                     advancedStats={advancedStats}
                 />
 

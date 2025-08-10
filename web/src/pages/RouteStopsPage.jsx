@@ -15,7 +15,7 @@ import FloatingInstructions from '@web/components/pageComponents/stopRoute/Float
 import FloatingPointsCounter from '@web/components/pageComponents/stopRoute/FloatingPointsCounter';
 import FloatingMobileButton from '@web/components/pageComponents/stopRoute/FloatingMobileButton';
 import MobileControlPanel from '@web/components/pageComponents/stopRoute/MobileControlPanel';
-import { RouteControls } from '@web/components/ui/RouteControls';
+import { RouteControls } from '@web/components/pageComponents/stopRoute/RouteControls';
 
 /**
  * @typedef {Object} PontoSelecionado
@@ -87,7 +87,7 @@ function RouteStopsPage({ pageFunctions }) {
     };
 
     // Marcadores e polylines do mapa
-    const { markers, polylines, routingLoading, cacheStats, advancedStats } = useMapMarkers(stops, pontosSelecionados, routeHandlers, useRealRoutes);
+    const { markers, polylines, routingLoading, cacheStats, advancedStats, currentSpeed, handleSpeedChange } = useMapMarkers(stops, pontosSelecionados, routeHandlers, useRealRoutes);
 
     // Handler para abrir o tutorial
     const handleOpenTutorial = () => {
@@ -322,6 +322,8 @@ function RouteStopsPage({ pageFunctions }) {
                     routingLoading={routingLoading}
                     cacheStats={cacheStats}
                     advancedStats={advancedStats}
+                    currentSpeed={currentSpeed}
+                    onSpeedChange={handleSpeedChange}
                 />
             </div>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { CONSTANTS } from '@web/utils/routeStopsUtils';
 import { ExistingStopPopup, SelectedStopPopup } from '@web/components/pageComponents/stopRoute/StopPopups';
 import { useRouting } from './useRouting';
@@ -14,6 +14,7 @@ export const useMapMarkers = (stops, pontosSelecionados, handlers, useRealRoutes
     const [realRouteCoordinates, setRealRouteCoordinates] = useState([]);
     const [routeSegments, setRouteSegments] = useState([]);
     const [advancedStats, setAdvancedStats] = useState(null);
+    const [currentSpeed, setCurrentSpeed] = useState(50); // Estado para velocidade atual
 
     // Efeito para calcular rota real quando os pontos mudam
     useEffect(() => {
@@ -28,7 +29,7 @@ export const useMapMarkers = (stops, pontosSelecionados, handlers, useRealRoutes
                     
                     // Calcular estatísticas avançadas com rota real
                     const stats = calculateAdvancedRouteStats(pontosSelecionados, segments, {
-                        averageSpeed: 50, // 50 km/h conforme solicitado
+                        averageSpeed: currentSpeed, // Usar velocidade atual
                         useRealRoutes: true
                     });
                     setAdvancedStats(stats);
@@ -43,7 +44,7 @@ export const useMapMarkers = (stops, pontosSelecionados, handlers, useRealRoutes
                     
                     // Calcular estatísticas com linha reta
                     const stats = calculateAdvancedRouteStats(pontosSelecionados, null, {
-                        averageSpeed: 50,
+                        averageSpeed: currentSpeed,
                         useRealRoutes: false
                     });
                     setAdvancedStats(stats);
@@ -55,7 +56,7 @@ export const useMapMarkers = (stops, pontosSelecionados, handlers, useRealRoutes
                 
                 // Calcular estatísticas com linha reta
                 const stats = calculateAdvancedRouteStats(pontosSelecionados, null, {
-                    averageSpeed: 50,
+                    averageSpeed: currentSpeed,
                     useRealRoutes: false
                 });
                 setAdvancedStats(stats);
@@ -67,7 +68,12 @@ export const useMapMarkers = (stops, pontosSelecionados, handlers, useRealRoutes
         };
 
         calculateRoute();
-    }, [pontosSelecionados, useRealRoutes, calculateRealRoute, combineRouteSegments, calculateAdvancedRouteStats]);
+    }, [pontosSelecionados, useRealRoutes, currentSpeed, calculateRealRoute, combineRouteSegments, calculateAdvancedRouteStats]);
+
+    // Função para alterar a velocidade
+    const handleSpeedChange = useCallback((newSpeed) => {
+        setCurrentSpeed(newSpeed);
+    }, []);
 
     const markers = [
         // Pontos existentes (azuis)
@@ -123,6 +129,8 @@ export const useMapMarkers = (stops, pontosSelecionados, handlers, useRealRoutes
         routingLoading, 
         useRealRoutes: useRealRoutes && realRouteCoordinates.length > 0,
         cacheStats,
-        advancedStats // Novas estatísticas avançadas
+        advancedStats, // Novas estatísticas avançadas
+        currentSpeed, // Velocidade atual
+        handleSpeedChange // Função para mudar velocidade
     };
 };

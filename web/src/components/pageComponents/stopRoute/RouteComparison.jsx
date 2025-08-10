@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 /**
  * Componente para comparar estatísticas entre métodos de roteamento
  */
-export const RouteComparison = ({ advancedStats, className = "" }) => {
+export const RouteComparison = ({ advancedStats, className = "", onSpeedChange, currentSpeed = 50 }) => {
     const [showComparison, setShowComparison] = useState(false);
 
     if (!advancedStats || !advancedStats.timeVariations) {
@@ -23,33 +23,43 @@ export const RouteComparison = ({ advancedStats, className = "" }) => {
     const speedComparisons = [
         {
             speed: 30,
-            label: 'Conservador (30 km/h)',
+            label: 'Conservador',
+            sublabel: '30 km/h',
             time: advancedStats.timeVariations.conservative,
             color: 'warning',
             icon: 'bi-speedometer'
         },
         {
             speed: 40,
-            label: 'Moderado (40 km/h)',
+            label: 'Moderado',
+            sublabel: '40 km/h',
             time: advancedStats.timeVariations.moderate,
             color: 'info',
             icon: 'bi-speedometer2'
         },
         {
             speed: 50,
-            label: 'Atual (50 km/h)',
+            label: 'Balanceado',
+            sublabel: '50 km/h',
             time: advancedStats.timeVariations.current,
             color: 'success',
             icon: 'bi-check-circle'
         },
         {
             speed: 60,
-            label: 'Otimista (60 km/h)',
+            label: 'Otimista',
+            sublabel: '60 km/h',
             time: advancedStats.timeVariations.optimistic,
             color: 'primary',
             icon: 'bi-lightning'
         }
     ];
+
+    const handleSpeedSelect = (speed) => {
+        if (onSpeedChange) {
+            onSpeedChange(speed);
+        }
+    };
 
     return (
         <div className={`route-comparison ${className}`}>
@@ -75,22 +85,33 @@ export const RouteComparison = ({ advancedStats, className = "" }) => {
                         <div className="row g-2">
                             {speedComparisons.map((comparison, index) => (
                                 <div key={index} className="col-6">
-                                    <div className={`p-2 rounded border ${comparison.speed === 50 ? 'border-success bg-success bg-opacity-10' : ''}`}>
-                                        <div className="d-flex align-items-center justify-content-between">
-                                            <div className="flex-grow-1">
-                                                <div className="d-flex align-items-center mb-1">
-                                                    <i className={`${comparison.icon} text-${comparison.color} me-2`}></i>
-                                                    <small className="fw-medium">{comparison.label}</small>
-                                                    {comparison.speed === 50 && (
-                                                        <span className="badge bg-success ms-2 small">Atual</span>
-                                                    )}
-                                                </div>
-                                                <div className={`fw-bold text-${comparison.color}`}>
-                                                    {formatTime(comparison.time)}
-                                                </div>
-                                            </div>
+                                    <button
+                                        type="button"
+                                        className={`btn w-100 d-flex flex-column justify-content-center align-items-center p-2 position-relative ${
+                                            comparison.speed === currentSpeed 
+                                                ? `btn-${comparison.color}` 
+                                                : `btn-outline-${comparison.color}`
+                                        }`}
+                                        onClick={() => handleSpeedSelect(comparison.speed)}
+                                        style={{ minHeight: '65px' }}
+                                    >
+                                        {comparison.speed === currentSpeed && (
+                                            <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success" style={{ fontSize: '0.6rem' }}>
+                                                <i className="bi bi-check" style={{ fontSize: '0.7rem' }}></i>
+                                            </span>
+                                        )}
+                                        
+                                        <div className="d-flex align-items-center mb-1">
+                                            <i className={`${comparison.icon} me-1`} style={{ fontSize: '1rem' }}></i>
+                                            <span className="fw-bold small">{comparison.label}</span>
                                         </div>
-                                    </div>
+                                        
+                                        <div className="text-muted" style={{ fontSize: '0.75rem' }}>{comparison.sublabel}</div>
+                                        
+                                        <div className="fw-bold" style={{ fontSize: '0.95rem' }}>
+                                            {formatTime(comparison.time)}
+                                        </div>
+                                    </button>
                                 </div>
                             ))}
                         </div>
@@ -124,9 +145,12 @@ export const RouteComparison = ({ advancedStats, className = "" }) => {
 
 RouteComparison.propTypes = {
     advancedStats: PropTypes.object,
-    className: PropTypes.string
+    className: PropTypes.string,
+    onSpeedChange: PropTypes.func,
+    currentSpeed: PropTypes.number
 };
 
 RouteComparison.defaultProps = {
-    className: ""
+    className: "",
+    currentSpeed: 50
 };

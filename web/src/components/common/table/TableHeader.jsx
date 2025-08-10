@@ -28,6 +28,7 @@ function TableHeader({ headers, sortConfig, onSort }) {
             key={header.id} 
             onClick={() => header.sortable && onSort(header.id)}
             className={header.sortable ? 'cursor-pointer' : ''}
+            style={{ borderBottom: '2px solid var(--bs-primary)' }}
           >
             {header.label}
             {header.sortable && getSortDirectionIndicator(header.id)}

@@ -1,8 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StatCard from '../components/common/StatCard';
-import { useDashboardData } from '../hooks/useDashboardData';
-import { useRecentActivities } from '@web/hooks/useRecentActivities';
+import { useDashboardData, useRecentActivities } from '@web/hooks';
 import PopUpComponent from '@web/components/ui/PopUpComponent';
 
 import QuickAccess from '@web/components/pageComponents/home/quickAccess';

@@ -4,9 +4,7 @@ import PopUpComponent from '@web/components/ui/PopUpComponent';
 import StopForm from "@web/components/pageComponents/stops/StopForm";
 import Notification from '@web/components/common/Notification';
 
-import { useStops } from '@web/hooks/useStops';
-import { useDetailPage } from '@web/hooks/useDetailPage';
-import { useNotification } from '@web/hooks/useNotification';
+import { useStops, useDetailPage, useNotification } from '@web/hooks';
 import { formatDateFromDatabase } from '@shared/formatters';
 
 import {

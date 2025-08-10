@@ -13,8 +13,7 @@ import ErrorAlert from "@web/components/common/ErrorAlert";
 import ActionButton from "@web/components/common/ActionButton";
 import { getColorBasedOnValue } from "../utils/mapIcons";
 import { getStatusFormat } from "@shared/formatters";
-import { useStops } from "../hooks/useStops";
-import { useNotification } from "@web/hooks/useNotification";
+import { useStops, useNotification } from "@web/hooks";
 
 const formatStatus = (value) => {
   const { className, text } = getStatusFormat(value);

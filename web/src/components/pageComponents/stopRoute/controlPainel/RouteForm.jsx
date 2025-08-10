@@ -148,7 +148,7 @@ function RouteForm({ formData, handleInputChange, statusOptions, instanceId }) {
                 id={`origem_descricao-${instanceId}`}
                 value={formData.origem_descricao}
                 onChange={(value) => handleInputChange('origem_descricao', value)}
-                placeholder="Ex: Terminal Centro"
+                placeholder="Será preenchido automaticamente com o primeiro ponto"
                 maxLength={255}
                 required
             />
@@ -159,7 +159,7 @@ function RouteForm({ formData, handleInputChange, statusOptions, instanceId }) {
                 id={`destino_descricao-${instanceId}`}
                 value={formData.destino_descricao}
                 onChange={(value) => handleInputChange('destino_descricao', value)}
-                placeholder="Ex: Terminal Bairro"
+                placeholder="Será preenchido automaticamente com o último ponto"
                 maxLength={255}
                 required
             />

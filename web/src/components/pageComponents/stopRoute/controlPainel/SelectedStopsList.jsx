@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
-import DraggableRoutePoint from '../DraggableRoutePoint';
+import DraggableRouteStop from '../DraggableRouteStop';
 import { validateTimeOrder } from '@web/utils/routeStopsUtils';
 
-function SelectedPointsList({ 
+function SelectedStopsList({ 
     pontosSelecionados, 
     stats, 
-    movePoint, 
+    moveStop, 
     removerPonto,
     onTimeChange
 }) {
@@ -75,11 +75,11 @@ function SelectedPointsList({
                                 const timeValidationError = timeValidationErrors[index] || null;
                                 
                                 return (
-                                    <DraggableRoutePoint
+                                    <DraggableRouteStop
                                         key={`${ponto.id || ponto.ponto_id}-${index}`}
                                         ponto={ponto}
                                         index={index}
-                                        movePoint={movePoint}
+                                        moveStop={moveStop}
                                         onRemove={removerPonto}
                                         segmentInfo={segmentInfo}
                                         onTimeChange={onTimeChange}
@@ -95,4 +95,4 @@ function SelectedPointsList({
     );
 }
 
-export default SelectedPointsList;
+export default SelectedStopsList;

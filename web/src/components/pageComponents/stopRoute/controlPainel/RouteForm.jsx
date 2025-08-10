@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useFormattedBusOptions, useFormattedDriverOptions } from '../../../../hooks/useFormOptions';
 
 const FormField = ({ 
@@ -87,7 +88,7 @@ const FormField = ({
     </div>
 );
 
-function RouteForm({ formData, handleInputChange, statusOptions, instanceId }) {
+function RouteForm({ formData, handleInputChange, statusOptions, instanceId, useRealRoutes = false, advancedStats = null }) {
     // Usar hooks customizados para carregar opções filtradas
     const { options: busOptions, loading: loadingBuses } = useFormattedBusOptions();
     const { options: driverOptions, loading: loadingDrivers } = useFormattedDriverOptions();
@@ -178,6 +179,18 @@ function RouteForm({ formData, handleInputChange, statusOptions, instanceId }) {
                         readOnly
                         className=""
                     />
+                    {useRealRoutes && advancedStats?.method === 'real' && (
+                        <small className="text-success">
+                            <i className="bi bi-check-circle me-1"></i>
+                            Calculado com rotas reais (OSRM)
+                        </small>
+                    )}
+                    {(!useRealRoutes || advancedStats?.method !== 'real') && (
+                        <small className="text-muted">
+                            <i className="bi bi-info-circle me-1"></i>
+                            Calculado com linhas retas
+                        </small>
+                    )}
                 </div>
                 <div className="col-6">
                     <FormField
@@ -191,6 +204,18 @@ function RouteForm({ formData, handleInputChange, statusOptions, instanceId }) {
                         readOnly
                         className=""
                     />
+                    {useRealRoutes && advancedStats?.method === 'real' && (
+                        <small className="text-success">
+                            <i className="bi bi-check-circle me-1"></i>
+                            Calculado a 50 km/h em rotas reais
+                        </small>
+                    )}
+                    {(!useRealRoutes || advancedStats?.method !== 'real') && (
+                        <small className="text-muted">
+                            <i className="bi bi-info-circle me-1"></i>
+                            Estimativa com base em linhas retas
+                        </small>
+                    )}
                 </div>
             </div>
 
@@ -268,5 +293,19 @@ function RouteForm({ formData, handleInputChange, statusOptions, instanceId }) {
         </div>
     );
 }
+
+RouteForm.propTypes = {
+    formData: PropTypes.object.isRequired,
+    handleInputChange: PropTypes.func.isRequired,
+    statusOptions: PropTypes.array.isRequired,
+    instanceId: PropTypes.string.isRequired,
+    useRealRoutes: PropTypes.bool,
+    advancedStats: PropTypes.object
+};
+
+RouteForm.defaultProps = {
+    useRealRoutes: false,
+    advancedStats: null
+};
 
 export default RouteForm;

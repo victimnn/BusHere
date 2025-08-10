@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '@web/api/api';
 
-export function useRouteForm(stats, initialData = null, pontosSelecionados = []) {
+export function useRouteForm(stats, initialData = null, pontosSelecionados = [], advancedStats = null) {
     const [formData, setFormData] = useState({
         nome: '',
         codigo_rota: '',
@@ -42,14 +42,22 @@ export function useRouteForm(stats, initialData = null, pontosSelecionados = [])
 
     // Atualizar distância e tempo quando pontos mudarem
     useEffect(() => {
-        if (stats.totalDistance > 0) {
+        // Priorizar dados das estatísticas avançadas se disponíveis e usando rotas reais
+        if (advancedStats && advancedStats.totalDistance > 0) {
+            setFormData(prev => ({
+                ...prev,
+                distancia_km: parseFloat(advancedStats.totalDistance.toFixed(2)),
+                tempo_viagem_estimado_minutos: Math.round(advancedStats.estimatedTime)
+            }));
+        } else if (stats.totalDistance > 0) {
+            // Fallback para estatísticas básicas se não houver rotas reais
             setFormData(prev => ({
                 ...prev,
                 distancia_km: parseFloat(stats.totalDistance.toFixed(2)),
                 tempo_viagem_estimado_minutos: Math.round(stats.estimatedTime)
             }));
         }
-    }, [stats.totalDistance, stats.estimatedTime]);
+    }, [stats.totalDistance, stats.estimatedTime, advancedStats]);
 
     // Atualizar origem e destino automaticamente com base nos pontos selecionados
     useEffect(() => {

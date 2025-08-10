@@ -14,7 +14,12 @@ const MobileControlPanel = ({
     rota, 
     setRota,
     initialData = null,
-    isEditMode = false
+    isEditMode = false,
+    useRealRoutes = true,
+    onToggleRealRoutes = () => {},
+    routingLoading = false,
+    cacheStats = { hits: 0, apiCalls: 0, hitRate: 0 },
+    advancedStats = null
 }) => {
     return (
         <div className="d-lg-none">
@@ -54,6 +59,11 @@ const MobileControlPanel = ({
                         instanceId="mobile"
                         initialData={initialData}
                         isEditMode={isEditMode}
+                        useRealRoutes={useRealRoutes}
+                        onToggleRealRoutes={onToggleRealRoutes}
+                        routingLoading={routingLoading}
+                        cacheStats={cacheStats}
+                        advancedStats={advancedStats}
                     />
                 </div>
             </div>

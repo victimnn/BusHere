@@ -152,14 +152,14 @@ export const useCoordinateUtils = () => {
             });
         }
 
-        // Tempo estimado considerando velocidade média urbana de 30 km/h
-        const estimatedTime = (totalDistance / 30) * 60; // em minutos
+        // Tempo estimado considerando velocidade média urbana de 50 km/h
+        const estimatedTime = (totalDistance / 50) * 60; // em minutos
 
         return {
             totalDistance,
             estimatedTime,
             segments,
-            averageSpeed: 30 // km/h
+            averageSpeed: 50 // km/h - Atualizado para 50 km/h
         };
     }, [calculateDistance]);
 

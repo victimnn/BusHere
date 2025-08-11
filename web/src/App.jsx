@@ -26,7 +26,7 @@ import RouteStopsPage from "./pages/RouteStopsPage";
 import SideBar from "./components/ui/SideBar";
 import Header from "./components/ui/Header";
 
-function App() {
+function App({ isDark, setIsDark }) {
   const [pageName, setPageName] = useState("Giraldi");
   const [showSideBar, setShowSideBar] = useState(true);
   const [showHeader, setShowHeader] = useState(true);
@@ -93,6 +93,12 @@ function App() {
 
           </div>
         </div>
+
+        <button
+          onClick={() => setIsDark(!isDark)}
+        >
+          Toggle Dark Mode
+        </button>
       </AuthProvider>
     </Router>
   );

@@ -1,35 +1,37 @@
-import { StrictMode, useState, useEffect } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App.jsx'
 
-// Importar Bootstrap JavaScript para funcionalidades como offcanvas
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import { StrictMode, useState, useEffect } from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './App.jsx';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
+// Importa ambos os temas como arquivos CSS
+import '@web/Style.scss';
+import '@web/Dark.scss';
+
 
 function Main() {
-  const [isDark, setIsDark] = useState(false)
+  const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    // Remove existing theme stylesheets
-    const existingStyles = document.querySelectorAll('style[data-vite-dev-id*="Style.scss"], style[data-vite-dev-id*="Dark.scss"]')
-    existingStyles.forEach(style => style.remove())
+    // Ativa/desativa os estilos dos temas via manipulação de <style> injetados pelo Vite
+    // Seleciona os estilos injetados pelo Vite para cada tema
+    const styleLight = document.querySelector('style[data-vite-dev-id*="Style.scss"]');
+    const styleDark = document.querySelector('style[data-vite-dev-id*="Dark.scss"]');
 
-    // Also remove any link tags for these styles
-    const existingLinks = document.querySelectorAll('link[href*="Style.scss"], link[href*="Dark.scss"]')
-    existingLinks.forEach(link => link.remove())
-
-    // Dynamically import the appropriate style
     if (isDark) {
-      import('@web/Dark.scss')
+      if (styleLight) styleLight.disabled = true;
+      if (styleDark) styleDark.disabled = false;
     } else {
-      import('@web/Style.scss')
+      if (styleLight) styleLight.disabled = false;
+      if (styleDark) styleDark.disabled = true;
     }
-  }, [isDark])
+  }, [isDark]);
 
   return (
     <StrictMode>
       <App isDark={isDark} setIsDark={setIsDark} />
     </StrictMode>
-  )
+  );
 }
 
-createRoot(document.getElementById('root')).render(<Main />)
+createRoot(document.getElementById('root')).render(<Main />);

@@ -5,7 +5,7 @@ import App from './App.jsx'
 // Importar Bootstrap JavaScript para funcionalidades como offcanvas
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
-import './Style.scss'
+import '@web/Style.scss'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

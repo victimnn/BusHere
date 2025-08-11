@@ -1,0 +1,46 @@
+// =============================================================================
+// BUTTONS - ESTILOS PARA BOTÕES
+// =============================================================================
+
+@import '../base/variables';
+@import '../base/mixins';
+
+// -----------------------------------------------------------------------------
+// BOTÕES PADRÃO
+// -----------------------------------------------------------------------------
+.btn {
+  transition: $btn-transition;
+
+  &:hover {
+    color: $primary-contrast !important;
+  }
+
+  &.btn-primary {
+    background-color: $primary !important;
+    color: $light !important;
+
+    &:hover {
+      background-color: $analogous-2 !important;
+      color: $dark !important;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// BOTÕES DA SIDEBAR
+// -----------------------------------------------------------------------------
+.sidebar-button, .sidebar-button i {
+  transition: $btn-sb-transition;
+  
+  &:hover {
+    i {
+      color: $primary !important;
+    }
+  }
+
+  &.active {
+    i, span {
+      color: $primary !important;
+    }
+  }
+}

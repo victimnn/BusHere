@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Button, FlatList } from "reac
 import React, { useState, useRef, useCallback } from "react";
 import BottomSheet, { BottomSheetView, BottomSheetModal } from '@gorhom/bottom-sheet';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import api from "@mobile/api/api";
 
 import SearchBar from "@mobile/components/SearchBar";
 import BusLineCard from "@mobile/components/BusLineCard"
@@ -46,6 +47,10 @@ export default function IndexScreen() {
   const bottomSheetModalRef = useRef(null);
   const popUpRef = useRef(null);
 
+  const apiTest = async (popUpRef) => {
+    const response = await api.passengers.list();
+    popUpRef.current.show({ content: `API Response: ${JSON.stringify(response)}` });
+  }
   const handleBottomSheetChanges = useCallback((index) => {
     // Se o indice não existir no array de snapPoints, setamos para o último
     if(index > snapPoints.length - 1){
@@ -84,7 +89,7 @@ export default function IndexScreen() {
       <View style={styles.container}>
         <Button
           title="Botao"
-          onPress={openBottomSheet}
+          onPress={() => apiTest(popUpRef)}
           >
 
         </Button>

@@ -3,9 +3,9 @@ import React, { useState, useRef, useCallback } from "react";
 import BottomSheet, { BottomSheetView, BottomSheetModal } from '@gorhom/bottom-sheet';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import SearchBar from "./../components/SearchBar"
-import BusLineCard from "./../components/BusLineCard"
-import PopUpComponent from "./../components/PopUpComponent"
+import SearchBar from "@mobile/components/SearchBar";
+import BusLineCard from "@mobile/components/BusLineCard"
+import PopUpComponent from "@mobile/components/PopUpComponent"
 
 function PopUpContent(){
   return (
@@ -58,7 +58,7 @@ export default function IndexScreen() {
     bottomSheetModalRef.current?.present();
   }, []);
 
-  const handleShowPopUp = () => {
+  const openPopUp = () => {
     // 3. Use a referência para chamar o método 'show' do PopUpComponent
     if (popUpRef.current) {
       // Passamos o componente que queremos mostrar (MyPopUpContent)

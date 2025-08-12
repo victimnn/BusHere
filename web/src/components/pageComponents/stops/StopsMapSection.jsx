@@ -7,10 +7,11 @@ const StopsMapSection = ({
   markers, 
   polylines, 
   onMapClick, 
-  onZoomChange 
+  onZoomChange,
+  isDark
 }) => {
   return (
-    <div className="col-lg-8 mb-3 mb-lg-0">
+    <div className="col-lg-8 mb-3 mb-lg-0 stops-map-section">
       <div className="card border-0 shadow-sm h-100 d-flex flex-column">
         <div className="card-header bg-light py-2">
           <h6 className="mb-0 fw-semibold">
@@ -28,6 +29,7 @@ const StopsMapSection = ({
               polylines={polylines}
               onMapClick={onMapClick} 
               handleZoomChange={onZoomChange}
+              isDark={isDark}
             />
           </div>
         </div>

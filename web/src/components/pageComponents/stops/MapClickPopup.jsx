@@ -40,7 +40,7 @@ const MapClickPopup = ({ latlng, onCreateStop, onCancel }) => {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 map-click-popup">
       <div className="text-center mb-4">
         <div className="mb-3">
           <i className="bi bi-geo-alt-fill text-primary fs-1"></i>

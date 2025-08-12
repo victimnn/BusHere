@@ -7,7 +7,7 @@ const StopsTableSection = ({
   onRowClick 
 }) => {
   return (
-    <div className="table-responsive">
+    <div className="table-responsive stops-table-section">
       <Table 
         headers={tableHeaders}
         data={tableData}

@@ -250,6 +250,12 @@ const MapComponent = forwardRef(({
     [90, 180],   // Northeast (lat, lng)
   ];
 
+  // Usando apenas OpenStreetMap padrão
+  const tileConfig = {
+    url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  };
+
   return (
     <div className={`map-container-wrapper ${className}`} style={{
       overflow: 'hidden',
@@ -269,8 +275,8 @@ const MapComponent = forwardRef(({
         style={{borderRadius: '0px 0px 12px 12px'}}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution={tileConfig.attribution}
+          url={tileConfig.url}
           noWrap={true}
         />
         {/* For each markers */}

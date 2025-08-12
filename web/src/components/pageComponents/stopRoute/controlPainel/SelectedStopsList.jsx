@@ -58,7 +58,7 @@ function SelectedStopsList({
     return (
         <div className="flex-grow-1 mb-4">
             <div className="card border-0 shadow-sm h-100">
-                <div className="card-header bg-light border-0 py-3">
+                <div className="card-header bg-medium border-0 py-3">
                     <h6 className="mb-0 fw-bold text-dark">
                         <i className="bi bi-geo-alt me-2 text-primary"></i>
                         Pontos Selecionados 

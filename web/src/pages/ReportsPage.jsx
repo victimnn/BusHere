@@ -27,8 +27,7 @@ import DetailedSummary from "@web/components/pageComponents/reports/DetailedSumm
 
 
 // Hooks customizados
-import { useReportData } from "@web/hooks/useReportData";
-import { useChartData } from "@web/hooks/useChartData";
+import { useReportData, useChartData } from "@web/hooks";
 
 // Registrar componentes do Chart.js
 ChartJS.register(

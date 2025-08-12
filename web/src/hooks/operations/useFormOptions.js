@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from '../api/api';
+import api from '@web/api/api';
 
 // Hook para carregar opções de ônibus com filtros
 export const useBusOptions = () => {

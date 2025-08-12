@@ -4,10 +4,7 @@ import PopUpComponent from '@web/components/ui/PopUpComponent';
 import RouteForm from "@web/components/pageComponents/routes/RouteForm";
 import Notification from '@web/components/common/Notification';
 
-import { useRoutes } from '@web/hooks/useRoutes';
-import { useRouteWithStops } from '@web/hooks/useRouteWithStops';
-import { useDetailPage } from '@web/hooks/useDetailPage';
-import { useNotification } from '@web/hooks/useNotification';
+import { useRoutes, useRouteWithStops, useDetailPage, useNotification } from '@web/hooks';
 import { formatDateFromDatabase } from '@shared/formatters';
 
 import {

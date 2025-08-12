@@ -8,8 +8,7 @@ import Notification from "@web/components/common/Notification";
 import LoadingSpinner from "@web/components/common/LoadingSpinner";
 import ErrorAlert from "@web/components/common/ErrorAlert";
 import ActionButton from "@web/components/common/ActionButton";
-import { useBuses } from "@web/hooks/useBuses";
-import { useNotification } from "@web/hooks/useNotification";
+import { useBuses, useNotification } from "@web/hooks";
 import { formatPlate, formatDateFromDatabase, formatKilometers, formatCapacity, getStatusFormat } from "@shared/formatters";
 
 // Função para formatar status como JSX usando a função utilitária

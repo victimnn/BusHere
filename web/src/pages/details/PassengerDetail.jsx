@@ -4,9 +4,7 @@ import PopUpComponent from '@web/components/ui/PopUpComponent';
 import PassengerForm from '@web/components/pageComponents/passengers/PassengerForm';
 import Notification from '@web/components/common/Notification';
 
-import { usePassengers } from '@web/hooks/usePassengers';
-import { useDetailPage } from '@web/hooks/useDetailPage';
-import { useNotification } from '@web/hooks/useNotification';
+import { usePassengers, useDetailPage, useNotification } from '@web/hooks';
 
 import { formatCPF, formatPhoneNumber, formatDateFromDatabase } from '@shared/formatters';
 

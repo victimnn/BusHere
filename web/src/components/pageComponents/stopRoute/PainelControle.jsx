@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useRouteWithStops } from '@web/hooks/useRouteWithStops';
+import { useRouteWithStops } from '@web/hooks';
 import { useRouteForm } from './controlPainel/useRouteForm';
 import { validateTimeOrder } from '@web/utils/routeStopsUtils';
 import RouteForm from './controlPainel/RouteForm';

@@ -10,9 +10,7 @@ import Notification from "@web/components/common/Notification";
 import LoadingSpinner from "@web/components/common/LoadingSpinner";
 import ErrorAlert from "@web/components/common/ErrorAlert";
 import ActionButton from "@web/components/common/ActionButton";
-import { useRoutes } from "@web/hooks/useRoutes";
-import { useRouteWithStops } from "@web/hooks/useRouteWithStops";
-import { useNotification } from "@web/hooks/useNotification";
+import { useRoutes, useRouteWithStops, useNotification } from "@web/hooks";
 import { formatDateFromDatabase, getStatusFormat, formatKilometers, formatTime } from "@shared/formatters";
 import { useNavigate } from "react-router-dom";
 

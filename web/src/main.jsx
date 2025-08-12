@@ -5,7 +5,7 @@ import App from './App.jsx';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 // Importa ambos os temas como arquivos CSS
-import '@web/Style.scss';
+import '@web/Light.scss';
 import '@web/Dark.scss';
 
 

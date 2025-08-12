@@ -1,0 +1,389 @@
+// =============================================================================
+// STOPS PAGE - PÁGINA DE PONTOS - MODO ESCURO
+// =============================================================================
+
+@import '../base/variables';
+@import '../base/mixins';
+
+// -----------------------------------------------------------------------------
+// PÁGINA DE PONTOS
+// -----------------------------------------------------------------------------
+.stops-page {
+  background-color: $body-bg;
+
+  // Container do mapa
+  .map-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    background-color: #2c2f36; // Fundo mais claro para melhor contraste
+    
+    .leaflet-container {
+      height: 100% !important;
+      width: 100% !important;
+      background-color: #2c2f36 !important; // Fundo mais claro
+    }
+  }
+
+  // Seções de componentes
+  .stops-map-section,
+  .stops-list-section,
+  .stops-table-section {
+    .card {
+      background-color: $card-bg !important;
+      border: 1px solid $border-color !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+      
+      .card-header {
+        background-color: $bg-medium !important;
+        border-bottom: 1px solid $border-color !important;
+        color: $text-primary !important;
+        
+        &.bg-light {
+          background-color: $bg-medium !important;
+        }
+        
+        h6 {
+          color: $text-primary !important;
+        }
+        
+        i {
+          color: $primary !important;
+        }
+      }
+      
+      .card-body {
+        background-color: $card-bg !important;
+        color: $text-primary !important;
+      }
+    }
+  }
+
+  // Informações auxiliares
+  .info-card,
+  .card.bg-light {
+    background-color: $bg-medium !important;
+    border: 1px solid $border-color !important;
+    color: $text-primary !important;
+    
+    .text-primary {
+      color: $primary !important;
+    }
+    
+    .text-muted {
+      color: $text-muted !important;
+    }
+    
+    p {
+      color: $text-primary !important;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// COMPONENTE DE LISTA DE PONTOS
+// -----------------------------------------------------------------------------
+.stops-container {
+  background-color: transparent !important;
+  
+  .stop-component {
+    background-color: $card-bg !important;
+    border: 1px solid $border-light !important;
+    color: $text-primary !important;
+    
+    &.bg-light {
+      background-color: $card-bg !important;
+    }
+    
+    &:hover {
+      background-color: lighten($card-bg, 3%) !important;
+      border-color: rgba($primary, 0.3) !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .bg-primary {
+      background-color: $primary !important;
+      color: $white !important;
+    }
+    
+    .text-primary {
+      color: $primary !important;
+    }
+    
+    .text-success {
+      color: $success !important;
+    }
+    
+    .text-muted {
+      color: $text-muted !important;
+    }
+    
+    h6 {
+      color: $text-primary !important;
+    }
+  }
+  
+  // Estado vazio
+  .empty-state {
+    color: $text-muted !important;
+    
+    i {
+      color: $text-muted !important;
+    }
+    
+    p {
+      color: $text-muted !important;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// POPUPS E MODAIS
+// -----------------------------------------------------------------------------
+.map-click-popup {
+  background-color: $card-bg !important;
+  color: $text-primary !important;
+  
+  .bg-light {
+    background-color: $bg-medium !important;
+  }
+  
+  .text-dark {
+    color: $text-primary !important;
+  }
+  
+  .text-primary {
+    color: $primary !important;
+  }
+  
+  .font-monospace {
+    color: $text-primary !important;
+  }
+  
+  h5 {
+    color: $text-primary !important;
+  }
+  
+  i {
+    color: $primary !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// TABELA DE PONTOS
+// -----------------------------------------------------------------------------
+.stops-page {
+  .table {
+    background-color: $card-bg !important;
+    color: $text-primary !important;
+    
+    th {
+      background-color: $bg-medium !important;
+      color: $text-primary !important;
+      border-color: $border-color !important;
+    }
+    
+    td {
+      background-color: $card-bg !important;
+      color: $text-primary !important;
+      border-color: $border-light !important;
+    }
+    
+    tbody tr {
+      &:hover {
+        background-color: lighten($card-bg, 5%) !important;
+        cursor: pointer;
+      }
+    }
+  }
+  
+  // Paginação
+  .pagination {
+    .page-item {
+      .page-link {
+        background-color: $card-bg !important;
+        border-color: $border-color !important;
+        color: $text-primary !important;
+        
+        &:hover {
+          background-color: $bg-medium !important;
+          border-color: $primary !important;
+          color: $primary !important;
+        }
+      }
+      
+      &.active .page-link {
+        background-color: $primary !important;
+        border-color: $primary !important;
+        color: $white !important;
+      }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ESTILOS ESPECÍFICOS PARA LEAFLET EM MODO ESCURO
+// -----------------------------------------------------------------------------
+.stops-page {
+  // Controles do Leaflet
+  .leaflet-control-container {
+    .leaflet-control {
+      background-color: #3a3e46 !important; // Fundo mais claro para controles
+      border: 1px solid #4a5058 !important; // Borda mais visível
+      color: #e4e7eb !important; // Texto mais claro
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+      
+      a {
+        background-color: #3a3e46 !important;
+        color: #e4e7eb !important;
+        border-bottom: 1px solid #4a5058 !important;
+        
+        &:hover {
+          background-color: lighten($primary, 5%) !important;
+          color: $white !important;
+        }
+      }
+    }
+    
+    .leaflet-control-zoom {
+      a {
+        &.leaflet-control-zoom-in,
+        &.leaflet-control-zoom-out {
+          background-color: #3a3e46 !important;
+          color: #e4e7eb !important;
+          font-weight: 600;
+          
+          &:hover {
+            background-color: $primary !important;
+            color: $white !important;
+            transform: scale(1.05);
+          }
+        }
+      }
+    }
+    
+    .leaflet-control-attribution {
+      background-color: rgba(58, 62, 70, 0.9) !important;
+      color: #b8bcc3 !important;
+      border: 1px solid #4a5058 !important;
+      
+      a {
+        color: lighten($primary, 15%) !important;
+        
+        &:hover {
+          color: lighten($primary, 25%) !important;
+        }
+      }
+    }
+  }
+  
+  // Popups do mapa
+  .leaflet-popup {
+    .leaflet-popup-content-wrapper {
+      background-color: #3a3e46 !important; // Fundo mais claro para popup
+      color: #e4e7eb !important;
+      border-radius: $border-radius !important;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;
+      border: 1px solid #4a5058 !important; // Borda para definir melhor
+    }
+    
+    .leaflet-popup-content {
+      color: #e4e7eb !important;
+      
+      h6, .fw-bold {
+        color: #f1f3f5 !important; // Títulos ainda mais claros
+      }
+      
+      .text-muted {
+        color: #b8bcc3 !important; // Texto muted mais legível
+      }
+      
+      small {
+        color: #d0d4da !important;
+      }
+      
+      .btn {
+        background-color: $primary !important;
+        border-color: $primary !important;
+        color: $white !important;
+        
+        &:hover {
+          background-color: darken($primary, 10%) !important;
+          border-color: darken($primary, 10%) !important;
+        }
+      }
+      
+      .btn-outline-primary {
+        border-color: $primary !important;
+        color: $primary !important;
+        background-color: transparent !important;
+        
+        &:hover {
+          background-color: $primary !important;
+          color: $white !important;
+        }
+      }
+      
+      .btn-outline-danger {
+        border-color: $danger !important;
+        color: $danger !important;
+        background-color: transparent !important;
+        
+        &:hover {
+          background-color: $danger !important;
+          color: $white !important;
+        }
+      }
+    }
+    
+    .leaflet-popup-tip {
+      background-color: #3a3e46 !important;
+      border: 1px solid #4a5058 !important;
+    }
+  }
+  
+  // Tooltips do mapa
+  .leaflet-tooltip {
+    background-color: rgba($card-bg, 0.95) !important;
+    color: $text-primary !important;
+    border: 1px solid $border-color !important;
+    border-radius: $border-radius-sm !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+    
+    &.leaflet-tooltip-top:before {
+      border-top-color: $border-color !important;
+    }
+    
+    &.leaflet-tooltip-bottom:before {
+      border-bottom-color: $border-color !important;
+    }
+    
+    &.leaflet-tooltip-left:before {
+      border-left-color: $border-color !important;
+    }
+    
+    &.leaflet-tooltip-right:before {
+      border-right-color: $border-color !important;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// RESPONSIVIDADE
+// -----------------------------------------------------------------------------
+@include mobile-only {
+  .stops-page {
+    .row {
+      margin: 0;
+      
+      .col-lg-8,
+      .col-lg-4 {
+        padding: 0 0.5rem;
+      }
+    }
+    
+    .map-container {
+      height: 60vh !important;
+    }
+  }
+}

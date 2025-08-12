@@ -1,13 +1,44 @@
 // =============================================================================
-// RESPONSIVE - UTILITÁRIOS RESPONSIVOS
+// RESPONSIVE - UTILITÁRIOS RESPONSIVOS OTIMIZADOS
 // =============================================================================
 
 @import '../base/variables';
 @import '../base/mixins';
 
 // -----------------------------------------------------------------------------
-// CLASSES RESPONSIVAS PARA TÍTULOS
+// BREAKPOINTS CUSTOMIZADOS
 // -----------------------------------------------------------------------------
+$breakpoints: (
+  'xs': 0,
+  'sm': 576px,
+  'md': 768px,
+  'lg': 992px,
+  'xl': 1200px,
+  'xxl': 1400px
+);
+
+// -----------------------------------------------------------------------------
+// MIXIN PARA RESPONSIVE TYPOGRAPHY
+// -----------------------------------------------------------------------------
+@mixin fluid-typography($min-size, $max-size, $min-width: 320px, $max-width: 1200px) {
+  font-size: clamp(#{$min-size}, #{$min-size} + ((#{$max-size} - #{$min-size}) * ((100vw - #{$min-width}) / (#{$max-width} - #{$min-width}))), #{$max-size});
+}
+
+// -----------------------------------------------------------------------------
+// CLASSES RESPONSIVAS PARA TÍTULOS OTIMIZADAS
+// -----------------------------------------------------------------------------
+.h1-responsive {
+  @include fluid-typography(1.75rem, 2.5rem);
+}
+
+.h2-responsive {
+  @include fluid-typography(1.5rem, 2rem);
+}
+
+.h3-responsive {
+  @include fluid-typography(1.25rem, 1.75rem);
+}
+
 .h3-md {
   @include mobile-only {
     font-size: 1.5rem !important;
@@ -21,7 +52,7 @@
 }
 
 // -----------------------------------------------------------------------------
-// ELEMENTOS FLUTUANTES - MODO ESCURO
+// ELEMENTOS FLUTUANTES - MODO ESCURO OTIMIZADO
 // -----------------------------------------------------------------------------
 .floating-element {
   z-index: 1000 !important;

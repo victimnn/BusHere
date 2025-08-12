@@ -55,6 +55,21 @@ html, body {
 #sidebar {
   flex-shrink: 0 !important;
   min-width: 70px !important;
+  background: linear-gradient(180deg, $sidebar-bg 0%, $bg-dark 100%) !important;
+  border-right: 1px solid $border-color !important;
+  color: $text-primary !important;
+  
+  .sidebar-header {
+    border-color: $border-color !important;
+    
+    .sidebar-title {
+      color: $text-primary !important;
+    }
+  }
+  
+  .sidebar-footer {
+    border-color: $border-color !important;
+  }
 }
 
 // -----------------------------------------------------------------------------

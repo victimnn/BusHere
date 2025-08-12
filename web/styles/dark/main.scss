@@ -27,14 +27,17 @@
 @import './components/tables';
 @import './components/notifications';
 @import './components/drag-drop';
+@import './components/sidebar';
 
 // -----------------------------------------------------------------------------
 // 4. PAGES - Estilos específicos de páginas
 // -----------------------------------------------------------------------------
 @import './pages/route-stops';
+@import './pages/stops';
 @import './pages/detail';
 @import './pages/reports';
 @import './pages/search';
+@import './pages/search-fixed';
 
 // -----------------------------------------------------------------------------
 // 5. UTILS - Utilitários e helpers

@@ -1,5 +1,5 @@
 // =============================================================================
-// NOTIFICATIONS - ESTILOS PARA NOTIFICAÇÕES
+// NOTIFICATIONS - ESTILOS PARA NOTIFICAÇÕES - MODO CLARO
 // =============================================================================
 
 @import '../base/variables';
@@ -15,14 +15,33 @@
   z-index: 9999;
   min-width: 320px;
   max-width: 450px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: $border-radius-lg;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border: 1px solid $border-color;
   animation: fadeIn 0.5s, fadeOut 0.5s 4.5s;
   overflow: hidden;
+  backdrop-filter: blur(8px);
 }
 
 .notification-content {
   padding: 1rem 1.25rem;
+  color: $dark;
+  
+  .notification-title {
+    color: $dark;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  
+  .notification-message {
+    color: $secondary;
+    font-size: 0.875rem;
+  }
+  
+  .notification-icon {
+    font-size: 1.25rem;
+    margin-right: 0.75rem;
+  }
 }
 
 .notification-progress-bar {
@@ -36,41 +55,147 @@
 }
 
 // -----------------------------------------------------------------------------
-// TIPOS DE NOTIFICAÇÃO
+// TIPOS DE NOTIFICAÇÃO - ADAPTADOS PARA LIGHT MODE
 // -----------------------------------------------------------------------------
 .notification-success {
-  background-color: #d1e7dd;
-  color: #0f5132;
+  background-color: rgba($success, 0.1);
+  border-left: 4px solid $success;
+  color: darken($success, 20%);
   
   .notification-progress-bar {
-    background-color: #0f5132;
+    background-color: $success;
+  }
+  
+  .notification-icon {
+    color: $success;
+  }
+  
+  .notification-title {
+    color: darken($success, 25%);
   }
 }
 
 .notification-error {
-  background-color: #f8d7da;
-  color: #842029;
+  background-color: rgba($danger, 0.1);
+  border-left: 4px solid $danger;
+  color: darken($danger, 20%);
   
   .notification-progress-bar {
-    background-color: #842029;
+    background-color: $danger;
+  }
+  
+  .notification-icon {
+    color: $danger;
+  }
+  
+  .notification-title {
+    color: darken($danger, 25%);
   }
 }
 
 .notification-warning {
-  background-color: #fff3cd;
-  color: #664d03;
+  background-color: rgba($warning, 0.1);
+  border-left: 4px solid $warning;
+  color: darken($warning, 30%);
   
   .notification-progress-bar {
-    background-color: #664d03;
+    background-color: $warning;
+  }
+  
+  .notification-icon {
+    color: $warning;
+  }
+  
+  .notification-title {
+    color: darken($warning, 35%);
   }
 }
 
 .notification-info {
-  background-color: #cff4fc;
-  color: #055160;
+  background-color: rgba($info, 0.1);
+  border-left: 4px solid $info;
+  color: darken($info, 20%);
   
   .notification-progress-bar {
-    background-color: #055160;
+    background-color: $info;
+  }
+  
+  .notification-icon {
+    color: $info;
+  }
+  
+  .notification-title {
+    color: darken($info, 25%);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ESTILOS ESPECÍFICOS PARA NOTIFICAÇÕES INTERATIVAS
+// -----------------------------------------------------------------------------
+.notification-interactive {
+  .notification-actions {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba($border-color, 0.5);
+    display: flex;
+    gap: 0.5rem;
+    
+    .btn {
+      font-size: 0.8rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: $border-radius-sm;
+      
+      &.btn-primary {
+        background-color: $primary;
+        border-color: $primary;
+        color: $white;
+        
+        &:hover {
+          background-color: darken($primary, 10%);
+          border-color: darken($primary, 10%);
+        }
+      }
+      
+      &.btn-outline-secondary {
+        border-color: $secondary;
+        color: $secondary;
+        
+        &:hover {
+          background-color: $secondary;
+          color: $white;
+        }
+      }
+    }
+  }
+  
+  .notification-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    color: $text-muted;
+    font-size: 1.2rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+    
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// RESPONSIVIDADE
+// -----------------------------------------------------------------------------
+@include mobile-only {
+  .notification-container {
+    left: 10px;
+    right: 10px;
+    min-width: auto;
+    max-width: none;
+    top: 10px;
   }
 }
 
@@ -106,4 +231,37 @@
   to {
     transform: scaleX(0);
   }
+}
+
+// -----------------------------------------------------------------------------
+// ESTADOS ESPECIAIS
+// -----------------------------------------------------------------------------
+.notification-loading {
+  background-color: rgba($primary, 0.1);
+  border-left: 4px solid $primary;
+  color: darken($primary, 20%);
+  
+  .notification-progress-bar {
+    background-color: $primary;
+    animation: loading-pulse 1.5s ease-in-out infinite alternate;
+  }
+  
+  .notification-icon {
+    color: $primary;
+    animation: spin 1s linear infinite;
+  }
+  
+  .notification-title {
+    color: darken($primary, 25%);
+  }
+}
+
+@keyframes loading-pulse {
+  0% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

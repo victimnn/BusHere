@@ -50,6 +50,74 @@
 }
 
 .gap-2 {
+  gap: 1.5rem;
+}
+
+.gap-3 {
+  gap: 2rem;
+}
+
+// -----------------------------------------------------------------------------
+// TEXT HELPERS DARK MODE
+// -----------------------------------------------------------------------------
+.text-primary-theme {
+  color: $primary !important;
+}
+
+.text-muted-theme {
+  color: $text-muted !important;
+}
+
+.text-secondary-theme {
+  color: $text-secondary !important;
+}
+
+// -----------------------------------------------------------------------------
+// BACKGROUND HELPERS DARK MODE
+// -----------------------------------------------------------------------------
+.bg-card {
+  background-color: $card-bg !important;
+}
+
+.bg-sidebar {
+  background-color: $sidebar-bg !important;
+}
+
+.bg-navbar {
+  background-color: $navbar-bg !important;
+}
+
+// -----------------------------------------------------------------------------
+// BORDER HELPERS DARK MODE
+// -----------------------------------------------------------------------------
+.border-theme {
+  border-color: $border-color !important;
+}
+
+.border-light-theme {
+  border-color: $border-light !important;
+}
+
+// -----------------------------------------------------------------------------
+// ACCESSIBILITY HELPERS
+// -----------------------------------------------------------------------------
+.focus-visible {
+  @include focus-visible-dark;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.gap-2 {
   gap: 2rem;
 }
 

@@ -1,11 +1,13 @@
 // =============================================================================
-// BOOTSTRAP CONFIGURATION
+// BOOTSTRAP CONFIGURATION - DARK MODE OPTIMIZED
 // =============================================================================
 
 // Importar variáveis primeiro
 @import './variables';
 
-// Configurar variáveis do Bootstrap antes de importá-lo
+// -----------------------------------------------------------------------------
+// CONFIGURAÇÃO PRINCIPAL DO BOOTSTRAP
+// -----------------------------------------------------------------------------
 $primary: $primary;
 $secondary: $secondary;
 $success: $success;
@@ -15,15 +17,39 @@ $danger: $danger;
 $light: $light;
 $dark: $dark;
 $white: $white;
+
+// -----------------------------------------------------------------------------
+// CORES DO CORPO E TIPOGRAFIA
+// -----------------------------------------------------------------------------
 $body-bg: $body-bg;
 $body-color: $body-color;
 $font-family-base: $font-family-base;
+
+// -----------------------------------------------------------------------------
+// BORDAS E SOMBRAS
+// -----------------------------------------------------------------------------
 $border-color: $border-color;
 $border-radius: $border-radius;
+$box-shadow-sm: $box-shadow-sm;
+
+// -----------------------------------------------------------------------------
+// CORES ESTENDIDAS
+// -----------------------------------------------------------------------------
 $green: $primary;
 $red: $danger;
 $yellow: $warning;
 $cyan: $info;
+$blue: $blue;
+$indigo: $indigo;
+$purple: $purple;
+$pink: $pink;
+$orange: $orange;
+$teal: $teal;
+$gray: $secondary;
+
+// -----------------------------------------------------------------------------
+// CONFIGURAÇÃO DE FORMULÁRIOS
+// -----------------------------------------------------------------------------
 $input-btn-padding-y: $input-btn-padding-y;
 $input-btn-padding-x: $input-btn-padding-x;
 $input-border-radius: $input-border-radius;
@@ -31,9 +57,30 @@ $input-bg: $input-bg;
 $input-border-color: $input-border-color;
 $input-focus-border-color: $input-focus-border-color;
 $input-focus-box-shadow: $input-focus-box-shadow;
+$input-color: $input-color;
+$input-placeholder-color: $input-placeholder-color;
+
+// -----------------------------------------------------------------------------
+// CONFIGURAÇÃO DE COMPONENTES
+// -----------------------------------------------------------------------------
 $btn-transition: $btn-transition;
-$box-shadow-sm: $box-shadow-sm;
+$card-bg: $card-bg;
+$navbar-dark-bg: $navbar-bg;
+$dropdown-bg: $dropdown-bg;
+$modal-content-bg: $modal-bg;
+$table-bg: $table-bg;
+$table-hover-bg: $table-hover-bg;
+
+// -----------------------------------------------------------------------------
+// MAPA DE CORES DO TEMA
+// -----------------------------------------------------------------------------
 $theme-colors: $theme-colors;
 
-// Importar Bootstrap Icons
+// -----------------------------------------------------------------------------
+// CONFIGURAÇÕES DE ACESSIBILIDADE
+// -----------------------------------------------------------------------------
+$enable-accessibility: true;
+$enable-smooth-scroll: false; // Controle pelo prefers-reduced-motion
+
+// Importar Bootstrap Icons (se disponível)
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";

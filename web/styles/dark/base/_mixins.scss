@@ -104,15 +104,31 @@
 }
 
 // -----------------------------------------------------------------------------
-// EFEITOS VISUAIS
+// EFEITOS VISUAIS ADAPTADOS PARA DARK MODE
 // -----------------------------------------------------------------------------
-@mixin glass-effect($opacity: 0.1) {
+@mixin glass-effect($opacity: 0.15) {
   backdrop-filter: blur(10px);
   background: rgba(255, 255, 255, $opacity);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  // Dark mode adaptation
+  @media (prefers-color-scheme: dark) {
+    background: rgba(42, 45, 49, $opacity);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+
+@mixin glass-effect-dark($opacity: 0.1) {
+  backdrop-filter: blur(10px);
+  background: rgba(42, 45, 49, $opacity);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 @mixin shimmer-effect {
+  position: relative;
+  overflow: hidden;
+  
   &::before {
     content: '';
     position: absolute;
@@ -120,11 +136,47 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
     transition: left 0.4s ease;
+    z-index: 1;
   }
 
   &:hover::before {
     left: 100%;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// MIXINS PARA SCROLLBARS DARK MODE
+// -----------------------------------------------------------------------------
+@mixin scrollbar-dark {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $bg-dark;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $border-color;
+    border-radius: 4px;
+    
+    &:hover {
+      background: lighten($border-color, 10%);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// MIXINS PARA FOCUS STATES
+// -----------------------------------------------------------------------------
+@mixin focus-visible-dark {
+  &:focus-visible {
+    outline: 2px solid $primary;
+    outline-offset: 2px;
+    border-radius: $border-radius-sm;
   }
 }

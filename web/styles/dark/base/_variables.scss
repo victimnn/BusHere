@@ -121,12 +121,16 @@ $input-border-color: $border-color;      // Bordas adaptadas
 $input-focus-border-color: $primary;     // Foco verde consistente
 $input-focus-box-shadow: 0 0 0 0.2rem rgba(21, 209, 84, 0.25);  // Sombra de foco adaptada
 $input-color: $text-primary;             // Texto claro nos inputs
+$input-placeholder-color: $text-muted;   // Placeholder mais sutil
 
 // -----------------------------------------------------------------------------
-// TRANSIÇÕES E ANIMAÇÕES
+// TRANSIÇÕES E ANIMAÇÕES OTIMIZADAS
 // -----------------------------------------------------------------------------
-$btn-transition: all 0.2s ease-in-out;
-$btn-sb-transition: all 0.2s ease;
+$transition-fast: all 0.15s ease-in-out;
+$transition-normal: all 0.2s ease-in-out;
+$transition-slow: all 0.3s ease-in-out;
+$btn-transition: $transition-normal;
+$btn-sb-transition: $transition-normal;
 
 // -----------------------------------------------------------------------------
 // DIMENSÕES

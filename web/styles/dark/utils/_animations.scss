@@ -1,14 +1,29 @@
 // =============================================================================
-// ANIMATIONS - ANIMAÇÕES E TRANSIÇÕES
+// ANIMATIONS - ANIMAÇÕES E TRANSIÇÕES OTIMIZADAS
 // =============================================================================
 
 @import '../base/variables';
 
 // -----------------------------------------------------------------------------
-// ANIMAÇÃO DE ROTAÇÃO
+// PREFERÊNCIAS DE MOVIMENTO REDUZIDO
+// -----------------------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ANIMAÇÃO DE ROTAÇÃO OTIMIZADA
 // -----------------------------------------------------------------------------
 .spin {
   animation: spin 1s linear infinite;
+  will-change: transform;
 }
 
 @keyframes spin {
@@ -21,8 +36,20 @@
 }
 
 // -----------------------------------------------------------------------------
-// ANIMAÇÕES GENÉRICAS
+// ANIMAÇÕES GENÉRICAS OTIMIZADAS
 // -----------------------------------------------------------------------------
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.slide-in-up {
+  animation: slideInUp 0.4s ease-out;
+}
+
+.slide-in-right {
+  animation: slideInRight 0.3s ease-out;
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

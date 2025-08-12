@@ -27,6 +27,12 @@
   }
 }
 
+// Força o background em elementos code dentro de cards
+.coordinates-code {
+  background-color: $bg-medium !important;
+  color: $text-primary !important;
+}
+
 // -----------------------------------------------------------------------------
 // CARDS COM HOVER EFFECTS
 // -----------------------------------------------------------------------------

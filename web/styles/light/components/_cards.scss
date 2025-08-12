@@ -1,5 +1,5 @@
 // =============================================================================
-// CARDS - ESTILOS PARA CARTÕES
+// CARDS - ESTILOS PARA CARTÕES - MODO CLARO
 // =============================================================================
 
 @import '../base/variables';
@@ -10,6 +10,27 @@
 // -----------------------------------------------------------------------------
 .card {
   margin-bottom: 1rem;
+  background-color: $card-bg !important;
+  border-color: $border-color !important;
+  color: $dark !important;
+  
+  .card-header {
+    background-color: $bg-medium !important;
+    border-bottom-color: $border-color !important;
+    color: $dark !important;
+  }
+  
+  .card-footer {
+    background-color: $bg-medium !important;
+    border-top-color: $border-color !important;
+    color: $secondary !important;
+  }
+}
+
+// Força o background em elementos code dentro de cards
+.coordinates-code {
+  background-color: $bg-medium !important;
+  color: $dark !important;
 }
 
 // -----------------------------------------------------------------------------
@@ -20,10 +41,13 @@
   position: relative;
   overflow: hidden;
   border-radius: $border-radius !important;
-  border: 1px solid rgba(0,0,0,0.08);
+  border: 1px solid $border-color !important;
+  background-color: $card-bg !important;
 
   &:hover {
-    border-color: rgba($primary, 0.2);
+    border-color: rgba($primary, 0.3) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+    background-color: darken($card-bg, 2%) !important;
   }
 
   @include shimmer-effect();
@@ -34,8 +58,10 @@
 // -----------------------------------------------------------------------------
 .quick-access-card {
   transition: all 0.3s ease;
-  border: 1px solid rgba(0, 0, 0, 0.125);
+  border: 1px solid $border-color !important;
+  background-color: $card-bg !important;
   min-height: 80px;
+  color: $dark !important;
   
   @include mobile-only {
     min-height: 100px;
@@ -43,8 +69,9 @@
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-    border-color: var(--bs-primary);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+    border-color: $primary !important;
+    background-color: darken($card-bg, 1%) !important;
   }
   
   .card-body {
@@ -74,12 +101,40 @@
 // CARDS DE ESTATÍSTICAS
 // -----------------------------------------------------------------------------
 .stats-card {
+  background-color: $card-bg !important;
+  border: 1px solid $border-color !important;
+  color: $dark !important;
+  
   .stats-value {
     font-size: 2rem;
+    color: $primary !important;
     
     @include small-mobile {
       font-size: 1.5rem !important;
     }
+  }
+  
+  .stats-label {
+    color: $secondary !important;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  
+  .stats-icon {
+    color: rgba($primary, 0.7) !important;
+    font-size: 2.5rem;
+    
+    @include small-mobile {
+      font-size: 2rem !important;
+    }
+  }
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08) !important;
+    border-color: rgba($primary, 0.2) !important;
   }
   
   @include small-mobile {
@@ -94,24 +149,188 @@
 }
 
 // -----------------------------------------------------------------------------
+// CARDS DE MÉTRICAS
+// -----------------------------------------------------------------------------
+.metric-card {
+  background: linear-gradient(135deg, $card-bg 0%, lighten($card-bg, 2%) 100%) !important;
+  border: 1px solid $border-color !important;
+  color: $dark !important;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, $primary, $success);
+    z-index: 1;
+  }
+  
+  .metric-value {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: $primary !important;
+    line-height: 1;
+  }
+  
+  .metric-label {
+    color: $secondary !important;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .metric-change {
+    font-size: 0.8rem;
+    font-weight: 600;
+    
+    &.positive {
+      color: $success !important;
+    }
+    
+    &.negative {
+      color: $danger !important;
+    }
+    
+    &.neutral {
+      color: $secondary !important;
+    }
+  }
+  
+  .metric-icon {
+    font-size: 3rem;
+    color: rgba($primary, 0.15) !important;
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+    z-index: 0;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// CARDS DE INFORMAÇÃO
+// -----------------------------------------------------------------------------
+.info-card {
+  background-color: $card-bg !important;
+  border-left: 4px solid $info !important;
+  border-top: 1px solid $border-color !important;
+  border-right: 1px solid $border-color !important;
+  border-bottom: 1px solid $border-color !important;
+  color: $dark !important;
+  
+  .info-icon {
+    color: $info !important;
+    font-size: 1.5rem;
+  }
+  
+  .info-title {
+    color: $dark !important;
+    font-weight: 600;
+  }
+  
+  .info-content {
+    color: $secondary !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// CARDS DE AÇÃO
+// -----------------------------------------------------------------------------
+.action-card {
+  background-color: $card-bg !important;
+  border: 1px solid $border-color !important;
+  color: $dark !important;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1) !important;
+    border-color: $primary !important;
+    
+    .action-icon {
+      transform: scale(1.1);
+      color: $primary !important;
+    }
+  }
+  
+  .action-icon {
+    font-size: 3rem;
+    color: $secondary !important;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+  }
+  
+  .action-title {
+    color: $dark !important;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  .action-description {
+    color: $secondary !important;
+    font-size: 0.9rem;
+  }
+}
+
+// -----------------------------------------------------------------------------
 // GRADIENTES PARA CARDS
 // -----------------------------------------------------------------------------
 .bg-gradient-primary {
   @include gradient-primary();
+  color: $white !important;
 }
 
 .bg-gradient-success {
   @include gradient-success();
+  color: $white !important;
 }
 
 .bg-gradient-info {
   @include gradient-info();
+  color: $white !important;
 }
 
 .bg-gradient-warning {
   @include gradient-warning();
+  color: $white !important;
 }
 
 .bg-gradient-danger {
   @include gradient-danger();
+  color: $white !important;
+}
+
+// -----------------------------------------------------------------------------
+// RESPONSIVIDADE
+// -----------------------------------------------------------------------------
+@include mobile-only {
+  .card {
+    margin-bottom: 0.75rem;
+  }
+  
+  .stats-card,
+  .metric-card,
+  .action-card {
+    .card-body {
+      padding: 1rem !important;
+    }
+  }
+}
+
+@include small-mobile {
+  .card {
+    margin-bottom: 0.5rem;
+  }
+  
+  .stats-card,
+  .metric-card,
+  .action-card {
+    .card-body {
+      padding: 0.75rem !important;
+    }
+  }
 }

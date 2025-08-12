@@ -4,9 +4,7 @@ import PopUpComponent from '@web/components/ui/PopUpComponent';
 import BusForm from '@web/components/pageComponents/buses/BusForm';
 import Notification from '@web/components/common/Notification';
 
-import { useBuses } from '@web/hooks/useBuses';
-import { useDetailPage } from '@web/hooks/useDetailPage';
-import { useNotification } from '@web/hooks/useNotification';
+import { useBuses, useDetailPage, useNotification } from '@web/hooks';
 import { formatDateFromDatabase } from '@shared/formatters';
 
 import {

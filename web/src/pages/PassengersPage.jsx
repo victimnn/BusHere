@@ -8,8 +8,7 @@ import Notification from "@web/components/common/Notification";
 import LoadingSpinner from "@web/components/common/LoadingSpinner";
 import ErrorAlert from "@web/components/common/ErrorAlert";
 import ActionButton from "@web/components/common/ActionButton";
-import { usePassengers } from "@web/hooks/usePassengers";
-import { useNotification } from "@web/hooks/useNotification";
+import { usePassengers, useNotification } from "@web/hooks";
 import { formatCPF, formatPhoneNumber, formatDateFromDatabase, getTypeFormat } from "@shared/formatters";
 
 const formatType = (value) => {

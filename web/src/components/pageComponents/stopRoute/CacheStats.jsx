@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useCacheManager } from '@web/hooks/useRouteCache';
+import { useCacheManager } from '@web/hooks';
 
 /**
  * Componente para exibir e gerenciar estatísticas do cache de rotas

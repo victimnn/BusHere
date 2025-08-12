@@ -4,9 +4,7 @@ import PopUpComponent from '@web/components/ui/PopUpComponent';
 import DriverForm from "@web/components/pageComponents/drivers/DriverForm";
 import Notification from '@web/components/common/Notification';
 
-import { useDrivers } from '@web/hooks/useDrivers';
-import { useDetailPage } from '@web/hooks/useDetailPage';
-import { useNotification } from '@web/hooks/useNotification';
+import { useDrivers, useDetailPage, useNotification } from '@web/hooks';
 import { formatCPF, formatPhoneNumber, formatDateFromDatabase } from '@shared/formatters';
 
 import {

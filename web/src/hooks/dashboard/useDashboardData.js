@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from '../api/api';
+import api from '@web/api/api';
 
 export const useDashboardData = () => {
   const [stats, setStats] = useState({

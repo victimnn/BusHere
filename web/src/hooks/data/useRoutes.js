@@ -5,7 +5,7 @@ import {
     prepareRouteBackendData, 
     getRouteErrorMessage, 
     useRouteStatus 
-} from '@web/hooks/useRouteOperations';
+} from '../operations/useRouteOperations';
 
 export const useRoutes = () => {
   // Estados

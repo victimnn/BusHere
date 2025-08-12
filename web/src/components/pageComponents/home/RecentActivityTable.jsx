@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback, useState, useEffect } from "react";
 import Table from "@web/components/ui/Table";
 import TableActionButton from "@web/components/common/table/TableActionButton";
-import { useRecentActivities } from "@web/hooks/useRecentActivities";
+import { useRecentActivities } from "@web/hooks";
 
 import { getOperationBadge, formatTimestamp } from "@shared/formatters";
 

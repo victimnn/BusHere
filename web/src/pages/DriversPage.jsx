@@ -8,8 +8,7 @@ import Notification from "@web/components/common/Notification";
 import LoadingSpinner from "@web/components/common/LoadingSpinner";
 import ErrorAlert from "@web/components/common/ErrorAlert";
 import ActionButton from "@web/components/common/ActionButton";
-import { useDrivers } from "@web/hooks/useDrivers";
-import { useNotification } from "@web/hooks/useNotification";
+import { useDrivers, useNotification } from "@web/hooks";
 import { formatCPF, formatPhoneNumber, formatDateFromDatabase, getStatusFormat } from "@shared/formatters";
 
 const formatStatus = (value) => {

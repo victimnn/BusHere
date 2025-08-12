@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useStops } from '@web/hooks/useStops';
-import { useNotification } from '@web/hooks/useNotification';
-import { useRouteWithStops } from '@web/hooks/useRouteWithStops';
-import { useMapMarkers } from '@web/hooks/useMapMarkers.jsx';
+import { 
+  useStops, 
+  useNotification, 
+  useRouteWithStops, 
+  useMapMarkers 
+} from '@web/hooks';
 import { CONSTANTS, centerMapWithStops } from '@web/utils/routeStopsUtils';
 import MapComponent from '@web/components/ui/MapComponent';
 import PainelControle from '@web/components/pageComponents/stopRoute/PainelControle';

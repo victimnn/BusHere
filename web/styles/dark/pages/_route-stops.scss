@@ -1,5 +1,5 @@
 // =============================================================================
-// ROUTE STOPS PAGE - PÁGINA DE PONTOS DA ROTA
+// ROUTE STOPS PAGE - PÁGINA DE PONTOS DA ROTA - MODO ESCURO
 // =============================================================================
 
 @import '../base/variables';
@@ -11,20 +11,37 @@
 .route-stops-page {
   height: 100%;
   overflow: hidden;
+  background-color: $body-bg;
 
   // Container do mapa
   .map-container {
     position: relative;
     height: 100%;
     width: 100%;
+    background-color: $bg-dark;
     
     .leaflet-container {
       height: 100% !important;
       width: 100% !important;
+      background-color: $bg-dark !important;
     }
 
     @include mobile-only {
       height: 100vh !important;
+    }
+    
+    // Elementos flutuantes no mapa
+    .floating-element {
+      background-color: rgba($card-bg, 0.95) !important;
+      border: 1px solid $border-color !important;
+      border-radius: $border-radius;
+      backdrop-filter: blur(8px);
+      color: $text-primary !important;
+      
+      &.high-priority {
+        background-color: $card-bg !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;
+      }
     }
   }
 
@@ -32,6 +49,981 @@
   .painel-controle {
     height: 100%;
     overflow-y: auto;
-    background-color: $light;
+    background-color: $bg-light !important;
+    border-right: 1px solid $border-color !important;
+    color: $text-primary;
+    
+    // Remover background inline forçado
+    > div[style*="backgroundColor"] {
+      background-color: $bg-light !important;
+    }
+    
+    // Scrollbar customizada para dark mode
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: $bg-medium;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: $border-medium;
+      border-radius: 4px;
+      
+      &:hover {
+        background: lighten($border-medium, 10%);
+      }
+    }
+    
+    // Cabeçalho do painel
+    h4 {
+      color: $text-primary !important;
+      
+      &.text-primary {
+        color: $primary !important;
+      }
+      
+      i {
+        color: $primary !important;
+      }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// COMPONENTES DO PAINEL DE CONTROLE
+// -----------------------------------------------------------------------------
+
+// Formulário da rota
+.painel-controle {
+  // Campos de formulário
+  .form-label {
+    color: $text-primary !important;
+    
+    i {
+      color: $primary !important;
+    }
+    
+    .text-danger {
+      color: $danger !important;
+    }
+  }
+  
+  .input-group {
+    .input-group-text {
+      background-color: $bg-medium !important;
+      border-color: $border-color !important;
+      color: $text-secondary !important;
+      
+      &.bg-light {
+        background-color: $bg-medium !important;
+      }
+      
+      i {
+        color: $text-secondary !important;
+      }
+    }
+    
+    .form-control,
+    .form-select {
+      background-color: $input-bg !important;
+      border-color: $border-color !important;
+      color: $text-primary !important;
+      
+      &::placeholder {
+        color: $text-muted !important;
+      }
+      
+      &:focus {
+        background-color: $input-bg !important;
+        border-color: $primary !important;
+        box-shadow: 0 0 0 0.2rem rgba($primary, 0.25) !important;
+        color: $text-primary !important;
+      }
+      
+      &.is-valid {
+        border-color: $success !important;
+        background-color: $input-bg !important;
+        
+        &:focus {
+          box-shadow: 0 0 0 0.2rem rgba($success, 0.25) !important;
+        }
+      }
+      
+      &.is-invalid {
+        border-color: $danger !important;
+        background-color: $input-bg !important;
+        
+        &:focus {
+          box-shadow: 0 0 0 0.2rem rgba($danger, 0.25) !important;
+        }
+      }
+    }
+    
+    .invalid-feedback {
+      color: $danger !important;
+    }
+    
+    .valid-feedback {
+      color: $success !important;
+    }
+  }
+  
+  // Textarea específico
+  textarea.form-control {
+    background-color: $input-bg !important;
+    color: $text-primary !important;
+    border-color: $border-color !important;
+    
+    &:focus {
+      background-color: $input-bg !important;
+      border-color: $primary !important;
+      color: $text-primary !important;
+    }
+  }
+  
+  // Configurações da rota
+  .route-settings {
+    .form-check {
+      .form-check-input {
+        background-color: $input-bg !important;
+        border-color: $border-color !important;
+        
+        &:checked {
+          background-color: $primary !important;
+          border-color: $primary !important;
+        }
+        
+        &:focus {
+          box-shadow: 0 0 0 0.2rem rgba($primary, 0.25) !important;
+        }
+      }
+      
+      .form-check-label {
+        color: $text-primary !important;
+        
+        &.small {
+          color: $text-secondary !important;
+        }
+      }
+    }
+    
+    .btn {
+      &.btn-outline-secondary {
+        background-color: transparent !important;
+        border-color: $border-color !important;
+        color: $text-primary !important;
+        
+        &:hover {
+          background-color: $primary !important;
+          border-color: $primary !important;
+          color: $white !important;
+        }
+        
+        &.active {
+          background-color: $primary !important;
+          border-color: $primary !important;
+          color: $white !important;
+        }
+      }
+    }
+  }
+  
+  // Estatísticas da rota
+  .route-statistics {
+    .alert {
+      &.alert-info {
+        background-color: rgba($info, 0.1) !important;
+        border-color: rgba($info, 0.3) !important;
+        color: $text-primary !important;
+        
+        .text-info {
+          color: $info !important;
+        }
+        
+        .fw-bold {
+          color: $text-primary !important;
+        }
+      }
+      
+      &.alert-warning {
+        background-color: rgba($warning, 0.1) !important;
+        border-color: rgba($warning, 0.3) !important;
+        color: darken($warning, 10%) !important;
+      }
+    }
+    
+    .badge {
+      &.bg-primary {
+        background-color: $primary !important;
+        color: $white !important;
+      }
+      
+      &.bg-success {
+        background-color: $success !important;
+        color: $white !important;
+      }
+      
+      &.bg-info {
+        background-color: $info !important;
+        color: $white !important;
+      }
+    }
+    
+    .text-muted {
+      color: $text-muted !important;
+    }
+    
+    small {
+      color: $text-secondary !important;
+    }
+  }
+  
+  // Cards de estatísticas
+  .route-stat-card {
+    background-color: $bg-medium !important;
+    border: 1px solid $border-light !important;
+    
+    &.bg-light {
+      background-color: $bg-medium !important;
+    }
+    
+    .text-success {
+      color: $success !important;
+    }
+    
+    .text-info {
+      color: $info !important;
+    }
+    
+    .text-warning {
+      color: $warning !important;
+    }
+    
+    .text-muted {
+      color: $text-muted !important;
+    }
+    
+    .fw-bold {
+      color: $text-primary !important;
+    }
+  }
+
+// -----------------------------------------------------------------------------
+// DRAGGABLE ROUTE STOP E COMPONENTES ADICIONAIS
+// -----------------------------------------------------------------------------
+.painel-controle {
+  // Cards de estatísticas específicos
+  .route-points-list {
+    background-color: transparent !important;
+    
+    .list-group-item {
+      background-color: $card-bg !important;
+      border-color: $border-light !important;
+      color: $text-primary !important;
+      margin-bottom: 0.5rem;
+      border-radius: $border-radius !important;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background-color: lighten($card-bg, 3%) !important;
+        border-color: rgba($primary, 0.3) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      
+      &.dragging {
+        opacity: 0.6;
+        transform: rotate(1deg);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+  
+  // Indicadores de ponto
+  .point-indicator {
+    background-color: $primary !important;
+    color: $white !important;
+    border-radius: 50%;
+    font-weight: 600;
+  }
+  
+  // Detalhes do ponto
+  .point-name {
+    color: $text-primary !important;
+    font-weight: 600;
+  }
+  
+  .point-address {
+    color: $text-secondary !important;
+  }
+  
+  .segment-info {
+    color: $text-muted !important;
+    
+    .text-success {
+      color: $success !important;
+    }
+    
+    .text-info {
+      color: $info !important;
+    }
+  }
+  
+  // Drag handle
+  .drag-handle {
+    color: $text-muted !important;
+    cursor: grab;
+    
+    &:hover {
+      color: $primary !important;
+      background-color: rgba($primary, 0.1);
+    }
+    
+    &:active {
+      cursor: grabbing;
+    }
+  }
+  
+  // Estado vazio
+  .empty-stops-list {
+    color: $text-muted !important;
+    
+    i {
+      color: $text-muted !important;
+      opacity: 0.5;
+    }
+    
+    p, small {
+      color: $text-muted !important;
+    }
+  }
+}
+  
+  // Lista de pontos selecionados
+  .selected-stops-list {
+    .text-muted {
+      color: $text-muted !important;
+      
+      i {
+        color: $text-muted !important;
+      }
+    }
+    
+    .list-group-item {
+      background-color: $card-bg !important;
+      border-color: $border-light !important;
+      color: $text-primary !important;
+      
+      &:hover {
+        background-color: lighten($card-bg, 3%) !important;
+        border-color: rgba($primary, 0.3) !important;
+      }
+      
+      .point-number {
+        background-color: $primary !important;
+        color: $white !important;
+      }
+      
+      .point-name {
+        color: $text-primary !important;
+      }
+      
+      .point-address {
+        color: $text-secondary !important;
+      }
+      
+      .btn-outline-danger {
+        border-color: $danger !important;
+        color: $danger !important;
+        
+        &:hover {
+          background-color: $danger !important;
+          color: $white !important;
+        }
+      }
+      
+      .drag-handle {
+        color: $text-muted !important;
+        
+        &:hover {
+          color: $primary !important;
+        }
+      }
+    }
+  }
+  
+  // Botões de ação
+  .action-buttons {
+    border-top: 1px solid $border-light;
+    
+    .btn {
+      &.btn-primary {
+        background-color: $primary !important;
+        border-color: $primary !important;
+        color: $white !important;
+        
+        &:hover {
+          background-color: darken($primary, 10%) !important;
+        }
+        
+        &:disabled {
+          background-color: $text-muted !important;
+          border-color: $text-muted !important;
+        }
+      }
+      
+      &.btn-outline-secondary {
+        background-color: transparent !important;
+        border-color: $border-color !important;
+        color: $text-primary !important;
+        
+        &:hover {
+          background-color: $secondary !important;
+          border-color: $secondary !important;
+          color: $white !important;
+        }
+      }
+      
+      &.btn-outline-danger {
+        background-color: transparent !important;
+        border-color: $danger !important;
+        color: $danger !important;
+        
+        &:hover {
+          background-color: $danger !important;
+          color: $white !important;
+        }
+      }
+    }
+  }
+}
+  
+  // Lista de pontos selecionados
+  .selected-stops-list {
+    .list-group {
+      background-color: transparent !important;
+      
+      .list-group-item {
+        background-color: $card-bg !important;
+        border-color: $border-light !important;
+        color: $text-primary !important;
+        margin-bottom: 0.5rem;
+        border-radius: $border-radius !important;
+        
+        &:hover {
+          background-color: lighten($card-bg, 3%) !important;
+          border-color: rgba($primary, 0.3) !important;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        // Número do ponto
+        .point-number {
+          background-color: $primary !important;
+          color: $white !important;
+          border-radius: 50%;
+          width: 24px;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.75rem;
+          font-weight: bold;
+        }
+        
+        // Nome do ponto
+        .point-name {
+          color: $text-primary !important;
+          font-weight: 600;
+        }
+        
+        // Endereço do ponto
+        .point-address {
+          color: $text-secondary !important;
+          font-size: 0.875rem;
+        }
+        
+        // Input de horário
+        .form-control {
+          background-color: $input-bg !important;
+          border-color: $border-color !important;
+          color: $text-primary !important;
+          font-size: 0.875rem;
+          
+          &:focus {
+            border-color: $primary !important;
+            box-shadow: 0 0 0 0.2rem rgba($primary, 0.25) !important;
+          }
+          
+          &.is-invalid {
+            border-color: $danger !important;
+            
+            &:focus {
+              box-shadow: 0 0 0 0.2rem rgba($danger, 0.25) !important;
+            }
+          }
+        }
+        
+        // Botão de remover
+        .btn-outline-danger {
+          background-color: transparent !important;
+          border-color: $danger !important;
+          color: $danger !important;
+          
+          &:hover {
+            background-color: $danger !important;
+            border-color: $danger !important;
+            color: $white !important;
+          }
+        }
+        
+        // Ícone de arrastar
+        .drag-handle {
+          color: $text-muted !important;
+          cursor: grab;
+          
+          &:hover {
+            color: $primary !important;
+          }
+          
+          &:active {
+            cursor: grabbing;
+          }
+        }
+        
+        // Feedback de validação
+        .invalid-feedback {
+          color: $danger !important;
+          font-size: 0.75rem;
+        }
+      }
+    }
+    
+    // Estado vazio
+    .text-muted {
+      color: $text-muted !important;
+      
+      i {
+        color: $text-muted !important;
+      }
+    }
+  }
+
+// -----------------------------------------------------------------------------
+// CONTAINER DE PONTOS DA ROTA
+// -----------------------------------------------------------------------------
+.route-stops-container {
+  .card {
+    background-color: $card-bg !important;
+    border-color: $border-color !important;
+    color: $text-primary !important;
+    
+    .card-header {
+      background-color: $bg-medium !important;
+      border-bottom-color: $border-color !important;
+      color: $text-primary !important;
+      
+      h6 {
+        color: $text-primary !important;
+      }
+      
+      .badge {
+        background-color: $primary !important;
+        color: $white !important;
+      }
+      
+      i {
+        color: $primary !important;
+      }
+    }
+    
+    .card-body {
+      background-color: $card-bg !important;
+      
+      .text-muted {
+        color: $text-muted !important;
+      }
+    }
+  }
+  
+  // Lista de pontos
+  .list-group {
+    .list-group-item {
+      background-color: transparent !important;
+      border-color: $border-light !important;
+      color: $text-primary !important;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background-color: rgba($primary, 0.05) !important;
+        border-color: rgba($primary, 0.2) !important;
+      }
+      
+      // Círculo com número do ponto
+      .bg-primary {
+        background-color: $primary !important;
+        color: $white !important;
+      }
+      
+      // Textos dos pontos
+      .fw-bold {
+        color: $text-primary !important;
+      }
+      
+      .text-muted {
+        color: $text-muted !important;
+      }
+      
+      small {
+        color: $text-secondary !important;
+      }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// CONTROLES DE ROTEAMENTO FLUTUANTES
+// -----------------------------------------------------------------------------
+.route-stops-page .position-absolute {
+  // Controles de roteamento
+  &[style*="bottom: 120px"] {
+    background-color: rgba($card-bg, 0.95) !important;
+    border: 1px solid $border-color !important;
+    backdrop-filter: blur(10px);
+    
+    .form-check {
+      .form-check-input {
+        background-color: $input-bg !important;
+        border-color: $border-color !important;
+        
+        &:checked {
+          background-color: $primary !important;
+          border-color: $primary !important;
+        }
+        
+        &:focus {
+          box-shadow: 0 0 0 0.2rem rgba($primary, 0.25) !important;
+        }
+      }
+      
+      .form-check-label {
+        color: $text-primary !important;
+        
+        &.small {
+          color: $text-secondary !important;
+        }
+      }
+    }
+    
+    .btn {
+      background-color: $bg-medium !important;
+      border-color: $border-color !important;
+      color: $text-primary !important;
+      
+      &:hover {
+        background-color: $primary !important;
+        border-color: $primary !important;
+        color: $white !important;
+      }
+      
+      &.active {
+        background-color: $primary !important;
+        border-color: $primary !important;
+        color: $white !important;
+      }
+      
+      &.btn-sm {
+        font-size: 0.75rem;
+      }
+    }
+    
+    // Cache stats específicos
+    .cache-stats {
+      background-color: rgba($info, 0.1) !important;
+      border: 1px solid rgba($info, 0.3) !important;
+      color: $text-primary !important;
+      
+      .text-info {
+        color: $info !important;
+      }
+      
+      .badge {
+        background-color: $info !important;
+        color: $white !important;
+      }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// CONTROLES MOBILE
+// -----------------------------------------------------------------------------
+.mobile-control-panel {
+  background-color: $bg-light !important;
+  border-top: 1px solid $border-color !important;
+  color: $text-primary !important;
+  
+  .offcanvas {
+    background-color: $bg-light !important;
+    border-left: 1px solid $border-color !important;
+    color: $text-primary !important;
+  }
+  
+  .offcanvas-header {
+    border-bottom: 1px solid $border-color !important;
+    
+    .offcanvas-title {
+      color: $text-primary !important;
+    }
+    
+    .btn-close {
+      filter: invert(1);
+    }
+  }
+  
+  .offcanvas-body {
+    background-color: $bg-light !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// FLOATING ELEMENTS ESPECÍFICOS
+// -----------------------------------------------------------------------------
+.floating-mobile-button {
+  .btn {
+    background-color: $primary !important;
+    border-color: $primary !important;
+    color: $white !important;
+    box-shadow: 0 4px 15px rgba($primary, 0.3) !important;
+    
+    &:hover {
+      background-color: darken($primary, 10%) !important;
+      border-color: darken($primary, 10%) !important;
+      transform: scale(1.05);
+    }
+  }
+}
+
+.floating-instructions {
+  background-color: rgba($card-bg, 0.95) !important;
+  border: 1px solid $border-color !important;
+  color: $text-primary !important;
+  backdrop-filter: blur(8px);
+  
+  .btn {
+    background-color: $bg-medium !important;
+    border-color: $border-color !important;
+    color: $text-primary !important;
+    
+    &:hover {
+      background-color: $primary !important;
+      border-color: $primary !important;
+      color: $white !important;
+    }
+  }
+  
+  .text-muted {
+    color: $text-muted !important;
+  }
+}
+
+.floating-points-counter {
+  background-color: rgba($card-bg, 0.95) !important;
+  border: 1px solid $border-color !important;
+  color: $text-primary !important;
+  backdrop-filter: blur(8px);
+  
+  .badge {
+    background-color: $primary !important;
+    color: $white !important;
+  }
+  
+  .text-primary {
+    color: $primary !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// LOADING STATES
+// -----------------------------------------------------------------------------
+.route-stops-page {
+  .loading-spinner {
+    color: $primary !important;
+  }
+  
+  .text-primary {
+    color: $primary !important;
+  }
+  
+  .fw-bold {
+    color: $text-primary !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ERROR ALERTS
+// -----------------------------------------------------------------------------
+.route-stops-page {
+  .alert {
+    background-color: rgba($danger, 0.1) !important;
+    border-color: $danger !important;
+    color: lighten($danger, 20%) !important;
+    
+    &.alert-warning {
+      background-color: rgba($warning, 0.1) !important;
+      border-color: $warning !important;
+      color: darken($warning, 10%) !important;
+    }
+    
+    .btn-close {
+      filter: invert(1);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// RESPONSIVIDADE PARA MOBILE
+// -----------------------------------------------------------------------------
+@media (max-width: 992px) {
+  .route-stops-page {
+    .map-container {
+      .floating-element {
+        margin: 0.5rem;
+        
+        &.position-absolute {
+          position: fixed !important;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .route-stops-page {
+    .floating-element {
+      font-size: 0.875rem;
+      padding: 0.5rem !important;
+    }
+    
+    .floating-instructions {
+      bottom: 80px !important;
+      right: 10px !important;
+      left: 10px !important;
+      max-width: none !important;
+    }
+    
+    .floating-points-counter {
+      top: 10px !important;
+      right: 10px !important;
+      font-size: 0.75rem;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ESTILOS ESPECÍFICOS PARA LEAFLET EM MODO ESCURO
+// -----------------------------------------------------------------------------
+.route-stops-page {
+  // Controles do Leaflet
+  .leaflet-control-container {
+    .leaflet-control {
+      background-color: $card-bg !important;
+      border: 1px solid $border-color !important;
+      color: $text-primary !important;
+      
+      a {
+        background-color: $card-bg !important;
+        color: $text-primary !important;
+        border-bottom: 1px solid $border-light !important;
+        
+        &:hover {
+          background-color: $bg-medium !important;
+          color: $primary !important;
+        }
+      }
+    }
+    
+    .leaflet-control-zoom {
+      a {
+        &.leaflet-control-zoom-in,
+        &.leaflet-control-zoom-out {
+          background-color: $card-bg !important;
+          color: $text-primary !important;
+          
+          &:hover {
+            background-color: $primary !important;
+            color: $white !important;
+          }
+        }
+      }
+    }
+    
+    .leaflet-control-attribution {
+      background-color: rgba($card-bg, 0.8) !important;
+      color: $text-muted !important;
+      
+      a {
+        color: $primary !important;
+        
+        &:hover {
+          color: lighten($primary, 10%) !important;
+        }
+      }
+    }
+  }
+  
+  // Popups do mapa
+  .leaflet-popup {
+    .leaflet-popup-content-wrapper {
+      background-color: $card-bg !important;
+      color: $text-primary !important;
+      border-radius: $border-radius !important;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    .leaflet-popup-content {
+      color: $text-primary !important;
+      
+      h6, .fw-bold {
+        color: $text-primary !important;
+      }
+      
+      .text-muted {
+        color: $text-muted !important;
+      }
+      
+      small {
+        color: $text-secondary !important;
+      }
+    }
+    
+    .leaflet-popup-tip {
+      background-color: $card-bg !important;
+    }
+  }
+  
+  // Tooltips do mapa
+  .leaflet-tooltip {
+    background-color: rgba($card-bg, 0.95) !important;
+    color: $text-primary !important;
+    border: 1px solid $border-color !important;
+    border-radius: $border-radius-sm !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+    
+    &.leaflet-tooltip-top:before {
+      border-top-color: $border-color !important;
+    }
+    
+    &.leaflet-tooltip-bottom:before {
+      border-bottom-color: $border-color !important;
+    }
+    
+    &.leaflet-tooltip-left:before {
+      border-left-color: $border-color !important;
+    }
+    
+    &.leaflet-tooltip-right:before {
+      border-right-color: $border-color !important;
+    }
   }
 }

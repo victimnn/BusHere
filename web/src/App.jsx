@@ -74,7 +74,7 @@ function App({ isDark, setIsDark }) {
                   <Route path="/routes" element={<RoutesPage pageFunctions={pageFunctions}/>} />
                   <Route path="/stops" element={<StopsPage pageFunctions={pageFunctions}/>} />
                   <Route path="/reports" element={<ReportsPage pageFunctions={pageFunctions}/>} />
-                  <Route path="/settings" element={<SettingsPage pageFunctions={pageFunctions}/>} />
+                  <Route path="/settings" element={<SettingsPage pageFunctions={pageFunctions} isDark={isDark} setIsDark={setIsDark}/>} />
                   <Route path="/login" element={<LoginPage pageFunctions={pageFunctions}/>} />
                   <Route path="/register" element={<RegisterPage pageFunctions={pageFunctions}/>} />
 
@@ -93,12 +93,6 @@ function App({ isDark, setIsDark }) {
 
           </div>
         </div>
-
-        <button
-          onClick={() => setIsDark(!isDark)}
-        >
-          Toggle Dark Mode
-        </button>
       </AuthProvider>
     </Router>
   );

@@ -1,5 +1,5 @@
 // =============================================================================
-// CARDS - ESTILOS PARA CARTÕES
+// CARDS - ESTILOS PARA CARTÕES - MODO ESCURO
 // =============================================================================
 
 @import '../base/variables';
@@ -10,6 +10,21 @@
 // -----------------------------------------------------------------------------
 .card {
   margin-bottom: 1rem;
+  background-color: $card-bg !important;
+  border-color: $border-color !important;
+  color: $text-primary !important;
+  
+  .card-header {
+    background-color: $bg-medium !important;
+    border-bottom-color: $border-color !important;
+    color: $text-primary !important;
+  }
+  
+  .card-footer {
+    background-color: $bg-medium !important;
+    border-top-color: $border-color !important;
+    color: $text-secondary !important;
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -20,10 +35,13 @@
   position: relative;
   overflow: hidden;
   border-radius: $border-radius !important;
-  border: 1px solid rgba(0,0,0,0.08);
+  border: 1px solid $border-light !important;
+  background-color: $card-bg !important;
 
   &:hover {
-    border-color: rgba($primary, 0.2);
+    border-color: rgba($primary, 0.4) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;
+    background-color: lighten($card-bg, 2%) !important;
   }
 
   @include shimmer-effect();
@@ -34,8 +52,10 @@
 // -----------------------------------------------------------------------------
 .quick-access-card {
   transition: all 0.3s ease;
-  border: 1px solid rgba(0, 0, 0, 0.125);
+  border: 1px solid $border-color !important;
+  background-color: $card-bg !important;
   min-height: 80px;
+  color: $text-primary !important;
   
   @include mobile-only {
     min-height: 100px;
@@ -43,8 +63,9 @@
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-    border-color: var(--bs-primary);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5) !important;
+    border-color: $primary !important;
+    background-color: lighten($card-bg, 3%) !important;
   }
   
   .card-body {
@@ -68,17 +89,88 @@
       font-size: 1.25rem !important;
     }
   }
+  
+  // Ícones adaptados para dark mode - mantendo cores originais
+  i {
+    opacity: 0.8;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+  }
+  
+  // Texto adaptado
+  .text-muted {
+    color: $text-muted !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// CORES ESPECÍFICAS PARA QUICK ACCESS CARDS
+// -----------------------------------------------------------------------------
+.quick-access-card {
+  &.quick-access-primary i {
+    color: $primary !important;
+  }
+  
+  &.quick-access-info i {
+    color: $info !important;
+  }
+  
+  &.quick-access-success i {
+    color: $success !important;
+  }
+  
+  &.quick-access-warning i {
+    color: $warning !important;
+  }
+  
+  &.quick-access-danger i {
+    color: $danger !important;
+  }
+  
+  &.quick-access-secondary i {
+    color: $secondary !important;
+  }
 }
 
 // -----------------------------------------------------------------------------
 // CARDS DE ESTATÍSTICAS
 // -----------------------------------------------------------------------------
 .stats-card {
+  background-color: $card-bg !important;
+  border-color: $border-color !important;
+  color: $text-primary !important;
+  
   .stats-value {
     font-size: 2rem;
+    color: $primary !important;
+    font-weight: 600;
     
     @include small-mobile {
       font-size: 1.5rem !important;
+    }
+  }
+  
+  .stats-label {
+    color: $text-secondary !important;
+  }
+  
+  .stats-icon {
+    color: $primary !important;
+    opacity: 0.8;
+  }
+  
+  &:hover {
+    background-color: lighten($card-bg, 2%) !important;
+    border-color: rgba($primary, 0.3) !important;
+    
+    .stats-icon {
+      opacity: 1;
+      transform: scale(1.05);
+      transition: all 0.3s ease;
     }
   }
   
@@ -89,29 +181,137 @@
     
     h6 {
       font-size: 0.875rem !important;
+      color: $text-secondary !important;
     }
   }
 }
 
 // -----------------------------------------------------------------------------
-// GRADIENTES PARA CARDS
+// CARDS INFORMATIVOS
+// -----------------------------------------------------------------------------
+.info-card {
+  background-color: $card-bg !important;
+  border-left: 4px solid $info !important;
+  
+  .card-title {
+    color: $info !important;
+  }
+  
+  .card-text {
+    color: $text-secondary !important;
+  }
+}
+
+.success-card {
+  background-color: $card-bg !important;
+  border-left: 4px solid $success !important;
+  
+  .card-title {
+    color: $success !important;
+  }
+}
+
+.warning-card {
+  background-color: $card-bg !important;
+  border-left: 4px solid $warning !important;
+  
+  .card-title {
+    color: $warning !important;
+  }
+}
+
+.danger-card {
+  background-color: $card-bg !important;
+  border-left: 4px solid $danger !important;
+  
+  .card-title {
+    color: $danger !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// GRADIENTES PARA CARDS - ADAPTADOS PARA DARK MODE
 // -----------------------------------------------------------------------------
 .bg-gradient-primary {
   @include gradient-primary();
+  color: $white !important;
+  
+  .card-title {
+    color: $white !important;
+  }
+  
+  .card-text {
+    color: rgba($white, 0.9) !important;
+  }
 }
 
 .bg-gradient-success {
   @include gradient-success();
+  color: $white !important;
+  
+  .card-title {
+    color: $white !important;
+  }
 }
 
 .bg-gradient-info {
   @include gradient-info();
+  color: $white !important;
+  
+  .card-title {
+    color: $white !important;
+  }
 }
 
 .bg-gradient-warning {
   @include gradient-warning();
+  color: $white !important;
+  
+  .card-title {
+    color: $white !important;
+  }
 }
 
 .bg-gradient-danger {
   @include gradient-danger();
+  color: $white !important;
+  
+  .card-title {
+    color: $white !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// CARDS COM VIDRO FOSCO (GLASSMORPHISM)
+// -----------------------------------------------------------------------------
+.card-glass {
+  background: rgba($card-bg, 0.8) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba($border-color, 0.3) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+  
+  &:hover {
+    background: rgba($card-bg, 0.9) !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// CARDS RESPONSIVOS PARA DARK MODE
+// -----------------------------------------------------------------------------
+@media (max-width: 768px) {
+  .card {
+    margin-bottom: 0.75rem;
+    
+    .card-body {
+      padding: 1rem 0.75rem !important;
+    }
+  }
+  
+  .card-hover {
+    &:hover {
+      transform: none;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+    }
+  }
 }

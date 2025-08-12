@@ -28,23 +28,16 @@ function SuggestionModal({ suggestions, onSuggestionClick, icons }) {
   }
 
   return (
-    <div className="card position-absolute w-100 mt-2" style={{ top: '100%', zIndex: 1000 }}>
-      <ul className="list-group list-group-flush">
+    <div className="search-results position-absolute w-100 mt-2" style={{ top: '100%', zIndex: 1000 }}>
+      <ul className="list-group">
         {suggestions.map((suggestion, index) => (
           <li
             key={index}
-            className="list-group-item list-group-item-action"
+            className="list-group-item"
             onClick={() => onSuggestionClick(suggestion)}
-            style={{ 
-              cursor: 'pointer',
-              transition: 'color 250ms ease',
-              color: 'var(--bs-secondary)'
-            }}
-            onMouseEnter={(e) => e.target.style.color = 'var(--bs-primary)'}
-            onMouseLeave={(e) => e.target.style.color = 'var(--bs-secondary)'}
           >
-            <i className={[icons[suggestion.item_type] + " me-2"|| "bi bi-question-diamond-fill me-4"]}></i>
-            <b>{suggestion.search_text}</b> em <b>{itemTypeToText(suggestion.item_type)}</b>
+            <i className={icons[suggestion.item_type] || "bi bi-question-diamond-fill"}></i>
+            <span><b>{suggestion.search_text}</b> em <b>{itemTypeToText(suggestion.item_type)}</b></span>
           </li>
         ))}
       </ul>

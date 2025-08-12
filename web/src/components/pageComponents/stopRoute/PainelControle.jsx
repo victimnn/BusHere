@@ -103,12 +103,12 @@ function PainelControle({
 
     return (
         <DndProvider backend={HTML5Backend}>
-            <div className="p-3 h-100 d-flex flex-column" style={{ backgroundColor: '#f8f9fa' }}>
+            <div className="p-3 h-100 d-flex flex-column">
                 {/* Cabeçalho do Painel */}
                 <div className="mb-4">
                     <h4 className="text-primary mb-0 fw-bold text-center">
                         <i className="bi bi-map me-2"></i>
-                        Nova Rota com Pontos
+                        {isEditMode ? 'Editar Rota' : 'Nova Rota com Pontos'}
                     </h4>
                 </div>
 

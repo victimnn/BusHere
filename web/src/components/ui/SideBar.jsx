@@ -71,7 +71,7 @@ function SideBar() {
     return (
       <aside
         id="sidebar"
-        className="d-flex flex-column shadow-sm"
+        className="d-flex bg-primary flex-column shadow-sm"
         style={{
           height: "100vh",
           width: sidebarWidth,

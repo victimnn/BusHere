@@ -1,33 +1,66 @@
 import React, { useState, forwardRef, useImperativeHandle, useCallback } from 'react';
-import { Modal, View, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
+import { Modal, View, StyleSheet, TouchableWithoutFeedback, TouchableOpacity, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 // Usamos forwardRef para permitir que o componente pai obtenha uma referência a ele
 const PopUpComponent = forwardRef((props, ref) => {
-  // Estados para controlar a visibilidade e o conteúdo do pop-up
-  const [isVisible, setIsVisible] = useState(false);
-  const [content, setContent] = useState(null); // Armazena o Componente (tipo/função)
-  const [contentProps, setContentProps] = useState({}); // Armazena as props para o Componente
+  // Estado do modal contendo:
+  // - isVisible: controla se o modal está visível
+  // - ContentComponent: componente a ser renderizado dentro do modal
+  // - componentProps: props a serem passadas para o ContentComponent
+  // - title: título do modal
+  const [modalState, setModalState] = useState({
+    isVisible: false,
+    ContentComponent: null,
+    componentProps: {},
+    title: '',
+  });
 
-  // Função para esconder o pop-up
+  // Função para ocultar o modal
   const hide = useCallback(() => {
-    setIsVisible(false);
-  }, []); // Dependências vazias significam que a função hide é criada uma vez e reutilizada
+    setModalState({
+      isVisible: false,
+      ContentComponent: null,
+      componentProps: {},
+      title: '',
+    });
+  }, []);
 
-  // Função para mostrar o pop-up
-  // Recebe o Componente de conteúdo (seu tipo/função) e as props para ele
-  const show = useCallback((ContentComponent, componentProps = {}) => {
-    setContent(() => ContentComponent); // Armazena a referência do componente. O () => é para garantir que o React armazene a referência da função, não a chame.
-    setContentProps(componentProps); // Armazena as props
-    setIsVisible(true); // Torna o modal visível
-  }, []); // Dependências vazias significam que a função show é criada uma vez e reutilizada
+  /**
+   * Função para exibir o modal
+   * @param {Object} params - Parâmetros do modal
+   * @param {Function} params.content - Função que retorna o conteúdo do modal
+   * @param {Object} params.props - Props a serem passadas para o conteúdo
+   * @param {string} params.title - Título do modal
+   */
+  const show = useCallback(({ content, props = {}, title = '' }) => {
+    // Se content for função, cria componente que chama a função (mantém compatibilidade)
+    // Se for string ou JSX, apenas renderiza direto
+    let ContentComponent;
+    if (typeof content === 'function') {
+      ContentComponent = () => content({ close: hide, ...props });
+    } else if (typeof content === 'string') {
+      ContentComponent = () => <Text>{content}</Text>;
+    } else {
+      // JSX direto
+      ContentComponent = () => content;
+    }
+    setModalState({
+      isVisible: true,
+      ContentComponent,
+      componentProps: {},
+      title,
+    });
+  }, [hide]);
 
-  // Expõe as funções show e hide através da ref passada pelo componente pai
+  // Expõe as funções show e hide para componentes pais através da ref
   useImperativeHandle(ref, () => ({
-    show, // Torna a função show acessível via ref.current.show()
-    hide, // Torna a função hide acessível via ref.current.hide()
-  }));
+    show,
+    hide,
+  }), [show, hide]);
 
+  // Desestrutura o estado do modal
+  const { isVisible, ContentComponent, componentProps, title } = modalState;
   // O que o componente renderiza (o Modal)
   // O Modal é um componente que cobre toda a tela e exibe o conteúdo dentro dele
   return (
@@ -37,23 +70,24 @@ const PopUpComponent = forwardRef((props, ref) => {
       animationType="fade"
       onRequestClose={hide}
       statusBarTranslucent
-    > 
-      {/* O <TouchableWithoutFeedback> é usado para detectar toques fora do conteúdo do pop-up e fechar o modal */}
+    >
       <TouchableWithoutFeedback onPress={hide}>
-        {/* O <View> é o contêiner do fundo*/}
-        <View style={styles.overlay}> 
-
-          {/* Previne o fechamento do modal ao tocar no conteúdo */}
-          <TouchableWithoutFeedback onPress={() => {}}> 
-            {/* View do popUp em si */}
+        <View style={styles.overlay}>
+          <TouchableWithoutFeedback onPress={() => {}}>
             <View style={styles.popUpContainer}>
-              <TouchableOpacity onPress={hide}>
-                <Icon name="close" size={32} color="#000" />
-              </TouchableOpacity>
-              {/* Se tiver conteudo Renderiza o conteudo do popup */}
-              {/* Se o conteúdo não estiver definido, renderiza null (nada) */}
-              {content ? React.createElement(content, { ...contentProps, onClose: hide }) : null}
-              
+              {/* Cabeçalho do modal */}
+              <View style={styles.header}>
+                {/* Título opcional */}
+                {title ? <Text style={styles.title}>{title}</Text> : null}
+                {/* Botão de fechar */}
+                <TouchableOpacity onPress={hide} style={styles.closeButton}>
+                  <Icon name="close" size={32} color="#000" />
+                </TouchableOpacity>
+              </View>
+              {/* Corpo do modal onde o conteúdo é renderizado */}
+              <View style={styles.body}>
+                {ContentComponent && <ContentComponent {...componentProps} />}
+              </View>
             </View>
           </TouchableWithoutFeedback>
         </View>
@@ -72,11 +106,36 @@ const styles = StyleSheet.create({
   },
   popUpContainer: {
     backgroundColor: '#fff',
-    padding: 20,
+    padding: 0,
     borderRadius: 10,
     elevation: 5,
-    width: '80%', // Exemplo
-    maxWidth: 400, // Exemplo
+    width: '80%',
+    maxWidth: 400,
+    overflow: 'hidden',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    flex: 1,
+    color: '#222',
+  },
+  closeButton: {
+    marginLeft: 12,
+  },
+  body: {
+    padding: 20,
+    backgroundColor: '#fff',
   },
 });
 

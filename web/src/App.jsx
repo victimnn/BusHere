@@ -72,7 +72,7 @@ function App({ isDark, setIsDark }) {
                   <Route path="/drivers" element={<DriversPage pageFunctions={pageFunctions}/>} />
                   <Route path="/buses" element={<BusesPage pageFunctions={pageFunctions}/>} />
                   <Route path="/routes" element={<RoutesPage pageFunctions={pageFunctions}/>} />
-                  <Route path="/stops" element={<StopsPage pageFunctions={pageFunctions}/>} />
+                  <Route path="/stops" element={<StopsPage pageFunctions={pageFunctions} isDark={isDark}/>} />
                   <Route path="/reports" element={<ReportsPage pageFunctions={pageFunctions}/>} />
                   <Route path="/settings" element={<SettingsPage pageFunctions={pageFunctions} isDark={isDark} setIsDark={setIsDark}/>} />
                   <Route path="/login" element={<LoginPage pageFunctions={pageFunctions}/>} />
@@ -83,8 +83,8 @@ function App({ isDark, setIsDark }) {
                   <Route path="/drivers/:driverId" element={<DriverDetail pageFunctions={pageFunctions}/>} />
                   <Route path="/routes/:routeId" element={<RouteDetail pageFunctions={pageFunctions}/>} />
                   <Route path="/stops/:stopId" element={<StopDetail pageFunctions={pageFunctions}/>} />
-                  <Route path="/routes/new" element={<RouteStopsPage pageFunctions={pageFunctions}/>} />
-                  <Route path="/routes/:routeId/edit" element={<RouteStopsPage pageFunctions={pageFunctions}/>} />
+                  <Route path="/routes/new" element={<RouteStopsPage pageFunctions={pageFunctions} isDark={isDark}/>} />
+                  <Route path="/routes/:routeId/edit" element={<RouteStopsPage pageFunctions={pageFunctions} isDark={isDark}/>} />
 
                   <Route path="/search/:searchTerm" element={<SearchPage pageFunctions={pageFunctions}  />} />
                 </Routes>

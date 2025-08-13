@@ -82,7 +82,7 @@ app.get("/ping", (req, res) => {
 
 
 app.get("/", (req,res) => {
-    res.json({ message: "Hello World!" ,request: req.body});
+    res.json({ message: process.env ,request: req.body});
 });
 
 app.listen(PORT, ()=>{

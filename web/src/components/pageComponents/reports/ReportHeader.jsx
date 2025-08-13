@@ -1,4 +1,5 @@
 import React from 'react';
+import ActionButton from '../../common/ActionButton';
 
 const ReportHeader = ({ isLoading, onRefresh, onExport }) => {
   return (
@@ -17,21 +18,24 @@ const ReportHeader = ({ isLoading, onRefresh, onExport }) => {
               </p>
             </div>
             <div className="d-flex gap-2">
-              <button 
-                className="btn btn-outline-light border-2 shadow-sm"
+              <ActionButton
                 onClick={onRefresh}
+                icon={isLoading ? 'fas fa-sync-alt fa-spin' : 'fas fa-sync-alt'}
+                text="Atualizar"
+                variant="outline-light"
+                size="lg"
                 disabled={isLoading}
-              >
-                <i className={`fas fa-sync-alt me-1 ${isLoading ? 'fa-spin' : ''}`}></i>
-                <span className="d-none d-sm-inline">Atualizar</span>
-              </button>
-              <button 
-                className="btn btn-light text-primary fw-semibold shadow-sm"
+                loading={isLoading}
+                className="border-2 shadow-sm d-none d-sm-inline"
+              />
+              <ActionButton
                 onClick={onExport}
-              >
-                <i className="fas fa-download me-1"></i>
-                <span className="d-none d-sm-inline">Exportar</span>
-              </button>
+                icon="fas fa-download"
+                text="Exportar"
+                variant="light"
+                size="lg"
+                className="text-primary fw-semibold shadow-sm d-none d-sm-inline"
+              />
             </div>
           </div>
         </div>

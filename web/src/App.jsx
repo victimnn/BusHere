@@ -90,7 +90,6 @@ function App({ isDark, setIsDark }) {
                 </Routes>
               </div>
             </main>
-
           </div>
         </div>
       </AuthProvider>

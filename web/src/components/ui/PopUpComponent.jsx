@@ -44,16 +44,23 @@ const PopUpComponent = memo(forwardRef((props, ref) => {
    * Função para ocultar o modal
    * Reseta o estado para valores padrão e remove a classe modal-open do body
    */
-  const hide = useCallback(() => {
-    setModalState({
-      isVisible: false,
-      ContentComponent: null,
-      componentProps: {},
-      title: '',
-    });
-    // Remove a classe do body para restaurar o scroll da página
-    document.body.classList.remove('modal-open');
-  }, []);
+    // Fecha o PopUp sem confirmação
+    const hide = useCallback(() => {
+      setModalState({
+        isVisible: false,
+        ContentComponent: null,
+        componentProps: {},
+        title: '',
+      });
+      document.body.classList.remove('modal-open');
+    }, []);
+
+    // Fecha o PopUp com confirmação (usado no overlay)
+    const hideWithConfirm = useCallback(() => {
+      const confirmClose = window.confirm('Tem certeza que deseja sair do pop-up?');
+      if (!confirmClose) return;
+      hide();
+    }, [hide]);
 
   /**
    * Função para exibir o modal
@@ -70,7 +77,6 @@ const PopUpComponent = memo(forwardRef((props, ref) => {
       componentProps: props,
       title,
     });
-    // Adiciona classe no body para desabilitar scroll da página
     document.body.classList.add('modal-open');
   }, [hide]);
 
@@ -102,7 +108,7 @@ const PopUpComponent = memo(forwardRef((props, ref) => {
         display: isVisible ? 'block' : 'none',
         ...styles.fullScreenOverlay,
       }}
-      onClick={hide} // Fecha o modal ao clicar no overlay
+      onClick={hideWithConfirm} // Fecha o modal ao clicar no overlay, com confirmação
     >
       {/* Container do modal - previne o fechamento ao clicar dentro */}
       <div className="modal-dialog modal-dialog-centered d-flex justify-content-center" onClick={(e) => e.stopPropagation()}>

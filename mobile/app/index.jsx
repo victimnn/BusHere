@@ -1,12 +1,12 @@
-import { View, Text, StyleSheet, TouchableOpacity, Button, FlatList } from "react-native";
 import { useRouter } from 'expo-router';
+import { Button, StyleSheet, View } from "react-native";
 
 
 export default function IndexScreen() {
   const router = useRouter();
 
   const handleNavigate = () => {
-    router.replace('/auth/login');
+    router.push('/auth/login');
   };
 
   return (

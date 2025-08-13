@@ -1,12 +1,12 @@
-import { View, Text, StyleSheet, TouchableOpacity, Button, FlatList } from "react-native";
-import React, { useState, useRef, useCallback } from "react";
-import BottomSheet, { BottomSheetView, BottomSheetModal } from '@gorhom/bottom-sheet';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import api from "@mobile/api/api";
+import { useLocalSearchParams } from 'expo-router';
+import { useCallback, useRef, useState } from "react";
+import { Button, StyleSheet, Text, View } from "react-native";
 
+import BusLineCard from "@mobile/components/BusLineCard";
+import PopUpComponent from "@mobile/components/PopUpComponent";
 import SearchBar from "@mobile/components/SearchBar";
-import BusLineCard from "@mobile/components/BusLineCard"
-import PopUpComponent from "@mobile/components/PopUpComponent"
 
 function PopUpContent(){
   return (
@@ -42,6 +42,7 @@ function SheetFull(){
 }
 
 export default function IndexScreen() {
+  const param = useLocalSearchParams();
   const snapPoints = ["40%","95%"]
   const [bottomSheetIndex, setBottomSheetIndex] = useState(0) //Começa no primeiro ponto
   const bottomSheetModalRef = useRef(null);
@@ -93,6 +94,10 @@ export default function IndexScreen() {
           >
 
         </Button>
+        <Text>
+          {JSON.stringify(param)}
+        </Text>
+
         <BottomSheetModal
           enablePanDownToClose={false}
           index={0}
@@ -100,6 +105,7 @@ export default function IndexScreen() {
           onChange={handleBottomSheetChanges}
           ref={bottomSheetModalRef}
           >
+
           <BottomSheetView style={styles.contentContainer}>
             <Text>{bottomSheetIndex}</Text>
             {renderContent()}

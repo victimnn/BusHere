@@ -1,4 +1,5 @@
 import React from 'react';
+import ActionButton from '../../common/ActionButton';
 import api from '@web/api/api';
 
 const MapClickPopup = ({ latlng, onCreateStop, onCancel }) => {
@@ -59,21 +60,22 @@ const MapClickPopup = ({ latlng, onCreateStop, onCancel }) => {
       </div>
       
       <div className="d-flex gap-3 justify-content-center">
-        <button 
-          className="btn btn-primary btn-lg px-4 py-2"
+        <ActionButton
           onClick={handleCreateClick}
-        >
-          <i className="bi bi-plus-circle me-2"></i>
-          <span>Criar Ponto</span>
-        </button>
-        <button 
-          type="button" 
-          className="btn btn-outline-secondary btn-lg px-4 py-2" 
+          icon="bi bi-plus-circle"
+          text="Criar Ponto"
+          variant="primary"
+          size="lg"
+          className="px-4 py-2"
+        />
+        <ActionButton
           onClick={onCancel}
-        >
-          <i className="bi bi-x-circle me-2"></i>
-          Cancelar
-        </button>
+          icon="bi bi-x-circle"
+          text="Cancelar"
+          variant="outline-secondary"
+          size="lg"
+          className="px-4 py-2"
+        />
       </div>
     </div>
   );

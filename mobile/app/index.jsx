@@ -1,19 +1,24 @@
 import { View, Text, StyleSheet, TouchableOpacity, Button, FlatList } from "react-native";
+import { useRouter } from 'expo-router';
 
-import PopUpComponent from "@mobile/components/PopUpComponent"
 
 export default function IndexScreen() {
+  const router = useRouter();
+
+  const handleNavigate = () => {
+    router.replace('/auth/login');
+  };
+
   return (
       <View style={styles.container}>
-        
-
-        <PopUpComponent ref={popUpRef} />
+        <Button onPress={handleNavigate} title="Navigate" />
       </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop:20,
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",

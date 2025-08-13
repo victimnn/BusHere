@@ -19,7 +19,7 @@ export default function Layout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <BottomSheetModalProvider>
-        <Stack screenOptions={{ headerShown: false }} />
+        <Stack screenOptions={{ headerShown: true }} />
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );

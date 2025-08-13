@@ -59,6 +59,7 @@ const routeRoutes = require("./routeRoutes")(pool);
 const reportsRoutes = require("./reportsRoutes")(pool);
 const lastChangeRoutes = require("./lastChangeRoutes")(pool);
 const enterpriseUserRoutes = require("./enterpriseUserRoutes")(pool);
+const debugRoutes = require("./debugRoutes.js")(pool);
 //const XXXXRoutes = require("./XXXX")(pool);
 //const YYYYRoutes = require("./YYYY")(pool);
 
@@ -73,6 +74,7 @@ app.use("/api/routes", routeRoutes);
 app.use("/api/reports", reportsRoutes);
 app.use("/api/lastChanges", lastChangeRoutes);
 app.use("/api/enterpriseUsers", enterpriseUserRoutes);
+app.use("/debug", debugRoutes);
 //app.use("/api/XXXX", XXXXRoutes);
 //app.use("/api/YYYY", YYYYRoutes);
 
@@ -81,12 +83,9 @@ app.get("/ping", (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  // Executa o script setupDB.js
-  require('./setupDB.js');
-  res.json({ message: process.env ,request: req.body});
+    res.json({ message: "Bem-vindo à API!" });
 });
 
 app.listen(PORT, ()=>{
-    //console.log(process.env)
     console.log(`Servidor rodando na porta ${PORT}`);
 });

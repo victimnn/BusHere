@@ -165,7 +165,12 @@ async function runMigrations() {
     }
 
     console.log("Setup do banco de dados finalizado!");
-    process.exit(0); // Sai do processo com sucesso
+
+    if (process.argv.includes("--usandoSetup=true")) {
+        process.exit(0); // Sai do processo com sucesso
+    } else {
+        return; // Retorna para evitar sair do processo, permitindo que o servidor continue rodando
+    }
 }
 // Inicia o processo de migração
 runMigrations();

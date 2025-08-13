@@ -53,11 +53,6 @@
         color: $text-dark;
         text-decoration: none;
         
-        // Garantir que a cor seja mantida independente do estado do link
-        &, &:link, &:visited, &:hover, &:active {
-          text-decoration: none;
-        }
-        
         // Otimização de performance
         will-change: transform, box-shadow;
         
@@ -66,7 +61,6 @@
           transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
           box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
           border-left 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-          background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
           color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         
         // Preparar para border-left animado
@@ -76,23 +70,51 @@
           border-bottom: none;
         }
         
+        // Pseudo-elemento para efeito de hover suave
+        &::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: $bg-light;
+          opacity: 0;
+          transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+          pointer-events: none;
+          z-index: 1;
+        }
+        
+        // Garantir que o conteúdo fique sobre o pseudo-elemento
+        > * {
+          position: relative;
+          z-index: 2;
+        }
+        
         &:hover {
           transform: translateX(6px);
           box-shadow: 0 4px 12px rgba(18, 190, 77, 0.15);
           border-left-color: $primary;
-          background-color: $bg-light;
           color: $primary-dark;
+          
+          &::before {
+            opacity: 1;
+          }
           
           i {
             transform: scale(1.1);
-            color: $primary-dark !important;
+            color: $primary-dark;
           }
         }
         
         &:active {
           transform: translateX(3px);
           transition-duration: 0.1s;
-          background-color: $primary-light-opacity;
+          
+          &::before {
+            background-color: $primary-light-opacity;
+            opacity: 1;
+          }
         }
         
         // Ícones dos resultados

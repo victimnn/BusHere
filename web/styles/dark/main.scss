@@ -1,0 +1,46 @@
+// =============================================================================
+// MAIN SCSS - ARQUIVO PRINCIPAL DE ESTILOS
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// 1. BASE - Configurações fundamentais
+// -----------------------------------------------------------------------------
+@import './base/variables';
+@import './base/mixins';
+@import './base/bootstrap';
+
+// Importar Bootstrap após as configurações
+@import "bootstrap";
+
+// -----------------------------------------------------------------------------
+// 2. LAYOUT - Sistema de grid e responsividade
+// -----------------------------------------------------------------------------
+@import './layout/grid';
+@import './layout/responsive';
+
+// -----------------------------------------------------------------------------
+// 3. COMPONENTS - Componentes reutilizáveis
+// -----------------------------------------------------------------------------
+@import './components/buttons';
+@import './components/cards';
+@import './components/forms';
+@import './components/tables';
+@import './components/notifications';
+@import './components/drag-drop';
+@import './components/sidebar';
+
+// -----------------------------------------------------------------------------
+// 4. PAGES - Estilos específicos de páginas
+// -----------------------------------------------------------------------------
+@import './pages/route-stops';
+@import './pages/stops';
+@import './pages/detail';
+@import './pages/reports';
+@import './pages/search';
+@import './pages/search-fixed';
+
+// -----------------------------------------------------------------------------
+// 5. UTILS - Utilitários e helpers
+// -----------------------------------------------------------------------------
+@import './utils/animations';
+@import './utils/helpers';

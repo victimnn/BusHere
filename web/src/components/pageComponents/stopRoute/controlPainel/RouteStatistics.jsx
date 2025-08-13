@@ -22,7 +22,7 @@ function RouteStatistics({ stats, pontosSelecionados, advancedStats = null }) {
                 <div className="card-body p-3">
                     <div className="row g-3">
                         <div className="col-6">
-                            <div className="text-center p-2 rounded" style={{ backgroundColor: '#f8f9fa' }}>
+                            <div className="text-center p-2 rounded bg-medium route-stat-card">
                                 <div className="d-flex align-items-center justify-content-center mb-1">
                                     <i className="bi bi-sign-turn-slight-right text-success me-2"></i>
                                     <small className="text-muted fw-medium">
@@ -38,7 +38,7 @@ function RouteStatistics({ stats, pontosSelecionados, advancedStats = null }) {
                             </div>
                         </div>
                         <div className="col-6">
-                            <div className="text-center p-2 rounded" style={{ backgroundColor: '#f8f9fa' }}>
+                            <div className="text-center p-2 rounded bg-medium route-stat-card">
                                 <div className="d-flex align-items-center justify-content-center mb-1">
                                     <i className="bi bi-clock text-info me-2"></i>
                                     <small className="text-muted fw-medium">Tempo</small>

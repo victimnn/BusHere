@@ -1,0 +1,275 @@
+// =============================================================================
+// REPORTS PAGE - ESTILOS PARA PÁGINA DE RELATÓRIOS
+// =============================================================================
+
+@import '../base/variables';
+@import '../base/mixins';
+
+// -----------------------------------------------------------------------------
+// BARRAS DE PROGRESSO
+// -----------------------------------------------------------------------------
+.progress {
+  background-color: rgba($primary, 0.1) !important;
+  border-radius: $border-radius;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, $primary 0%, $primary-light 100%);
+}
+
+// -----------------------------------------------------------------------------
+// CONTAINERS DE CHART
+// -----------------------------------------------------------------------------
+.chart-container {
+  position: relative;
+  height: 250px;
+  max-height: 250px;
+  background: rgba($bg-medium, 0.5);
+  border-radius: $border-radius;
+  padding: 1rem;
+}
+
+.chart-card {
+  min-height: 350px;
+  max-height: 450px;
+  border-radius: $border-radius !important;
+  border: 1px solid rgba($border-color, 0.5);
+  background: rgba($white, 0.95);
+  backdrop-filter: blur(8px);
+
+  .card-body {
+    height: 300px;
+    overflow: hidden;
+    padding: 1.5rem;
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, $bg-medium 0%, $white 100%);
+    border-bottom: 1px solid rgba($primary, 0.1);
+    border-radius: $border-radius $border-radius 0 0 !important;
+  }
+
+  @include mobile-only {
+    min-height: 300px;
+    max-height: 350px;
+
+    .card-body {
+      height: 250px;
+      padding: 1rem;
+    }
+  }
+
+  @include small-mobile {
+    .card-body {
+      height: 200px;
+      padding: 0.75rem;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// CONTADOR ANIMADO
+// -----------------------------------------------------------------------------
+.animated-counter {
+  display: inline-block;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: $white;
+}
+
+// -----------------------------------------------------------------------------
+// CARDS DE ESTATÍSTICAS
+// -----------------------------------------------------------------------------
+.stats-card {
+  .card-body {
+    position: relative;
+    z-index: 2;
+    border-radius: $border-radius;
+
+    h2 {
+      @include mobile-only {
+        font-size: 1.5rem !important;
+      }
+
+      @include small-mobile {
+        font-size: 1.3rem !important;
+      }
+    }
+  }
+
+  min-height: 140px;
+  max-height: 180px;
+  border-radius: $border-radius !important;
+  border: none;
+  box-shadow: $box-shadow-sm;
+
+  @include mobile-only {
+    min-height: 120px;
+    max-height: 150px;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// CARDS DE MÉTRICAS E PERFORMANCE
+// -----------------------------------------------------------------------------
+.metric-card {
+  background: rgba($white, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba($primary, 0.1);
+  border-radius: $border-radius;
+
+  &:hover {
+    border-color: rgba($primary, 0.2);
+    background: rgba($white, 1);
+  }
+}
+
+.performance-card {
+  border-radius: $border-radius !important;
+  border: 1px solid rgba($border-color, 0.5);
+  background: rgba($white, 0.98);
+  transition: $btn-transition;
+
+  &:hover {
+    border-color: rgba($primary, 0.2);
+    box-shadow: 0 .25rem .5rem rgba($primary, .1);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// TEXTO COM GRADIENTE
+// -----------------------------------------------------------------------------
+.gradient-text {
+  background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+}
+
+// -----------------------------------------------------------------------------
+// BOTÕES ESPECÍFICOS PARA REPORTS
+// -----------------------------------------------------------------------------
+.btn-outline-primary {
+  border-color: $primary;
+  color: $primary;
+  border-radius: $border-radius;
+  transition: $btn-transition;
+  font-weight: 500;
+
+  &:hover {
+    background-color: $primary;
+    border-color: $primary;
+    color: $white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba($primary, 0.3);
+  }
+}
+
+// Estilo específico para botão outline-light no header
+.bg-gradient-primary .btn-outline-light {
+  &:hover {
+    background-color: rgba($white, 1);
+    border-color: rgba($white, 1);
+    color: $primary !important;
+    box-shadow: 0 4px 8px rgba($white, 0.2);
+  }
+
+  &:focus {
+    background-color: rgba($white, 0.15);
+    border-color: rgba($white, 0.3);
+    color: $white !important;
+    box-shadow: 0 0 0 0.2rem rgba($white, 0.25);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    background-color: transparent;
+    border-color: rgba($white, 0.3);
+    color: rgba($white, 0.7) !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// LAYOUT PRINCIPAL DOS REPORTS
+// -----------------------------------------------------------------------------
+.reports-main {
+  height: auto;
+  min-height: calc(100vh - 120px);
+  overflow-x: hidden;
+  overflow-y: visible;
+  padding-bottom: 2rem;
+  scroll-behavior: smooth;
+  background: linear-gradient(135deg, $bg-medium 0%, $white 100%);
+
+  &.container-fluid {
+    max-height: none;
+    height: auto;
+    overflow-y: visible !important;
+    padding-top: 1rem;
+    background: transparent;
+  }
+
+  @include mobile-only {
+    padding-bottom: 1rem;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ESTILOS PARA ELEMENTOS CIRCULARES PERFEITOS
+// -----------------------------------------------------------------------------
+.btn-secondary {
+  &.p-2 {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    @include flex-center();
+    font-size: 0.875rem !important;
+    line-height: 1 !important;
+    font-weight: bold !important;
+    min-width: 32px !important;
+    
+    &:hover {
+      transform: scale(1.05) !important;
+      transition: transform 0.2s ease !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// RESPONSIVIDADE GERAL
+// -----------------------------------------------------------------------------
+@include small-mobile {
+  .chart-container {
+    height: 200px;
+    max-height: 200px;
+    padding: 0.5rem;
+  }
+
+  .btn {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// MELHORIAS DE ACESSIBILIDADE
+// -----------------------------------------------------------------------------
+.card-title {
+  color: rgba($white, 0.9);
+  font-weight: 500;
+}
+
+.alert-info {
+  background-color: rgba($info, 0.1);
+  border-color: rgba($info, 0.2);
+  color: $info;
+}
+
+.alert-success {
+  background-color: rgba($primary, 0.1);
+  border-color: rgba($primary, 0.2);
+  color: $primary;
+}

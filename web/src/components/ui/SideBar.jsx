@@ -12,13 +12,11 @@ function SideButton({name, icon, href = "#", isOpen = false, style = {}}){
     return (
     <Link
         to={href} 
-        className={`d-flex align-items-center rounded-3 text-decoration-none w-100 mb-1 position-relative overflow-hidden`}
+        className={`sidebar-button d-flex align-items-center rounded-3 text-decoration-none w-100 mb-1 position-relative overflow-hidden ${isActive ? 'active' : ''}`}
         style={{
             transition: "all 0.3s ease",
-            backgroundColor: isActive ? "rgba(61, 253, 13, 0.1)" : (isButtonHovered ? "rgba(18, 190, 77, 0.05)" : "transparent"),
-            borderLeft: isActive ? "3px solid #12BE4D" : "3px solid transparent",
             padding: "12px",
-            minHeight: "44px", // Garante altura mínima
+            minHeight: "44px",
             ...style
         }}
         onMouseEnter={() => setIsButtonHovered(true)}
@@ -29,7 +27,6 @@ function SideButton({name, icon, href = "#", isOpen = false, style = {}}){
              style={{ 
                  fontSize: "1.2rem", 
                  minWidth: "24px",
-                 color: isActive ? "#12BE4D" : (isButtonHovered ? "#12BE4D" : "#6c757d"),
                  transition: "color 0.3s ease"
              }} />
           <span 
@@ -37,8 +34,7 @@ function SideButton({name, icon, href = "#", isOpen = false, style = {}}){
               style={{
                   opacity: isOpen ? 1 : 0,
                   transition: "opacity 0.3s ease",
-                  whiteSpace: "nowrap",
-                  color: isActive ? "#12BE4D" : (isButtonHovered ? "#12BE4D" : "#212529")
+                  whiteSpace: "nowrap"
               }}
           > 
             {name}
@@ -76,8 +72,6 @@ function SideBar() {
           height: "100vh",
           width: sidebarWidth,
           transition: "width 0.3s ease",
-          background: "linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%)",
-          borderRight: "1px solid rgba(0,0,0,0.08)",
           overflow: "hidden",
           flexShrink: 0,
         }}
@@ -85,12 +79,12 @@ function SideBar() {
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Header da Sidebar */}
-        <div className="border-bottom p-3" style={{ borderColor: "rgba(0,0,0,0.05)" }}>
+        <div className="sidebar-header border-bottom p-3">
           <div className="d-flex align-items-center">
             <div className="d-flex align-items-center justify-content-center">
               <img src="/logo.svg" alt="Logo" className="logo-primary" style={{ width: "40px", height: "40px" }} />
             </div>
-            <h5 className="mb-0 fw-bold text-dark ms-3"
+            <h5 className="sidebar-title mb-0 fw-bold ms-3"
                 style={{
                     opacity: isHovered ? 1 : 0,
                     transition: "opacity 0.3s ease",
@@ -102,7 +96,7 @@ function SideBar() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-grow-1 p-2">
+        <nav className="sidebar-nav flex-grow-1 p-2">
           <SideButton
             name="Início"
             icon="house-fill"
@@ -148,7 +142,7 @@ function SideBar() {
         </nav>
 
         {/* Footer */}
-        <div className="p-2 border-top" style={{ borderColor: "rgba(0,0,0,0.05)" }}>
+        <div className="sidebar-footer p-2 border-top">
           <SideButton
             name="Configurações"
             icon="gear-fill"

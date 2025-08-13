@@ -2,21 +2,18 @@ import React from 'react';
 import AnimatedCounter from '../pageComponents/reports/AnimatedCounter';
 
 const StatCard = ({ 
-  title, 
-  value, 
-  iconClass, 
-  gradient, 
-  onClick, 
-  className = "col-lg-4 col-md-6 mb-4" 
+  title,
+  value,
+  iconClass,
+  gradient = "bg-gradient-primary",
+  onClick,
+  className = "col-lg-4 col-md-6 mb-4"
 }) => {
   return (
     <div className={className}>
-      <div 
-        className="card border-0 shadow-sm h-100 stats-card card-hover" 
-        style={{
-          background: gradient, 
-          cursor: onClick ? 'pointer' : 'default'
-        }}
+      <div
+        className={`card border-0 shadow-sm h-100 stats-card card-hover ${gradient}`}
+        style={{ cursor: onClick ? 'pointer' : 'default' }}
         onClick={onClick}
       >
         <div className="card-body text-white">

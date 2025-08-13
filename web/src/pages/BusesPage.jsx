@@ -228,6 +228,7 @@ function Buses({ pageFunctions }) {
             </p>
           </div>
         </div>
+        <br/>
 
         <PopUpComponent 
           ref={popUpRef}

@@ -35,7 +35,7 @@ const MobileControlPanel = ({
                     zIndex: 1055
                 }}
             >
-                <div className="offcanvas-header border-bottom bg-light">
+                <div className="offcanvas-header border-bottom bg-medium">
                     <h5 className="offcanvas-title fw-bold text-primary">
                         <i className="fas fa-route me-2"></i>
                         {isEditMode ? 'Editar Rota' : 'Controles da Rota'}

@@ -98,7 +98,7 @@ function RecentActivityTable({ data = [], itemsPerPage = 5, popUpRef = null }) {
   // Renderiza estado de loading só quando é necessário
   if (shouldShowLoading) {
     return (
-      <div className="card border-0 shadow-sm mb-4">
+      <div className="card border-0 shadow-sm mb-3">
         <div className="card-header bg-white py-3">
           <div className="d-flex justify-content-between align-items-center">
             <div className="d-flex align-items-center">
@@ -121,7 +121,7 @@ function RecentActivityTable({ data = [], itemsPerPage = 5, popUpRef = null }) {
   // Renderiza estado de erro so quando é necessário
   if (shouldShowError) {
     return (
-      <div className="card border-0 shadow-sm mb-4">
+      <div className="card border-0 shadow-sm mb-3">
         <div className="card-header bg-white py-3">
           <div className="d-flex justify-content-between align-items-center">
             <div className="d-flex align-items-center">
@@ -144,7 +144,7 @@ function RecentActivityTable({ data = [], itemsPerPage = 5, popUpRef = null }) {
   }
 
   return (
-    <div className="card border-0 shadow-sm mb-4">
+    <div className="card border-0 shadow-sm mb-3">
       <div className="card-header bg-white py-3">
         <div className="d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center">

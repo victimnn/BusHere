@@ -1,0 +1,325 @@
+// =============================================================================
+// STOPS PAGE - PÁGINA DE PONTOS - MODO CLARO
+// =============================================================================
+
+@import '../base/variables';
+@import '../base/mixins';
+
+// -----------------------------------------------------------------------------
+// PÁGINA DE PONTOS
+// -----------------------------------------------------------------------------
+.stops-page {
+  background-color: $body-bg;
+
+  // Container do mapa
+  .map-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    background-color: #f8f9fa; // Fundo claro para melhor contraste
+    
+    .leaflet-container {
+      height: 100% !important;
+      width: 100% !important;
+      background-color: #f8f9fa !important; // Fundo claro
+    }
+  }
+
+  // Seções de componentes
+  .stops-map-section,
+  .stops-list-section,
+  .stops-table-section {
+    .card {
+      background-color: $card-bg !important;
+      border: 1px solid $border-color !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+      
+      .card-header {
+        background-color: $bg-medium !important;
+        border-bottom: 1px solid $border-color !important;
+        color: $dark !important;
+        
+        &.bg-light {
+          background-color: $bg-medium !important;
+        }
+        
+        h6 {
+          color: $dark !important;
+        }
+      }
+      
+      .card-body {
+        background-color: $card-bg !important;
+        color: $dark !important;
+      }
+    }
+  }
+
+  // Informações auxiliares
+  .info-card,
+  .card.bg-light {
+    background-color: $bg-medium !important;
+    border: 1px solid $border-color !important;
+    color: $dark !important;
+    
+    .text-primary {
+      color: $primary !important;
+    }
+    
+    .text-muted {
+      color: $text-muted !important;
+    }
+    
+    p {
+      color: $dark !important;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// COMPONENTE DE LISTA DE PONTOS
+// -----------------------------------------------------------------------------
+.stops-container {
+  background-color: transparent !important;
+  
+  .stop-component {
+    background-color: $card-bg !important;
+    border: 1px solid $border-color !important;
+    color: $dark !important;
+    
+    &.bg-light {
+      background-color: $card-bg !important;
+    }
+    
+    &:hover {
+      background-color: darken($card-bg, 3%) !important;
+      border-color: rgba($primary, 0.3) !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .bg-primary {
+      background-color: $primary !important;
+      color: $white !important;
+    }
+    
+    .text-primary {
+      color: $primary !important;
+    }
+    
+    .text-success {
+      color: $success !important;
+    }
+    
+    .text-muted {
+      color: $text-muted !important;
+    }
+    
+    h6 {
+      color: $dark !important;
+    }
+  }
+  
+  // Estado vazio
+  .empty-state {
+    color: $text-muted !important;
+    
+    p {
+      color: $text-muted !important;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// POPUPS E MODAIS
+// -----------------------------------------------------------------------------
+.map-click-popup {
+  background-color: $card-bg !important;
+  color: $dark !important;
+  
+  .bg-light {
+    background-color: $bg-medium !important;
+  }
+  
+  .text-dark {
+    color: $dark !important;
+  }
+  
+  .text-primary {
+    color: $primary !important;
+  }
+  
+  .font-monospace {
+    color: $dark !important;
+  }
+  
+  h5 {
+    color: $dark !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ESTILOS ESPECÍFICOS PARA LEAFLET EM MODO CLARO
+// -----------------------------------------------------------------------------
+.stops-page {
+  // Controles do Leaflet
+  .leaflet-control-container {
+    .leaflet-control {
+      background-color: #ffffff !important; // Fundo branco para controles
+      border: 1px solid #dee2e6 !important; // Borda mais visível
+      color: #212529 !important; // Texto escuro
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+      
+      a {
+        background-color: #ffffff !important;
+        color: #212529 !important;
+        border-bottom: 1px solid #dee2e6 !important;
+        
+        &:hover {
+          background-color: lighten($primary, 45%) !important;
+          color: $primary !important;
+        }
+      }
+    }
+    
+    .leaflet-control-zoom {
+      a {
+        &.leaflet-control-zoom-in,
+        &.leaflet-control-zoom-out {
+          background-color: #ffffff !important;
+          color: #212529 !important;
+          font-weight: 600;
+          
+          &:hover {
+            background-color: $primary !important;
+            color: $white !important;
+            transform: scale(1.05);
+          }
+        }
+      }
+    }
+    
+    .leaflet-control-attribution {
+      background-color: rgba(255, 255, 255, 0.9) !important;
+      color: #6c757d !important;
+      border: 1px solid #dee2e6 !important;
+      
+      a {
+        color: darken($primary, 10%) !important;
+        
+        &:hover {
+          color: darken($primary, 20%) !important;
+        }
+      }
+    }
+  }
+  
+  // Popups do mapa
+  .leaflet-popup {
+    .leaflet-popup-content-wrapper {
+      background-color: #ffffff !important; // Fundo branco para popup
+      color: #212529 !important;
+      border-radius: $border-radius !important;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+      border: 1px solid #dee2e6 !important; // Borda para definir melhor
+    }
+    
+    .leaflet-popup-content {
+      color: #212529 !important;
+      
+      h6, .fw-bold {
+        color: #212529 !important; // Títulos escuros
+      }
+      
+      .text-muted {
+        color: #6c757d !important; // Texto muted
+      }
+      
+      small {
+        color: #495057 !important;
+      }
+      
+      .btn {
+        background-color: $primary !important;
+        border-color: $primary !important;
+        color: $white !important;
+        
+        &:hover {
+          background-color: darken($primary, 10%) !important;
+          border-color: darken($primary, 10%) !important;
+        }
+      }
+      
+      .btn-outline-primary {
+        border-color: $primary !important;
+        color: $primary !important;
+        background-color: transparent !important;
+        
+        &:hover {
+          background-color: $primary !important;
+          color: $white !important;
+        }
+      }
+      
+      .btn-outline-danger {
+        border-color: $danger !important;
+        color: $danger !important;
+        background-color: transparent !important;
+        
+        &:hover {
+          background-color: $danger !important;
+          color: $white !important;
+        }
+      }
+    }
+    
+    .leaflet-popup-tip {
+      background-color: #ffffff !important;
+      border: 1px solid #dee2e6 !important;
+    }
+  }
+  
+  // Tooltips do mapa
+  .leaflet-tooltip {
+    background-color: rgba($card-bg, 0.95) !important;
+    color: $dark !important;
+    border: 1px solid $border-color !important;
+    border-radius: $border-radius-sm !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    
+    &.leaflet-tooltip-top:before {
+      border-top-color: $border-color !important;
+    }
+    
+    &.leaflet-tooltip-bottom:before {
+      border-bottom-color: $border-color !important;
+    }
+    
+    &.leaflet-tooltip-left:before {
+      border-left-color: $border-color !important;
+    }
+    
+    &.leaflet-tooltip-right:before {
+      border-right-color: $border-color !important;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// RESPONSIVIDADE
+// -----------------------------------------------------------------------------
+@include mobile-only {
+  .stops-page {
+    .row {
+      margin: 0;
+      
+      .col-lg-8,
+      .col-lg-4 {
+        padding: 0 0.5rem;
+      }
+    }
+    
+    .map-container {
+      height: 60vh !important;
+    }
+  }
+}

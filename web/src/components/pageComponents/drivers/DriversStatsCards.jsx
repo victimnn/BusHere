@@ -23,25 +23,29 @@ const STATS_CONFIG = {
   total: {
     title: "Total de Motoristas",
     iconClass: "bi bi-person-fill-gear",
-    gradient: "linear-gradient(135deg, #007BFF 0%, #0056B3 100%)",
+    className: "col-12 col-sm-6 col-lg-3",
+    gradient: "bg-gradient-info",
     popupTitle: 'Total de Motoristas'
   },
   active: {
     title: "Motoristas Ativos",
     iconClass: "bi bi-person-check-fill",
-    gradient: "linear-gradient(135deg, #12BE4D 0%, #0E8F3A 100%)",
+    className: "col-12 col-sm-6 col-lg-3",
+    gradient: "bg-gradient-primary",
     popupTitle: 'Motoristas Ativos'
   },
   holiday: {
     title: "Motoristas em Férias",
     iconClass: "bi bi-person-fill-dash",
-    gradient: "linear-gradient(135deg, #FFC107 0%, #E0A800 100%)",
+    className: "col-12 col-sm-6 col-lg-3",
+    gradient: "bg-gradient-warning",
     popupTitle: 'Motoristas em Férias'
   },
   expiring: {
     title: "CNH Próxima do Vencimento",
     iconClass: "bi bi-exclamation-triangle-fill",
-    gradient: "linear-gradient(135deg, #FF6B6B 0%, #FFC107 100%)",
+    className: "col-12 col-sm-6 col-lg-3",
+    gradient: "bg-gradient-danger",
     popupTitle: 'CNH Próxima do Vencimento'
   }
 };

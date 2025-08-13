@@ -60,7 +60,7 @@ export function sincronizeMarkers(stops, setMarkers, popUpRef, onDelete = null, 
   return newMarkers;
 }
 
-function Stops({ pageFunctions }) {
+function Stops({ pageFunctions, isDark }) {
   const popUpRef = useRef(null);
   
   // Hook para gerenciar dados dos pontos
@@ -239,7 +239,7 @@ function Stops({ pageFunctions }) {
   }, [mapCenter, zoom, markers, stops, isLoading, error]);
 
   return (
-    <main className="ps-3 pe-3 pt-3">
+    <main className="ps-3 pe-3 pt-3 stops-page">
       <div className="container-fluid">
         <div className="card border-0 shadow-sm mb-4">
           
@@ -270,6 +270,7 @@ function Stops({ pageFunctions }) {
                     polylines={polylines}
                     onMapClick={handleMapClick}
                     onZoomChange={handleZoomChange}
+                    isDark={isDark}
                   />
                   
                   <StopsListSection stops={stops} />
@@ -295,6 +296,7 @@ function Stops({ pageFunctions }) {
             </p>
           </div>
         </div>
+        <br/>
 
         <PopUpComponent 
           ref={popUpRef}

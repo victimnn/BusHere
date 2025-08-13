@@ -1,8 +1,10 @@
+
 import StopDetails from "./StopDetails";
+import { formatAddress, formatCoordinates } from '@web/utils/routeStopsUtils';
 
 function MarkerPopUpContent({ stop, popUpRef, onDelete, onEdit }) {
   return (
-    <div className="p-3" style={{ minWidth: '280px', maxWidth: '320px' }}>
+    <div className="card shadow-sm border-0 p-3" style={{ minWidth: '280px', maxWidth: '320px' }}>
       {/* Header com nome e status */}
       <div className="d-flex justify-content-between align-items-start mb-3">
         <div className="flex-grow-1">
@@ -19,7 +21,7 @@ function MarkerPopUpContent({ stop, popUpRef, onDelete, onEdit }) {
           <i className="bi bi-geo-alt-fill text-danger me-2 mt-1"></i>
           <div className="flex-grow-1">
             <small className="text-muted d-block">Endereço:</small>
-            <span className="fw-medium">
+            <span className="fw-medium text-dark">
               {stop.logradouro}, {stop.numero_endereco}
             </span>
             <br />
@@ -45,8 +47,8 @@ function MarkerPopUpContent({ stop, popUpRef, onDelete, onEdit }) {
           <i className="bi bi-crosshair text-secondary me-2 mt-1"></i>
           <div className="flex-grow-1">
             <small className="text-muted d-block">Coordenadas:</small>
-            <code className="small bg-light px-2 py-1 rounded">
-              {Number(stop.latitude).toFixed(4)}, {Number(stop.longitude).toFixed(4)}
+            <code className="small bg-medium text-dark px-2 py-1 rounded coordinates-code">
+              {formatCoordinates(parseFloat(stop.latitude), parseFloat(stop.longitude), 4)}
             </code>
           </div>
         </div>

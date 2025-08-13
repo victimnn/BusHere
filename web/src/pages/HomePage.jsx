@@ -127,6 +127,7 @@ function HomePage({pageFunctions}) {
                     />
                 )}
             </div>
+            <br/>
             
             <PopUpComponent 
                 ref={popUpRef}

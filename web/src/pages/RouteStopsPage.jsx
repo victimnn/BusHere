@@ -41,7 +41,7 @@ import { RouteControls } from '@web/components/pageComponents/stopRoute/RouteCon
  * @property {number} tempoEstimado
  */
 
-function RouteStopsPage({ pageFunctions }) {
+function RouteStopsPage({ pageFunctions, isDark }) {
     const navigate = useNavigate();
     const { routeId } = useParams(); // Para capturar ID da rota em caso de edição
     const isEditMode = Boolean(routeId); // Determina se está em modo de edição
@@ -377,6 +377,7 @@ function RouteStopsPage({ pageFunctions }) {
                     zoom={CONSTANTS.MAP_ZOOM}
                     markers={markers}
                     polylines={polylines}
+                    isDark={isDark}
                 />
 
                 {/* Elementos flutuantes */}

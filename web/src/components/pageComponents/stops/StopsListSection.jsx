@@ -3,7 +3,7 @@ import StopsContainer from './StopsContainer';
 
 const StopsListSection = ({ stops }) => {
   return (
-    <div className="col-lg-4">
+    <div className="col-lg-4 stops-list-section">
       <div className="card border-0 shadow-sm h-100">
         <div className="card-header bg-light py-2">
           <h6 className="mb-0 fw-semibold">

@@ -64,7 +64,7 @@ export const RouteComparison = ({ advancedStats, className = "", onSpeedChange, 
     return (
         <div className={`route-comparison ${className}`}>
             <div className="card border-0 shadow-sm">
-                <div className="card-header bg-light border-0">
+                <div className="card-header bg-medium border-0">
                     <div className="d-flex justify-content-between align-items-center">
                         <h6 className="mb-0 fw-bold text-dark">
                             <i className="bi bi-graph-up me-2"></i>

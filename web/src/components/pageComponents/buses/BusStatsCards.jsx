@@ -21,25 +21,29 @@ const STATS_CONFIG = {
   total: {
     title: "Total de Ônibus",
     iconClass: "bi bi-bus-front-fill",
-    gradient: "linear-gradient(135deg, #007BFF 0%, #0056B3 100%)",
+    className: "col-12 col-sm-6 col-lg-3",
+    gradient: "bg-gradient-info",
     popupTitle: 'Total de Ônibus'
   },
   operational: {
     title: "Em Operação",
     iconClass: "bi bi-check-circle-fill",
-    gradient: "linear-gradient(135deg, #12BE4D 0%, #0E8F3A 100%)",
+    className: "col-12 col-sm-6 col-lg-3",
+    gradient: "bg-gradient-primary",
     popupTitle: 'Ônibus Em Operação'
   },
   maintenance: {
     title: "Em Manutenção",
     iconClass: "bi bi-tools",
-    gradient: "linear-gradient(135deg, #FFC107 0%, #E0A800 100%)",
+    className: "col-12 col-sm-6 col-lg-3",
+    gradient: "bg-gradient-warning",
     popupTitle: 'Ônibus Em Manutenção'
   },
   inactive: {
     title: "Inativos",
     iconClass: "bi bi-x-circle-fill",
-    gradient: "linear-gradient(135deg, #DC3545 0%, #C82333 100%)",
+    className: "col-12 col-sm-6 col-lg-3",
+    gradient: "bg-gradient-danger",
     popupTitle: 'Ônibus Inativos'
   }
 };

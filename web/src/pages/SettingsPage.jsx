@@ -2,30 +2,17 @@ import { useRef, useEffect, useState } from "react";
 import PopUpComponent from "../components/ui/PopUpComponent";
 import { useAuth } from "../context/authContext";
 import api from "../api/api";
-import Table from "@web/components/ui/Table";
 
+// Componentes reutilizáveis
+import PageHeader from "../components/pageComponents/settings/PageHeader";
+import UserProfile from "../components/pageComponents/settings/UserProfile";
+import ThemeSwitch from "../components/pageComponents/settings/ThemeSwitch";
+import SettingSection from "../components/pageComponents/settings/SettingSection";
+import SettingItem from "../components/pageComponents/settings/SettingItem";
+import SystemInfo from "../components/pageComponents/settings/SystemInfo";
+import SettingsActions from "../components/pageComponents/settings/SettingsActions";
 
-const testTableHeaders = [
-  { id: "foo", label: "Foo", sortable: true },
-  { id: "bar", label: "Bar", sortable: true },
-  { id: "baz", label: "Baz", sortable: false },
-]
-
-const testTableData = [
-  { 
-    foo: ["a","b","c","d"], 
-    bar: {
-      nome: (<b>teste</b>), 
-      idade: 30,
-      foo: "bar",
-      bar: "baz"
-    }, 
-    baz: "Valor Normal" 
-  }
-];
-
-
-function Settings({ pageFunctions }) {
+function Settings({ pageFunctions, isDark, setIsDark }) {
   const { user, login, logout, isAuthenticated } = useAuth();
   const popUpRef = useRef(null);
 
@@ -33,35 +20,79 @@ function Settings({ pageFunctions }) {
     pageFunctions.set("Configurações", true, true);
   }, [pageFunctions]);
 
-  const handleButtonClickForTests = async () => {
-    const response = await api.auth.login("admin@admin", "admin");
-
-    if (response) {
-      const { token, message, user } = response;
-      localStorage.setItem("token", token);
-      login(user);
-      popUpRef.current.show({
-        content: () => message || "Login realizado com sucesso!",
-        title: "Login feito com sucesso",
-      });
+  // General Settings State
+  const [generalSettings, setGeneralSettings] = useState([
+    { 
+      id: 1, 
+      name: "Notificações", 
+      description: "Receba alertas sobre atualizações do sistema",
+      value: "Ativado",
+      icon: "bi-bell"
+    },
+    { 
+      id: 2, 
+      name: "Atualizações Automáticas", 
+      description: "Permita que o sistema se atualize automaticamente",
+      value: "Ativado",
+      icon: "bi-download"
+    },
+    { 
+      id: 3, 
+      name: "Som do Sistema", 
+      description: "Reproduzir sons para ações e notificações",
+      value: "Ativado",
+      icon: "bi-volume-up"
     }
-  };
+  ]);
 
-  // Configurações com valores alternáveis
-  const [settings, setSettings] = useState([
-    { id: 1, name: "Notificações", value: "Ativado" },
-    { id: 2, name: "Modo escuro", value: "Desativado" },
-    { id: 3, name: "Atualizações", value: "Automático" },
+  // Account Settings State
+  const [accountSettings, setAccountSettings] = useState([
+    {
+      id: 1,
+      name: "Sessão Automática",
+      description: "Manter logado automaticamente",
+      value: "Ativado",
+      icon: "bi-person-check"
+    },
+    {
+      id: 2,
+      name: "Verificação em Duas Etapas",
+      description: "Segurança adicional para sua conta",
+      value: "Desativado",
+      icon: "bi-shield-check"
+    }
+  ]);
+
+  // Privacy Settings State
+  const [privacySettings, setPrivacySettings] = useState([
+    {
+      id: 1,
+      name: "Dados de Uso",
+      description: "Compartilhar dados anônimos para melhorias",
+      value: "Ativado",
+      icon: "bi-graph-up"
+    },
+    {
+      id: 2,
+      name: "Localização",
+      description: "Permitir acesso à localização para funcionalidades",
+      value: "Ativado",
+      icon: "bi-geo-alt"
+    }
   ]);
 
   const options = {
     "Notificações": ["Desativado", "Ativado"],
-    "Modo escuro": ["Desativado", "Ativado"],
-    "Atualizações": ["Manual", "Automático"],
+    "Atualizações Automáticas": ["Desativado", "Ativado"],
+    "Som do Sistema": ["Desativado", "Ativado"],
+    "Sessão Automática": ["Desativado", "Ativado"],
+    "Verificação em Duas Etapas": ["Desativado", "Ativado"],
+    "Dados de Uso": ["Desativado", "Ativado"],
+    "Localização": ["Desativado", "Ativado"]
   };
 
-  const changeValue = (id, direction) => {
-    const updated = settings.map(setting => {
+  const changeValue = (settingsArray, setSettingsArray, id, direction) => {
+    const updated = settingsArray.map(setting => {
       if (setting.id === id) {
         const list = options[setting.name];
         let index = list.indexOf(setting.value);
@@ -70,72 +101,117 @@ function Settings({ pageFunctions }) {
       }
       return setting;
     });
-    setSettings(updated);
+    setSettingsArray(updated);
+  };
+
+  // Função simplificada para toggle de configurações
+  const handleToggleSetting = (settingsArray, setSettingsArray, id) => {
+    changeValue(settingsArray, setSettingsArray, id, "right");
   };
 
   return (
-    <main className="ps-3 pe-3 pt-3">
+    <div className="container-fluid px-4 pt-3">
+      <div className="row g-4 align-items-stretch">
+        {/* Left Column */}
+        <div className="col-lg-8 d-flex flex-column">
+          {/* Page Header */}
+          <PageHeader
+            title="Configurações"
+            description="Personalize sua experiência no sistema"
+            icon="bi-gear-fill"
+          />
 
-      <div className="card p-3 mb-4">
-        {settings.map(setting => (
-          <div key={setting.id} className="d-flex align-items-center justify-content-between border-bottom py-2">
-            <strong>{setting.name}</strong>
-            <div className="d-flex align-items-center gap-2">
-              <button onClick={() => changeValue(setting.id, "left")} className="btn btn-sm btn-outline-secondary">
-                ◀
-              </button>
-              <span style={{ width: "100px", textAlign: "center" }}>{setting.value}</span>
-              <button onClick={() => changeValue(setting.id, "right")} className="btn btn-sm btn-outline-secondary">
-                ▶
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>  
+          {/* User Profile Section */}
+          {isAuthenticated && user && (
+            <UserProfile
+              user={user}
+              logout={logout}
+              popUpRef={popUpRef}
+              animationDelay="0.1s"
+            />
+          )}
+
+          {/* Theme Settings Section */}
+          <ThemeSwitch
+            isDark={isDark}
+            onToggle={() => setIsDark(!isDark)}
+            animationDelay="0.2s"
+          />
+
+          {/* General Settings Section */}
+          <SettingSection
+            title="Configurações Gerais"
+            description="Ajustes básicos do sistema"
+            icon="bi-sliders"
+            iconBg="bg-success"
+            animationDelay="0.3s"
+          >
+            {generalSettings.map((setting) => (
+              <SettingItem
+                key={setting.id}
+                setting={setting}
+                onToggle={(id) => handleToggleSetting(generalSettings, setGeneralSettings, id)}
+              />
+            ))}
+          </SettingSection>
+
+          {/* Account Settings Section */}
+          <SettingSection
+            title="Conta e Segurança"
+            description="Configurações de login e segurança"
+            icon="bi-person-gear"
+            iconBg="bg-warning"
+            animationDelay="0.4s"
+          >
+            {accountSettings.map((setting) => (
+              <SettingItem
+                key={setting.id}
+                setting={setting}
+                onToggle={(id) => handleToggleSetting(accountSettings, setAccountSettings, id)}
+              />
+            ))}
+          </SettingSection>
+
+          {/* Privacy Settings Section */}
+          <SettingSection
+            title="Privacidade"
+            description="Controle suas informações pessoais"
+            icon="bi-shield-check"
+            iconBg="bg-danger"
+            animationDelay="0.5s"
+          >
+            {privacySettings.map((setting) => (
+              <SettingItem
+                key={setting.id}
+                setting={setting}
+                onToggle={(id) => handleToggleSetting(privacySettings, setPrivacySettings, id)}
+              />
+            ))}
+          </SettingSection>
+
+          {/* Settings Actions Section */}
+          <SettingsActions
+            isDark={isDark}
+            setIsDark={setIsDark}
+            generalSettings={generalSettings}
+            setGeneralSettings={setGeneralSettings}
+            accountSettings={accountSettings}
+            setAccountSettings={setAccountSettings}
+            privacySettings={privacySettings}
+            setPrivacySettings={setPrivacySettings}
+            popUpRef={popUpRef}
+            animationDelay="0.6s"
+          />
+        </div>
       
-      <Table
-        headers={testTableHeaders}
-        data={testTableData}
-        itemsPerPage={5}
-        searchable={true}
-        popUpRef={popUpRef}
-        className="mb-4"
-      />
+        {/* Right Column - System Information */}
+        <div className="col-lg-4 d-flex">
+          <SystemInfo animationDelay="0.7s" />
+        </div>
+      </div>
 
-      <button
-        onClick={async ()=>{
-          const response = await api.post("/routes/new",{
-            nome: "Rota Teste - Centro/Barão Geraldo",
-            codigo_rota: "RT001" + Math.random(),
-            descricao: "Rota de teste conectando o centro ao distrito de Barão Geraldo",
-            status_rota_id: 1, // 1 = Ativa
-            ativo: true,
-            pontos: [1, 2, 3] // IDs dos pontos: Terminal Central, Ponto Barão Geraldo, Ponto Taquaral
-          })
-          popUpRef.current.show({
-            content: () => <pre>{JSON.stringify(response, null, 2)}</pre>,
-            title: "Resposta da API",
-          });
-        }}
-      >
-        teste de pontos
-      </button>
-
-      <button
-        onClick={async ()=>{
-          const pontos = await api.routes.getStops(3);
-          popUpRef.current.show({
-            content: () => <pre>{JSON.stringify(pontos, null, 2)}</pre>,
-            title: "Pontos da Rota 3",
-          });
-        }}
-      >
-        ver pontos da rota 3
-      </button>
       <PopUpComponent ref={popUpRef} />
-    </main>
-
-
+    </div>
   );
 }
 

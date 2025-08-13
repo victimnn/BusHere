@@ -11,7 +11,7 @@ const FloatingInstructions = ({
     return (
         <div className="floating-element position-absolute bottom-0 start-0 m-3 d-none d-md-block">
             <div 
-                className={`bg-white rounded-3 shadow-sm border transition-all ${
+                className={`card border-0 shadow-sm transition-all ${
                     instructionsMinimized ? 'p-2' : 'p-3'
                 }`} 
                 style={{ 
@@ -35,7 +35,7 @@ const FloatingInstructions = ({
                                 <i className="fas fa-minus" style={{ fontSize: '12px' }}></i>
                             </button>
                         </div>
-                        <ul className="small mb-2 ps-3">
+                        <ul className="small mb-2 ps-3 text-dark">
                             <li>Clique nos marcadores azuis para adicionar pontos existentes à rota</li>
                             <li className="d-lg-none">Use o botão "Controles" para gerenciar a rota</li>
                             <li className="d-none d-lg-block">Use o painel lateral para gerenciar a rota</li>

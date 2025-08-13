@@ -1,0 +1,208 @@
+// =============================================================================
+// ROUTE STOPS PAGE - PÁGINA DE PONTOS DA ROTA - MODO CLARO
+// =============================================================================
+
+@import '../base/variables';
+@import '../base/mixins';
+
+// -----------------------------------------------------------------------------
+// PÁGINA DE PONTOS DA ROTA
+// -----------------------------------------------------------------------------
+.route-stops-page {
+  height: 100%;
+  overflow: hidden;
+  background-color: $body-bg;
+
+  // Container do mapa
+  .map-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    background-color: #f8f9fa; // Fundo claro para melhor contraste
+    
+    .leaflet-container {
+      height: 100% !important;
+      width: 100% !important;
+      background-color: #f8f9fa !important; // Fundo claro
+    }
+
+    @include mobile-only {
+      height: 100vh !important;
+    }
+    
+    // Elementos flutuantes no mapa
+    .floating-element {
+      background-color: rgba($card-bg, 0.95) !important;
+      border: 1px solid $border-color !important;
+      border-radius: $border-radius;
+      backdrop-filter: blur(8px);
+      color: $dark !important;
+      
+      &.high-priority {
+        background-color: $card-bg !important;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+      }
+    }
+  }
+
+  // Painel de controle
+  .painel-controle {
+    height: 100%;
+    overflow-y: auto;
+    background-color: $bg-medium !important;
+    border-right: 1px solid $border-color !important;
+    color: $dark;
+    
+    // Remover background inline forçado
+    > div[style*="backgroundColor"] {
+      background-color: $bg-medium !important;
+    }
+    
+    // Scrollbar customizada para light mode
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: $light;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: $border-color;
+      border-radius: 4px;
+      
+      &:hover {
+        background: darken($border-color, 10%);
+      }
+    }
+    
+    // Cabeçalho do painel
+    h4 {
+      color: $dark !important;
+      
+      &.text-primary {
+        color: $primary !important;
+      }
+      
+      i {
+        color: $primary !important;
+      }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// COMPONENTES DO PAINEL DE CONTROLE
+// -----------------------------------------------------------------------------
+
+// Formulário da rota
+.painel-controle {
+  // Campos de formulário
+  .form-label {
+    color: $dark !important;
+    
+    i {
+      color: $primary !important;
+    }
+    
+    .text-danger {
+      color: $danger !important;
+    }
+  }
+  
+  .input-group {
+    .input-group-text {
+      background-color: $light !important;
+      border-color: $border-color !important;
+      color: $secondary !important;
+      
+      &.bg-light {
+        background-color: $light !important;
+      }
+      
+      i {
+        color: $secondary !important;
+      }
+    }
+    
+    .form-control,
+    .form-select {
+      background-color: $white !important;
+      border-color: $border-color !important;
+      color: $dark !important;
+      
+      &::placeholder {
+        color: $text-muted !important;
+      }
+      
+      &:focus {
+        background-color: $white !important;
+        border-color: $primary !important;
+        box-shadow: 0 0 0 0.2rem rgba($primary, 0.25) !important;
+        color: $dark !important;
+      }
+      
+      &.is-valid {
+        border-color: $success !important;
+        background-color: $white !important;
+        
+        &:focus {
+          box-shadow: 0 0 0 0.2rem rgba($success, 0.25) !important;
+        }
+      }
+      
+      &.is-invalid {
+        border-color: $danger !important;
+        background-color: $white !important;
+        
+        &:focus {
+          box-shadow: 0 0 0 0.2rem rgba($danger, 0.25) !important;
+        }
+      }
+    }
+    
+    .invalid-feedback {
+      color: $danger !important;
+    }
+    
+    .valid-feedback {
+      color: $success !important;
+    }
+  }
+  
+  // Textarea específico
+  textarea.form-control {
+    background-color: $white !important;
+    color: $dark !important;
+    border-color: $border-color !important;
+    
+    &:focus {
+      background-color: $white !important;
+      border-color: $primary !important;
+      color: $dark !important;
+    }
+  }
+  
+  // Configurações da rota
+  .route-settings {
+    .form-check {
+      .form-check-input {
+        background-color: $white !important;
+        border-color: $border-color !important;
+        
+        &:checked {
+          background-color: $primary !important;
+          border-color: $primary !important;
+        }
+        
+        &:focus {
+          box-shadow: 0 0 0 0.2rem rgba($primary, 0.25) !important;
+        }
+      }
+      
+      .form-check-label {
+        color: $dark !important;
+      }
+    }
+  }
+}

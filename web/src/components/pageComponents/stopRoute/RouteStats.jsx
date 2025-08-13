@@ -14,7 +14,7 @@ const RouteStats = ({ stats, pontosSelecionados }) => {
     }
 
     return (
-        <div className="bg-light rounded p-3 mb-3">
+        <div className="card border-0 shadow-sm p-3 mb-3">
             <h6 className="text-primary mb-3">
                 <i className="fas fa-chart-line me-2"></i>
                 Estatísticas da Rota

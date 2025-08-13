@@ -133,6 +133,17 @@ $btn-sb-transition: all 0.2s ease;
 $avatar-size: 40px;
 
 // -----------------------------------------------------------------------------
+// VARIÁVEIS ESPECÍFICAS DO LIGHT MODE
+// -----------------------------------------------------------------------------
+$card-bg: $white;                        // Fundo dos cards
+$navbar-bg: $white;                      // Fundo da navbar
+$sidebar-bg: $white;                     // Fundo da sidebar
+$modal-bg: $white;                       // Fundo dos modais
+$dropdown-bg: $white;                    // Fundo dos dropdowns
+$table-bg: transparent;                  // Fundo das tabelas
+$table-hover-bg: rgba(0, 0, 0, 0.05);   // Hover nas tabelas
+
+// -----------------------------------------------------------------------------
 // MAPA DE CORES DO TEMA
 // -----------------------------------------------------------------------------
 $theme-colors: (
@@ -154,4 +165,9 @@ $theme-colors: (
   "accent-dark": $accent-dark,
   "analogous-1": $analogous-1,
   "analogous-2": $analogous-2,
+  "bg-light": $bg-light,
+  "bg-medium": $bg-medium,
+  "text-primary": $text-primary,
+  "text-secondary": $text-secondary,
+  "text-muted": $text-muted,
 );

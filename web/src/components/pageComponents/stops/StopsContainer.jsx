@@ -6,7 +6,7 @@ function MajorStops({ stops = [] }) {
 
 function StopsContainer({ stops }) {
   return (
-     <div className="w-100 h-100" style={{ overflowY: "auto" }}>
+     <div className="w-100 h-100 stops-container" style={{ overflowY: "auto" }}>
       {/* Content */}
       <div className="p-3">
         {stops.length > 0 ? (
@@ -21,7 +21,7 @@ function StopsContainer({ stops }) {
             ))}
           </div>
         ) : (
-          <div className="text-center text-muted p-4">
+          <div className="text-center text-muted p-4 empty-state">
             <i className="bi bi-geo text-muted fs-3 mb-2 d-block"></i>
             <p className="mb-0">Nenhum ponto cadastrado</p>
           </div>
@@ -33,7 +33,7 @@ function StopsContainer({ stops }) {
 
 function StopComponent({ name = "", passengers = "", routeAmount = "" }) {
   return (
-    <div className="border rounded-2 p-3 bg-light">
+    <div className="border rounded-2 p-3 bg-light stop-component">
       <div className="d-flex align-items-center">
         <div className="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3"
              style={{ width: "32px", height: "32px", minWidth: "32px" }}>

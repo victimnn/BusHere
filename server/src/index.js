@@ -80,11 +80,6 @@ app.get("/ping", (req, res) => {
     res.json({ message: "Palmeiras!" ,request: req.body});
 });
 
-
-app.get("/", (req,res) => {
-    res.json({ message: process.env ,request: req.body});
-});
-
 app.get('/', (req, res) => {
   // Executa o script setupDB.js
   require('../scripts/setupDB.js');

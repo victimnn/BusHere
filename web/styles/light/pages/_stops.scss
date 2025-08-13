@@ -46,10 +46,6 @@
         h6 {
           color: $dark !important;
         }
-        
-        i {
-          color: $primary !important;
-        }
       }
       
       .card-body {
@@ -127,10 +123,6 @@
   .empty-state {
     color: $text-muted !important;
     
-    i {
-      color: $text-muted !important;
-    }
-    
     p {
       color: $text-muted !important;
     }
@@ -162,62 +154,6 @@
   
   h5 {
     color: $dark !important;
-  }
-  
-  i {
-    color: $primary !important;
-  }
-}
-
-// -----------------------------------------------------------------------------
-// TABELA DE PONTOS
-// -----------------------------------------------------------------------------
-.stops-page {
-  .table {
-    background-color: $card-bg !important;
-    color: $dark !important;
-    
-    th {
-      background-color: $bg-medium !important;
-      color: $dark !important;
-      border-color: $border-color !important;
-    }
-    
-    td {
-      background-color: $card-bg !important;
-      color: $dark !important;
-      border-color: $border-color !important;
-    }
-    
-    tbody tr {
-      &:hover {
-        background-color: darken($card-bg, 3%) !important;
-        cursor: pointer;
-      }
-    }
-  }
-  
-  // Paginação
-  .pagination {
-    .page-item {
-      .page-link {
-        background-color: $card-bg !important;
-        border-color: $border-color !important;
-        color: $dark !important;
-        
-        &:hover {
-          background-color: $bg-medium !important;
-          border-color: $primary !important;
-          color: $primary !important;
-        }
-      }
-      
-      &.active .page-link {
-        background-color: $primary !important;
-        border-color: $primary !important;
-        color: $white !important;
-      }
-    }
   }
 }
 

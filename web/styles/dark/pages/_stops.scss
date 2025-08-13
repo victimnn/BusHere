@@ -47,9 +47,6 @@
           color: $text-primary !important;
         }
         
-        i {
-          color: $primary !important;
-        }
       }
       
       .card-body {
@@ -126,11 +123,7 @@
   // Estado vazio
   .empty-state {
     color: $text-muted !important;
-    
-    i {
-      color: $text-muted !important;
-    }
-    
+
     p {
       color: $text-muted !important;
     }
@@ -162,62 +155,6 @@
   
   h5 {
     color: $text-primary !important;
-  }
-  
-  i {
-    color: $primary !important;
-  }
-}
-
-// -----------------------------------------------------------------------------
-// TABELA DE PONTOS
-// -----------------------------------------------------------------------------
-.stops-page {
-  .table {
-    background-color: $card-bg !important;
-    color: $text-primary !important;
-    
-    th {
-      background-color: $bg-medium !important;
-      color: $text-primary !important;
-      border-color: $border-color !important;
-    }
-    
-    td {
-      background-color: $card-bg !important;
-      color: $text-primary !important;
-      border-color: $border-light !important;
-    }
-    
-    tbody tr {
-      &:hover {
-        background-color: lighten($card-bg, 5%) !important;
-        cursor: pointer;
-      }
-    }
-  }
-  
-  // Paginação
-  .pagination {
-    .page-item {
-      .page-link {
-        background-color: $card-bg !important;
-        border-color: $border-color !important;
-        color: $text-primary !important;
-        
-        &:hover {
-          background-color: $bg-medium !important;
-          border-color: $primary !important;
-          color: $primary !important;
-        }
-      }
-      
-      &.active .page-link {
-        background-color: $primary !important;
-        border-color: $primary !important;
-        color: $white !important;
-      }
-    }
   }
 }
 
@@ -251,6 +188,7 @@
         &.leaflet-control-zoom-out {
           background-color: #3a3e46 !important;
           color: #e4e7eb !important;
+          opacity: 0.8;
           font-weight: 600;
           
           &:hover {
@@ -300,39 +238,6 @@
       
       small {
         color: #d0d4da !important;
-      }
-      
-      .btn {
-        background-color: $primary !important;
-        border-color: $primary !important;
-        color: $white !important;
-        
-        &:hover {
-          background-color: darken($primary, 10%) !important;
-          border-color: darken($primary, 10%) !important;
-        }
-      }
-      
-      .btn-outline-primary {
-        border-color: $primary !important;
-        color: $primary !important;
-        background-color: transparent !important;
-        
-        &:hover {
-          background-color: $primary !important;
-          color: $white !important;
-        }
-      }
-      
-      .btn-outline-danger {
-        border-color: $danger !important;
-        color: $danger !important;
-        background-color: transparent !important;
-        
-        &:hover {
-          background-color: $danger !important;
-          color: $white !important;
-        }
       }
     }
     

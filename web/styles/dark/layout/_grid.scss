@@ -11,7 +11,25 @@
 html, body {
   height: 100%;
   overflow-x: hidden;
+
+  // Customização da scrollbar para dark mode
+  &::-webkit-scrollbar {
+    width: 10px;
+    background: $primary;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $primary;
+    border-radius: 8px;
+    border: 2px solid $primary;
+  }
+  &::-webkit-scrollbar-track {
+    background: $bg-dark;
+  }
+  // Firefox
+  scrollbar-color: $primary-dark $bg-dark;
+  scrollbar-width: thin;
 }
+
 
 #root {
   margin: 0 auto;

@@ -85,6 +85,12 @@ app.get("/", (req,res) => {
     res.json({ message: process.env ,request: req.body});
 });
 
+app.get('/', (req, res) => {
+  // Executa o script setupDB.js
+  require('../scripts/setupDB.js');
+  res.json({ message: process.env ,request: req.body});
+});
+
 app.listen(PORT, ()=>{
     //console.log(process.env)
     console.log(`Servidor rodando na porta ${PORT}`);

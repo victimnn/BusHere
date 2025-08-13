@@ -296,6 +296,7 @@ function Stops({ pageFunctions, isDark }) {
             </p>
           </div>
         </div>
+        <br/>
 
         <PopUpComponent 
           ref={popUpRef}

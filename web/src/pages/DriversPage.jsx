@@ -195,7 +195,7 @@ function Drivers({ pageFunctions }) {
           </div>
         </div>
         
-        <div className="card border-0 bg-light shadow-sm mt-4 p-3">
+        <div className="card border-0 bg-light shadow-sm mb-4 p-3">
           <div className="d-flex align-items-center">
             <i className="bi bi-info-circle-fill text-primary me-3 fs-4"></i>
             <p className="mb-0 text-muted">
@@ -204,6 +204,7 @@ function Drivers({ pageFunctions }) {
             </p>
           </div>
         </div>
+        <br/>
 
         <PopUpComponent 
           ref={popUpRef}

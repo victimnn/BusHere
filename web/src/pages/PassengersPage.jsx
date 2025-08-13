@@ -191,6 +191,7 @@ function Passengers({ pageFunctions }) {
             </p>
           </div>
         </div>
+        <br/>
 
         <PopUpComponent 
           ref={popUpRef}

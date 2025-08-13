@@ -21,8 +21,8 @@ CREATE TABLE Passageiros (
     tipo_passageiro_id INT DEFAULT 1, -- Referente a tipo_passageiro_id no DER, assumindo que 1 é o padrão
     rota_id INT, -- Referente a id_rota_passageiro
     ponto_id INT, -- Referente a id_ponto_passageiro
-    notificacoes_json JSON DEFAULT '{}',
-    configuracoes_json JSON DEFAULT '{}',
+    notificacoes_json JSON,
+    configuracoes_json JSON,
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     ativo BOOLEAN DEFAULT TRUE,

@@ -20,25 +20,29 @@ const STATS_CONFIG = {
   total: {
     title: "Total de Rotas",
     iconClass: "bi bi-signpost-split-fill",
-    gradient: "linear-gradient(135deg, #007BFF 0%, #0056B3 100%)",
+    className: "col-12 col-sm-6 col-lg-3",
+    gradient: "bg-gradient-info",
     popupTitle: 'Total de Rotas'
   },
   active: {
     title: "Ativas",
     iconClass: "bi bi-check-circle-fill",
-    gradient: "linear-gradient(135deg, #12BE4D 0%, #0E8F3A 100%)",
+    className: "col-12 col-sm-6 col-lg-3",
+    gradient: "bg-gradient-primary",
     popupTitle: 'Rotas Ativas'
   },
   planning: {
     title: "Em Planejamento",
     iconClass: "bi bi-pencil-fill",
-    gradient: "linear-gradient(135deg, #FFC107 0%, #E0A800 100%)",
+    className: "col-12 col-sm-6 col-lg-3",
+    gradient: "bg-gradient-warning",
     popupTitle: 'Rotas em Planejamento'
   },
   inactive: {
     title: "Inativas",
     iconClass: "bi bi-x-circle-fill",
-    gradient: "linear-gradient(135deg, #DC3545 0%, #C82333 100%)",
+    className: "col-12 col-sm-6 col-lg-3",
+    gradient: "bg-gradient-danger",
     popupTitle: 'Rotas Inativas'
   }
 };

@@ -18,25 +18,29 @@ const STATS_CONFIG = {
   total: {
     title: "Total de Passageiros",
     iconClass: "bi bi-people-fill",
-    gradient: "linear-gradient(135deg, #007BFF 0%, #0056B3 100%)",
+    className: "col-12 col-sm-6 col-lg-3",
+    gradient: "bg-gradient-info",
     popupTitle: 'Total de Passageiros'
   },
   pcd: {
     title: "Passageiros PCD",
     iconClass: "bi bi-universal-access",
-    gradient: "linear-gradient(135deg, #17A2B8 0%, #138496 100%)",
+    className: "col-12 col-sm-6 col-lg-3",
+    gradient: "bg-gradient-success",
     popupTitle: 'Passageiros com Deficiência'
   },
   active: {
     title: "Passageiros Ativos",
     iconClass: "bi bi-person-check-fill",
-    gradient: "linear-gradient(135deg, #12BE4D 0%, #0E8F3A 100%)",
+    className: "col-12 col-sm-6 col-lg-3",
+    gradient: "bg-gradient-primary",
     popupTitle: 'Passageiros Ativos'
   },
   inactive: {
     title: "Passageiros Inativos",
     iconClass: "bi bi-person-x-fill",
-    gradient: "linear-gradient(135deg, #DC3545 0%, #C82333 100%)",
+    className: "col-12 col-sm-6 col-lg-3",
+    gradient: "bg-gradient-danger",
     popupTitle: 'Passageiros Inativos'
   }
 };

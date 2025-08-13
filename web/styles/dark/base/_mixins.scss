@@ -8,7 +8,7 @@
 // GRADIENTES
 // -----------------------------------------------------------------------------
 @mixin gradient-primary {
-  background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+  background: linear-gradient(135deg, $primary-dark 0%, $primary 100%);
 }
 
 @mixin gradient-success {
@@ -20,7 +20,7 @@
 }
 
 @mixin gradient-warning {
-  background: linear-gradient(135deg, $warning 0%, $accent 100%);
+  background: linear-gradient(135deg, $warning 0%, $warning 100%);
 }
 
 @mixin gradient-danger {

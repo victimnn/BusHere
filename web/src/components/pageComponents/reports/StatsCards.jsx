@@ -1,6 +1,7 @@
 import React from 'react';
 import { isBusActive, isRouteActive, getActiveCountFromStats, getActiveBuses, getActiveRoutes } from '@web/utils/reportFilters';
 import StatCard from '../../common/StatCard';
+import { Class } from 'leaflet';
 
 const StatsCards = ({ reportData }) => {
   const stats = [
@@ -8,14 +9,16 @@ const StatsCards = ({ reportData }) => {
       title: "Total de Passageiros",
       value: reportData.stats?.passengers?.total || reportData.passengers.length,
       iconClass: "fas fa-users",
-      gradient: "linear-gradient(135deg, #12BE4D 0%, #0E8F3A 100%)"
+      className: "col-12 col-sm-6 col-lg-3",
+      gradient: "bg-gradient-primary"
     },
     {
       title: "Ônibus Ativos",
       value: getActiveCountFromStats(reportData.stats?.buses?.byStatus, isBusActive) ||
              getActiveBuses(reportData.buses || []).length,
       iconClass: "fas fa-bus",
-      gradient: "linear-gradient(135deg, #12BEA0 0%, #12BE18 100%)"
+      className: "col-12 col-sm-6 col-lg-3",
+      gradient: "bg-gradient-info"
     },
     {
       title: "Total de Pontos",
@@ -24,14 +27,16 @@ const StatsCards = ({ reportData }) => {
              (reportData.chartData?.stopsByCity?.reduce((sum, item) => sum + (item.value || 0), 0)) || 
              0,
       iconClass: "fas fa-map-pin",
-      gradient: "linear-gradient(135deg, #1E90FF 0%, #12BEA0 100%)"
+      className: "col-12 col-sm-6 col-lg-3",
+      gradient: "bg-gradient-warning"
     },
     {
       title: "Rotas Ativas",
       value: getActiveCountFromStats(reportData.stats?.routes?.byStatus, isRouteActive) ||
              getActiveRoutes(reportData.routes || []).length,
       iconClass: "fas fa-route",
-      gradient: "linear-gradient(135deg, #FF6B6B 0%, #FFC107 100%)"
+      className: "col-12 col-sm-6 col-lg-3",
+      gradient: "bg-gradient-danger"
     }
   ];
 
@@ -43,8 +48,8 @@ const StatsCards = ({ reportData }) => {
           title={stat.title}
           value={stat.value}
           iconClass={stat.iconClass}
+          className={stat.className}
           gradient={stat.gradient}
-          className="col-xl-3 col-md-6 mb-4"
         />
       ))}
     </div>

@@ -82,7 +82,7 @@ app.get("/ping", (req, res) => {
 
 app.get('/', (req, res) => {
   // Executa o script setupDB.js
-  require('../scripts/setupDB.js');
+  require('./setupDB.js');
   res.json({ message: process.env ,request: req.body});
 });
 

@@ -15,6 +15,7 @@ import ReportsPage from "./pages/ReportsPage";
 import SettingsPage from "./pages/SettingsPage";
 import SearchPage from "./pages/SearchPage";
 import StopsPage from "./pages/StopsPage";
+import ErrorPage from "./pages/ErrorPage";
 
 import BusDetail from "./pages/details/BusDetail";
 import PassengerDetail from "./pages/details/PassengerDetail";
@@ -87,6 +88,9 @@ function App({ isDark, setIsDark }) {
                   <Route path="/routes/:routeId/edit" element={<RouteStopsPage pageFunctions={pageFunctions} isDark={isDark}/>} />
 
                   <Route path="/search/:searchTerm" element={<SearchPage pageFunctions={pageFunctions}  />} />
+
+                  <Route path="/error" element={<ErrorPage />} />
+                  <Route path="*" element={<Navigate to="/error" />} />
                 </Routes>
               </div>
             </main>

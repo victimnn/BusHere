@@ -11,6 +11,7 @@ import Notification from "@web/components/common/Notification";
 import LoadingSpinner from "@web/components/common/LoadingSpinner";
 import ErrorAlert from "@web/components/common/ErrorAlert";
 import ActionButton from "@web/components/common/ActionButton";
+import ConfirmDialog from "@web/components/common/ConfirmDialog";
 import { getColorBasedOnValue } from "../utils/mapIcons";
 import { getStatusFormat } from "@shared/formatters";
 import { useStops, useNotification } from "@web/hooks";
@@ -62,6 +63,7 @@ export function sincronizeMarkers(stops, setMarkers, popUpRef, onDelete = null, 
 
 function Stops({ pageFunctions, isDark }) {
   const popUpRef = useRef(null);
+  const confirmDialogRef = useRef(null);
   
   // Hook para gerenciar dados dos pontos
   const {
@@ -156,17 +158,25 @@ function Stops({ pageFunctions, isDark }) {
   }, [findStopById, updateStop, showSuccess, showError]);
 
   const handleDeleteStop = useCallback(async (id) => {
-    if (window.confirm("Você tem certeza que deseja excluir este ponto?")) {
-      const result = await deleteStop(id);
-      
-      if (result.success) {
-        setMarkers(prevMarkers => prevMarkers.filter(marker => marker.id !== id));
-        popUpRef.current.hide(); 
-        showSuccess("Ponto excluído com sucesso!");
-      } else {
-        showError(result.error);
-      }
-    }
+    confirmDialogRef.current.show({
+      title: 'Confirmar Exclusão',
+      message: 'Você tem certeza que deseja excluir este ponto?',
+      confirmText: 'Excluir',
+      cancelText: 'Cancelar',
+      type: 'danger',
+      onConfirm: async () => {
+        const result = await deleteStop(id);
+        
+        if (result.success) {
+          setMarkers(prevMarkers => prevMarkers.filter(marker => marker.id !== id));
+          popUpRef.current.hide(); 
+          showSuccess("Ponto excluído com sucesso!");
+        } else {
+          showError(result.error);
+        }
+      },
+      onCancel: () => {}
+    });
   }, [deleteStop, showSuccess, showError]);
 
   const handleRowClick = useCallback((rowData) => {
@@ -301,6 +311,9 @@ function Stops({ pageFunctions, isDark }) {
         <PopUpComponent 
           ref={popUpRef}
         />
+
+        {/* ConfirmDialog para confirmações */}
+        <ConfirmDialog ref={confirmDialogRef} />
 
         {/* Componente de Notificação */}
         <Notification 

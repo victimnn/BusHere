@@ -8,6 +8,7 @@ import Notification from "@web/components/common/Notification";
 import LoadingSpinner from "@web/components/common/LoadingSpinner";
 import ErrorAlert from "@web/components/common/ErrorAlert";
 import ActionButton from "@web/components/common/ActionButton";
+import ConfirmDialog from "@web/components/common/ConfirmDialog";
 import { useDrivers, useNotification } from "@web/hooks";
 import { formatCPF, formatPhoneNumber, formatDateFromDatabase, getStatusFormat } from "@shared/formatters";
 
@@ -43,6 +44,7 @@ const TABLE_HEADERS = [
 
 function Drivers({ pageFunctions }) {
   const popUpRef = useRef(null);
+  const confirmDialogRef = useRef(null);
   
   // Usar hook customizado para gerenciar dados dos motoristas
   const {
@@ -114,15 +116,23 @@ function Drivers({ pageFunctions }) {
   }, [updateDriver, showSuccess, showError]);
 
   const handleDeleteDriver = useCallback(async (id) => {
-    if (window.confirm("Tem certeza que deseja excluir este motorista?")) {
-      const result = await deleteDriver(id);
-      if (result.success) {
-        popUpRef.current.hide();
-        showSuccess("Motorista excluído com sucesso!");
-      } else {
-        showError(result.error);
-      }
-    }
+    confirmDialogRef.current.show({
+      title: 'Confirmar Exclusão',
+      message: 'Tem certeza que deseja excluir este motorista?',
+      confirmText: 'Excluir',
+      cancelText: 'Cancelar',
+      type: 'danger',
+      onConfirm: async () => {
+        const result = await deleteDriver(id);
+        if (result.success) {
+          popUpRef.current.hide();
+          showSuccess("Motorista excluído com sucesso!");
+        } else {
+          showError(result.error);
+        }
+      },
+      onCancel: () => {}
+    });
   }, [deleteDriver, showSuccess, showError]);
 
   const handleRowClick = useCallback((driver) => {
@@ -209,6 +219,9 @@ function Drivers({ pageFunctions }) {
         <PopUpComponent 
           ref={popUpRef}
         />
+
+        {/* ConfirmDialog para confirmações */}
+        <ConfirmDialog ref={confirmDialogRef} />
 
         {/* Componente de Notificação */}
         <Notification 

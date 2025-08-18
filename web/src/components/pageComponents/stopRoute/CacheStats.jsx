@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useCacheManager } from '@web/hooks';
+import ConfirmDialog from '@web/components/common/ConfirmDialog';
+import AlertDialog from '@web/components/common/AlertDialog';
 
 /**
  * Componente para exibir e gerenciar estatísticas do cache de rotas
@@ -13,6 +15,8 @@ export const CacheStats = ({
 }) => {
     const [detailedStats, setDetailedStats] = useState(null);
     const { clearCache, getStats, saveToLocalStorage } = useCacheManager();
+    const confirmDialogRef = useRef(null);
+    const alertDialogRef = useRef(null);
 
     useEffect(() => {
         if (show) {
@@ -22,15 +26,28 @@ export const CacheStats = ({
     }, [show, getStats]);
 
     const handleClearCache = () => {
-        if (window.confirm('Tem certeza que deseja limpar todo o cache de rotas?')) {
-            clearCache();
-            setDetailedStats(getStats());
-        }
+        confirmDialogRef.current.show({
+            title: 'Confirmar Limpeza do Cache',
+            message: 'Tem certeza que deseja limpar todo o cache de rotas?',
+            confirmText: 'Limpar',
+            cancelText: 'Cancelar',
+            type: 'warning',
+            onConfirm: () => {
+                clearCache();
+                setDetailedStats(getStats());
+            },
+            onCancel: () => {}
+        });
     };
 
     const handleSaveCache = () => {
         saveToLocalStorage();
-        alert('Cache salvo com sucesso!');
+        alertDialogRef.current.show({
+            title: 'Sucesso',
+            message: 'Cache salvo com sucesso!',
+            buttonText: 'OK',
+            type: 'success'
+        });
     };
 
     if (!show) return null;
@@ -219,6 +236,12 @@ export const CacheStats = ({
                     </div>
                 </div>
             </div>
+            
+            {/* ConfirmDialog para confirmações */}
+            <ConfirmDialog ref={confirmDialogRef} />
+            
+            {/* AlertDialog para alertas */}
+            <AlertDialog ref={alertDialogRef} />
         </div>
     );
 };

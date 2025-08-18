@@ -44,7 +44,8 @@ ActionButton.propTypes = {
   text: PropTypes.string.isRequired,
   variant: PropTypes.oneOf([
     'primary', 'secondary', 'success', 'danger', 
-    'warning', 'info', 'light', 'dark', 'outline-primary'
+    'warning', 'info', 'light', 'dark', 'outline-primary',
+    'outline-secondary', 'outline-danger'
   ]),
   size: PropTypes.oneOf(['sm', 'lg']),
   disabled: PropTypes.bool,

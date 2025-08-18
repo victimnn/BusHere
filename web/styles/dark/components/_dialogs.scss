@@ -1,0 +1,384 @@
+// =============================================================================
+// DIALOGS - ESTILOS PARA DIALOGOS DE CONFIRMAÇÃO E ALERTA - MODO ESCURO
+// =============================================================================
+
+@import '../base/variables';
+@import '../base/mixins';
+
+// -----------------------------------------------------------------------------
+// DIALOGOS DE CONFIRMAÇÃO E ALERTA
+// -----------------------------------------------------------------------------
+.confirm-dialog,
+.alert-dialog {
+  background-color: $card-bg;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(16px);
+  transform: translateZ(0); // Força aceleração de hardware
+  
+  .modal-header {
+    border-bottom: 1px solid $border-color;
+    background-color: rgba($card-bg, 0.8);
+    
+    .modal-title {
+      color: $text-primary;
+      font-weight: 600;
+    }
+    
+    .bi {
+      color: $text-secondary;
+    }
+  }
+  
+  .modal-body {
+    background-color: $card-bg;
+    color: $text-primary;
+    
+    p {
+      color: $text-secondary;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+  }
+  
+  .modal-footer {
+    border-top: 1px solid $border-color;
+    background-color: rgba($card-bg, 0.8);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// TIPOS DE DIALOGO - CONFIRMAÇÃO
+// -----------------------------------------------------------------------------
+.confirm-success {
+  border-left: 4px solid $success;
+  
+  .modal-header .bi {
+    color: $success;
+  }
+  
+  .modal-footer .btn-primary {
+    background-color: $success;
+    border-color: $success;
+    
+    &:hover {
+      background-color: darken($success, 10%);
+      border-color: darken($success, 10%);
+    }
+  }
+}
+
+.confirm-danger {
+  border-left: 4px solid $danger;
+  
+  .modal-header .bi {
+    color: $danger;
+  }
+  
+  .modal-footer .btn-danger {
+    background-color: $danger;
+    border-color: $danger;
+    
+    &:hover {
+      background-color: darken($danger, 10%);
+      border-color: darken($danger, 10%);
+    }
+  }
+}
+
+.confirm-warning {
+  border-left: 4px solid $warning;
+  
+  .modal-header .bi {
+    color: $warning;
+  }
+  
+  .modal-footer .btn-warning {
+    background-color: $warning;
+    border-color: $warning;
+    color: #000000;
+    
+    &:hover {
+      background-color: darken($warning, 10%);
+      border-color: darken($warning, 10%);
+      color: #000000;
+    }
+  }
+}
+
+.confirm-info {
+  border-left: 4px solid $info;
+  
+  .modal-header .bi {
+    color: $info;
+  }
+  
+  .modal-footer .btn-primary {
+    background-color: $info;
+    border-color: $info;
+    
+    &:hover {
+      background-color: darken($info, 10%);
+      border-color: darken($info, 10%);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// TIPOS DE DIALOGO - ALERTA
+// -----------------------------------------------------------------------------
+.alert-success {
+  border-left: 4px solid $success;
+  
+  .modal-header .bi {
+    color: $success;
+  }
+  
+  .modal-footer .btn-success {
+    background-color: $success;
+    border-color: $success;
+    
+    &:hover {
+      background-color: darken($success, 10%);
+      border-color: darken($success, 10%);
+    }
+  }
+}
+
+.alert-danger {
+  border-left: 4px solid $danger;
+  
+  .modal-header .bi {
+    color: $danger;
+  }
+  
+  .modal-footer .btn-danger {
+    background-color: $danger;
+    border-color: $danger;
+    
+    &:hover {
+      background-color: darken($danger, 10%);
+      border-color: darken($danger, 10%);
+    }
+  }
+}
+
+.alert-warning {
+  border-left: 4px solid $warning;
+  
+  .modal-header .bi {
+    color: $warning;
+  }
+  
+  .modal-footer .btn-warning {
+    background-color: $warning;
+    border-color: $warning;
+    color: #000000;
+    
+    &:hover {
+      background-color: darken($warning, 10%);
+      border-color: darken($warning, 10%);
+      color: #000000;
+    }
+  }
+}
+
+.alert-info {
+  border-left: 4px solid $info;
+  
+  .modal-header .bi {
+    color: $info;
+  }
+  
+  .modal-footer .btn-primary {
+    background-color: $info;
+    border-color: $info;
+    
+    &:hover {
+      background-color: darken($info, 10%);
+      border-color: darken($info, 10%);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ESTILOS ESPECÍFICOS PARA ACTIONBUTTONS NOS DIALOGOS
+// -----------------------------------------------------------------------------
+.confirm-dialog .modal-footer,
+.alert-dialog .modal-footer {
+  // Estilos para os ActionButtons
+  .action-button {
+    min-width: 100px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+    
+    // Garante que o texto seja preto em botões com fundo claro
+    &.btn-warning,
+    &.btn-success,
+    &.btn-info,
+    &.btn-primary {
+      color: #000000 !important;
+      font-weight: 600;
+    }
+    
+    // Botões de perigo mantêm texto branco
+    &.btn-danger {
+      color: $white !important;
+    }
+    
+    // Botões outline mantêm suas cores originais
+    &.btn-outline-secondary {
+      color: $text-primary !important;
+    }
+  }
+}
+
+// Estilos específicos para botões de warning (força texto preto)
+.btn-warning,
+.action-button.btn-warning,
+button.btn-warning,
+.btn.btn-warning {
+  color: #000000 !important;
+  font-weight: 600;
+  
+  &:hover,
+  &:focus,
+  &:active,
+  &.active {
+    color: #000000 !important;
+  }
+  
+  // Força o texto a ser preto mesmo com outros estilos
+  span, 
+  .btn-text,
+  .action-button-text {
+    color: #000000 !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// BOTÕES DOS DIALOGOS
+// -----------------------------------------------------------------------------
+.confirm-dialog .modal-footer,
+.alert-dialog .modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid $border-color;
+  background-color: rgba($card-bg, 0.95);
+  
+  // Estilos para os ActionButtons
+  .action-button {
+    min-width: 100px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ANIMAÇÕES DOS DIALOGOS
+// -----------------------------------------------------------------------------
+.modal.fade.show {
+  animation: dialogFadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes dialogFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+// Overlay com animação suave
+.modal-backdrop {
+  animation: backdropFadeIn 0.15s ease-out;
+}
+
+@keyframes backdropFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// RESPONSIVIDADE PARA MOBILE
+// -----------------------------------------------------------------------------
+@media (max-width: 768px) {
+  .confirm-dialog,
+  .alert-dialog {
+    .modal-dialog {
+      margin: 0.75rem;
+      max-width: calc(100% - 1.5rem);
+    }
+    
+    .modal-header {
+      padding: 1rem;
+      
+      .modal-title {
+        font-size: 1.1rem;
+      }
+      
+      .bi {
+        font-size: 1.1rem;
+      }
+    }
+    
+    .modal-body {
+      padding: 1rem;
+      
+      p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+    }
+    
+    .modal-footer {
+      padding: 1rem;
+      flex-direction: column;
+      gap: 0.5rem;
+      
+      .action-button {
+        width: 100%;
+        min-width: auto;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .confirm-dialog,
+  .alert-dialog {
+    .modal-dialog {
+      margin: 0.5rem;
+      max-width: calc(100% - 1rem);
+    }
+    
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+      padding: 0.75rem;
+    }
+  }
+}

@@ -1,5 +1,6 @@
-import React, { useState, forwardRef, useImperativeHandle, useCallback, memo } from 'react';
+import React, { useState, forwardRef, useImperativeHandle, useCallback, memo, useRef } from 'react';
 import PropTypes from 'prop-types';
+import ConfirmDialog from '../common/ConfirmDialog';
 
 /**
  * Estilos para o overlay do modal
@@ -57,9 +58,18 @@ const PopUpComponent = memo(forwardRef((props, ref) => {
 
     // Fecha o PopUp com confirmação (usado no overlay)
     const hideWithConfirm = useCallback(() => {
-      const confirmClose = window.confirm('Tem certeza que deseja sair do pop-up?');
-      if (!confirmClose) return;
-      hide();
+      // Usa o ConfirmDialog personalizado em vez de window.confirm
+      if (confirmDialogRef.current) {
+        confirmDialogRef.current.show({
+          title: 'Confirmar Saída',
+          message: 'Tem certeza que deseja sair do pop-up?',
+          confirmText: 'Sair',
+          cancelText: 'Cancelar',
+          type: 'warning',
+          onConfirm: hide,
+          onCancel: () => {}
+        });
+      }
     }, [hide]);
 
   /**
@@ -87,6 +97,9 @@ const PopUpComponent = memo(forwardRef((props, ref) => {
     show,
     hide,
   }), [show, hide]);
+
+  // Ref para o ConfirmDialog
+  const confirmDialogRef = useRef();
 
   // Desestrutura o estado do modal
   const { isVisible, ContentComponent, componentProps, title } = modalState;
@@ -126,6 +139,9 @@ const PopUpComponent = memo(forwardRef((props, ref) => {
           </div>
         </div>
       </div>
+      
+      {/* ConfirmDialog para confirmações */}
+      <ConfirmDialog ref={confirmDialogRef} />
     </div>
   );
 }));

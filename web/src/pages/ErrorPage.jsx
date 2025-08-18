@@ -15,7 +15,7 @@ const ErrorPage = () => {
 
   const handleContact = useCallback(() => {
     setIsLoading(true);
-    navigate('/contact');
+    navigate('/');
   }, [navigate]);
 
   return (

@@ -2,10 +2,18 @@ import React from "react";
 import MapComponent from "../components/MapComponent";
 import BottomSheet from "../components/BottomSheet";
 
+const FloatingButton = () => {
+	return (
+		<button className="btn btn-primary" style={{ position: "fixed", top: "20px", right: "20px", zIndex: 1050 }}>
+			=
+		</button>
+	)
+
+}
+
 const HomePage = () => {
 	return (
 		<>	
-			pagina inicial
 			<MapComponent 
 				center={[37.7749, -122.4194]} // Default center (San Francisco)	
 				zoom={13} // Default zoom level
@@ -18,6 +26,8 @@ const HomePage = () => {
 			>
 				<div>Your content here</div>
 			</BottomSheet>
+
+			<FloatingButton />
 		</>
 	);
 };

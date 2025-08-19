@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 import './Light.scss';
 import './Dark.scss';

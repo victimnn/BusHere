@@ -9,9 +9,9 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'WebApp TCC',
-        short_name: 'TCC',
-  start_url: '/',
+        name: 'BusHere! Mobile',
+        short_name: 'BusHere!',
+        start_url: '/',
         display: 'standalone',
         background_color: '#ffffff',
         theme_color: '#1976d2',

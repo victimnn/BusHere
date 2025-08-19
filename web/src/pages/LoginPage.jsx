@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import { useAuth } from "../context/authContext";
@@ -9,6 +9,8 @@ function Login({pageFunctions}){
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const popUpRef = useRef(null); 
+
+  const [showPassword, setShowPassword] = useState(false); 
 
   useEffect(() => {
     pageFunctions.set("login",false,false);
@@ -80,15 +82,25 @@ function Login({pageFunctions}){
               Senha
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
+              name="password"
               className="form-control"
               placeholder="Insira a senha"
             />
-             <button>teste</button>
+             <button
+                type="button"
+                className="btn"
+                tabIndex={-1}
+                onClick={() => setShowPassword((v) => !v)}
+                style={{ margin: "0", padding: "0", width: "35px", height: "32px", marginTop: "-72px", marginLeft: "88%", fontSize: "15px"}}
+                tabIndex={-1}
+                >
+                <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                </button>
           </div>
 
-          <div className="d-flex justify-content-between align-items-center mb-3">
+          <div className="d-flex justify-content-between align-items-center"  style={{display: "flex", alignItems: "center", marginTop: "-45px"}}>
             <div className="form-check">
               <input className="form-check-input" type="checkbox" role="switch" id="rememberMe"/>
               <label className="form-check-label" htmlFor="rememberMe"  style={{marginLeft: "5px", marginTop: "5px"}}>
@@ -104,7 +116,7 @@ function Login({pageFunctions}){
             Entrar
           </button>
 
-          <div className="text-center mt-3">
+          <div className="text-center mt-2">
             <a href="/register" className=" text-decoration-underline small">
               Não Possui Cadastro?
             </a>

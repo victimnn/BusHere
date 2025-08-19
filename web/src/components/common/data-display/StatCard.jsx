@@ -33,7 +33,6 @@ const StatCard = ({
               border: `2px solid rgba(255, 255, 255, 0.3)`
             }}>
               <i className={iconClass} style={{ 
-                color: 'black',
                 fontSize: '2.4rem'
               }}></i>
             </div>

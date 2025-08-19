@@ -149,14 +149,22 @@
   background-color: $card-bg !important;
   border-color: $border-color !important;
   color: $text-primary !important;
+  width: 100%;
+  min-height: 140px;
+  
+  .card-body {
+    width: 100%;
+    padding: 1.5rem !important;
+  }
   
   .stats-value {
-    font-size: 2rem;
+    font-size: 2.5rem;
     color: $primary !important;
     font-weight: 600;
+    margin-bottom: 0.5rem;
     
     @include small-mobile {
-      font-size: 1.5rem !important;
+      font-size: 2rem !important;
     }
   }
   
@@ -165,13 +173,13 @@
   }
   
   .stats-icon {
-    color: $primary !important;
-    opacity: 0.8;
-    font-size: 2.2rem;
+    color: #000000 !important;
+    opacity: 0.9;
+    font-size: 2.8rem;
     transition: all 0.3s ease;
     @include flex-center();
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     background: rgba(255, 255, 255, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
@@ -181,15 +189,15 @@
     font-weight: 600;
     
     @include mobile-only {
-      font-size: 1.8rem;
-      width: 50px;
-      height: 50px;
+      font-size: 2.4rem;
+      width: 60px;
+      height: 60px;
     }
     
     @include small-mobile {
-      font-size: 1.5rem;
-      width: 45px;
-      height: 45px;
+      font-size: 2rem;
+      width: 55px;
+      height: 55px;
     }
   }
   
@@ -198,6 +206,7 @@
     border-color: rgba($primary, 0.3) !important;
     
     .stats-icon {
+      color: #000000 !important;
       opacity: 1;
       transform: scale(1.05);
       background: rgba(255, 255, 255, 0.3);
@@ -208,7 +217,7 @@
   
   @include small-mobile {
     .card-body {
-      padding: 0.75rem !important;
+      padding: 1rem !important;
     }
     
     h6 {

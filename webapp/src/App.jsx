@@ -10,16 +10,13 @@ import HomePage from "./pages/HomePage";
 function App({ isDark, setIsDark }) {
   return (
     <Router>
-      <div className={`app-mobile-container${isDark ? ' dark-mode' : ''}`}>
-        <ThemeSwitch isDark={isDark} onToggle={() => setIsDark(!isDark)} />
-        <main className="app-mobile-main">
-          <Routes>
-            <Route path="/" index element={<HomePage />} />
-            {/* Adicione outras rotas conforme necessário */}
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
-        </main>
-      </div>
+      <main className="d-flex w-100 h-100 flex-column">
+        <Routes>
+          <Route path="/" index element={<HomePage />} />
+          {/* Adicione outras rotas conforme necessário */}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </main>
     </Router>
   );
 }

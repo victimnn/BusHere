@@ -1,12 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import StatCard from '../components/common/StatCard';
+import StatCard from '../components/common/data-display/StatCard';
 import { useDashboardData, useRecentActivities } from '@web/hooks';
-import PopUpComponent from '@web/components/ui/PopUpComponent';
+import PopUpComponent from '@web/components/core/feedback/PopUpComponent';
 
-import QuickAccess from '@web/components/pageComponents/home/quickAccess';
-import HomeStatsCards from '@web/components/pageComponents/home/homeStatsCards';
-import RecentActivityTable from '@web/components/pageComponents/home/RecentActivityTable';
+import QuickAccess from '@web/components/features/dashboard/quickAccess';
+import HomeStatsCards from '@web/components/features/dashboard/homeStatsCards';
+import RecentActivityTable from '@web/components/features/dashboard/RecentActivityTable';
 
 function HomePage({pageFunctions}) {
     const popUpRef = useRef(null);

@@ -1,8 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import PopUpComponent from '@web/components/ui/PopUpComponent';
-import BusForm from '@web/components/pageComponents/buses/BusForm';
-import Notification from '@web/components/common/Notification';
+import PopUpComponent from '@web/components/core/feedback/PopUpComponent';
+import BusForm from '@web/components/domain/buses/BusForm';
+import Notification from '@web/components/common/feedback/Notification';
+import Dialog from '@web/components/common/feedback/Dialog';
 
 import { useBuses, useDetailPage, useNotification } from '@web/hooks';
 import { formatDateFromDatabase } from '@shared/formatters';
@@ -15,7 +16,7 @@ import {
   DetailActions,
   DetailContainer,
   DetailDebug
-} from '@web/components/pageComponents/details';
+} from '@web/components/features/details';
 
 function BusDetail({ pageFunctions }) {
   useEffect(() => { 
@@ -24,6 +25,7 @@ function BusDetail({ pageFunctions }) {
   const navigate = useNavigate();
   const { busId } = useParams();
   const popUpRef = useRef(null);
+  const dialogRef = useRef(null);
   
   // Usar o hook de ônibus
   const { getBusById, updateBus, deleteBus } = useBuses();
@@ -73,22 +75,29 @@ function BusDetail({ pageFunctions }) {
   };
 
   const handleDeleteBus = async () => {
-    if (window.confirm("Tem certeza que deseja excluir este ônibus?")) {
-      try {
-        const result = await deleteBus(bus.id || bus.onibus_id);
-        if (result.success) {
-          showSuccess("Ônibus excluído com sucesso!");
-          setTimeout(() => {
-            navigate('/buses'); // Redireciona para a lista de ônibus
-          }, 1000); // tempo para o usuário ver a notificação 
-        } else {
-          showError(result.error);
+    dialogRef.current.showConfirm({
+      title: "Confirmar Exclusão",
+      message: "Tem certeza que deseja excluir este ônibus?",
+      type: "danger",
+      confirmText: "Excluir",
+      cancelText: "Cancelar",
+      onConfirm: async () => {
+        try {
+          const result = await deleteBus(bus.id || bus.onibus_id);
+          if (result.success) {
+            showSuccess("Ônibus excluído com sucesso!");
+            setTimeout(() => {
+              navigate('/buses'); // Redireciona para a lista de ônibus
+            }, 1000); // tempo para o usuário ver a notificação 
+          } else {
+            showError(result.error);
+          }
+        } catch (error) {
+          console.error("Erro ao excluir ônibus:", error);
+          showError("Não foi possível excluir o ônibus. Tente novamente mais tarde.");
         }
-      } catch (error) {
-        console.error("Erro ao excluir ônibus:", error);
-        showError("Não foi possível excluir o ônibus. Tente novamente mais tarde.");
       }
-    }
+    });
   };
 
   // Configurar ações do ônibus
@@ -188,6 +197,8 @@ function BusDetail({ pageFunctions }) {
       )}
 
       <PopUpComponent ref={popUpRef} />
+
+      <Dialog ref={dialogRef} />
 
       <Notification
         notification={notification}

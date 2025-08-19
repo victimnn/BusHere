@@ -139,7 +139,7 @@ export function getStatusFormat(value: string): { className: string; text: strin
   } else if (status.includes('operação') || status.includes('ativo') || status.includes('ativa') || status.includes('estudante')) {
     className = 'bg-success';
   } else if (status.includes('manutenção') || status.includes('férias') || status.includes('planejamento')) {
-    className = 'bg-warning text-dark';
+    className = 'bg-warning text-black';
   } else if (status.includes('corporativo')) {
     className = 'bg-info';
   }
@@ -177,7 +177,7 @@ export function getTypeFormat(value: string): { className: string; text: string 
 export function getOperationBadge(operation: string): string {
   const badges = {
     'INSERT': 'badge bg-success',
-    'UPDATE': 'badge bg-warning text-dark',
+    'UPDATE': 'badge bg-warning text-black',
     'DELETE': 'badge bg-danger'
   };
   return badges[operation] || 'badge bg-secondary';

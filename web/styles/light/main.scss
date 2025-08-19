@@ -26,6 +26,7 @@
 @import './components/forms';
 @import './components/tables';
 @import './components/notifications';
+@import './components/dialogs';
 @import './components/drag-drop';
 
 // -----------------------------------------------------------------------------
@@ -36,6 +37,7 @@
 @import './pages/detail';
 @import './pages/reports';
 @import './pages/search';
+@import './pages/error';
 
 // -----------------------------------------------------------------------------
 // 5. UTILS - Utilitários e helpers

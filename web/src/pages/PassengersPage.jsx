@@ -1,13 +1,14 @@
 import React, { useRef, useEffect, useCallback } from "react";
-import PopUpComponent from "@web/components/ui/PopUpComponent";
-import PassengerForm from "@web/components/pageComponents/passengers/PassengerForm";
-import PassengerDetails from "@web/components/pageComponents/passengers/PassengerDetails";
-import PassengerStatsCards from "@web/components/pageComponents/passengers/PassengerStatsCards";
-import Table from "@web/components/ui/Table";
-import Notification from "@web/components/common/Notification";
-import LoadingSpinner from "@web/components/common/LoadingSpinner";
-import ErrorAlert from "@web/components/common/ErrorAlert";
-import ActionButton from "@web/components/common/ActionButton";
+import PopUpComponent from "@web/components/core/feedback/PopUpComponent";
+import PassengerForm from "@web/components/domain/passengers/PassengerForm";
+import PassengerDetails from "@web/components/domain/passengers/PassengerDetails";
+import PassengerStatsCards from "@web/components/domain/passengers/PassengerStatsCards";
+import Table from "@web/components/common/data-display/Table";
+import Notification from "@web/components/common/feedback/Notification";
+import LoadingSpinner from "@web/components/common/feedback/LoadingSpinner";
+import ErrorAlert from "@web/components/common/feedback/ErrorAlert";
+import ActionButton from "@web/components/common/buttons/ActionButton";
+import { Dialog } from "@web/components/common/feedback";
 import { usePassengers, useNotification } from "@web/hooks";
 import { formatCPF, formatPhoneNumber, formatDateFromDatabase, getTypeFormat } from "@shared/formatters";
 
@@ -32,6 +33,7 @@ const TABLE_HEADERS = [
 
 function Passengers({ pageFunctions }) {
   const popUpRef = useRef(null);
+      const dialogRef = useRef(null);
   
   // Usar hook customizado para gerenciar dados dos passageiros
   const {
@@ -101,15 +103,23 @@ function Passengers({ pageFunctions }) {
   }, [updatePassenger, showSuccess, showError]);
 
   const handleDeletePassenger = useCallback(async (id) => {
-    if (window.confirm("Tem certeza que deseja excluir este passageiro?")) {
-      const result = await deletePassenger(id);
-      if (result.success) {
-        popUpRef.current.hide();
-        showSuccess("Passageiro excluído com sucesso!");
-      } else {
-        showError(result.error);
-      }
-    }
+            dialogRef.current.showConfirm({
+      title: 'Confirmar Exclusão',
+      message: 'Tem certeza que deseja excluir este passageiro?',
+      confirmText: 'Excluir',
+      cancelText: 'Cancelar',
+      type: 'danger',
+      onConfirm: async () => {
+        const result = await deletePassenger(id);
+        if (result.success) {
+          popUpRef.current.hide();
+          showSuccess("Passageiro excluído com sucesso!");
+        } else {
+          showError(result.error);
+        }
+      },
+      onCancel: () => {}
+    });
   }, [deletePassenger, showSuccess, showError]);
 
   const handleRowClick = useCallback((passenger) => {
@@ -196,6 +206,9 @@ function Passengers({ pageFunctions }) {
         <PopUpComponent 
           ref={popUpRef}
         />
+
+        {/* Dialog unificado para confirmações */}
+        <Dialog ref={dialogRef} />
 
         {/* Componente de Notificação */}
         <Notification 

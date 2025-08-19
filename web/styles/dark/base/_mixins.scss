@@ -69,6 +69,12 @@
   }
 }
 
+@mixin tablet-up {
+  @media (min-width: 769px) {
+    @content;
+  }
+}
+
 @mixin desktop-only {
   @media (min-width: 1025px) {
     @content;

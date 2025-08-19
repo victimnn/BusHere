@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import PopUpComponent from '@web/components/ui/PopUpComponent';
-import RouteForm from "@web/components/pageComponents/routes/RouteForm";
-import Notification from '@web/components/common/Notification';
+import PopUpComponent from '@web/components/core/feedback/PopUpComponent';
+import RouteForm from "@web/components/domain/routes/RouteForm";
+import { Notification } from '@web/components/common';
+import Dialog from '@web/components/common/feedback/Dialog';
 
 import { useRoutes, useRouteWithStops, useDetailPage, useNotification } from '@web/hooks';
 import { formatDateFromDatabase } from '@shared/formatters';
@@ -15,7 +16,7 @@ import {
   DetailActions,
   DetailContainer,
   DetailDebug
-} from '@web/components/pageComponents/details';
+} from '@web/components/features/details';
 
 function RouteDetail({ pageFunctions }) {
   useEffect(() => { 
@@ -24,6 +25,7 @@ function RouteDetail({ pageFunctions }) {
   const navigate = useNavigate();
   const { routeId } = useParams();
   const popUpRef = useRef(null);
+  const dialogRef = useRef(null);
   
   // Usar o hook de rotas
   const { updateRoute, deleteRoute, getStatusRotaNome } = useRoutes();
@@ -74,22 +76,29 @@ function RouteDetail({ pageFunctions }) {
   };
 
   const handleDeleteRoute = async () => {
-    if (window.confirm("Tem certeza que deseja excluir esta rota?")) {
-      try {
-        const result = await deleteRoute(route.id || route.rota_id);
-        if (result.success) {
-          showSuccess("Rota excluída com sucesso!");
-          setTimeout(() => {
-            navigate('/routes'); // Redireciona para a lista de rotas
-          }, 1000); // tempo para o usuário ver a notificação 
-        } else {
-          showError(result.error);
+    dialogRef.current.showConfirm({
+      title: "Confirmar Exclusão",
+      message: "Tem certeza que deseja excluir esta rota?",
+      type: "danger",
+      confirmText: "Excluir",
+      cancelText: "Cancelar",
+      onConfirm: async () => {
+        try {
+          const result = await deleteRoute(route.id || route.rota_id);
+          if (result.success) {
+            showSuccess("Rota excluída com sucesso!");
+            setTimeout(() => {
+              navigate('/routes'); // Redireciona para a lista de rotas
+            }, 1000); // tempo para o usuário ver a notificação 
+          } else {
+            showError(result.error);
+          }
+        } catch (error) {
+          console.error("Erro ao excluir rota:", error);
+          showError("Não foi possível excluir a rota. Tente novamente mais tarde.");
         }
-      } catch (error) {
-        console.error("Erro ao excluir rota:", error);
-        showError("Não foi possível excluir a rota. Tente novamente mais tarde.");
       }
-    }
+    });
   };
 
   // Função para navegar para edição completa da rota com pontos
@@ -294,6 +303,7 @@ function RouteDetail({ pageFunctions }) {
       )}
       
       <PopUpComponent ref={popUpRef} />
+      <Dialog ref={dialogRef} />
 
       <Notification notification={notification} onClose={hideNotification} />
     </DetailPage>

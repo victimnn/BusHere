@@ -1,13 +1,14 @@
 import React, { useRef, useEffect, useCallback } from "react";
-import PopUpComponent from "@web/components/ui/PopUpComponent";
-import BusForm from "@web/components/pageComponents/buses/BusForm";
-import BusDetails from "@web/components/pageComponents/buses/BusDetails";
-import BusStatsCards from "@web/components/pageComponents/buses/BusStatsCards";
-import Table from "@web/components/ui/Table";
-import Notification from "@web/components/common/Notification";
-import LoadingSpinner from "@web/components/common/LoadingSpinner";
-import ErrorAlert from "@web/components/common/ErrorAlert";
-import ActionButton from "@web/components/common/ActionButton";
+import PopUpComponent from "@web/components/core/feedback/PopUpComponent";
+import BusForm from "@web/components/domain/buses/BusForm";
+import BusDetails from "@web/components/domain/buses/BusDetails";
+import BusStatsCards from "@web/components/domain/buses/BusStatsCards";
+import Table from "@web/components/common/data-display/Table";
+import Notification from "@web/components/common/feedback/Notification";
+import LoadingSpinner from "@web/components/common/feedback/LoadingSpinner";
+import ErrorAlert from "@web/components/common/feedback/ErrorAlert";
+import ActionButton from "@web/components/common/buttons/ActionButton";
+import { Dialog } from "@web/components/common/feedback";
 import { useBuses, useNotification } from "@web/hooks";
 import { formatPlate, formatDateFromDatabase, formatKilometers, formatCapacity, getStatusFormat } from "@shared/formatters";
 
@@ -63,6 +64,7 @@ const TABLE_HEADERS = [
 
 function Buses({ pageFunctions }) {
   const popUpRef = useRef(null);
+      const dialogRef = useRef(null);
   
   // Usar hook customizado para gerenciar dados dos ônibus
   const {
@@ -137,15 +139,23 @@ function Buses({ pageFunctions }) {
 
   // Handler para excluir um ônibus
   const handleDeleteBus = useCallback(async (id) => {
-    if (window.confirm("Tem certeza que deseja excluir este ônibus?")) {
-      const result = await deleteBus(id);
-      if (result.success) {
-        popUpRef.current.hide();
-        showSuccess("Ônibus excluído com sucesso!");
-      } else {
-        showError(result.error);
-      }
-    }
+            dialogRef.current.showConfirm({
+      title: 'Confirmar Exclusão',
+      message: 'Tem certeza que deseja excluir este ônibus?',
+      confirmText: 'Excluir',
+      cancelText: 'Cancelar',
+      type: 'danger',
+      onConfirm: async () => {
+        const result = await deleteBus(id);
+        if (result.success) {
+          popUpRef.current.hide();
+          showSuccess("Ônibus excluído com sucesso!");
+        } else {
+          showError(result.error);
+        }
+      },
+      onCancel: () => {}
+    });
   }, [deleteBus, showSuccess, showError]);
 
   // Handler para quando uma linha for clicada
@@ -233,6 +243,9 @@ function Buses({ pageFunctions }) {
         <PopUpComponent 
           ref={popUpRef}
         />
+
+        {/* Dialog unificado para confirmações */}
+        <Dialog ref={dialogRef} />
 
         {/* Componente de Notificação */}
         <Notification 

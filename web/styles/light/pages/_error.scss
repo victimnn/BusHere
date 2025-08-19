@@ -1,0 +1,297 @@
+// =============================================================================
+// ERROR PAGE - ESTILOS PARA PÁGINA DE ERRO 404
+// =============================================================================
+
+@import '../base/variables';
+@import '../base/mixins';
+@import '../components/cards';
+@import '../components/buttons';
+
+// -----------------------------------------------------------------------------
+// CONTAINER PRINCIPAL
+// -----------------------------------------------------------------------------
+.error-page-container {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: $spacing-md;
+  background-color: $body-bg;
+  
+  @include mobile-only {
+    padding: $spacing-sm;
+  }
+  
+  @include small-mobile {
+    padding: $spacing-xs;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ELEMENTOS DECORATIVOS DE FUNDO
+// -----------------------------------------------------------------------------
+.error-bg {
+  position: relative;
+  
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.08;
+    z-index: 0;
+  }
+  
+  &::before {
+    top: 10%;
+    left: 10%;
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, $primary, $analogous-1);
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  &::after {
+    bottom: 15%;
+    right: 15%;
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, $accent, $accent-light);
+    animation: float 8s ease-in-out infinite reverse;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// CARD PRINCIPAL DE ERRO
+// -----------------------------------------------------------------------------
+.error-card {
+  background: $card-bg !important;
+  border: 1px solid $border-color !important;
+  border-radius: $border-radius-lg !important;
+  box-shadow: $box-shadow-lg !important;
+  position: relative;
+  max-width: 100%;
+  width: 100%;
+  max-height: calc(100vh - 2rem);
+  overflow: hidden;
+  
+  @include mobile-only {
+    max-height: calc(100vh - 1rem);
+  }
+  
+  @include small-mobile {
+    max-height: calc(100vh - 0.5rem);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ÍCONE DE ERRO
+// -----------------------------------------------------------------------------
+.error-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, $primary, $analogous-2) !important;
+  border: 4px solid $white;
+  box-shadow: 0 4px 15px rgba($primary, 0.2);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  .error-icon-symbol {
+    font-size: 2.5rem;
+    color: $primary-contrast !important;
+    animation: pulse 2s ease-in-out infinite;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  }
+}
+
+// -----------------------------------------------------------------------------
+// NÚMERO 404
+// -----------------------------------------------------------------------------
+.error-number {
+  font-size: 6rem;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: $spacing-lg;
+  background: linear-gradient(135deg, $primary, $analogous-1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
+  .error-zero {
+    color: $accent !important;
+    -webkit-text-fill-color: $accent;
+  }
+  
+  @include mobile-only {
+    font-size: 4rem;
+  }
+  
+  @include small-mobile {
+    font-size: 3rem;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// TÍTULO E DESCRIÇÃO
+// -----------------------------------------------------------------------------
+.error-title {
+  color: $text-dark !important;
+  font-weight: 700;
+  margin-bottom: $spacing-md;
+  font-size: 1.5rem;
+  
+  @include mobile-only {
+    font-size: 1.25rem;
+  }
+}
+
+.error-description {
+  color: $text-muted !important;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: $spacing-xl;
+  
+  @include mobile-only {
+    font-size: 1rem;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// BOTÕES DE AÇÃO
+// -----------------------------------------------------------------------------
+.error-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: $spacing-xl;
+  
+  @include tablet-up {
+    flex-direction: row;
+  }
+  
+  .btn {
+    min-width: 160px;
+    font-weight: 600;
+    border-radius: $border-radius-lg;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+    
+    &:active {
+      transform: translateY(0);
+      transition: transform 0.1s ease;
+    }
+    
+    &:focus-visible {
+      outline: 2px solid $primary;
+      outline-offset: 2px;
+    }
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, $primary, $analogous-2) !important;
+    border: none !important;
+    color: $primary-contrast !important;
+    
+    &:hover {
+      background: linear-gradient(135deg, $primary-dark, $primary) !important;
+    }
+    
+    &:focus-visible {
+      outline-color: $primary-contrast;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// SEÇÃO DE AJUDA
+// -----------------------------------------------------------------------------
+.error-help {
+  margin-top: $spacing-xl;
+  padding-top: $spacing-lg;
+  border-top: 1px solid $border-color;
+  
+  .help-title {
+    color: $text-dark !important;
+    font-weight: 600;
+    margin-bottom: $spacing-md;
+    font-size: 1.1rem;
+  }
+  
+  .btn-outline-primary {
+    background-color: transparent !important;
+    border: 1px solid $primary !important;
+    color: $primary !important;
+    border-radius: 50px;
+    padding: $spacing-sm $spacing-md;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background-color: $primary !important;
+      color: $primary-contrast !important;
+      transform: translateY(-1px);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ANIMAÇÕES
+// -----------------------------------------------------------------------------
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// RESPONSIVIDADE
+// -----------------------------------------------------------------------------
+@include mobile-only {
+  .error-card {
+    margin: $spacing-sm;
+  }
+  
+  .error-icon {
+    width: 60px;
+    height: 60px;
+    
+    i {
+      font-size: 1.5rem;
+    }
+  }
+}
+
+@include small-mobile {
+  .error-card {
+    margin: $spacing-xs;
+  }
+  
+  .error-actions {
+    .btn {
+      min-width: 140px;
+      padding: $spacing-sm $spacing-md;
+    }
+  }
+}

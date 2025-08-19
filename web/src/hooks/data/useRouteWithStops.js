@@ -60,6 +60,8 @@ export function useRouteWithStops(
         if (!pontosSelecionados || !setPontosSelecionados) return;
         if (pontosSelecionados.length === 0) return;
         
+        // Nota: Este hook não pode usar ConfirmDialog diretamente
+        // O componente pai deve implementar a confirmação
         if (window.confirm('Tem certeza que deseja remover todos os pontos selecionados?')) {
             setPontosSelecionados([]);
             showNotification && showNotification('Todos os pontos foram removidos', 'info');

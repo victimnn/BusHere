@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import PopUpComponent from '@web/components/ui/PopUpComponent';
-import StopForm from "@web/components/pageComponents/stops/StopForm";
-import Notification from '@web/components/common/Notification';
+import PopUpComponent from '@web/components/core/feedback/PopUpComponent';
+import StopForm from "@web/components/domain/stops/StopForm";
+import { Notification } from '@web/components/common';
+import Dialog from '@web/components/common/feedback/Dialog';
 
 import { useStops, useDetailPage, useNotification } from '@web/hooks';
 import { formatDateFromDatabase } from '@shared/formatters';
@@ -15,7 +16,7 @@ import {
   DetailActions,
   DetailContainer,
   DetailDebug
-} from '@web/components/pageComponents/details';
+} from '@web/components/features/details';
 
 function StopDetail({ pageFunctions }) {
   useEffect(() => { 
@@ -24,6 +25,7 @@ function StopDetail({ pageFunctions }) {
   const navigate = useNavigate();
   const { stopId } = useParams();
   const popUpRef = useRef(null);
+  const dialogRef = useRef(null);
   
   // Usar o hook de pontos
   const { getStopById, updateStop, deleteStop } = useStops();
@@ -72,22 +74,29 @@ function StopDetail({ pageFunctions }) {
   };
 
   const handleDeleteStop = async () => {
-    if (window.confirm("Tem certeza que deseja excluir este ponto?")) {
-      try {
-        const result = await deleteStop(stop.id || stop.ponto_id);
-        if (result.success) {
-          showSuccess("Ponto excluído com sucesso!");
-          setTimeout(() => {
-            navigate('/stops'); // Redireciona para a lista de pontos
-          }, 1000); // tempo para o usuário ver a notificação 
-        } else {
-          showError(result.error);
+    dialogRef.current.showConfirm({
+      title: "Confirmar Exclusão",
+      message: "Tem certeza que deseja excluir este ponto?",
+      type: "danger",
+      confirmText: "Excluir",
+      cancelText: "Cancelar",
+      onConfirm: async () => {
+        try {
+          const result = await deleteStop(stop.id || stop.ponto_id);
+          if (result.success) {
+            showSuccess("Ponto excluído com sucesso!");
+            setTimeout(() => {
+              navigate('/stops'); // Redireciona para a lista de pontos
+            }, 1000); // tempo para o usuário ver a notificação 
+          } else {
+            showError(result.error);
+          }
+        } catch (error) {
+          console.error("Erro ao excluir ponto:", error);
+          showError("Não foi possível excluir o ponto. Tente novamente mais tarde.");
         }
-      } catch (error) {
-        console.error("Erro ao excluir ponto:", error);
-        showError("Não foi possível excluir o ponto. Tente novamente mais tarde.");
       }
-    }
+    });
   };
 
   // Configurar ações do ponto
@@ -186,6 +195,7 @@ function StopDetail({ pageFunctions }) {
       )}
       
       <PopUpComponent ref={popUpRef} />
+      <Dialog ref={dialogRef} />
 
       <Notification notification={notification} onClose={hideNotification} />
     </DetailPage>

@@ -16,14 +16,14 @@ import {
 import { generateReportPDF } from "@web/utils/pdfReport";
 
 // Componentes
-import PopUpComponent from "@web/components/ui/PopUpComponent";
+import PopUpComponent from "@web/components/core/feedback/PopUpComponent";
 
 // Componentes modulares
-import ReportHeader from "@web/components/pageComponents/reports/ReportHeader";
-import StatsCards from "@web/components/pageComponents/reports/StatsCards";
-import ChartsSection from "@web/components/pageComponents/reports/ChartsSection";
-import PerformanceSection from "@web/components/pageComponents/reports/PerformanceSection";
-import DetailedSummary from "@web/components/pageComponents/reports/DetailedSummary";
+import ReportHeader from "@web/components/features/reports/ReportHeader";
+import StatsCards from "@web/components/features/reports/StatsCards";
+import ChartsSection from "@web/components/features/reports/ChartsSection";
+import PerformanceSection from "@web/components/features/reports/PerformanceSection";
+import DetailedSummary from "@web/components/features/reports/DetailedSummary";
 
 
 // Hooks customizados

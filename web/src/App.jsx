@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { useState, useEffect, useRef} from 'react'
 
 import { AuthProvider } from "./context/authContext";
-import PopUpComponent from "./components/ui/PopUpComponent";
+import PopUpComponent from "./components/core/feedback/PopUpComponent";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
@@ -15,6 +15,7 @@ import ReportsPage from "./pages/ReportsPage";
 import SettingsPage from "./pages/SettingsPage";
 import SearchPage from "./pages/SearchPage";
 import StopsPage from "./pages/StopsPage";
+import ErrorPage from "./pages/ErrorPage";
 
 import BusDetail from "./pages/details/BusDetail";
 import PassengerDetail from "./pages/details/PassengerDetail";
@@ -23,8 +24,8 @@ import RouteDetail from "./pages/details/RouteDetail";
 import StopDetail from "./pages/details/StopDetail";
 import RouteStopsPage from "./pages/RouteStopsPage";
 
-import SideBar from "./components/ui/SideBar";
-import Header from "./components/ui/Header";
+import SideBar from "./components/core/layout/SideBar";
+import Header from "./components/core/layout/Header";
 
 function App({ isDark, setIsDark }) {
   const [pageName, setPageName] = useState("Giraldi");
@@ -87,6 +88,9 @@ function App({ isDark, setIsDark }) {
                   <Route path="/routes/:routeId/edit" element={<RouteStopsPage pageFunctions={pageFunctions} isDark={isDark}/>} />
 
                   <Route path="/search/:searchTerm" element={<SearchPage pageFunctions={pageFunctions}  />} />
+
+                  <Route path="/error" element={<ErrorPage />} />
+                  <Route path="*" element={<Navigate to="/error" />} />
                 </Routes>
               </div>
             </main>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { CONSTANTS } from '@web/utils/routeStopsUtils';
-import { ExistingStopPopup, SelectedStopPopup } from '@web/components/pageComponents/stopRoute/StopPopups';
+import { ExistingStopPopup, SelectedStopPopup } from '@web/components/features/route-planning/StopPopups';
 import { useRouting } from './useRouting';
 import { useAdvancedRouteStats } from './useAdvancedRouteStats';
 

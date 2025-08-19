@@ -1,14 +1,14 @@
 import React, { useRef, useEffect, useCallback } from "react";
-import PopUpComponent from "@web/components/ui/PopUpComponent";
-import DriverForm from "@web/components/pageComponents/drivers/DriverForm";
-import DriverDetails from "@web/components/pageComponents/drivers/DriverDetails";
-import DriversStatsCards from "@web/components/pageComponents/drivers/DriversStatsCards";
-import Table from "@web/components/ui/Table";
-import Notification from "@web/components/common/Notification";
-import LoadingSpinner from "@web/components/common/LoadingSpinner";
-import ErrorAlert from "@web/components/common/ErrorAlert";
-import ActionButton from "@web/components/common/ActionButton";
-import ConfirmDialog from "@web/components/common/ConfirmDialog";
+import PopUpComponent from "@web/components/core/feedback/PopUpComponent";
+import DriverForm from "@web/components/domain/drivers/DriverForm";
+import DriverDetails from "@web/components/domain/drivers/DriverDetails";
+import DriversStatsCards from "@web/components/domain/drivers/DriversStatsCards";
+import Table from "@web/components/common/data-display/Table";
+import Notification from "@web/components/common/feedback/Notification";
+import LoadingSpinner from "@web/components/common/feedback/LoadingSpinner";
+import ErrorAlert from "@web/components/common/feedback/ErrorAlert";
+import ActionButton from "@web/components/common/buttons/ActionButton";
+import { Dialog } from "@web/components/common/feedback";
 import { useDrivers, useNotification } from "@web/hooks";
 import { formatCPF, formatPhoneNumber, formatDateFromDatabase, getStatusFormat } from "@shared/formatters";
 
@@ -44,7 +44,7 @@ const TABLE_HEADERS = [
 
 function Drivers({ pageFunctions }) {
   const popUpRef = useRef(null);
-  const confirmDialogRef = useRef(null);
+      const dialogRef = useRef(null);
   
   // Usar hook customizado para gerenciar dados dos motoristas
   const {
@@ -116,7 +116,7 @@ function Drivers({ pageFunctions }) {
   }, [updateDriver, showSuccess, showError]);
 
   const handleDeleteDriver = useCallback(async (id) => {
-    confirmDialogRef.current.show({
+            dialogRef.current.showConfirm({
       title: 'Confirmar Exclusão',
       message: 'Tem certeza que deseja excluir este motorista?',
       confirmText: 'Excluir',
@@ -220,8 +220,8 @@ function Drivers({ pageFunctions }) {
           ref={popUpRef}
         />
 
-        {/* ConfirmDialog para confirmações */}
-        <ConfirmDialog ref={confirmDialogRef} />
+        {/* Dialog unificado para confirmações */}
+        <Dialog ref={dialogRef} />
 
         {/* Componente de Notificação */}
         <Notification 

@@ -1,17 +1,17 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import PopUpComponent from "@web/components/ui/PopUpComponent";
-import StopDetails from "@web/components/pageComponents/stops/StopDetails";
-import StopForm from "@web/components/pageComponents/stops/StopForm";
-import MarkerPopUpContent from "@web/components/pageComponents/stops/MarkerPopUpContent";
-import StopsMapSection from "@web/components/pageComponents/stops/StopsMapSection";
-import StopsListSection from "@web/components/pageComponents/stops/StopsListSection";
-import StopsTableSection from "@web/components/pageComponents/stops/StopsTableSection";
-import MapClickPopup from "@web/components/pageComponents/stops/MapClickPopup";
-import Notification from "@web/components/common/Notification";
-import LoadingSpinner from "@web/components/common/LoadingSpinner";
-import ErrorAlert from "@web/components/common/ErrorAlert";
-import ActionButton from "@web/components/common/ActionButton";
-import ConfirmDialog from "@web/components/common/ConfirmDialog";
+import PopUpComponent from "@web/components/core/feedback/PopUpComponent";
+import StopDetails from "@web/components/domain/stops/StopDetails";
+import StopForm from "@web/components/domain/stops/StopForm";
+import MarkerPopUpContent from "@web/components/domain/stops/MarkerPopUpContent";
+import StopsMapSection from "@web/components/domain/stops/StopsMapSection";
+import StopsListSection from "@web/components/domain/stops/StopsListSection";
+import StopsTableSection from "@web/components/domain/stops/StopsTableSection";
+import MapClickPopup from "@web/components/domain/stops/MapClickPopup";
+import Notification from "@web/components/common/feedback/Notification";
+import LoadingSpinner from "@web/components/common/feedback/LoadingSpinner";
+import ErrorAlert from "@web/components/common/feedback/ErrorAlert";
+import ActionButton from "@web/components/common/buttons/ActionButton";
+import { Dialog } from "@web/components/common/feedback";
 import { getColorBasedOnValue } from "../utils/mapIcons";
 import { getStatusFormat } from "@shared/formatters";
 import { useStops, useNotification } from "@web/hooks";
@@ -63,7 +63,7 @@ export function sincronizeMarkers(stops, setMarkers, popUpRef, onDelete = null, 
 
 function Stops({ pageFunctions, isDark }) {
   const popUpRef = useRef(null);
-  const confirmDialogRef = useRef(null);
+      const dialogRef = useRef(null);
   
   // Hook para gerenciar dados dos pontos
   const {
@@ -158,7 +158,7 @@ function Stops({ pageFunctions, isDark }) {
   }, [findStopById, updateStop, showSuccess, showError]);
 
   const handleDeleteStop = useCallback(async (id) => {
-    confirmDialogRef.current.show({
+            dialogRef.current.showConfirm({
       title: 'Confirmar Exclusão',
       message: 'Você tem certeza que deseja excluir este ponto?',
       confirmText: 'Excluir',
@@ -312,8 +312,8 @@ function Stops({ pageFunctions, isDark }) {
           ref={popUpRef}
         />
 
-        {/* ConfirmDialog para confirmações */}
-        <ConfirmDialog ref={confirmDialogRef} />
+        {/* Dialog unificado para confirmações */}
+        <Dialog ref={dialogRef} />
 
         {/* Componente de Notificação */}
         <Notification 

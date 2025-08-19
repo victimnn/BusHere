@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Componentes
-import ActionButton from "@web/components/common/ActionButton";
+import ActionButton from "@web/components/common/buttons/ActionButton";
 
 const ErrorPage = () => {
   const navigate = useNavigate();

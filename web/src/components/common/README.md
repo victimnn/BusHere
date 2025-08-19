@@ -622,3 +622,198 @@ import StatCard from '../common/StatCard';
 - **Antes**: Múltiplos cálculos a cada render
 - **Depois**: Cálculos memoizados, re-executados apenas quando necessário
 - **Resultado**: Redução significativa de processamento desnecessário
+
+## Dialog (Componente Unificado)
+
+O componente `Dialog` unifica as funcionalidades dos antigos `AlertDialog` e `ConfirmDialog` em um único componente mais flexível e eficiente.
+
+### Características
+
+- **Modo Alert**: Exibe uma mensagem com um botão (similar ao `window.alert`)
+- **Modo Confirm**: Exibe uma mensagem com dois botões (similar ao `window.confirm`)
+- **Tipos**: Suporta `info`, `warning`, `danger`, `success`
+- **API via Ref**: Acesso programático através de `useRef`
+- **Responsivo**: Adapta-se a diferentes tamanhos de tela
+- **Acessível**: Suporte a ARIA labels e navegação por teclado
+
+### Uso
+
+#### 1. Importar o componente
+
+```jsx
+import { Dialog } from '../components/common';
+```
+
+#### 2. Criar uma ref e renderizar o componente
+
+```jsx
+const MyComponent = () => {
+  const dialogRef = useRef();
+
+  return (
+    <div>
+      <button onClick={() => dialogRef.current.showAlert({...})}>
+        Mostrar Alert
+      </button>
+      <button onClick={() => dialogRef.current.showConfirm({...})}>
+        Mostrar Confirm
+      </button>
+      
+      <Dialog ref={dialogRef} />
+    </div>
+  );
+};
+```
+
+### API
+
+#### showAlert(params)
+
+Exibe o dialog no modo alert (um botão).
+
+```jsx
+dialogRef.current.showAlert({
+  title: 'Sucesso!',
+  message: 'Operação realizada com sucesso.',
+  type: 'success',
+  buttonText: 'Entendi',
+  onClose: () => console.log('Dialog fechado')
+});
+```
+
+**Parâmetros:**
+- `title` (string): Título do dialog
+- `message` (string): Mensagem do dialog
+- `type` (string): Tipo do dialog (`info`, `warning`, `danger`, `success`)
+- `buttonText` (string): Texto do botão (padrão: "OK")
+- `onClose` (function): Callback executado ao fechar
+
+#### showConfirm(params)
+
+Exibe o dialog no modo confirm (dois botões).
+
+```jsx
+dialogRef.current.showConfirm({
+  title: 'Confirmar Exclusão',
+  message: 'Tem certeza que deseja excluir este item?',
+  type: 'danger',
+  confirmText: 'Excluir',
+  cancelText: 'Cancelar',
+  onConfirm: () => deleteItem(),
+  onCancel: () => console.log('Operação cancelada')
+});
+```
+
+**Parâmetros:**
+- `title` (string): Título do dialog
+- `message` (string): Mensagem do dialog
+- `type` (string): Tipo do dialog (`info`, `warning`, `danger`, `success`)
+- `confirmText` (string): Texto do botão de confirmação (padrão: "Confirmar")
+- `cancelText` (string): Texto do botão de cancelamento (padrão: "Cancelar")
+- `onConfirm` (function): Callback executado ao confirmar
+- `onCancel` (function): Callback executado ao cancelar
+
+#### hide()
+
+Oculta o dialog programaticamente.
+
+```jsx
+dialogRef.current.hide();
+```
+
+### Exemplos de Uso
+
+#### Alert de Sucesso
+
+```jsx
+dialogRef.current.showAlert({
+  title: 'Sucesso!',
+  message: 'Dados salvos com sucesso.',
+  type: 'success',
+  onClose: () => navigate('/dashboard')
+});
+```
+
+#### Confirmação de Exclusão
+
+```jsx
+dialogRef.current.showConfirm({
+  title: 'Confirmar Exclusão',
+  message: 'Esta ação não pode ser desfeita. Continuar?',
+  type: 'danger',
+  confirmText: 'Excluir',
+  cancelText: 'Cancelar',
+  onConfirm: () => {
+    deleteItem(id);
+    showNotification('Item excluído com sucesso', 'success');
+  }
+});
+```
+
+#### Alert de Aviso
+
+```jsx
+dialogRef.current.showAlert({
+  title: 'Atenção',
+  message: 'Você tem alterações não salvas. Deseja sair mesmo assim?',
+  type: 'warning',
+  buttonText: 'Entendi'
+});
+```
+
+### Migração dos Componentes Antigos
+
+#### De AlertDialog para Dialog
+
+**Antes:**
+```jsx
+const alertRef = useRef();
+<AlertDialog ref={alertRef} />
+alertRef.current.show({...});
+```
+
+**Depois:**
+```jsx
+const dialogRef = useRef();
+<Dialog ref={dialogRef} />
+dialogRef.current.showAlert({...});
+```
+
+#### De ConfirmDialog para Dialog
+
+**Antes:**
+```jsx
+const confirmRef = useRef();
+<ConfirmDialog ref={confirmRef} />
+confirmRef.current.show({...});
+```
+
+**Depois:**
+```jsx
+const dialogRef = useRef();
+<Dialog ref={dialogRef} />
+dialogRef.current.showConfirm({...});
+```
+
+### Vantagens da Unificação
+
+1. **Menos código duplicado**: Um componente em vez de dois
+2. **Manutenção simplificada**: Mudanças em um lugar só
+3. **Consistência visual**: Mesmo estilo e comportamento
+4. **Flexibilidade**: Pode alternar entre modos conforme necessário
+5. **Performance**: Menos componentes para o React gerenciar
+
+### Estilos CSS
+
+O componente usa as classes CSS existentes:
+- `.alert-dialog` e `.confirm-dialog` para o container
+- `.alert-success`, `.alert-warning`, `.alert-danger`, `.alert-info` para tipos
+- `.confirm-success`, `.confirm-warning`, `.confirm-danger`, `.confirm-info` para tipos
+
+### Notas de Implementação
+
+- O componente usa `forwardRef` para expor a API via ref
+- Implementa `memo` para otimização de performance
+- Gerencia automaticamente as classes CSS do body (`modal-open`)
+- Suporta navegação por teclado (ESC para fechar)
+- Responsivo e acessível por padrão

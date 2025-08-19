@@ -7,17 +7,17 @@ import {
   useMapMarkers 
 } from '@web/hooks';
 import { CONSTANTS, centerMapWithStops } from '@web/utils/routeStopsUtils';
-import MapComponent from '@web/components/ui/MapComponent';
-import PainelControle from '@web/components/pageComponents/stopRoute/PainelControle';
-import LoadingSpinner from '@web/components/common/LoadingSpinner';
-import ErrorAlert from '@web/components/common/ErrorAlert';
-import PopUpComponent from '@web/components/ui/PopUpComponent';
-import TutorialContent from '@web/components/pageComponents/stopRoute/TutorialContent';
-import FloatingInstructions from '@web/components/pageComponents/stopRoute/FloatingInstructions';
-import FloatingPointsCounter from '@web/components/pageComponents/stopRoute/FloatingPointsCounter';
-import FloatingMobileButton from '@web/components/pageComponents/stopRoute/FloatingMobileButton';
-import MobileControlPanel from '@web/components/pageComponents/stopRoute/MobileControlPanel';
-import { RouteControls } from '@web/components/pageComponents/stopRoute/RouteControls';
+import MapComponent from '@web/components/core/layout/MapComponent';
+import PainelControle from '@web/components/features/route-planning/PainelControle';
+import LoadingSpinner from '@web/components/common/feedback/LoadingSpinner';
+import ErrorAlert from '@web/components/common/feedback/ErrorAlert';
+import PopUpComponent from '@web/components/core/feedback/PopUpComponent';
+import TutorialContent from '@web/components/features/route-planning/TutorialContent';
+import FloatingInstructions from '@web/components/features/route-planning/FloatingInstructions';
+import FloatingPointsCounter from '@web/components/features/route-planning/FloatingPointsCounter';
+import FloatingMobileButton from '@web/components/features/route-planning/FloatingMobileButton';
+import MobileControlPanel from '@web/components/features/route-planning/MobileControlPanel';
+import { RouteControls } from '@web/components/features/route-planning/RouteControls';
 
 /**
  * @typedef {Object} PontoSelecionado

@@ -1,16 +1,16 @@
 import React, { useRef, useEffect, useCallback } from "react";
-import PopUpComponent from "@web/components/ui/PopUpComponent";
-import RouteDetails from "@web/components/pageComponents/routes/RouteDetails";
-import RouteForm from "@web/components/pageComponents/routes/RouteForm";
-import RouteStops from "@web/components/pageComponents/routes/RouteStops";
-import RouteStatsCards from "@web/components/pageComponents/routes/RouteStatsCards";
-import Table from "@web/components/ui/Table";
+import PopUpComponent from "@web/components/core/feedback/PopUpComponent";
+import RouteDetails from "@web/components/domain/routes/RouteDetails";
+import RouteForm from "@web/components/domain/routes/RouteForm";
+import RouteStops from "@web/components/domain/routes/RouteStops";
+import RouteStatsCards from "@web/components/domain/routes/RouteStatsCards";
+import Table from "@web/components/common/data-display/Table";
 import TableActionButton from "@web/components/common/table/TableActionButton";
-import Notification from "@web/components/common/Notification";
-import LoadingSpinner from "@web/components/common/LoadingSpinner";
-import ErrorAlert from "@web/components/common/ErrorAlert";
-import ActionButton from "@web/components/common/ActionButton";
-import ConfirmDialog from "@web/components/common/ConfirmDialog";
+import Notification from "@web/components/common/feedback/Notification";
+import LoadingSpinner from "@web/components/common/feedback/LoadingSpinner";
+import ErrorAlert from "@web/components/common/feedback/ErrorAlert";
+import ActionButton from "@web/components/common/buttons/ActionButton";
+import { Dialog } from "@web/components/common/feedback";
 import { useRoutes, useRouteWithStops, useNotification } from "@web/hooks";
 import { formatDateFromDatabase, getStatusFormat, formatKilometers, formatTime } from "@shared/formatters";
 import { useNavigate } from "react-router-dom";
@@ -23,7 +23,7 @@ const formatStatus = (value) => {
 
 function RoutesPage({ pageFunctions }) {
   const popUpRef = useRef(null);
-  const confirmDialogRef = useRef(null);
+      const dialogRef = useRef(null);
   const navigate = useNavigate();
   // Usar hook customizado para gerenciar dados das rotas
   const {
@@ -148,7 +148,7 @@ function RoutesPage({ pageFunctions }) {
 
   // Handler para excluir uma rota
   const handleDeleteRoute = useCallback(async (id) => {
-    confirmDialogRef.current.show({
+            dialogRef.current.showConfirm({
       title: 'Confirmar Exclusão',
       message: 'Tem certeza que deseja excluir esta rota?',
       confirmText: 'Excluir',
@@ -260,8 +260,8 @@ function RoutesPage({ pageFunctions }) {
         ref={popUpRef}
       />
 
-      {/* ConfirmDialog para confirmações */}
-      <ConfirmDialog ref={confirmDialogRef} />
+              {/* Dialog unificado para confirmações */}
+        <Dialog ref={dialogRef} />
 
       {/* Componente de Notificação */}
       <Notification 

@@ -1,16 +1,16 @@
 import { useRef, useEffect, useState } from "react";
-import PopUpComponent from "../components/ui/PopUpComponent";
+import PopUpComponent from "../components/core/feedback/PopUpComponent";
 import { useAuth } from "../context/authContext";
 import api from "../api/api";
 
 // Componentes reutilizáveis
-import PageHeader from "../components/pageComponents/settings/PageHeader";
-import UserProfile from "../components/pageComponents/settings/UserProfile";
-import ThemeSwitch from "../components/pageComponents/settings/ThemeSwitch";
-import SettingSection from "../components/pageComponents/settings/SettingSection";
-import SettingItem from "../components/pageComponents/settings/SettingItem";
-import SystemInfo from "../components/pageComponents/settings/SystemInfo";
-import SettingsActions from "../components/pageComponents/settings/SettingsActions";
+import PageHeader from "../components/features/settings/PageHeader";
+import UserProfile from "../components/features/settings/UserProfile";
+import ThemeSwitch from "../components/features/settings/ThemeSwitch";
+import SettingSection from "../components/features/settings/SettingSection";
+import SettingItem from "../components/features/settings/SettingItem";
+import SystemInfo from "../components/features/settings/SystemInfo";
+import SettingsActions from "../components/features/settings/SettingsActions";
 
 function Settings({ pageFunctions, isDark, setIsDark }) {
   const { user, login, logout, isAuthenticated } = useAuth();

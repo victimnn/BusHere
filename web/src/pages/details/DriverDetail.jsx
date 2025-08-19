@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import PopUpComponent from '@web/components/ui/PopUpComponent';
-import DriverForm from "@web/components/pageComponents/drivers/DriverForm";
-import Notification from '@web/components/common/Notification';
+import PopUpComponent from '@web/components/core/feedback/PopUpComponent';
+import DriverForm from "@web/components/domain/drivers/DriverForm";
+import { Notification } from '@web/components/common';
+import Dialog from '@web/components/common/feedback/Dialog';
 
 import { useDrivers, useDetailPage, useNotification } from '@web/hooks';
 import { formatCPF, formatPhoneNumber, formatDateFromDatabase } from '@shared/formatters';
@@ -15,7 +16,7 @@ import {
   DetailActions,
   DetailContainer,
   DetailDebug
-} from '@web/components/pageComponents/details';
+} from '@web/components/features/details';
 
 function DriverDetail({ pageFunctions }) {
   useEffect(() => { 
@@ -24,6 +25,7 @@ function DriverDetail({ pageFunctions }) {
   const navigate = useNavigate();
   const { driverId } = useParams();
   const popUpRef = useRef(null);
+  const dialogRef = useRef(null);
   
   // Usar o hook de motoristas
   const { getDriverById, updateDriver, deleteDriver, getStatusMotoristaName } = useDrivers();
@@ -72,22 +74,29 @@ function DriverDetail({ pageFunctions }) {
   };
 
   const handleDeleteDriver = async () => {
-    if (window.confirm("Tem certeza que deseja excluir este motorista?")) {
-      try {
-        const result = await deleteDriver(driver.id || driver.motorista_id);
-        if (result.success) {
-          showSuccess("Motorista excluído com sucesso!");
-          setTimeout(() => {
-            navigate('/drivers'); // Redireciona para a lista de motoristas
-          }, 1000); // tempo para o usuário ver a notificação 
-        } else {
-          showError(result.error);
+    dialogRef.current.showConfirm({
+      title: "Confirmar Exclusão",
+      message: "Tem certeza que deseja excluir este motorista?",
+      type: "danger",
+      confirmText: "Excluir",
+      cancelText: "Cancelar",
+      onConfirm: async () => {
+        try {
+          const result = await deleteDriver(driver.id || driver.motorista_id);
+          if (result.success) {
+            showSuccess("Motorista excluído com sucesso!");
+            setTimeout(() => {
+              navigate('/drivers'); // Redireciona para a lista de motoristas
+            }, 1000); // tempo para o usuário ver a notificação 
+          } else {
+            showError(result.error);
+          }
+        } catch (error) {
+          console.error("Erro ao excluir motorista:", error);
+          showError("Não foi possível excluir o motorista. Tente novamente mais tarde.");
         }
-      } catch (error) {
-        console.error("Erro ao excluir motorista:", error);
-        showError("Não foi possível excluir o motorista. Tente novamente mais tarde.");
       }
-    }
+    });
   };
 
   // Configurar ações do motorista
@@ -195,6 +204,8 @@ function DriverDetail({ pageFunctions }) {
       )}
       
       <PopUpComponent ref={popUpRef} />
+
+      <Dialog ref={dialogRef} />
 
       <Notification notification={notification} onClose={hideNotification} />
     </DetailPage>

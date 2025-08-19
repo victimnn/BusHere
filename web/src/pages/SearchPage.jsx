@@ -17,16 +17,30 @@ function SearchPage({ pageFunctions }) {
       async function fetchSugestions(){
         if (!searchTerm) return; 
         
+        console.log('🔍 [SEARCHPAGE] Iniciando busca para:', searchTerm);
         setIsLoading(true);
         setError(null);
         setSuggestions([]); // Limpa as sugestões antes de buscar novas
         
         try {
           const response = await autoComplete(searchTerm); 
+          console.log('✅ [SEARCHPAGE] Resposta da API:', response);
           setSuggestions(response); // Atualiza o estado com as sugestões
         } catch (error) {
-          console.error("Erro ao buscar sugestões:", error);
-          setError("Erro ao buscar resultados. Tente novamente.");
+          console.error("❌ [SEARCHPAGE] Erro ao buscar sugestões:", error);
+          console.error("❌ [SEARCHPAGE] Status do erro:", error.status);
+          console.error("❌ [SEARCHPAGE] Dados do erro:", error.data);
+          
+          let errorMessage = "Erro ao buscar resultados. Tente novamente.";
+          if (error.status === 404) {
+            errorMessage = "Endpoint de pesquisa não encontrado. Verifique se a API está funcionando.";
+          } else if (error.status === 500) {
+            errorMessage = "Erro interno do servidor. Tente novamente mais tarde.";
+          } else if (error.status === 0) {
+            errorMessage = "Não foi possível conectar com a API. Verifique sua conexão.";
+          }
+          
+          setError(errorMessage);
         } finally {
           setIsLoading(false);
         }

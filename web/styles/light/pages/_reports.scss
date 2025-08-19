@@ -78,38 +78,6 @@
 }
 
 // -----------------------------------------------------------------------------
-// CARDS DE ESTATÍSTICAS
-// -----------------------------------------------------------------------------
-.stats-card {
-  .card-body {
-    position: relative;
-    z-index: 2;
-    border-radius: $border-radius;
-
-    h2 {
-      @include mobile-only {
-        font-size: 1.5rem !important;
-      }
-
-      @include small-mobile {
-        font-size: 1.3rem !important;
-      }
-    }
-  }
-
-  min-height: 140px;
-  max-height: 180px;
-  border-radius: $border-radius !important;
-  border: none;
-  box-shadow: $box-shadow-sm;
-
-  @include mobile-only {
-    min-height: 120px;
-    max-height: 150px;
-  }
-}
-
-// -----------------------------------------------------------------------------
 // CARDS DE MÉTRICAS E PERFORMANCE
 // -----------------------------------------------------------------------------
 .metric-card {

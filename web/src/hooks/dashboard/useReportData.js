@@ -7,6 +7,7 @@ export const useReportData = () => {
     buses: [],
     stops: [],
     routes: [],
+    drivers: [],
     passengerCities: []
   });
   const [isLoading, setIsLoading] = useState(true);
@@ -17,20 +18,23 @@ export const useReportData = () => {
       setIsLoading(true);
       
       // Usar os novos endpoints otimizados
-      const [chartsRes, statsRes] = await Promise.all([
+      const [chartsRes, statsRes, driversRes] = await Promise.all([
         api.reports.getCharts(),
-        api.reports.getStats()
+        api.reports.getStats(),
+        api.drivers.list(1, 1000) // Buscar dados de motoristas
       ]);
 
       // Preparar dados dos gráficos
       const chartData = chartsRes?.data || {};
       const stats = statsRes?.data || {};
+      const drivers = driversRes?.data || [];
 
       setReportData({
         passengers: [], // Não precisamos mais dos dados completos
         buses: [],
         stops: chartData.stopsByCity || [],  // Carregar dados dos pontos do chartData
         routes: [],
+        drivers: drivers, // Adicionar dados de motoristas
         passengerCities: chartData.passengersByCity || [],
         chartData,
         stats
@@ -43,11 +47,12 @@ export const useReportData = () => {
       
       // Fallback para a API antiga se a nova falhar
       try {
-        const [passengersRes, busesRes, stopsRes, routesRes] = await Promise.all([
+        const [passengersRes, busesRes, stopsRes, routesRes, driversRes] = await Promise.all([
           api.passengers.list(1, 1000),
           api.buses.list(1, 1000),
           api.stops.list(),
           api.routes.list(1, 1000),
+          api.drivers.list(1, 1000), // Adicionar motoristas no fallback
         ]);
 
         setReportData({
@@ -55,6 +60,7 @@ export const useReportData = () => {
           buses: busesRes?.data || [],
           stops: stopsRes?.data || [],
           routes: routesRes?.data || [],
+          drivers: driversRes?.data || [], // Adicionar dados de motoristas
           passengerCities: []
         });
         

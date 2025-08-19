@@ -113,10 +113,44 @@ export const useChartData = (reportData) => {
     }]
   };
 
+  // Dados para gráfico de status dos motoristas
+  const driversStatusData = {
+    labels: reportData.chartData?.driversByStatus?.map(item => item.label) ||
+            reportData.stats?.drivers?.byStatus?.map(item => item.status_nome || item.label) ||
+            [...new Set(reportData.drivers?.map(driver => driver.status_nome || 'Não informado') || [])]
+              .filter(status => status && status !== 'Não informado'),
+    datasets: [{
+      label: 'Quantidade de Motoristas',
+      data: reportData.chartData?.driversByStatus?.map(item => item.value) ||
+            reportData.stats?.drivers?.byStatus?.map(item => item.total_motoristas || item.value) ||
+            [...new Set(reportData.drivers?.map(driver => driver.status_nome || 'Não informado') || [])]
+              .filter(status => status && status !== 'Não informado')
+              .map(status =>
+                reportData.drivers?.filter(driver => (driver.status_nome || 'Não informado') === status).length || 0
+              ),
+      backgroundColor: [
+        'rgba(231, 76, 60, 0.8)',   // Red (Ativo)
+        'rgba(52, 152, 219, 0.8)',  // Blue (Férias)
+        'rgba(155, 89, 182, 0.8)',  // Purple (Afastado)
+        'rgba(149, 165, 166, 0.8)', // Gray (Inativo)
+        'rgba(46, 204, 113, 0.8)',  // Green (Disponível)
+      ],
+      borderColor: [
+        'rgba(231, 76, 60, 1)',
+        'rgba(52, 152, 219, 1)',
+        'rgba(155, 89, 182, 1)',
+        'rgba(149, 165, 166, 1)',
+        'rgba(46, 204, 113, 1)',
+      ],
+      borderWidth: 2
+    }]
+  };
+
   return {
     passengersByCity: passengersByCityData,
     busStatus: busStatusData,
     routeStatus: routeStatusData,
-    stopsByCity: stopsByCityData
+    stopsByCity: stopsByCityData,
+    driversStatus: driversStatusData
   };
 };

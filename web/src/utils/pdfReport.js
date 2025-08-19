@@ -138,11 +138,86 @@ const createSummarySection = (doc, reportData) => {
   y += 20;
 
   const stats = reportData.stats || {};
+  
+  // Função para obter dados corretos com fallbacks
+  const getBusData = () => {
+    if (stats.buses?.total) return stats.buses.total;
+    if (stats.buses?.byStatus && Array.isArray(stats.buses.byStatus)) {
+      return stats.buses.byStatus.reduce((total, status) => total + (status.total_onibus || 0), 0);
+    }
+    if (reportData.buses && Array.isArray(reportData.buses)) {
+      return reportData.buses.length;
+    }
+    return 0;
+  };
+
+  const getActiveBusData = () => {
+    if (stats.buses?.ativos) return stats.buses.ativos;
+    if (stats.buses?.byStatus && Array.isArray(stats.buses.byStatus)) {
+      const activeStatuses = ['Ativo', 'Em Operação', 'Disponível'];
+      return stats.buses.byStatus
+        .filter(status => activeStatuses.includes(status.status_nome))
+        .reduce((total, status) => total + (status.total_onibus || 0), 0);
+    }
+    if (reportData.buses && Array.isArray(reportData.buses)) {
+      return reportData.buses.filter(bus => bus.ativo === true || bus.ativo === 1).length;
+    }
+    return 0;
+  };
+
+  const getRouteData = () => {
+    if (stats.routes?.total) return stats.routes.total;
+    if (stats.routes?.byStatus && Array.isArray(stats.routes.byStatus)) {
+      return stats.routes.byStatus.reduce((total, status) => total + (status.total_rotas || 0), 0);
+    }
+    if (reportData.routes && Array.isArray(reportData.routes)) {
+      return reportData.routes.length;
+    }
+    return 0;
+  };
+
+  const getActiveRouteData = () => {
+    if (stats.routes?.ativas) return stats.routes.ativas;
+    if (stats.routes?.byStatus && Array.isArray(stats.routes.byStatus)) {
+      const activeStatuses = ['Ativa', 'Em Operação', 'Disponível'];
+      return stats.routes.byStatus
+        .filter(status => activeStatuses.includes(status.status_nome))
+        .reduce((total, status) => total + (status.total_rotas || 0), 0);
+    }
+    if (reportData.routes && Array.isArray(reportData.routes)) {
+      return reportData.routes.filter(route => route.ativo === true || route.ativo === 1).length;
+    }
+    return 0;
+  };
+
+  const getDriverData = () => {
+    if (stats.drivers?.total) return stats.drivers.total;
+    if (reportData.drivers && Array.isArray(reportData.drivers)) {
+      return reportData.drivers.length;
+    }
+    return 0;
+  };
+
+  const getActiveDriverData = () => {
+    if (stats.drivers?.ativos) return stats.drivers.ativos;
+    if (reportData.drivers && Array.isArray(reportData.drivers)) {
+      return reportData.drivers.filter(driver => 
+        (driver.ativo === true || driver.ativo === 1) && 
+        (driver.status_nome === 'Ativo' || driver.status_motorista_id === 1)
+      ).length;
+    }
+    return 0;
+  };
+
   const statLines = [
-    ['Total de Passageiros', stats.passengers?.total || 0],
-    ['Ônibus Ativos', stats.buses?.ativos || 0],
-    ['Total de Pontos de Parada', stats.stops?.total_pontos || 0],
-    ['Rotas em Operação', stats.routes?.ativas || 0],
+    ['Total de Passageiros', stats.passengers?.total || reportData.passengers?.length || 0],
+    ['Total de Ônibus', getBusData()],
+    ['Ônibus Ativos', getActiveBusData()],
+    ['Total de Pontos de Parada', stats.stops?.total_pontos || reportData.stops?.length || 0],
+    ['Total de Rotas', getRouteData()],
+    ['Rotas em Operação', getActiveRouteData()],
+    ['Total de Motoristas', getDriverData()],
+    ['Motoristas Ativos', getActiveDriverData()],
     ['Capacidade Total da Frota', stats.buses?.totalCapacity || 0],
     ['Distância Total das Rotas (km)', stats.routes?.totalDistance?.toFixed(2) || 0],
   ];
@@ -166,10 +241,20 @@ const createSummarySection = (doc, reportData) => {
   doc.text("Indicadores de Performance (KPIs)", 40, y);
   y += 20;
 
+  const totalPassengers = stats.passengers?.total || reportData.passengers?.length || 0;
+  const totalCapacity = stats.buses?.totalCapacity || 0;
+  const totalStops = stats.stops?.total_pontos || reportData.stops?.length || 0;
+  const activeStops = stats.stops?.pontos_ativos || 0;
+  const totalRoutes = getRouteData();
+  const activeRoutes = getActiveRouteData();
+  const totalDrivers = getDriverData();
+  const activeDrivers = getActiveDriverData();
+
   const perf = [
-    ['Taxa de Utilização da Frota', `${((stats.passengers?.total || 0) / (stats.buses?.totalCapacity || 1) * 100).toFixed(1)}%`],
-    ['Pontos Ativos', stats.stops?.pontos_ativos ? `${stats.stops.pontos_ativos} de ${stats.stops.total_pontos}` : 'N/A'],
-    ['Eficiência de Rotas (Ativas/Total)', stats.routes?.total && stats.routes?.ativas ? `${((stats.routes.ativas / stats.routes.total) * 100).toFixed(1)}%` : 'N/A'],
+    ['Taxa de Utilização da Frota', totalCapacity > 0 ? `${((totalPassengers / totalCapacity) * 100).toFixed(1)}%` : 'N/A'],
+    ['Pontos Ativos', totalStops > 0 ? `${activeStops} de ${totalStops} (${((activeStops / totalStops) * 100).toFixed(1)}%)` : 'N/A'],
+    ['Eficiência de Rotas', totalRoutes > 0 ? `${activeRoutes} de ${totalRoutes} (${((activeRoutes / totalRoutes) * 100).toFixed(1)}%)` : 'N/A'],
+    ['Eficiência de Motoristas', totalDrivers > 0 ? `${activeDrivers} de ${totalDrivers} (${((activeDrivers / totalDrivers) * 100).toFixed(1)}%)` : 'N/A'],
   ];
 
   autoTable(doc, {
@@ -180,6 +265,142 @@ const createSummarySection = (doc, reportData) => {
     headStyles: { fillColor: '#3498db', textColor: '#ffffff', fontStyle: 'bold' },
     styles: { fontSize: 11, cellPadding: 6 },
     alternateRowStyles: { fillColor: '#eaf4fb' }, // Azul bem claro
+    margin: { left: 40, right: 40 },
+  });
+};
+
+// Cria a seção de estatísticas detalhadas de motoristas
+const createDriversSection = (doc, reportData) => {
+  doc.addPage();
+  let y = 100; // Posição inicial após o cabeçalho
+
+  // Título da Seção
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.setTextColor('#e74c3c'); // Vermelho para motoristas
+  doc.text("Estatísticas de Motoristas", 40, y);
+  y += 20;
+
+  const stats = reportData.stats || {};
+  
+  // Função para obter dados de motoristas com fallbacks
+  const getDriverData = () => {
+    if (stats.drivers?.total) return stats.drivers.total;
+    if (reportData.drivers && Array.isArray(reportData.drivers)) {
+      return reportData.drivers.length;
+    }
+    return 0;
+  };
+
+  const getActiveDriverData = () => {
+    if (stats.drivers?.ativos) return stats.drivers.ativos;
+    if (reportData.drivers && Array.isArray(reportData.drivers)) {
+      return reportData.drivers.filter(driver => 
+        (driver.ativo === true || driver.ativo === 1) && 
+        (driver.status_nome === 'Ativo' || driver.status_motorista_id === 1)
+      ).length;
+    }
+    return 0;
+  };
+
+  const getDriversByStatus = () => {
+    if (stats.drivers?.byStatus && Array.isArray(stats.drivers.byStatus)) {
+      return stats.drivers.byStatus;
+    }
+    
+    // Fallback: calcular a partir dos dados brutos
+    if (reportData.drivers && Array.isArray(reportData.drivers)) {
+      const statusCount = {};
+      reportData.drivers.forEach(driver => {
+        const status = driver.status_nome || 'Desconhecido';
+        statusCount[status] = (statusCount[status] || 0) + 1;
+      });
+      
+      return Object.entries(statusCount).map(([status, count]) => ({
+        status_nome: status,
+        total_motoristas: count
+      }));
+    }
+    
+    return [];
+  };
+
+  const totalDrivers = getDriverData();
+  const activeDrivers = getActiveDriverData();
+  const driversByStatus = getDriversByStatus();
+
+  // Estatísticas principais de motoristas
+  const driverStats = [
+    ['Total de Motoristas', totalDrivers],
+    ['Motoristas Ativos', activeDrivers],
+    ['Motoristas Inativos', totalDrivers - activeDrivers],
+    ['Taxa de Atividade', totalDrivers > 0 ? `${((activeDrivers / totalDrivers) * 100).toFixed(1)}%` : 'N/A'],
+  ];
+
+  autoTable(doc, {
+    startY: y,
+    head: [['Indicador', 'Valor']],
+    body: driverStats,
+    theme: 'grid',
+    headStyles: { fillColor: '#e74c3c', textColor: '#ffffff', fontStyle: 'bold' },
+    styles: { fontSize: 11, cellPadding: 6, halign: 'left' },
+    alternateRowStyles: { fillColor: '#fdf2f2' }, // Vermelho bem claro
+    margin: { left: 40, right: 40 },
+  });
+  
+  y = doc.lastAutoTable.finalY + 30;
+
+  // Distribuição por status (se houver dados)
+  if (driversByStatus.length > 0) {
+    doc.setFontSize(16);
+    doc.setTextColor('#c0392b'); // Vermelho mais escuro
+    doc.text("Distribuição por Status", 40, y);
+    y += 20;
+
+    const statusData = driversByStatus.map(status => [
+      status.status_nome,
+      status.total_motoristas || status.total || 0
+    ]);
+
+    autoTable(doc, {
+      startY: y,
+      head: [['Status', 'Quantidade']],
+      body: statusData,
+      theme: 'grid',
+      headStyles: { fillColor: '#c0392b', textColor: '#ffffff', fontStyle: 'bold' },
+      styles: { fontSize: 11, cellPadding: 6, halign: 'left' },
+      alternateRowStyles: { fillColor: '#fdf2f2' },
+      margin: { left: 40, right: 40 },
+    });
+    
+    y = doc.lastAutoTable.finalY + 30;
+  }
+
+  // Análise de eficiência
+  doc.setFontSize(16);
+  doc.setTextColor('#c0392b');
+  doc.text("Análise de Eficiência", 40, y);
+  y += 20;
+
+  const efficiencyData = [
+    ['Motoristas Disponíveis', activeDrivers],
+    ['Taxa de Disponibilidade', totalDrivers > 0 ? `${((activeDrivers / totalDrivers) * 100).toFixed(1)}%` : 'N/A'],
+    ['Motoristas por Rota Ativa', (() => {
+      const activeRoutes = reportData.stats?.routes?.ativas || 
+                          (reportData.routes && Array.isArray(reportData.routes) ? 
+                           reportData.routes.filter(route => route.ativo === true || route.ativo === 1).length : 0);
+      return activeRoutes > 0 ? (activeDrivers / activeRoutes).toFixed(1) : 'N/A';
+    })()],
+  ];
+
+  autoTable(doc, {
+    startY: y,
+    head: [['Métrica', 'Valor']],
+    body: efficiencyData,
+    theme: 'grid',
+    headStyles: { fillColor: '#c0392b', textColor: '#ffffff', fontStyle: 'bold' },
+    styles: { fontSize: 11, cellPadding: 6, halign: 'left' },
+    alternateRowStyles: { fillColor: '#fdf2f2' },
     margin: { left: 40, right: 40 },
   });
 };
@@ -268,14 +489,19 @@ export async function generateReportPDF(reportData) {
   // 2. Resumo e Estatísticas
   createSummarySection(doc, reportData);
 
-  // 3. Gráficos
+  // 3. Estatísticas de Motoristas
+  createDriversSection(doc, reportData);
+
+  // 4. Gráficos
   const chartIds = [
     'chart-passengersByCity', 'chart-busStatus',
     'chart-stopsByCity', 'chart-routeStatus',
+    'chart-driversStatus',
   ];
   const chartTitles = [
     'Passageiros por Cidade', 'Status da Frota de Ônibus',
     'Pontos de Parada por Cidade', 'Status das Rotas',
+    'Status dos Motoristas',
   ];
   addCharts(doc, chartIds, chartTitles);
 

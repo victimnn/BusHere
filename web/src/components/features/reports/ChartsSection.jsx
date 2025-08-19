@@ -3,7 +3,7 @@ import { Bar, Pie } from 'react-chartjs-2';
 
 const ChartCard = ({ title, subtitle, iconClass, iconBg, children }) => {
   return (
-    <div className="col-xl-6 col-lg-12">
+    <div className="col-xl-6 col-lg-12 mb-3">
       <div className="card border-0 shadow-sm h-100 chart-card card-hover">
         <div className="card-header bg-transparent border-0 p-3">
           <div className="d-flex align-items-center">
@@ -101,6 +101,15 @@ const ChartsSection = ({ chartData }) => {
         iconBg="bg-warning"
       >
         <Bar data={chartData.routeStatus} options={chartOptions} id="chart-routeStatus" />
+      </ChartCard>
+
+      <ChartCard
+        title="Status dos Motoristas"
+        subtitle="Distribuição por estado operacional"
+        iconClass="fas fa-user-tie"
+        iconBg="bg-danger"
+      >
+        <Bar data={chartData.driversStatus} options={chartOptions} id="chart-driversStatus" />
       </ChartCard>
     </div>
   );

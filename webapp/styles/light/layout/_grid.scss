@@ -1,0 +1,100 @@
+// =============================================================================
+// GRID & CONTAINERS - SISTEMA DE LAYOUT
+// =============================================================================
+
+@import '../base/variables';
+@import '../base/mixins';
+
+// -----------------------------------------------------------------------------
+// RESET GLOBAL
+// -----------------------------------------------------------------------------
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+#root {
+  margin: 0 auto;
+  text-align: left;
+  height: 100%;
+}
+
+// -----------------------------------------------------------------------------
+// CONTAINERS
+// -----------------------------------------------------------------------------
+.container-fluid {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+
+  @include mobile-only {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  @include small-mobile {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// FLEXBOX UTILITIES
+// -----------------------------------------------------------------------------
+.d-flex {
+  display: flex !important;
+}
+
+.flex-grow-1 {
+  flex-grow: 1 !important;
+  min-width: 0 !important; // Permite que o flex item encolha além do tamanho do conteúdo
+}
+
+// -----------------------------------------------------------------------------
+// SIDEBAR
+// -----------------------------------------------------------------------------
+#sidebar {
+  flex-shrink: 0 !important;
+  min-width: 70px !important;
+  background: linear-gradient(180deg, $sidebar-bg 0%, $bg-light 100%) !important;
+  border-right: 1px solid $border-light !important;
+  color: $text-primary !important;
+  
+  .sidebar-header {
+    border-color: $border-light !important;
+    
+    .sidebar-title {
+      color: $text-dark !important;
+    }
+  }
+  
+  .sidebar-footer {
+    border-color: $border-light !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// RESPONSIVIDADE DO GRID
+// -----------------------------------------------------------------------------
+@include mobile-only {
+  .row {
+    margin-left: -0.5rem !important;
+    margin-right: -0.5rem !important;
+  }
+  
+  .col, .col-6, .col-md-6, .col-lg-3 {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+}
+
+@include small-mobile {
+  .row {
+    margin-left: -0.25rem !important;
+    margin-right: -0.25rem !important;
+  }
+  
+  .col, .col-6, .col-md-6, .col-lg-3 {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+  }
+}

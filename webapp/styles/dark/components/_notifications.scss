@@ -1,0 +1,285 @@
+// =============================================================================
+// NOTIFICATIONS - ESTILOS PARA NOTIFICAÇÕES - MODO ESCURO
+// =============================================================================
+
+@import '../base/variables';
+@import '../base/mixins';
+
+// -----------------------------------------------------------------------------
+// CONTAINER DE NOTIFICAÇÕES
+// -----------------------------------------------------------------------------
+.notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  min-width: 320px;
+  max-width: 450px;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  border: 1px solid $border-color;
+  animation: fadeIn 0.5s, fadeOut 0.5s 4.5s;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+}
+
+.notification-content {
+  padding: 1rem 1.25rem;
+  color: $text-primary;
+  
+  .notification-title {
+    color: $text-primary;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  
+  .notification-message {
+    color: $text-secondary;
+    font-size: 0.875rem;
+  }
+  
+  .notification-icon {
+    font-size: 1.25rem;
+    margin-right: 0.75rem;
+  }
+}
+
+.notification-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  transform-origin: left;
+  animation: shrink 5s linear forwards;
+}
+
+// -----------------------------------------------------------------------------
+// TIPOS DE NOTIFICAÇÃO - ADAPTADOS PARA DARK MODE
+// -----------------------------------------------------------------------------
+.notification-success {
+  background-color: rgba($success, 0.15);
+  border-left: 4px solid $success;
+  color: lighten($success, 20%);
+  
+  .notification-progress-bar {
+    background-color: $success;
+  }
+  
+  .notification-icon {
+    color: $success;
+  }
+  
+  .notification-title {
+    color: lighten($success, 25%);
+  }
+}
+
+.notification-error {
+  background-color: rgba($danger, 0.15);
+  border-left: 4px solid $danger;
+  color: lighten($danger, 20%);
+  
+  .notification-progress-bar {
+    background-color: $danger;
+  }
+  
+  .notification-icon {
+    color: $danger;
+  }
+  
+  .notification-title {
+    color: lighten($danger, 25%);
+  }
+}
+
+.notification-warning {
+  background-color: rgba($warning, 0.15);
+  border-left: 4px solid $warning;
+  color: darken($warning, 10%);
+  
+  .notification-progress-bar {
+    background-color: $warning;
+  }
+  
+  .notification-icon {
+    color: $warning;
+  }
+  
+  .notification-title {
+    color: $warning;
+  }
+}
+
+.notification-info {
+  background-color: rgba($info, 0.15);
+  border-left: 4px solid $info;
+  color: lighten($info, 20%);
+  
+  .notification-progress-bar {
+    background-color: $info;
+  }
+  
+  .notification-icon {
+    color: $info;
+  }
+  
+  .notification-title {
+    color: lighten($info, 25%);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// BOTÃO DE FECHAR NOTIFICAÇÃO
+// -----------------------------------------------------------------------------
+.notification-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: $text-muted;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    opacity: 1;
+    color: $text-primary;
+    transform: scale(1.1);
+  }
+  
+  &:focus {
+    outline: none;
+    color: $text-primary;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// NOTIFICAÇÃO TOAST ESTILO GLASSMORPHISM
+// -----------------------------------------------------------------------------
+.notification-glass {
+  background: rgba($card-bg, 0.8) !important;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba($border-color, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  
+  &.notification-success {
+    border-left: 4px solid $success;
+    box-shadow: 0 8px 32px rgba($success, 0.1);
+  }
+  
+  &.notification-error {
+    border-left: 4px solid $danger;
+    box-shadow: 0 8px 32px rgba($danger, 0.1);
+  }
+  
+  &.notification-warning {
+    border-left: 4px solid $warning;
+    box-shadow: 0 8px 32px rgba($warning, 0.1);
+  }
+  
+  &.notification-info {
+    border-left: 4px solid $info;
+    box-shadow: 0 8px 32px rgba($info, 0.1);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// NOTIFICAÇÕES COMPACTAS
+// -----------------------------------------------------------------------------
+.notification-compact {
+  min-width: 280px;
+  max-width: 350px;
+  
+  .notification-content {
+    padding: 0.75rem 1rem;
+    
+    .notification-message {
+      font-size: 0.8rem;
+    }
+  }
+  
+  .notification-progress-bar {
+    height: 3px;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// STACK DE NOTIFICAÇÕES
+// -----------------------------------------------------------------------------
+.notification-stack {
+  .notification-container {
+    margin-bottom: 0.75rem;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// RESPONSIVIDADE PARA MOBILE
+// -----------------------------------------------------------------------------
+@media (max-width: 768px) {
+  .notification-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    min-width: auto;
+    max-width: none;
+    width: calc(100% - 20px);
+  }
+  
+  .notification-content {
+    padding: 0.875rem 1rem;
+    
+    .notification-icon {
+      font-size: 1.1rem;
+      margin-right: 0.5rem;
+    }
+  }
+  
+  .notification-close {
+    top: 0.4rem;
+    right: 0.5rem;
+    font-size: 1.1rem;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ANIMAÇÕES DAS NOTIFICAÇÕES
+// -----------------------------------------------------------------------------
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+@keyframes shrink {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}

@@ -1,0 +1,10 @@
+// =============================================================================
+// MAIN APPLICATION STYLES
+// =============================================================================
+// Este arquivo importa todos os estilos organizados da aplicação
+
+@import '../styles/light/main.scss';
+
+* {
+    transition: 0.3s ease-in-out;
+}

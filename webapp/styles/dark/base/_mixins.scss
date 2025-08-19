@@ -1,0 +1,182 @@
+// =============================================================================
+// MIXINS SCSS - UTILITÁRIOS REUTILIZÁVEIS
+// =============================================================================
+
+@import './variables';
+
+// -----------------------------------------------------------------------------
+// GRADIENTES
+// -----------------------------------------------------------------------------
+@mixin gradient-primary {
+  background: linear-gradient(135deg, $primary-dark 0%, $primary 100%);
+}
+
+@mixin gradient-success {
+  background: linear-gradient(135deg, $primary 0%, $analogous-1 100%);
+}
+
+@mixin gradient-info {
+  background: linear-gradient(135deg, $info 0%, $analogous-1 100%);
+}
+
+@mixin gradient-warning {
+  background: linear-gradient(135deg, $warning 0%, $warning 100%);
+}
+
+@mixin gradient-danger {
+  background: linear-gradient(135deg, $danger 0%, $accent 100%);
+}
+
+@mixin gradient-text {
+  background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// -----------------------------------------------------------------------------
+// EFEITOS DE HOVER
+// -----------------------------------------------------------------------------
+@mixin hover-lift($lift: -3px, $shadow: 0 .5rem 1rem rgba(0,0,0,.15)) {
+  transition: $btn-transition;
+  
+  &:hover {
+    transform: translateY($lift);
+    box-shadow: $shadow;
+  }
+}
+
+@mixin hover-scale($scale: 1.05) {
+  transition: $btn-transition;
+  
+  &:hover {
+    transform: scale($scale);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// RESPONSIVIDADE
+// -----------------------------------------------------------------------------
+@mixin mobile-only {
+  @media (max-width: 768px) {
+    @content;
+  }
+}
+
+@mixin tablet-only {
+  @media (min-width: 769px) and (max-width: 1024px) {
+    @content;
+  }
+}
+
+@mixin desktop-only {
+  @media (min-width: 1025px) {
+    @content;
+  }
+}
+
+@mixin small-mobile {
+  @media (max-width: 576px) {
+    @content;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// UTILITÁRIOS DE LAYOUT
+// -----------------------------------------------------------------------------
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// -----------------------------------------------------------------------------
+// EFEITOS VISUAIS ADAPTADOS PARA DARK MODE
+// -----------------------------------------------------------------------------
+@mixin glass-effect($opacity: 0.15) {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, $opacity);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  // Dark mode adaptation
+  @media (prefers-color-scheme: dark) {
+    background: rgba(42, 45, 49, $opacity);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+
+@mixin glass-effect-dark($opacity: 0.1) {
+  backdrop-filter: blur(10px);
+  background: rgba(42, 45, 49, $opacity);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+@mixin shimmer-effect {
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: left 0.4s ease;
+    z-index: 1;
+  }
+
+  &:hover::before {
+    left: 100%;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// MIXINS PARA SCROLLBARS DARK MODE
+// -----------------------------------------------------------------------------
+@mixin scrollbar-dark {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $bg-dark;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $border-color;
+    border-radius: 4px;
+    
+    &:hover {
+      background: lighten($border-color, 10%);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// MIXINS PARA FOCUS STATES
+// -----------------------------------------------------------------------------
+@mixin focus-visible-dark {
+  &:focus-visible {
+    outline: 2px solid $primary;
+    outline-offset: 2px;
+    border-radius: $border-radius-sm;
+  }
+}

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import api from "../api/api";
 import { useAuth } from "../context/authContext";
 import PopUpComponent from "../components/core/feedback/PopUpComponent";
@@ -8,6 +8,7 @@ import { useLoginForm } from "../hooks/useLoginForm";
 function Login({pageFunctions}){
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const popUpRef = useRef(null); 
   const {
     showPassword,
@@ -53,7 +54,10 @@ function Login({pageFunctions}){
         const user = response.user;
         localStorage.setItem("token", token);
         login(user); 
-        navigate("/"); 
+        
+        // Redireciona para a página de onde veio ou para home
+        const from = location.state?.from?.pathname || "/";
+        navigate(from, { replace: true });
       }
     } catch (error) {
       console.error("Erro ao fazer login:", error);

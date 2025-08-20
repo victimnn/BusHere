@@ -1,16 +1,23 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import { useAuth } from "../context/authContext";
 import PopUpComponent from "../components/core/feedback/PopUpComponent";
-import {validateEmail} from "@shared/validators";
+import { useLoginForm } from "../hooks/useLoginForm";
 
 function Login({pageFunctions}){
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const popUpRef = useRef(null); 
-
-  const [showPassword, setShowPassword] = useState(false); 
+  const {
+    showPassword,
+    isSubmitting,
+    errors,
+    setShowPassword,
+    setIsSubmitting,
+    handleBlur,
+    validateForm,
+  } = useLoginForm();
 
   useEffect(() => {
     pageFunctions.set("login",false,false);
@@ -21,20 +28,25 @@ function Login({pageFunctions}){
     const email = event.target.email.value;
     const password = event.target.password.value;
 
-    if (!email || !password) {
-      return popUpRef.current.show({
-        content: () => "Por favor, preencha todos os campos.",
-        title: "Campos Obrigatórios",
-      });
-    }
-    if (!validateEmail(email)) {
-      return popUpRef.current.show({
-        content: () => "Email inválido. Por favor, insira um email válido.",
-        title: "Email Inválido",
-      });
+    const formErrors = validateForm(email, password);
+    if (Object.keys(formErrors).length > 0) {
+      if (formErrors.general) {
+        return popUpRef.current.show({
+          content: () => formErrors.general,
+          title: "Campos Obrigatórios",
+        });
+      }
+      if (formErrors.email) {
+        return popUpRef.current.show({
+          content: () => formErrors.email,
+          title: "Email Inválido",
+        });
+      }
+      return;
     }
 
     try {
+      setIsSubmitting(true);
       const response = await api.auth.login(email, password);
       if (response) {
         const token = response.token;
@@ -49,6 +61,8 @@ function Login({pageFunctions}){
         content: () => "Erro ao fazer login. Verifique suas credenciais.",
         title: "Erro de Login",
       });
+    } finally {
+      setIsSubmitting(false);
     }
 
   }
@@ -64,62 +78,54 @@ function Login({pageFunctions}){
         <p className="text-secondary">
           O login é admin@admin.com / admin
         </p>
-        <form className="mt-4" method="GET" onSubmit={handleSubmit}>
+        <form className="mt-4" method="POST" onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="email" className="form-label">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              className="form-control"
-              placeholder="Insira o Email"
-            />
-          </div>
-
-          <div className="mb-3">
-            <label htmlFor="password" className="form-label">
-              Senha
-            </label>
-            <input
-              type={showPassword ? "text" : "password"}
-              id="password"
-              name="password"
-              className="form-control"
-              placeholder="Insira a senha"
-            />
-             <button
-                type="button"
-                className="btn"
-                tabIndex={-1}
-                onClick={() => setShowPassword((v) => !v)}
-                style={{ margin: "0", padding: "0", width: "35px", height: "32px", marginTop: "-72px", marginLeft: "88%", fontSize: "15px"}}
-                tabIndex={-1}
-                >
-                <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
-                </button>
-          </div>
-
-          <div className="d-flex justify-content-between align-items-center"  style={{display: "flex", alignItems: "center", marginTop: "-45px"}}>
-            <div className="form-check">
-              <input className="form-check-input" type="checkbox" role="switch" id="rememberMe"/>
-              <label className="form-check-label" htmlFor="rememberMe"  style={{marginLeft: "5px", marginTop: "5px"}}>
-                Lembrar de mim
-              </label>
+            <label htmlFor="email" className="form-label">Email</label>
+            <div className="input-group">
+              <span className={`input-group-text bg-transparent border-end-0 ${errors.email ? 'is-invalid' : ''}`}><i className="bi bi-envelope"></i></span>
+              <input type="email" id="email" name="email" className={`form-control border-start-0 ${errors.email ? 'is-invalid' : ''}`} placeholder="nome@dominio.com" autoComplete="email" onBlur={handleBlur} required />
             </div>
-            <a href="#" className=" text-decoration-underline small">
-              Esqueceu a senha?
-            </a>
+            {errors.email && <div className="invalid-feedback d-block" style={{display: 'block !important', opacity: '1 !important', transform: 'none !important'}}>{errors.email}</div>}
           </div>
 
-          <button type="submit" className="btn btn-success w-100 fw-bold">
-            Entrar
+          <div className="mb-2">
+            <label htmlFor="password" className="form-label">Senha</label>
+            <div className="input-group">
+              <span className={`input-group-text bg-transparent border-end-0 ${errors.password ? 'is-invalid' : ''}`}><i className="bi bi-lock"></i></span>
+              <input type={showPassword ? "text" : "password"} id="password" name="password" className={`form-control border-start-0 ${errors.password ? 'is-invalid' : ''}`} placeholder="Insira a sua senha" autoComplete="current-password" onBlur={handleBlur} required />
+              <button
+                type="button"
+                className="btn btn-outline-secondary border-start-0"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+              >
+                <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+              </button>
+            </div>
+            {errors.password && <div className="invalid-feedback d-block" style={{display: 'block !important', opacity: '1 !important', transform: 'none !important'}}>{errors.password}</div>}
+          </div>
+
+          <div className="d-flex justify-content-between align-items-center mt-2">
+            <div className="form-check">
+              <input className="form-check-input" type="checkbox" role="switch" id="rememberMe" />
+              <label className="form-check-label ms-2" htmlFor="rememberMe">Lembrar de mim</label>
+            </div>
+            <a href="#" className="text-decoration-underline small">Esqueceu a senha?</a>
+          </div>
+
+          <button type="submit" className="btn btn-success w-100 fw-bold mt-3" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Entrando...
+              </>
+            ) : (
+              "Entrar"
+            )}
           </button>
 
           <div className="text-center mt-2">
-            <a href="/register" className=" text-decoration-underline small">
-              Não Possui Cadastro?
-            </a>
+            <a href="/register" className=" text-decoration-underline small">Não Possui Cadastro?</a>
           </div>
         </form>
       </div>

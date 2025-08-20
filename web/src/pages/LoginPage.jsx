@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import api from "../api/api";
 import { useAuth } from "../context/authContext";
 import PopUpComponent from "../components/core/feedback/PopUpComponent";
-import { useLoginForm } from "../hooks/useLoginForm";
+import { useLoginForm } from "../hooks/data/useLoginForm";
 
 function Login({pageFunctions}){
   const { login, isAuthenticated } = useAuth();
@@ -85,21 +85,21 @@ function Login({pageFunctions}){
         <form className="mt-4" method="POST" onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="email" className="form-label">Email</label>
-            <div className="input-group">
-              <span className={`input-group-text bg-transparent border-end-0 ${errors.email ? 'is-invalid' : ''}`}><i className="bi bi-envelope"></i></span>
-              <input type="email" id="email" name="email" className={`form-control border-start-0 ${errors.email ? 'is-invalid' : ''}`} placeholder="nome@dominio.com" autoComplete="email" onBlur={handleBlur} required />
+            <div className={`input-group ${errors.email ? 'is-invalid' : ''}`}>
+              <span className="input-group-text bg-transparent"><i className="bi bi-envelope"></i></span>
+              <input type="email" id="email" name="email" className="form-control" placeholder="nome@dominio.com" autoComplete="email" onBlur={handleBlur} required />
             </div>
             {errors.email && <div className="invalid-feedback d-block" style={{display: 'block !important', opacity: '1 !important', transform: 'none !important'}}>{errors.email}</div>}
           </div>
 
           <div className="mb-2">
             <label htmlFor="password" className="form-label">Senha</label>
-            <div className="input-group">
-              <span className={`input-group-text bg-transparent border-end-0 ${errors.password ? 'is-invalid' : ''}`}><i className="bi bi-lock"></i></span>
-              <input type={showPassword ? "text" : "password"} id="password" name="password" className={`form-control border-start-0 ${errors.password ? 'is-invalid' : ''}`} placeholder="Insira a sua senha" autoComplete="current-password" onBlur={handleBlur} required />
+            <div className={`input-group ${errors.password ? 'is-invalid' : ''}`}>
+              <span className="input-group-text bg-transparent"><i className="bi bi-lock"></i></span>
+              <input type={showPassword ? "text" : "password"} id="password" name="password" className="form-control" placeholder="Insira a sua senha" autoComplete="current-password" onBlur={handleBlur} required />
               <button
                 type="button"
-                className="btn btn-outline-secondary border-start-0"
+                className="btn btn-outline-secondary"
                 onClick={() => setShowPassword((v) => !v)}
                 aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
               >

@@ -12,7 +12,9 @@ function Main() {
   // Estado do tema escuro sincronizado com localStorage
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem('theme');
-    return saved === 'dark';
+    if (saved === 'dark') return true;
+    if (saved === 'light') return false;
+    return false; // padrão: claro quando não houver preferência
   });
 
   useEffect(() => {

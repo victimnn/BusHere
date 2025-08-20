@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Link, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, Navigate, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { useState, useEffect, useRef} from 'react'
 
@@ -26,6 +26,36 @@ import RouteStopsPage from "./pages/RouteStopsPage";
 
 import SideBar from "./components/core/layout/SideBar";
 import Header from "./components/core/layout/Header";
+
+
+// Função para forçar o tema escuro nas páginas de login e registro
+function ThemeEnforcer({ isDark, setIsDark }) {
+  const location = useLocation();
+  const previousThemeRef = useRef(null);
+
+  useEffect(() => {
+    const pathname = location.pathname || "";
+    const isForcedDarkPage = pathname.startsWith('/login') || pathname.startsWith('/register');
+
+    if (isForcedDarkPage) {
+      if (previousThemeRef.current === null) {
+        const saved = localStorage.getItem('theme');
+        previousThemeRef.current = saved ?? 'light';
+      }
+      if (!isDark) {
+        setIsDark(true);
+      }
+    } else {
+      if (previousThemeRef.current !== null) {
+        const prev = previousThemeRef.current;
+        previousThemeRef.current = null;
+        setIsDark(prev === 'dark');
+      }
+    }
+  }, [location.pathname]);
+
+  return null;
+}
 
 function App({ isDark, setIsDark }) {
   const [pageName, setPageName] = useState("Giraldi");
@@ -56,6 +86,7 @@ function App({ isDark, setIsDark }) {
     <Router>
       <AuthProvider>
         <div>
+          <ThemeEnforcer isDark={isDark} setIsDark={setIsDark} />
           <div className="d-flex w-100" style={{overflow: "hidden", height:"100vh"}}> {/* Usando flex com height fixo */}
 
             {/* Sidebar */}
@@ -76,8 +107,6 @@ function App({ isDark, setIsDark }) {
                   <Route path="/stops" element={<StopsPage pageFunctions={pageFunctions} isDark={isDark}/>} />
                   <Route path="/reports" element={<ReportsPage pageFunctions={pageFunctions}/>} />
                   <Route path="/settings" element={<SettingsPage pageFunctions={pageFunctions} isDark={isDark} setIsDark={setIsDark}/>} />
-                  <Route path="/login" element={<LoginPage pageFunctions={pageFunctions}/>} />
-                  <Route path="/register" element={<RegisterPage pageFunctions={pageFunctions}/>} />
 
                   <Route path="/buses/:busId" element={<BusDetail pageFunctions={pageFunctions}/>} />
                   <Route path="/passengers/:passengerId" element={<PassengerDetail pageFunctions={pageFunctions}/>} />
@@ -88,6 +117,9 @@ function App({ isDark, setIsDark }) {
                   <Route path="/routes/:routeId/edit" element={<RouteStopsPage pageFunctions={pageFunctions} isDark={isDark}/>} />
 
                   <Route path="/search/:searchTerm" element={<SearchPage pageFunctions={pageFunctions}  />} />
+
+                  <Route path="/login" element={<LoginPage pageFunctions={pageFunctions}/>} />
+                  <Route path="/register" element={<RegisterPage pageFunctions={pageFunctions}/>} />
 
                   <Route path="/error" element={<ErrorPage />} />
                   <Route path="*" element={<Navigate to="/error" />} />

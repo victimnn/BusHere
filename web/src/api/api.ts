@@ -436,7 +436,7 @@ const api = {
     },
 
     register: async (userData) => {
-      const requiredFields = ['full_name', 'cpf', 'email', 'password', 'address_street', 'address_number', 'address_city', 'cep'];
+      const requiredFields = ['nome', 'email', 'password'];
 
       // Verifica se todos os campos obrigatórios estão presentes
       for (const field of requiredFields) {
@@ -446,7 +446,7 @@ const api = {
       }
 
       try {
-        const response = await api.post('/auth/register', userData);
+        const response = await api.post('/enterpriseUsers/register', userData);
         return response; // Retorna a resposta da API
       } catch (error) {
         console.error("Erro ao registrar usuário:", error);

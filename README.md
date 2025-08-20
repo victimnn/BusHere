@@ -162,7 +162,7 @@ cd tcc
 ```
 
 ### 2. Setup Automático
-Execute o script de configuração que instalará todas as dependências e configurará os arquivos de ambiente:
+Execute o script de configuração que instalará todas as dependências e preparará o ambiente:
 
 ```bash
 npm run setup
@@ -172,18 +172,29 @@ Este comando irá:
 - Instalar dependências na raiz do projeto
 - Instalar dependências do frontend (`web/`)
 - Instalar dependências do backend (`server/`)
-- Copiar arquivos `.env.example` para `.env`
-- Configurar o banco de dados
+- Tentar copiar arquivos `.env.example` para `.env` (se existirem). Caso não existam, crie-os manualmente conforme a seção Variáveis de Ambiente
+- Executar a configuração do banco de dados (`server/src/setupDB.js`)
 
 ### 3. Configurar Banco de Dados
-Edite o arquivo `server/.env` com suas credenciais:
+Crie o arquivo `server/.env` com suas credenciais:
 
-```bash
+```env
+# Porta do servidor (opcional, padrão 3000)
+PORT=3000
+
+# Configuração MySQL
 DB_HOST=localhost
 DB_PORT=3306
 DB_USER=root
 DB_PASSWORD=sua_senha
 DB_NAME=bushere_db
+```
+
+Opcionalmente, configure variáveis do frontend web em `web/.env`:
+
+```env
+# URL base da API para a aplicação web
+VITE_API_URL=http://localhost:3000/api
 ```
 
 ### 4. Executar o Sistema
@@ -194,7 +205,7 @@ npm start
 O sistema iniciará automaticamente:
 - 🌐 Frontend: http://localhost:5173
 - ⚙️ Backend: http://localhost:3000
-- 📱 Mobile: Use o Expo CLI separadamente
+- 📱 Mobile: use o Expo CLI separadamente (o app móvel usa `http://10.0.2.2:3000/api` por padrão no emulador Android)
 
 ## ⚙️ Configuração Manual
 
@@ -204,7 +215,7 @@ Se preferir configurar manualmente ou encontrar problemas:
 ```bash
 cd web
 npm install
-cp .env.example .env
+# (opcional) crie um arquivo .env com VITE_API_URL, ver seção Variáveis de Ambiente
 npm run dev
 ```
 
@@ -212,8 +223,7 @@ npm run dev
 ```bash
 cd server
 npm install
-cp .env.example .env
-# Configure as variáveis do banco no .env
+# Crie e preencha o arquivo .env (ver seção Variáveis de Ambiente)
 npm run setup  # Configura o banco de dados
 npm start
 ```
@@ -255,40 +265,94 @@ cd server && NODE_ENV=production npm start
 
 ```
 tcc/
-├── 📁 web/                    # Frontend React
+├── 📁 web/                               # Frontend React (Vite)
 │   ├── src/
-│   │   ├── components/        # Componentes React
-│   │   │   ├── common/        # Componentes genéricos reutilizáveis
-│   │   │   ├── passengers/    # Componentes específicos de passageiros
-│   │   │   ├── buses/         # Componentes específicos de ônibus
-│   │   │   ├── drivers/       # Componentes específicos de motoristas
-│   │   │   ├── routes/        # Componentes específicos de rotas
-│   │   │   ├── stops/         # Componentes específicos de pontos
-│   │   │   └── reports/       # Componentes de relatórios
-│   │   ├── pages/            # Páginas da aplicação
-│   │   ├── api/              # Configuração da API
-│   │   ├── utils/            # Utilitários e helpers
-│   │   └── hooks/            # Hooks customizados
-│   ├── public/               # Arquivos estáticos
-│   └── styles/               # Estilos SCSS
+│   │   ├── components/
+│   │   │   ├── common/                   # Biblioteca de componentes genéricos
+│   │   │   │   ├── buttons/
+│   │   │   │   ├── data-display/         # StatCard, Table
+│   │   │   │   ├── detail/               # DetailCard + configs
+│   │   │   │   ├── feedback/             # Dialog, ErrorAlert, LoadingSpinner, Notification
+│   │   │   │   ├── form/                  # formConfigs
+│   │   │   │   ├── forms/                 # GenericForm
+│   │   │   │   └── table/                 # Table componentizado (Header/Body/Cell/...)
+│   │   │   ├── core/
+│   │   │   │   ├── layout/                # Header, SideBar, MapComponent
+│   │   │   │   └── feedback/
+│   │   │   ├── domain/                    # Domínios do negócio
+│   │   │   │   ├── buses/
+│   │   │   │   ├── drivers/
+│   │   │   │   ├── passengers/
+│   │   │   │   ├── routes/
+│   │   │   │   └── stops/
+│   │   │   └── features/                  # Features de alto nível
+│   │   │       ├── dashboard/
+│   │   │       ├── details/
+│   │   │       ├── reports/
+│   │   │       ├── route-planning/
+│   │   │       └── settings/
+│   │   ├── pages/                          # Páginas da aplicação (Home, Passengers, Drivers, Routes, Stops, Reports, Login, Register, Search, details/*)
+│   │   ├── hooks/
+│   │   │   ├── dashboard/
+│   │   │   ├── data/                       # usePassengers, useDrivers, useRoutes, useStops
+│   │   │   ├── map/
+│   │   │   ├── operations/
+│   │   │   └── ui/
+│   │   ├── api/                            # api.ts, autocomplete.ts
+│   │   └── utils/                          # config.js (baseUrl dinâmico, endpoints)
+│   ├── public/
+│   └── styles/                             # Temas light/dark (SCSS)
 │
-├── 📁 server/                 # Backend API
-│   ├── src/
-│   │   ├── routes/           # Rotas da API
-│   │   ├── helpers.js        # Funções auxiliares
-│   │   └── setupDB.js        # Configuração do banco
-│   ├── migrations/           # Scripts SQL de migração
-│   └── scripts/              # Scripts de utilidade
+├── 📁 shared/                              # Código compartilhado entre web/mobile/server
+│   ├── brazilianStates.ts
+│   ├── formatters.ts
+│   ├── validators.ts
+│   └── types/
 │
-├── 📁 mobile/                 # App React Native
-│   ├── app/                  # Telas do app
-│   ├── components/           # Componentes reutilizáveis
-│   ├── assets/               # Imagens e fontes
-│   └── scripts/              # Scripts de configuração
+├── 📁 server/                              # Backend API (Express 5 + MySQL)
+│   ├── src/                                # index.js + rotas: auth, passengers, drivers, buses, routes, stops, reports, search, lastChanges, enterpriseUsers
+│   ├── migrations/                         # Esquema, índices full-text, gatilhos
+│   └── scripts/                            # Utilidades de desenvolvimento
 │
-├── package.json              # Configuração raiz
-└── README.md                 # Este arquivo
+├── 📁 mobile/                              # App React Native (Expo)
+│   ├── app/                                # Telas (Expo Router)
+│   ├── components/
+│   ├── api/api.ts                          # Client REST (10.0.2.2:3000 no emulador)
+│   ├── scripts/                            # configure-variables.js (ANDROID_HOME)
+│   ├── constants/, hooks/, assets/
+│   └── app.json
+│
+├── package.json                            # Raiz: scripts start/setup
+└── README.md
 ```
+
+### 🔗 Aliases de Importação
+
+Os aliases a seguir estão configurados (ver `web/jsconfig.json` e `mobile/tsconfig.json`):
+
+- `@web/*` → `web/src/*`
+- `@shared/*` → `shared/*`
+- `@server/*` → `server/src/*`
+- `@mobile/*` → `mobile/*`
+
+### 🧭 Páginas e Componentes (Web)
+
+- **Home (`HomePage.jsx`)**: cards de estatísticas, acesso rápido, atividades recentes.
+- **Passengers (`PassengersPage.jsx`)**: tabela filtrável, `PassengerForm`, `PassengerDetails`, `PassengerStatsCards`.
+- **Drivers (`DriversPage.jsx`)**: tabela, `DriverForm`, `DriverDetails`, `DriversStatsCards`.
+- **Routes (`RoutesPage.jsx`)**: tabela com status, ver pontos (`RouteStops`), `RouteForm`, `RouteDetails`, associações ônibus–motorista.
+- **Stops/Reports/Login/Register/Search/Details**: páginas dedicadas com componentes de domínio e `features/*`.
+
+Componentes notáveis:
+- `components/common/table` (Table componentizado + `useTable`)
+- `components/common/DetailCard` e `detailConfigs.js`
+- `components/common/forms/GenericForm` e `form/formConfigs.js`
+- `components/common/feedback/Dialog` (alert/confirm unificado)
+
+### 📱 Mobile (Notas)
+
+- Base URL padrão: `http://10.0.2.2:3000/api` (emulador Android).
+- Script de ambiente Android: `npm run setup-variables` em `mobile/` define `ANDROID_HOME` (Windows) via `scripts/configure-variables.js`.
 
 ## 🛠️ Tecnologias
 
@@ -331,6 +395,15 @@ tcc/
 
 ## 🌐 API Endpoints
 
+### Autenticação (Usuário Empresa)
+```http
+POST   /api/auth/register       # Campos: nome, email, password
+POST   /api/auth/login          # Campos: email, password (retorna token)
+POST   /api/auth/logout         # Header: Authorization: Bearer <token>
+GET    /api/auth/me             # Header: Authorization: Bearer <token>
+POST   /api/auth/change-password# Header + Campos: old_password, new_password
+```
+
 ### Passageiros
 ```http
 GET    /api/passengers          # Listar passageiros (com paginação)
@@ -338,6 +411,8 @@ GET    /api/passengers/:id      # Obter passageiro por ID
 POST   /api/passengers          # Criar novo passageiro
 PUT    /api/passengers/:id      # Atualizar passageiro
 DELETE /api/passengers/:id      # Excluir passageiro
+GET    /api/passengers/tipos    # Listar tipos de passageiro
+GET    /api/passengers/search   # Busca full-text (?query=)
 ```
 
 ### Motoristas
@@ -368,6 +443,11 @@ POST   /api/routes              # Criar nova rota
 PUT    /api/routes/:id          # Atualizar rota
 DELETE /api/routes/:id          # Excluir rota
 GET    /api/routes/status       # Listar status de rotas
+GET    /api/routes/stops/:id    # Listar pontos de uma rota
+GET    /api/routes/:id/assignments                  # Listar associações ônibus-motorista da rota
+POST   /api/routes/:id/assignments                  # Criar associação
+PUT    /api/routes/:id/assignments/:assignmentId    # Atualizar associação
+DELETE /api/routes/:id/assignments/:assignmentId    # Remover associação (soft delete)
 ```
 
 ### Pontos
@@ -378,6 +458,7 @@ POST   /api/stops               # Criar novo ponto
 PUT    /api/stops/:id           # Atualizar ponto
 DELETE /api/stops/:id           # Excluir ponto
 GET    /api/stops/search        # Buscar pontos por nome
+PATCH  /api/stops/:id/status    # Ativar/Desativar ponto (body: { ativo: boolean })
 ```
 
 ### Relatórios
@@ -390,6 +471,16 @@ GET    /api/reports/utilization # Dados de utilização
 ### Busca
 ```http
 GET    /api/autocomplete        # Autocomplete para busca
+```
+
+### Usuários da Empresa
+```http
+GET    /api/enterpriseUsers/:id # Detalhes do usuário empresa por ID
+```
+
+### Mudanças Recentes (Auditoria)
+```http
+GET    /api/lastChanges?limit=50
 ```
 
 ## 📝 Scripts Disponíveis
@@ -411,7 +502,7 @@ npm run lint     # Linter ESLint
 ### Backend (server/)
 ```bash
 npm start        # Inicia o servidor
-npm run dev      # Servidor com nodemon
+npm run dev      # Alias para iniciar o servidor (nodemon opcional)
 npm run setup    # Configura banco de dados
 ```
 
@@ -457,13 +548,19 @@ npm run web      # Versão web do app
 **Dependências não instaladas:**
 ```bash
 # Execute npm install em cada diretório (raiz, web/, server/, mobile/)
-# Ou use o comando de setup automático: npm run setup
+# Ou use o comando de setup automático: npm run setup (crie os .env manualmente se necessário)
 ```
 
 **Problemas com mapeamento:**
 ```bash
 # Verifique se as APIs de geolocalização estão funcionando
 # Confirme se há conexão com a internet para carregar os mapas
+```
+
+**Expo/Android emulador não acessa API local:**
+```bash
+# Use 10.0.2.2 no emulador Android para acessar o host local (já configurado em mobile/api/api.ts)
+# Certifique-se de que o backend está em 0.0.0.0:3000 (PORT=3000) e que o firewall permite a conexão
 ```
 
 **Erro de autocomplete/busca:**

@@ -39,7 +39,7 @@ const mapStyles = `
     display: flex;
     align-items: center;
     justify-content: center;
-  }
+  } 
   
   .leaflet-control-zoom a:hover {
     background: rgba(40, 167, 69, 0.1);
@@ -273,6 +273,7 @@ const MapComponent = forwardRef(({
         worldCopyJump={false}
         className="w-100 h-100"
         style={{borderRadius: '0px 0px 12px 12px'}}
+        zoomControl={false}
       >
         <TileLayer
           attribution={tileConfig.attribution}

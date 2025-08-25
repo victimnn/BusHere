@@ -318,7 +318,7 @@ const MapComponent = forwardRef(({
         {/* Map ref component */}
         <MapRef onMapReady={setMapInstance} />
         {/* Center change handler */}
-        <CenterChangeHandler center={center} />
+        {/* TIREI PQ TAVA DANDO ERRO: SE TIVER PROBLEMA COM CENTROS COLOQUE NOVAMENTE <CenterChangeHandler center={center} /> */}
 
         {/* Adicione mais marcadores ou polylines para rotas conforme necessário */}
       </MapContainer>

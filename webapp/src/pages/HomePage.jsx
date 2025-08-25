@@ -27,7 +27,7 @@ const HomePage = () => {
 				markers={
 					[{
 						id: 1,
-						position: [37.7749, -122.4194],
+						position: [37.79, -122.4194],
 						color: 'red',
 						size: 32,
 						popupContent: <div className="m-4">Popup Content</div>

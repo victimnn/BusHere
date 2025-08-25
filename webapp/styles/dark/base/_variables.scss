@@ -1,0 +1,178 @@
+// =============================================================================
+// VARIÁVEIS SCSS - SISTEMA DE DESIGN - MODO ESCURO
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// CORES PRIMÁRIAS
+// -----------------------------------------------------------------------------
+$primary: #15D154;           // Verde mais vibrante para dark mode
+$primary-light: #4AE575;     // Verde claro mais luminoso
+$primary-dark: #0FA842;      // Verde escuro adaptado
+$primary-contrast: #000000;  // Contraste invertido para dark mode
+
+// -----------------------------------------------------------------------------
+// CORES SECUNDÁRIAS
+// -----------------------------------------------------------------------------
+$secondary: #8E9297;         // Cinza mais claro para visibilidade
+$secondary-light: #B8BCC2;   // Cinza claro adaptado
+$secondary-dark: #4A4E54;    // Cinza escuro mais suave
+
+// -----------------------------------------------------------------------------
+// CORES DE DESTAQUE E ANÁLOGAS
+// -----------------------------------------------------------------------------
+$accent: #FF7B7B;            // Vermelho mais suave para dark mode
+$accent-light: #FFB0B0;      // Vermelho claro suavizado
+$accent-dark: #E55555;       // Vermelho escuro adaptado
+
+$analogous-1: #15D1B5;       // Ciano adaptado para dark mode
+$analogous-2: #15D125;       // Verde análogo adaptado
+
+// -----------------------------------------------------------------------------
+// CORES DE FEEDBACK
+// -----------------------------------------------------------------------------
+$success: #15D154;           // Verde de sucesso consistente
+$info: #4FA8FF;              // Azul mais vibrante para dark mode
+$warning: #FFD93D;           // Amarelo mais vibrante
+$danger: #FF6B6B;            // Vermelho de erro suavizado
+
+// -----------------------------------------------------------------------------
+// CORES NEUTRAS
+// -----------------------------------------------------------------------------
+$light: #2A2D31;             // "Light" agora é escuro
+$dark: #E5E7EB;              // "Dark" agora é claro (texto)
+$white: #1A1D21;             // "White" agora é o fundo mais escuro
+
+// -----------------------------------------------------------------------------
+// CORES DE TEXTO
+// -----------------------------------------------------------------------------
+$text-primary: #E5E7EB;      // Texto principal claro
+$text-secondary: #9CA3AF;    // Texto secundário médio
+$text-muted: #6B7280;        // Texto esmaecido mais escuro
+
+// -----------------------------------------------------------------------------
+// CORES DE FUNDO
+// -----------------------------------------------------------------------------
+$body-bg: #1A1D21;           // Fundo principal escuro
+$bg-light: #2A2D31;          // Fundo claro (mais escuro que o principal)
+$bg-medium: #22252A;         // Fundo médio
+$bg-dark: #1F2229;           // Fundo mais escuro
+
+// -----------------------------------------------------------------------------
+// ESPAÇAMENTO
+// -----------------------------------------------------------------------------
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 3rem;
+
+// -----------------------------------------------------------------------------
+// BORDAS E SOMBRAS
+// -----------------------------------------------------------------------------
+$border-color: #374151;      // Bordas escuras mas visíveis
+$border-light: #2A2D31;      // Bordas mais sutis
+$border-medium: #4B5563;     // Bordas médias
+$border-radius: 0.375rem;
+$border-radius-sm: 0.25rem;
+$border-radius-lg: 0.5rem;
+$box-shadow-sm: 0 .125rem .25rem rgba(0,0,0,.3);           // Sombras mais intensas
+$box-shadow-soft: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.2);   // Sombra suave adaptada
+
+// -----------------------------------------------------------------------------
+// TRANSIÇÕES
+// -----------------------------------------------------------------------------
+$transition-all: all 0.15s ease-in-out;
+
+// -----------------------------------------------------------------------------
+// CORES ADICIONAIS
+// -----------------------------------------------------------------------------
+$text-dark: #E5E7EB;         // Texto "escuro" agora é claro
+$primary-light-opacity: rgba(21, 209, 84, 0.15);  // Opacidade verde adaptada
+
+// -----------------------------------------------------------------------------
+// CORES PADRÃO DO BOOTSTRAP ADAPTADAS
+// -----------------------------------------------------------------------------
+$blue: #4FA8FF !default;     // Azul mais vibrante
+$indigo: #8B7CF6 !default;   // Índigo mais claro
+$purple: #A855F7 !default;   // Roxo mais vibrante
+$pink: #EC4899 !default;     // Rosa adaptado
+$red: $danger !default;      // Vermelho consistente
+$orange: #FB923C !default;   // Laranja mais vibrante
+$yellow: $warning !default;   // Amarelo adaptado
+$green: $primary !default;    // Verde consistente
+$teal: #14B8A6 !default;      // Teal mais vibrante
+$cyan: $info !default;        // Ciano consistente
+$gray: $secondary !default;   // Cinza consistente
+
+// -----------------------------------------------------------------------------
+// TIPOGRAFIA
+// -----------------------------------------------------------------------------
+$body-color: $text-primary;  // Cor do texto principal (claro)
+$font-family-base: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+// -----------------------------------------------------------------------------
+// FORMULÁRIOS ADAPTADOS PARA DARK MODE
+// -----------------------------------------------------------------------------
+$input-btn-padding-y: 0.625rem;
+$input-btn-padding-x: 1rem;
+$input-border-radius: 0.5rem;
+$input-bg: $bg-medium;                    // Fundo escuro para inputs
+$input-border-color: $border-color;      // Bordas adaptadas
+$input-focus-border-color: $primary;     // Foco verde consistente
+$input-focus-box-shadow: 0 0 0 0.2rem rgba(21, 209, 84, 0.25);  // Sombra de foco adaptada
+$input-color: $text-primary;             // Texto claro nos inputs
+$input-placeholder-color: $text-muted;   // Placeholder mais sutil
+
+// -----------------------------------------------------------------------------
+// TRANSIÇÕES E ANIMAÇÕES OTIMIZADAS
+// -----------------------------------------------------------------------------
+$transition-fast: all 0.15s ease-in-out;
+$transition-normal: all 0.2s ease-in-out;
+$transition-slow: all 0.3s ease-in-out;
+$btn-transition: $transition-normal;
+$btn-sb-transition: $transition-normal;
+
+// -----------------------------------------------------------------------------
+// DIMENSÕES
+// -----------------------------------------------------------------------------
+$avatar-size: 40px;
+
+// -----------------------------------------------------------------------------
+// VARIÁVEIS ESPECÍFICAS DO DARK MODE
+// -----------------------------------------------------------------------------
+$card-bg: $bg-light;                     // Fundo dos cards
+$navbar-bg: $bg-dark;                    // Fundo da navbar
+$sidebar-bg: $bg-medium;                 // Fundo da sidebar
+$modal-bg: $bg-light;                    // Fundo dos modais
+$dropdown-bg: $bg-medium;                // Fundo dos dropdowns
+$table-bg: transparent;                  // Fundo das tabelas
+$table-hover-bg: rgba(255, 255, 255, 0.05);  // Hover nas tabelas
+
+// -----------------------------------------------------------------------------
+// MAPA DE CORES DO TEMA ESCURO
+// -----------------------------------------------------------------------------
+$theme-colors: (
+  "primary": $primary,
+  "secondary": $secondary,
+  "success": $success,
+  "info": $info,
+  "warning": $warning,
+  "danger": $danger,
+  "light": $light,
+  "dark": $dark,
+  "white": $white,
+  "primary-light": $primary-light,
+  "primary-dark": $primary-dark,
+  "secondary-light": $secondary-light,
+  "secondary-dark": $secondary-dark,
+  "accent": $accent,
+  "accent-light": $accent-light,
+  "accent-dark": $accent-dark,
+  "analogous-1": $analogous-1,
+  "analogous-2": $analogous-2,
+  "bg-dark": $bg-dark,
+  "bg-medium": $bg-medium,
+  "text-primary": $text-primary,
+  "text-secondary": $text-secondary,
+  "text-muted": $text-muted,
+);

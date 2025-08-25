@@ -1,0 +1,120 @@
+// =============================================================================
+// DRAG & DROP - ESTILOS PARA COMPONENTES DRAG AND DROP
+// =============================================================================
+
+@import '../base/variables';
+@import '../base/mixins';
+
+// -----------------------------------------------------------------------------
+// PONTOS ARRASTÁVEIS DA ROTA
+// -----------------------------------------------------------------------------
+.draggable-route-point {
+  transition: all 0.2s ease;
+  border-radius: $border-radius;
+  
+  &:hover {
+    background-color: $light;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  &.dragging {
+    opacity: 0.4;
+    transform: scale(0.98);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  // Container para inputs de tempo
+  .time-input-container {
+    min-height: 2.5rem;
+    
+    .time-input-wrapper {
+      @include flex-center();
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .time-error-message {
+      width: 100%;
+      margin-top: 0.25rem;
+      font-size: 0.75rem;
+      line-height: 1.2;
+    }
+  }
+  
+  // Container para botão de remoção
+  .remove-button-container {
+    flex-shrink: 0;
+    min-width: 40px;
+  }
+  
+  // Espaçamento quando há erro de validação
+  &.has-time-error {
+    .flex-grow-1 {
+      margin-right: 1rem;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// HANDLE DE ARRASTAR
+// -----------------------------------------------------------------------------
+.drag-handle {
+  cursor: grab;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: #e9ecef;
+    color: #495057;
+  }
+  
+  &:active {
+    cursor: grabbing;
+    background-color: #dee2e6;
+  }
+
+  @include mobile-only {
+    padding: 0.5rem;
+    
+    i {
+      font-size: 1.1rem;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// ESTADOS DE DRAG
+// -----------------------------------------------------------------------------
+.list-group-item {
+  &.is-dragging {
+    opacity: 0.5;
+    transform: rotate(5deg);
+    z-index: 1000;
+  }
+
+  &.drag-over {
+    border-color: #007bff;
+    background-color: #e7f3ff;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// LISTA DE PONTOS DA ROTA
+// -----------------------------------------------------------------------------
+.route-points-list {
+  .list-group-item {
+    transition: all 0.3s ease;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// INDICADOR DE DROP
+// -----------------------------------------------------------------------------
+.drop-indicator {
+  height: 2px;
+  background-color: #007bff;
+  margin: 2px 0;
+  border-radius: 1px;
+  transition: all 0.2s ease;
+}

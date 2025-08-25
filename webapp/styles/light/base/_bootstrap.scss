@@ -1,0 +1,39 @@
+// =============================================================================
+// BOOTSTRAP CONFIGURATION
+// =============================================================================
+
+// Importar variáveis primeiro
+@import './variables';
+
+// Configurar variáveis do Bootstrap antes de importá-lo
+$primary: $primary;
+$secondary: $secondary;
+$success: $success;
+$info: $info;
+$warning: $warning;
+$danger: $danger;
+$light: $light;
+$dark: $dark;
+$white: $white;
+$body-bg: $body-bg;
+$body-color: $body-color;
+$font-family-base: $font-family-base;
+$border-color: $border-color;
+$border-radius: $border-radius;
+$green: $primary;
+$red: $danger;
+$yellow: $warning;
+$cyan: $info;
+$input-btn-padding-y: $input-btn-padding-y;
+$input-btn-padding-x: $input-btn-padding-x;
+$input-border-radius: $input-border-radius;
+$input-bg: $input-bg;
+$input-border-color: $input-border-color;
+$input-focus-border-color: $input-focus-border-color;
+$input-focus-box-shadow: $input-focus-box-shadow;
+$btn-transition: $btn-transition;
+$box-shadow-sm: $box-shadow-sm;
+$theme-colors: $theme-colors;
+
+// Importar Bootstrap Icons
+@import "../../../node_modules/bootstrap-icons/font/bootstrap-icons.css";

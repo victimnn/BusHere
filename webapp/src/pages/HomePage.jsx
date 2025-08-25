@@ -1,6 +1,7 @@
 import React,{useState, useEffect} from "react";
 import MapComponent from "../components/MapComponent";
 import BottomSheet from "../components/BottomSheet";
+import SideBar from "../components/SideBar";
 
 const FloatingButton = ({ onClick }) => {
 	return (
@@ -16,7 +17,7 @@ const FloatingButton = ({ onClick }) => {
 
 const HomePage = () => {
 	const [anchor,setAnchors] = useState(0);
-
+	const [sideBarIsOpen, setSideBarIsOpen] = useState(false);
 	return (
 		<>	
 			<MapComponent 
@@ -42,9 +43,15 @@ const HomePage = () => {
 				<div>Your content here</div>
 				<p>{anchor}</p>
 			</BottomSheet>
+			
+			<SideBar
+				isOpen={sideBarIsOpen}
+				onClickOutside={() => {setSideBarIsOpen(false)}}
+			>
 
-			<FloatingButton 
-				onClick={() => {alert('Clicked!')}}
+			</SideBar>
+			<FloatingButton
+				onClick={() => setSideBarIsOpen(true)}
 			/>
 		</>
 	);

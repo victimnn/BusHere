@@ -6,7 +6,7 @@ function SearchPage({ pageFunctions }) {
     const { searchTerm } = useParams(); // Obtém o termo de pesquisa da URL
     
     useEffect(() => {
-      pageFunctions.set(`Pesquisando: "${searchTerm}"`, true, true);
+      pageFunctions.set("Pesquisando...", true, true);
     }, [pageFunctions, searchTerm]);
 
     const [suggestions, setSuggestions] = useState([]); // Estado para armazenar as sugestões

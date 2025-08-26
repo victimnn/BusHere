@@ -49,31 +49,31 @@ const pool = mysql.createPool({
 });
 
 // Importando as rotas
-const authRoutes = require("./authRoutes")(pool);
-const searchRoutes = require("./searchRoutes")(pool);
-const passengerRoutes = require("./passengerRoutes")(pool);
-const driverRoutes = require("./driverRoutes")(pool);
-const stopRoutes = require("./stopRoutes")(pool);
-const busRoutes = require("./busRoutes")(pool);
-const routeRoutes = require("./routeRoutes")(pool);
-const reportsRoutes = require("./reportsRoutes")(pool);
-const lastChangeRoutes = require("./lastChangeRoutes")(pool);
-const enterpriseUserRoutes = require("./enterpriseUserRoutes")(pool);
-const debugRoutes = require("./debugRoutes.js")(pool);
+const authRoutes = require("./enterprise/authRoutes.js")(pool);
+const searchRoutes = require("./enterprise/searchRoutes.js")(pool);
+const passengerRoutes = require("./enterprise/passengerRoutes.js")(pool);
+const driverRoutes = require("./enterprise/driverRoutes.js")(pool);
+const stopRoutes = require("./enterprise/stopRoutes.js")(pool);
+const busRoutes = require("./enterprise/busRoutes.js")(pool);
+const routeRoutes = require("./enterprise/routeRoutes.js")(pool);
+const reportsRoutes = require("./enterprise/reportsRoutes.js")(pool);
+const lastChangeRoutes = require("./enterprise/lastChangeRoutes.js")(pool);
+const enterpriseUserRoutes = require("./enterprise/enterpriseUserRoutes.js")(pool);
+const debugRoutes = require("./enterprise/debugRoutes.js")(pool);
 //const XXXXRoutes = require("./XXXX")(pool);
 //const YYYYRoutes = require("./YYYY")(pool);
 
 // Usando as rotas
-app.use("/api/auth", authRoutes);
-app.use("/api", searchRoutes); // Rota raiz da API
-app.use("/api/passengers", passengerRoutes);
-app.use("/api/drivers", driverRoutes);
-app.use("/api/stops", stopRoutes);
-app.use("/api/buses", busRoutes);
-app.use("/api/routes", routeRoutes);
-app.use("/api/reports", reportsRoutes);
-app.use("/api/lastChanges", lastChangeRoutes);
-app.use("/api/enterpriseUsers", enterpriseUserRoutes);
+app.use("/api/enterprise/auth", authRoutes);
+app.use("/api/enterprise", searchRoutes); // Rota raiz da API
+app.use("/api/enterprise/passengers", passengerRoutes);
+app.use("/api/enterprise/drivers", driverRoutes);
+app.use("/api/enterprise/stops", stopRoutes);
+app.use("/api/enterprise/buses", busRoutes);
+app.use("/api/enterprise/routes", routeRoutes);
+app.use("/api/enterprise/reports", reportsRoutes);
+app.use("/api/enterprise/lastChanges", lastChangeRoutes);
+app.use("/api/enterprise/enterpriseUsers", enterpriseUserRoutes);
 app.use("/debug", debugRoutes);
 //app.use("/api/XXXX", XXXXRoutes);
 //app.use("/api/YYYY", YYYYRoutes);

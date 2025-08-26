@@ -64,16 +64,16 @@ const debugRoutes = require("./debugRoutes.js")(pool);
 //const YYYYRoutes = require("./YYYY")(pool);
 
 // Usando as rotas
-app.use("/api/auth", authRoutes);
-app.use("/api", searchRoutes); // Rota raiz da API
-app.use("/api/passengers", passengerRoutes);
-app.use("/api/drivers", driverRoutes);
-app.use("/api/stops", stopRoutes);
-app.use("/api/buses", busRoutes);
-app.use("/api/routes", routeRoutes);
-app.use("/api/reports", reportsRoutes);
-app.use("/api/lastChanges", lastChangeRoutes);
-app.use("/api/enterpriseUsers", enterpriseUserRoutes);
+app.use("/api/enterprise/auth", authRoutes);
+app.use("/api/enterprise", searchRoutes); // Rota raiz da API
+app.use("/api/enterprise/passengers", passengerRoutes);
+app.use("/api/enterprise/drivers", driverRoutes);
+app.use("/api/enterprise/stops", stopRoutes);
+app.use("/api/enterprise/buses", busRoutes);
+app.use("/api/enterprise/routes", routeRoutes);
+app.use("/api/enterprise/reports", reportsRoutes);
+app.use("/api/enterprise/lastChanges", lastChangeRoutes);
+app.use("/api/enterprise/enterpriseUsers", enterpriseUserRoutes);
 app.use("/debug", debugRoutes);
 //app.use("/api/XXXX", XXXXRoutes);
 //app.use("/api/YYYY", YYYYRoutes);

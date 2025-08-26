@@ -1,6 +1,7 @@
 {
   "name": "WebApp TCC",
   "short_name": "TCC",
+  "scope": "/",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

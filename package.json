@@ -5,7 +5,7 @@
   "description": "Script de setup para o nosso TCC (raiz)",
   "main": "index.js",
   "scripts": {
-    "setup": "node scripts/setup.js",
+    "setup": "npm install && cls && node scripts/setup.js",
     "start": "node scripts/start.js",
 
     "start_ANTIGO": "concurrently --names \"W,S,BROWSER\" --prefix-colors \"green,blue,magenta\" \"npm run dev --prefix web\" \"npm run start --prefix server\" \"start http://localhost:5173/\""

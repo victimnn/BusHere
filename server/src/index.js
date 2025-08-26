@@ -49,17 +49,17 @@ const pool = mysql.createPool({
 });
 
 // Importando as rotas
-const authRoutes = require("./authRoutes")(pool);
-const searchRoutes = require("./searchRoutes")(pool);
-const passengerRoutes = require("./passengerRoutes")(pool);
-const driverRoutes = require("./driverRoutes")(pool);
-const stopRoutes = require("./stopRoutes")(pool);
-const busRoutes = require("./busRoutes")(pool);
-const routeRoutes = require("./routeRoutes")(pool);
-const reportsRoutes = require("./reportsRoutes")(pool);
-const lastChangeRoutes = require("./lastChangeRoutes")(pool);
-const enterpriseUserRoutes = require("./enterpriseUserRoutes")(pool);
-const debugRoutes = require("./debugRoutes.js")(pool);
+const authRoutes = require("./enterprise/authRoutes.js")(pool);
+const searchRoutes = require("./enterprise/searchRoutes.js")(pool);
+const passengerRoutes = require("./enterprise/passengerRoutes.js")(pool);
+const driverRoutes = require("./enterprise/driverRoutes.js")(pool);
+const stopRoutes = require("./enterprise/stopRoutes.js")(pool);
+const busRoutes = require("./enterprise/busRoutes.js")(pool);
+const routeRoutes = require("./enterprise/routeRoutes.js")(pool);
+const reportsRoutes = require("./enterprise/reportsRoutes.js")(pool);
+const lastChangeRoutes = require("./enterprise/lastChangeRoutes.js")(pool);
+const enterpriseUserRoutes = require("./enterprise/enterpriseUserRoutes.js")(pool);
+const debugRoutes = require("./enterprise/debugRoutes.js")(pool);
 //const XXXXRoutes = require("./XXXX")(pool);
 //const YYYYRoutes = require("./YYYY")(pool);
 

@@ -7,7 +7,7 @@ module.exports = (pool) => {
     });
 
     router.get("/setup-db", (req, res) => {
-        require('./setupDB.js');
+        require('../setupDB.js');
         res.json({ message: "Banco de dados configurado com sucesso!", 
             env: {
                 DB_HOST: process.env.DB_HOST,

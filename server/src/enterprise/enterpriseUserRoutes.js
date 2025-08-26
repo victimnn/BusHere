@@ -1,5 +1,5 @@
 const express = require('express');
-const { validateCPF, generateToken64, extractToken } = require("./helpers");
+const { validateCPF, generateToken64, extractToken } = require("../helpers");
 
 // Importa o bcrypt para fazer o hash da senha
 const bcrypt = require('bcrypt');

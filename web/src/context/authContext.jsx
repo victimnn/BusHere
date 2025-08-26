@@ -32,10 +32,15 @@ export const AuthProvider = ({ children }) => {
   // Função para verificar se o usuário está autenticado
   const checkAuthStatus = async () => {
     try {
-      const userData = await api.auth.me();
-      if (userData) {
-        setUser(userData);
+      const response = await api.auth.me();
+      if (response && response.success && response.user) {
+        setUser(response.user);
         setIsAuthenticated(true);
+      } else {
+        console.warn('Resposta inválida da API:', response);
+        setUser(null);
+        setIsAuthenticated(false);
+        localStorage.removeItem('token');
       }
     } catch (error) {
       //navigate('/login'); // Redireciona para a página de login se houver erro
@@ -54,7 +59,12 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (userData) => {
-    setUser(userData);
+    // Se userData for uma resposta da API, extrair o usuário
+    if (userData && userData.user) {
+      setUser(userData.user);
+    } else {
+      setUser(userData);
+    }
     setIsAuthenticated(true);
   };
 

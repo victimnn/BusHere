@@ -63,8 +63,10 @@ module.exports = (pool) => {
             await pool.query("SELECT 1");
             health.db = "Conectado ao banco de dados";
             health.dbPing = `${Date.now() - start} ms`;
+            console.log('✅ Banco de dados conectado com sucesso. Ping:', health.dbPing);
         } catch (error) {
             health.db = "Erro ao conectar ao banco de dados";
+            console.error('❌ Erro na conexão com banco:', error.message);
         }
 
         //verificando uso de RAM
@@ -81,7 +83,36 @@ module.exports = (pool) => {
         //verificando uptime
         health.uptime = `${Math.round(process.uptime())} segundos`;
 
+        console.log('🔍 Health check completo:', health);
     
+        res.json(health);
+    });
+
+    // Endpoint simplificado para health check (retorna valores booleanos)
+    router.get("/health-simple", async (req, res) => {
+        let health = {
+            dbConnected: false,
+            dbPing: 0,
+            serverUptime: 0,
+            memoryUsage: 0
+        };
+
+        // Verificar banco de dados
+        try {
+            const start = Date.now();
+            await pool.query("SELECT 1");
+            health.dbConnected = true;
+            health.dbPing = Date.now() - start;
+            console.log('✅ Health simple - Banco conectado. Ping:', health.dbPing, 'ms');
+        } catch (error) {
+            health.dbConnected = false;
+            console.error('❌ Health simple - Erro no banco:', error.message);
+        }
+
+        // Outras métricas
+        health.serverUptime = Math.round(process.uptime());
+        health.memoryUsage = Math.round(process.memoryUsage().heapUsed / 1024 / 1024);
+
         res.json(health);
     });
 

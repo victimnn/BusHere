@@ -28,14 +28,37 @@ export const getApiBaseUrl = () => {
 };
 
 /**
+ * Obtém a URL base da API (com /api)
+ */
+export const getApiUrl = () => {
+  const baseUrl = import.meta.env.VITE_API_URL || getApiBaseUrl();
+  return baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
+};
+
+/**
+ * Obtém a URL base do servidor (sem /api) para rotas de debug
+ */
+export const getServerBaseUrl = () => {
+  const apiUrl = getApiUrl();
+  return apiUrl.replace('/api', '');
+};
+
+/**
  * Configurações gerais da aplicação
  */
 export const config = {
   api: {
     baseUrl: getApiBaseUrl(),
+    apiUrl: getApiUrl(),
+    serverUrl: getServerBaseUrl(),
     timeout: 30000, // 30 segundos
     endpoints: {
       ping: '/ping',
+      debug: {
+        health: '/debug/health',
+        healthSimple: '/debug/health-simple',
+        dbStats: '/debug/db-stats'
+      },
       reports: {
         stats: '/api/reports/stats',
         charts: '/api/reports/charts',
@@ -54,7 +77,7 @@ export const config = {
  */
 export const logger = {
   debug: (...args) => config.debug.enabled && console.log('🔍 [DEBUG]', ...args),
-  info: (...args) => config.debug.enabled && console.info('ℹ️ [INFO]', ...args),
+  info: (...args) => config.debug.enabled && console.log('ℹ️ [INFO]', ...args),
   warn: (...args) => console.warn('⚠️ [WARN]', ...args),
   error: (...args) => console.error('❌ [ERROR]', ...args)
 };

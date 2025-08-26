@@ -2,9 +2,10 @@
 import { input, checkbox } from '@inquirer/prompts';
 import { exec } from 'child_process';
 import concurrently from 'concurrently';
+import chalk from 'chalk';
 
 const services = [
-    { name: "Web", command: "npm run start --prefix web", color: "blue", tag:"W" },
+    { name: "Web",    command: "npm run start --prefix web",   color: "blue", tag:"W" },
     { name: "Server", command: "npm run start --prefix server", color: "green", tag:"S" },
     { name: "WebApp", command: "npm run start --prefix webapp", color: "yellow", tag:"WA" },
     { name: "Mobile", command: "npm run start --prefix mobile", color: "red", tag:"M" }
@@ -29,9 +30,11 @@ const answer = await checkbox({
 
 const result = concurrently(answer);
 
+/*
 try {
   await result.result;
-  console.log('Todos os serviços iniciados!');
+  console.log(chalk.green.bold('Todos os serviços iniciados!'));
 } catch (err) {
-  console.error('Erro ao iniciar serviços:', err);
+  console.error(chalk.red('Erro ao iniciar serviços:'), err);
 }
+*/

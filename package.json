@@ -5,8 +5,8 @@
   "description": "Script de setup para o nosso TCC (raiz)",
   "main": "index.js",
   "scripts": {
-    "setup": "echo Instalando dependencias na raiz... && npm install && echo Iniciando o setup global... && cd web && npm install && cd .. && echo. && echo Copiando .env.example para .env nas pastas de projeto... && copy .\\web\\.env.example .\\web\\.env && echo .\\web\\.env copiado. && copy .\\server\\.env.example .\\server\\.env && echo .\\server\\.env copiado. && echo. && echo Executando setup do servidor... && cd server && npm install && npm run setup && cd .. && echo. && echo Executando setup do webapp... && cd webapp && npm install && npm run setup && cd .. && echo. && echo Setup global concluido com sucesso!",
-    "start": "node start.js",
+    "setup": "node scripts/setup.js",
+    "start": "node scripts/start.js",
 
     "start_ANTIGO": "concurrently --names \"W,S,BROWSER\" --prefix-colors \"green,blue,magenta\" \"npm run dev --prefix web\" \"npm run start --prefix server\" \"start http://localhost:5173/\""
   },

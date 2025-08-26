@@ -5,6 +5,7 @@ export { usePassengers } from './data/usePassengers';
 export { useRoutes } from './data/useRoutes';
 export { useStops } from './data/useStops';
 export { useRouteWithStops } from './data/useRouteWithStops';
+export { useSystemInfo } from './data/useSystemInfo';
 
 // Hooks para operações específicas (Business Logic)
 export { useDetailPage } from './operations/useDetailPage';

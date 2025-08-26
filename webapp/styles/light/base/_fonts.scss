@@ -1,0 +1,9 @@
+@import './variables';
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;700&display=swap');
+
+
+$font-principal: 'Sora', Arial, sans-serif;
+
+.font-family-principal {
+    font-family: $font-principal;
+}

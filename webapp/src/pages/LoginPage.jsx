@@ -14,7 +14,7 @@ function LoginPage() {
     <div className="d-flex justify-content-center align-items-center vh-100 bg-dark">
       <div
         className="card p-4 shadow"
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "100%", backgroundColor: "#000", maxWidth: "400px" }}
       >
         {/* Botão fechar */}
         <div className="d-flex justify-content-start">
@@ -22,14 +22,14 @@ function LoginPage() {
         </div>
 
         {/* Título */} 
-        <h5 className="text-center fw-bold mt-4 mb-4 font-family-principal fs-2 text-green">
+        <h5 className="text-center fw-bold mt-5 mb-4 font-family-principal fs-2 " style={{color: "#0F9C42"}}>
           Inicie a sessão com seu <br /> nome de usuário ou email.
         </h5>
 
         {/* Formulário */}
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label">Usuario ou E-mail</label>
+            <label className="form-label font-family-segundaria">Usuario ou E-mail</label>
             <input
               type="text"
               className="form-control"
@@ -40,7 +40,7 @@ function LoginPage() {
           </div>
 
           <div className="mb-4">
-            <label className="form-label">Senha</label>
+            <label className="form-label font-family-segundaria">Senha</label>
             <input
               type="password"
               className="form-control"
@@ -52,17 +52,17 @@ function LoginPage() {
 
           <button
             type="submit"
-            className="btn w-100 mb-3 btn-primary"
-            style={{ backgroundColor: "#2e7d32", border: "none" }}
+            className="btn w-100 mb-3 text-white btn-primary-green fw-semibold"
+            style={{border: "none", letterSpacing: "1px", fontFamily: "Roboto, sans-serif"}}
             >
-            Iniciar Sessão
+            Iniciar sessão
           </button>
         </form>
 
         {/* Botões secundários */}
         <div className="d-flex justify-content-between mb-3">
-          <button className="btn btn-dark w-50 me-2">Criar uma Conta BusHere</button>
-          <button className="btn btn-dark w-50">Criar com Link</button>
+          <button className="btn w-50 me-2" style={{backgroundColor: "#d3d3d3ff", height: "90%"}}>Criar uma Conta</button>
+          <button className="btn w-50 me-2" style={{backgroundColor: "#c7c7c7ff", height: "90%"}}>Criar com Link</button>
         </div>
 
         {/* Link */}

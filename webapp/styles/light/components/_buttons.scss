@@ -24,6 +24,14 @@
       color: $dark !important;
     }
   }
+    &.btn-primary-green {
+    background-color: $primary-green !important;
+    color: $light !important;
+
+    &:hover {
+      background-color: $analogous-3 !important;
+    }
+  }
 }
 
 // -----------------------------------------------------------------------------

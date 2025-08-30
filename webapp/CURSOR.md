@@ -29,7 +29,7 @@ OBJETIVO: Entender propósito e funcionalidades existentes
 \`\`\`
 
 **Verificações necessárias:**
-- [ ] Tipo de aplicação (web app, PWA.)
+- [ ] Tipo de aplicação (web app, web, mobile, web view.)
 - [ ] Funcionalidades já implementadas
 - [ ] Integrações existentes (banco de dados, APIs, autenticação)
 - [ ] Variáveis de ambiente configuradas

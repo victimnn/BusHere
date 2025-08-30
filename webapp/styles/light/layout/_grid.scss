@@ -50,29 +50,6 @@ html, body {
 }
 
 // -----------------------------------------------------------------------------
-// SIDEBAR
-// -----------------------------------------------------------------------------
-#sidebar {
-  flex-shrink: 0 !important;
-  min-width: 70px !important;
-  background: linear-gradient(180deg, $sidebar-bg 0%, $bg-light 100%) !important;
-  border-right: 1px solid $border-light !important;
-  color: $text-primary !important;
-  
-  .sidebar-header {
-    border-color: $border-light !important;
-    
-    .sidebar-title {
-      color: $text-dark !important;
-    }
-  }
-  
-  .sidebar-footer {
-    border-color: $border-light !important;
-  }
-}
-
-// -----------------------------------------------------------------------------
 // RESPONSIVIDADE DO GRID
 // -----------------------------------------------------------------------------
 @include mobile-only {

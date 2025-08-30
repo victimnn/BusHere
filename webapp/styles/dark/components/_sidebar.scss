@@ -1,84 +1,204 @@
 // =============================================================================
-// SIDEBAR - ESTILOS PARA BARRA LATERAL
+// SIDEBAR - ESTILOS PARA BARRA LATERAL - MODO ESCURO
 // =============================================================================
 
 @import '../base/variables';
 @import '../base/mixins';
 
 // -----------------------------------------------------------------------------
-// SIDEBAR PRINCIPAL
+// SIDEBAR PRINCIPAL - MOBILE-FIRST
 // -----------------------------------------------------------------------------
 .sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 85vw; // Otimizado para mobile
+  height: 100vh;
   background-color: $sidebar-bg;
-  border-right: 1px solid $border-color;
-  color: $text-primary;
-  @include scrollbar-dark;
+  z-index: 2000;
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  box-shadow: none;
   
-  .sidebar-header {
-    background-color: $bg-dark;
-    border-bottom: 1px solid $border-color;
-    padding: $spacing-md;
-    
-    .logo {
-      filter: brightness(0) saturate(100%) invert(60%) sepia(82%) saturate(429%) hue-rotate(93deg) brightness(92%) contrast(87%);
-    }
+  &.open {
+    transform: translateX(0);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
   }
   
-  .sidebar-nav {
-    padding: $spacing-sm 0;
+  // Scrollbar personalizada
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba($text-secondary, 0.3);
+    border-radius: 2px;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// CONTEÚDO DA SIDEBAR
+// -----------------------------------------------------------------------------
+.sidebar-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+// -----------------------------------------------------------------------------
+// HEADER DA SIDEBAR
+// -----------------------------------------------------------------------------
+.sidebar-header {
+  padding: 1rem;
+  border-bottom: 1px solid $border-color;
+  background-color: $bg-dark;
+  
+  .sidebar-user-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
     
-    .nav-link {
-      color: $text-secondary;
-      padding: $spacing-sm $spacing-md;
-      border-radius: 0;
-      border-left: 3px solid transparent;
-      transition: $transition-normal;
+    .sidebar-avatar {
+      width: 45px;
+      height: 45px;
+      background-color: $primary;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.75rem;
       
-      &:hover {
-        background-color: rgba($primary, 0.1);
-        color: $primary;
-        border-left-color: $primary;
+      i {
+        color: $white;
+        font-size: 18px;
+      }
+    }
+    
+    .sidebar-user-details {
+      flex: 1;
+      
+      .sidebar-username {
+        margin: 0;
+        font-weight: 600;
+        font-size: 1rem;
+        color: $text-primary;
+        line-height: 1.2;
       }
       
-      &.active {
-        background-color: rgba($primary, 0.15);
-        color: $primary;
-        border-left-color: $primary;
-        font-weight: 500;
+      .sidebar-welcome {
+        color: $text-muted;
+        font-size: 0.875rem;
+      }
+    }
+    
+    .sidebar-theme-toggle {
+      width: 38px;
+      height: 38px;
+      border: 1px solid $border-color;
+      background-color: transparent;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease-in-out;
+      
+      &:hover {
+        background-color: $bg-medium;
+        border-color: $text-secondary;
+      }
+      
+      &:active {
+        transform: scale(0.95);
       }
       
       i {
-        margin-right: $spacing-sm;
-        width: 1.2rem;
-        text-align: center;
-      }
-    }
-    
-    .nav-section {
-      margin-top: $spacing-lg;
-      
-      .section-title {
-        color: $text-muted;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        padding: 0 $spacing-md $spacing-sm;
+        font-size: 16px;
+        color: $text-secondary;
       }
     }
   }
 }
 
 // -----------------------------------------------------------------------------
-// SIDEBAR RESPONSIVA
+// NAVEGAÇÃO DA SIDEBAR
 // -----------------------------------------------------------------------------
-@include mobile-only {
-  .sidebar {
-    transform: translateX(-100%);
-    transition: transform $transition-normal;
+.sidebar-nav-container {
+  flex: 1;
+  padding: 0.5rem;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  
+  .sidebar-nav-item {
+    width: 100%;
+    text-align: left;
+    border: none;
+    background-color: transparent;
+    padding: 0.75rem;
+    margin-bottom: 0.25rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease-in-out;
+    border-left: 0 solid transparent;
+    font-size: 16px;
+    color: $text-secondary;
     
-    &.show {
-      transform: translateX(0);
+    &:hover {
+      background-color: rgba($primary, 0.15);
+      color: $primary;
+    }
+    
+    &.active {
+      background-color: rgba($primary, 0.2);
+      color: $primary;
+      font-weight: 600;
+      border-left: 4px solid $primary;
+    }
+    
+    .sidebar-nav-content {
+      display: flex;
+      align-items: center;
+      
+      i {
+        font-size: 20px;
+        margin-right: 0.75rem;
+        width: 20px;
+        text-align: center;
+      }
+      
+      span {
+        font-weight: inherit;
+      }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// FOOTER DA SIDEBAR
+// -----------------------------------------------------------------------------
+.sidebar-footer {
+  padding: 1rem;
+  border-top: 1px solid $border-color;
+  margin-top: auto;
+  
+  .sidebar-brand {
+    text-align: center;
+    
+    small {
+      color: $text-muted;
+      font-size: 0.875rem;
+      
+      i {
+        color: $primary;
+        margin-right: 0.25rem;
+      }
     }
   }
 }
@@ -90,16 +210,34 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1040;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1999;
   opacity: 0;
   visibility: hidden;
-  transition: all $transition-normal;
+  transition: all 0.3s ease-in-out;
+  pointer-events: none;
+  backdrop-filter: blur(20px);
   
   &.show {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// RESPONSIVIDADE - TABLET E DESKTOP
+// -----------------------------------------------------------------------------
+@include tablet-up {
+  .sidebar {
+    width: 320px;
+  }
+}
+
+@include desktop-up {
+  .sidebar {
+    width: 350px;
   }
 }

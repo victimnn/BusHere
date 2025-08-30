@@ -1,23 +1,34 @@
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useState } from 'react';
-import ThemeSwitch from "./components/ThemeSwitch";
+import { AuthProvider } from "./context/AuthContext";
 
 // Importe os componentes necessários
 import HomePage from "./pages/HomePage";
-// Adicione outros imports de páginas conforme forem criadas
+import AccountPage from "./pages/AccountPage";
+import NoticesPage from "./pages/NoticesPage";
+import BillsPage from "./pages/BillsPage";
+import SettingsPage from "./pages/SettingsPage";
+import HelpPage from "./pages/HelpPage";
 
 function App({ isDark, setIsDark }) {
   return (
-    <Router>
-      <main className="d-flex w-100 h-100 flex-column">
-        <Routes>
-          <Route path="/" index element={<HomePage />} />
-          {/* Adicione outras rotas conforme necessário */}
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </main>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <main className="d-flex w-100 h-100 flex-column">
+          <Routes>
+            <Route path="/" index element={<HomePage isDark={isDark} setIsDark={setIsDark} />} />
+            <Route path="/conta" element={<AccountPage />} />
+            <Route path="/avisos" element={<NoticesPage />} />
+            <Route path="/boletos" element={<BillsPage />} />
+            <Route path="/ajustes" element={<SettingsPage />} />
+            <Route path="/ajuda" element={<HelpPage />} />
+            {/* Adicione outras rotas conforme necessário */}
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </main>
+      </Router>
+    </AuthProvider>
   );
 }
 

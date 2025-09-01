@@ -110,13 +110,13 @@ module.exports = (pool) => {
     try {
       const [users] = await pool.query("SELECT * FROM Passageiros WHERE email = ?", [email]);
       if (users.length === 0) {
-        res.status(401).json({ error: "Email ou senha inválidos" });
+        res.status(401).json({ error: "Email inválido" });
         return;
       }
 
       const user = users[0];
       if (!bcrypt.compareSync(password, user.senha_hash)) {
-        res.status(401).json({ error: "Email ou senha inválidos" }); //manda a mesma coisa, porem é bom ter a checagem de senha errada para o futuro
+        res.status(401).json({ error: "Senha inválida" }); // no futuro deixar os dois com o meso erro para melhorar segurnça
         return;
       }
 

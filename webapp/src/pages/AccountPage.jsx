@@ -1,8 +1,13 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { PageHeader, InfoCard, ActionButton } from '../components/common';
+import api from ''
 
 const AccountPage = () => {
+  function handleInsertTestUser() {
+    
+  }
+
   const { user, logout } = useAuth();
 
   return (
@@ -70,6 +75,14 @@ const AccountPage = () => {
                         onClick={logout}
                       >
                         Sair da Conta
+                      </ActionButton>
+                      <ActionButton 
+                        icon="bi-trash"
+                        variant="outline-secondary"
+                        fullWidth
+                        onClick={handleInsertTestUser}
+                      >
+                        Inserir Usuario de teste
                       </ActionButton>
                     </div>
                   </InfoCard>

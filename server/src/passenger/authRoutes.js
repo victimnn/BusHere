@@ -47,11 +47,11 @@ module.exports = (pool) => {
       return res.status(400).json({ error: "Senha inválida" });
     }
 
-    // Verifica se o CPF ou email já estão cadastrados
-    try{
-      const [existingUser] = await pool.query("SELECT * FROM Passageiros WHERE cpf = ? OR email = ?", [req.body.cpf, req.body.email]);
-      if (existingUser) {
-        return res.status(400).json({ error: "CPF ou email já cadastrados" });
+    // Verifica se o CPF já estão cadastrados
+    try {
+      const [existingUsers] = await pool.query("SELECT * FROM Passageiros WHERE cpf = ?", [req.body.cpf]);
+      if (existingUsers.length > 0) {
+        return res.status(400).json({ error: "CPF já cadastrado" });
       }
     } catch {
       return res.status(500).json({ error: "Erro ao verificar usuário existente" });
@@ -90,11 +90,52 @@ module.exports = (pool) => {
 
     // Insere o novo usuário no banco de dados
     try {
-      await pool.query("INSERT INTO Passageiros SET ?", user);
-      return res.status(201).json({ message: "Usuário cadastrado com sucesso" });
+      const result = await pool.query("INSERT INTO Passageiros SET ?", user);
+      return res.status(201).json({ message: "Usuário cadastrado com sucesso", userId: result.insertId, user: user });
     } catch {
       return res.status(500).json({ error: "Erro ao cadastrar usuário" });
     }
   });
+
+  router.post("/login", async (req,res) => {
+    requiredFields = ["email", "password"];
+
+    if (!req.body || requiredFields.some(field => !req.body[field])) {
+      res.status(400).json({ error: "Campos obrigatórios ausentes" });
+      return;
+    }
+
+    const { email, password } = req.body;
+
+    try {
+      const [users] = await pool.query("SELECT * FROM Passageiros WHERE email = ?", [email]);
+      if (users.length === 0) {
+        res.status(401).json({ error: "Email ou senha inválidos" });
+        return;
+      }
+
+      const user = users[0];
+      if (!bcrypt.compareSync(password, user.senha_hash)) {
+        res.status(401).json({ error: "Email ou senha inválidos" }); //manda a mesma coisa, porem é bom ter a checagem de senha errada para o futuro
+        return;
+      }
+
+      const token = generateToken64();
+      const user_id = user.passageiro_id;
+      const expiration_timestamp = new Date(Date.now() + TOKEN_EXPIRATION_TIME);
+      const [tokenInsertResults] = await pool.query("INSERT INTO TokensPassageiro (passageiro_id, token, expiration_timestamp) VALUES (?, ?, ?)", [user_id, token, expiration_timestamp]);
+      
+      // Prepara o objeto user para a resposta (remove o hash da senha)
+      const userResponse = { ...user };
+      delete userResponse.senha_hash;
+      userResponse.token = token;
+      userResponse.token_expiration = expiration_timestamp;
+
+      res.status(200).json({ message: "Login realizado com sucesso", user: userResponse });
+    } catch (error) {
+      res.status(500).json({ error: "Erro ao realizar login" });
+    }
+  });
+
   return router;
 };

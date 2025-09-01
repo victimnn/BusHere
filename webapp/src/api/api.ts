@@ -4,7 +4,7 @@ function getBearerToken() {
 }
 
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_BASE_URL = 'http://localhost:3000/api/passenger';
 
 const api = {
   _request: async (method: string, url: string, data: any = null, options: RequestInit = {}) => {
@@ -64,320 +64,6 @@ const api = {
   patch: (url, data, options?) => api._request('PATCH', url, data, options),
   delete: (url, options?) => api._request('DELETE', url, null, options),
 
-  // Funções específicas para passageiros
-  passengers: {
-    // Listar todos os passageiros (com suporte à paginação e busca)
-    list: (page = 1, limit = 10, search = '') => {
-      const queryParams = new URLSearchParams();
-      queryParams.append('page', String(page));
-      queryParams.append('limit', String(limit));
-      if (search) queryParams.append('search', search);
-      
-      return api.get(`/passengers?${queryParams.toString()}`);
-    },
-    
-    // Obter detalhes de um passageiro específico pelo ID
-    getById: (id) => {
-      return api.get(`/passengers/${id}`);
-    },
-    
-    // Criar novo passageiro
-    create: (passengerData) => {
-      return api.post('/passengers', passengerData);
-    },
-    
-    // Atualizar dados de um passageiro existente
-    update: (id, edits) => {
-      return api.put(`/passengers/${id}`, edits);
-    },
-    
-    // Excluir passageiro
-    delete: (id) => {
-      return api.delete(`/passengers/${id}`);
-    },
-
-    // Buscar tipos de passageiro
-    getTypes: () => {
-      return api.get('/passengers/tipos');
-    }
-  },
-
-  // Funções específicas para motoristas
-  drivers: {
-    // Listar todos os motoristas (com suporte à paginação e busca)
-    list: (page = 1, limit = 10, search = '') => {
-      const queryParams = new URLSearchParams();
-      queryParams.append('page', String(page));
-      queryParams.append('limit', String(limit));
-      if (search) queryParams.append('search', search);
-      
-      return api.get(`/drivers?${queryParams.toString()}`);
-    },
-    
-    // Obter detalhes de um motorista específico pelo ID
-    getById: (id) => {
-      return api.get(`/drivers/${id}`);
-    },
-    
-    // Criar novo motorista
-    create: (driverData) => {
-      return api.post('/drivers', driverData);
-    },
-    
-    // Atualizar dados de um motorista existente
-    update: (id, edits) => {
-      return api.put(`/drivers/${id}`, edits);
-    },
-    
-    // Excluir motorista
-    delete: (id) => {
-      return api.delete(`/drivers/${id}`);
-    },
-
-    // Buscar status de motorista
-    getStatus: () => {
-      return api.get('/drivers/status');
-    }
-  },
-
-  routes: {
-    list: (page = 1, limit = 10, search = '') => {
-      const queryParams = new URLSearchParams({ 
-        page: String(page), 
-        limit: String(limit), 
-        search: String(search) 
-      });
-      return api.get(`/routes?${queryParams.toString()}`);
-    },
-    getById: (id) => api.get(`/routes/${id}`),
-    getByIdWithStops: (id) => api.get(`/routes/${id}?includeStops=true`),
-    create: (routeData) => api.post('/routes', routeData),
-    createWithStops: (routeData) => api.post('/routes/new', routeData),
-    update: (id, edits) => api.put(`/routes/${id}`, edits),
-    updateWithStops: (id, routeData) => api.put(`/routes/${id}/with-stops`, routeData),
-    delete: (id) => api.delete(`/routes/${id}`),
-    getStatus: () => api.get('/routes/status'),
-    getStops: (id) => api.get(`/routes/stops/${id}`),
-    
-    // Endpoints para associações ônibus-motorista-rota
-    getAssignments: (routeId) => api.get(`/routes/${routeId}/assignments`),
-    createAssignment: (routeId, assignmentData) => api.post(`/routes/${routeId}/assignments`, assignmentData),
-    updateAssignment: (routeId, assignmentId, assignmentData) => api.put(`/routes/${routeId}/assignments/${assignmentId}`, assignmentData),
-    deleteAssignment: (routeId, assignmentId) => api.delete(`/routes/${routeId}/assignments/${assignmentId}`)
-  },
-
-  buses: {
-    list: (page = 1, limit = 10, search = '') => {
-      const queryParams = new URLSearchParams({ 
-        page: String(page), 
-        limit: String(limit), 
-        search: String(search) 
-      });
-      return api.get(`/buses?${queryParams.toString()}`);
-    },
-    getById: (id) => api.get(`/buses/${id}`),
-    create: (busData) => api.post('/buses', busData),
-    update: (id, edits) => api.put(`/buses/${id}`, edits),
-    delete: (id) => api.delete(`/buses/${id}`),
-    getStatus: () => api.get('/buses/status'),
-  },
-
-  stops: {
-    // Listar todos os pontos
-    list: () => {
-      return api.get('/stops');
-    },
-
-    // Obter detalhes de um ponto específico pelo ID
-    getById: (id) => {
-      return api.get(`/stops/${id}`);
-    },
-
-    // Criar novo ponto
-    create: (stopData) => {
-      return api.post('/stops', stopData);
-    },
-
-    // Atualizar dados de um ponto existente
-    update: (id, edits) => {
-      return api.put(`/stops/${id}`, edits);
-    },
-
-    // Excluir ponto
-    delete: (id) => {
-      return api.delete(`/stops/${id}`);
-    },
-
-    // Buscar pontos por nome
-    search: (name) => {
-      const queryParams = new URLSearchParams({ name });
-      return api.get(`/stops/search?${queryParams.toString()}`);
-    },
-  },
-
-  // Funções específicas para relatórios
-  reports: {
-    // Obter estatísticas gerais
-    getStats: () => {
-      return api.get('/reports/stats');
-    },
-    
-    // Obter dados para gráficos
-    getCharts: () => {
-      return api.get('/reports/charts');
-    },
-    
-    // Obter dados de utilização
-    getUtilization: () => {
-      return api.get('/reports/utilization');
-    }
-  },
-
-  // Funções de geolocalização com o nominatim
-  geolocation: {
-    // Cache pra armazenar resultados do CEP
-    _cepCache: new Map(),
-    // Cache pra armazenar resultados da geolocalização
-    _geoCache: new Map(),
-
-    // Função pra gerar chave de cache do CEP
-    _getCepCacheKey: (uf, city, road) => {
-      return `${uf.toUpperCase()}-${city.toLowerCase()}-${road.toLowerCase()}`;
-    },
-
-    // Função pra gerar chave de cache da geolocalização
-    _getGeoCacheKey: (lat, lon) => {
-      // Arredonda as coordenadas pra 6 casas pea melhorar cache
-      return `${parseFloat(lat).toFixed(6)}-${parseFloat(lon).toFixed(6)}`;
-    },
-
-    getCepFromStreet: async (uf, city, road) => {
-      try {
-        // Verifica se já existe no cache
-        const cacheKey = api.geolocation._getCepCacheKey(uf, city, road);
-        if (api.geolocation._cepCache.has(cacheKey)) {
-          return api.geolocation._cepCache.get(cacheKey);
-        }
-
-        // Se não estiver no cache faz a requisição
-        const data = await fetch(
-          `https://viacep.com.br/ws/${encodeURIComponent(uf)}/${encodeURIComponent(city)}/${encodeURIComponent(road)}/json/`,
-          { 
-            headers: { 'Accept': 'application/json' },
-            cache: 'force-cache' // Usa cache do navegador se der 
-          }
-        );
-
-        if (!data.ok) {
-          throw new Error(`Erro ao obter CEP: ${data.statusText}`);
-        }
-
-        const json = await data.json();
-        if (!Array.isArray(json) || json.length === 0) {
-          const emptyCep = '';
-          api.geolocation._cepCache.set(cacheKey, emptyCep);
-          return emptyCep;
-        }
-
-        const cep = json[0].cep || '';
-        // Armazena no cache
-        api.geolocation._cepCache.set(cacheKey, cep);
-        return cep;
-      } catch (error) {
-        console.error("Erro na requisição de CEP:", error);
-        throw error;
-      }
-    },
-
-    getInfoFromCoordinates: async (lat, lon) => {
-      try {
-        // Verifica se já existe no cache
-        const cacheKey = api.geolocation._getGeoCacheKey(lat, lon);
-        if (api.geolocation._geoCache.has(cacheKey)) {
-          return api.geolocation._geoCache.get(cacheKey);
-        }
-
-        const queryParams = new URLSearchParams({
-          format: String("json"),
-          lat: String(parseFloat(lat).toFixed(6)),
-          lon: String(parseFloat(lon).toFixed(6)),
-          addressdetails: String(1),
-          extratags: String(1),
-          limit: String(1)
-        });
-
-        // Adiciona um tempo de 5 segundos para a requisição
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?${queryParams.toString()}`,
-          {
-            headers: {
-              'Accept-Language': 'pt-BR',
-              'Accept': 'application/json'
-            },
-            signal: controller.signal,
-            cache: 'force-cache' // Usa cache do navegador se for possível
-          }
-        );
-
-        clearTimeout(timeoutId);
-
-        if (!response.ok) {
-          throw new Error(`Erro ao obter informações de geolocalização: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        const state = findStateByLabel(data.address.state || data.address.region || '');
-        if (!state) {
-          throw new Error(`Estado não encontrado: ${data.address.state || data.address.region}`);
-        }
-
-        const result = {
-          road: data.address.road || '',
-          suburb: data.address.suburb || '',
-          city: data.address.city || data.address.town || data.address.village || '',
-          state: data.address.state || '',
-          uf: state.value,
-          cep: '',
-          coordinates: {
-            latitude: parseFloat(lat).toFixed(6),
-            longitude: parseFloat(lon).toFixed(6)
-          },
-          data: data,
-        };
-
-        // Busca o CEP apenas se tivermos todas as informações precisas
-        if (result.uf && result.city && result.road) {
-          try {
-            result.cep = await api.geolocation.getCepFromStreet(result.uf, result.city, result.road);
-          } catch (error) {
-            console.warn("Erro ao buscar CEP:", error);
-            result.cep = '';
-          }
-        }
-
-        // Armazena no cache
-        api.geolocation._geoCache.set(cacheKey, result);
-        return result;
-
-      } catch (error) {
-        if (error.name === 'AbortError') {
-          throw new Error('Tempo limite excedido ao buscar informações de geolocalização');
-        }
-        console.error("Erro na requisição de geolocalização:", error);
-        throw error;
-      }
-    },
-
-    // Método para limpar o cache se necessário
-    clearCache: () => {
-      api.geolocation._cepCache.clear();
-      api.geolocation._geoCache.clear();
-    }
-  },
-
   auth: {
     me: async () => {
       const token = getBearerToken();
@@ -394,7 +80,7 @@ const api = {
       }
     },
 
-    login: async (email, password) => {
+    login: async ({ email, password }) => {
       try {
         const response = await api.post('/auth/login', { email, password });
         if (response && response.token) {
@@ -434,51 +120,22 @@ const api = {
     },
 
     register: async (userData) => {
-      const requiredFields = ['nome', 'email', 'password'];
+      const requiredFields = ["name","cpf","email","password","address"];
+      const addressRequiredFields = ["street","number","complement","neighborhood","city","state","zip"];
 
       // Verifica se todos os campos obrigatórios estão presentes
-      for (const field of requiredFields) {
-        if (!userData[field]) {
-          throw new Error(`Campo obrigatório ausente: ${field}`);
-        }
+      const missingFields = requiredFields.filter(field => !userData[field]);
+      const missingAddressFields = addressRequiredFields.filter(field => !userData.address || !userData.address[field]);
+
+      if (missingFields.length > 0 || missingAddressFields.length > 0) {
+        throw new Error("Campos obrigatórios ausentes");
       }
 
       try {
-        const response = await api.post('/enterpriseUsers/register', userData);
+        const response = await api.post('/auth/register', userData);
         return response; // Retorna a resposta da API
       } catch (error) {
         console.error("Erro ao registrar usuário:", error);
-        throw error; // Propaga o erro para ser tratado onde for chamado
-      }
-    }
-  },
-  recentActivity: {
-    // Método para obter a atividade recente
-    get: async (limit = 100) => {
-      const queryParams = new URLSearchParams({
-        limit: String(limit)
-      });
-      try {
-        const response = await api.get(`/lastChanges?${queryParams.toString()}`);
-        return response; // Retorna os dados da atividade recente
-      } catch (error) {
-        console.error("Erro ao obter atividade recente:", error);
-        throw error; // Propaga o erro para ser tratado onde for chamado
-      }
-    }
-  },
-
-  enterpriseUsers: {
-    // Método para listar usuários de uma empresa
-    get: async (enterpriseUserId: number) => {
-      if (!enterpriseUserId) {
-        throw new Error('ID do usuario-empresa é obrigatório para listar usuários');
-      }
-      try {
-        const response = await api.get(`/enterpriseUsers/${enterpriseUserId}`);
-        return response; // Retorna os dados dos usuários da empresa
-      } catch (error) {
-        console.error("Erro ao obter usuários da empresa:", error);
         throw error; // Propaga o erro para ser tratado onde for chamado
       }
     },

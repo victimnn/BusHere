@@ -3,65 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { PageHeader, InfoCard, ActionButton } from '../components/common';
 import api from "../api/api";
 
-function gerarCpf() {
-  // Função para gerar dígito verificador
-  function calcDV(nums) {
-    let x = 0;
-    for (let i = nums.length + 1, j = 0; i >= 2; i--, j++) x += +nums[j] * i;
-    const y = x % 11;
-    return y < 2 ? 0 : 11 - y;
-  }
-  // Gera 9 dígitos aleatórios
-  const nums = Array.from({length: 9}, () => Math.floor(Math.random() * 10));
-  const d1 = calcDV(nums);
-  const d2 = calcDV([...nums, d1]);
-  return [...nums, d1, d2].join("");
-}
-
-
 const AccountPage = () => {
-  async function handleInsertTestUser() {
-    try {
-      const response = await api.auth.register({
-        name: "Test User",
-        email: Math.random().toFixed(3) + "@example.com",
-        password: "password",
-        cpf: gerarCpf(),
-        address: {
-          street: "Test Street",
-          number: "123",
-          complement: "Apt 1",
-          neighborhood: "Test Neighborhood",
-          city: "Test City",
-          state: "Test State",
-          zip: "12345-678"
-        }
-      });
-      alert("Usuário de teste inserido com sucesso!:\n" + response.user.email+"/password");
-      console.log("Usuário de teste inserido com sucesso:", response);
-    } catch (error) {
-      alert("Usuario não inserido");
-      console.error("Erro ao inserir usuário de teste:", error);
-    }
-  }
-
-  async function handleLoginUser() {
-    const email = prompt("Digite o email do usuario");
-    const password = "password";
-
-    try {
-      const response = await api.auth.login({
-        email,
-        password
-      });
-      alert("Login realizado com sucesso!");
-      console.log("Login realizado com sucesso:", response);
-    } catch (error) {
-      alert("Erro ao realizar login");
-      console.error("Erro ao realizar login:", error);
-    }
-  }
-
   const { user, logout } = useAuth();
 
   return (
@@ -129,22 +71,6 @@ const AccountPage = () => {
                         onClick={logout}
                       >
                         Sair da Conta
-                      </ActionButton>
-                      <ActionButton 
-                        icon="bi-person-plus"
-                        variant="outline-secondary"
-                        fullWidth
-                        onClick={handleInsertTestUser}
-                      >
-                        Inserir Usuario de teste
-                      </ActionButton>
-                      <ActionButton 
-                        icon="bi-person"
-                        variant="outline-secondary"
-                        fullWidth
-                        onClick={handleLoginUser}
-                      >
-                        Logar em usuario
                       </ActionButton>
                     </div>
                   </InfoCard>

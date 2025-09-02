@@ -131,9 +131,78 @@ module.exports = (pool) => {
       userResponse.token = token;
       userResponse.token_expiration = expiration_timestamp;
 
-      res.status(200).json({ message: "Login realizado com sucesso", user: userResponse });
+      res.status(200).json({ message: "Login realizado com sucesso", user: userResponse, token: token });
     } catch (error) {
       res.status(500).json({ error: "Erro ao realizar login" });
+    }
+  });
+
+  router.post('/logout', extractToken, async (req, res) => {
+    const token = req.token;
+
+    try {
+      await pool.query("DELETE FROM TokensPassageiro WHERE token = ?", [token]);
+      res.status(200).json({ message: "Logout realizado com sucesso" });
+    } catch (error) {
+      res.status(500).json({ error: "Erro ao realizar logout" });
+    }
+  });
+
+  router.get("/me", extractToken, async (req, res) => {
+    const token = req.token;
+
+    try {
+      const [users] = await pool.query("SELECT * FROM Passageiros WHERE passageiro_id = (SELECT passageiro_id FROM TokensPassageiro WHERE token = ?)", [token]);
+      if (users.length === 0) {
+        return res.status(401).json({ error: "Usuário não encontrado" });
+      }
+
+      const user = users[0];
+      delete user.senha_hash; // Remove o hash da senha antes de retornar
+      res.status(200).json({ user });
+    } catch (error) {
+      res.status(500).json({ error: "Erro ao obter informações do usuário" + error.message });
+    }
+  });
+
+  router.post("/logout", extractToken, async (req, res) => {
+    const token = req.token;
+
+    try {
+      await pool.query("DELETE FROM TokensPassageiro WHERE token = ?", [token]);
+      res.status(200).json({ message: "Logout realizado com sucesso" });
+    } catch (error) {
+      res.status(500).json({ error: "Erro ao realizar logout: " + error.message });
+    }
+  });
+
+  router.post("/change-password", extractToken, async (req, res) => {
+    const token = req.token;
+    const requiredFields = ["old_password","new_password"];
+
+    if (!req.body || requiredFields.some(field => !req.body[field])) {
+      res.status(400).json({ error: "Campos obrigatórios ausentes" });
+      return;
+    }
+
+    const { old_password, new_password } = req.body;
+
+    try {
+      const [users] = await pool.query("SELECT * FROM Passageiros WHERE passageiro_id = (SELECT passageiro_id FROM TokensPassageiro WHERE token = ?)", [token]);
+      if (users.length === 0) {
+        return res.status(401).json({ error: "Usuário não encontrado" });
+      }
+
+      const user = users[0];
+      if (!bcrypt.compareSync(old_password, user.senha_hash)) {
+        return res.status(401).json({ error: "Senha antiga inválida" });
+      }
+
+      const newPasswordHash = bcrypt.hashSync(new_password, 10);
+      await pool.query("UPDATE Passageiros SET senha_hash = ? WHERE passageiro_id = ?", [newPasswordHash, user.passageiro_id]);
+      res.status(200).json({ message: "Senha alterada com sucesso" });
+    } catch (error) {
+      res.status(500).json({ error: "Erro ao alterar senha: " + error.message });
     }
   });
 

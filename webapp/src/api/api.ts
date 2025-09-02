@@ -15,7 +15,7 @@ const api = {
     };
 
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+      headers['Authorization'] = token;
     }
 
     const config = {

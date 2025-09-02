@@ -100,7 +100,7 @@ function extractToken(req, res, next) {
     // Verifica se o formato é "Bearer TOKEN"
     if (parts.length !== 2 || parts[0] !== 'Bearer') {
         // Se o formato for inválido, retorna um erro 401
-        return res.status(401).json({ message: 'Formato do token inválido. Use: Bearer <token>' });
+        return res.status(401).json({ message: 'Formato do token inválido. Use: Bearer <token>', headers: req.headers });
     }
 
     // Extrai o token (a segunda parte após "Bearer")

@@ -172,6 +172,21 @@ function Settings({ pageFunctions, isDark, setIsDark }) {
             ))}
           </SettingSection>
 
+          <button
+            onClick={async () => console.log(await api.get("/database/export"))}
+          >
+            Exportar Dados
+          </button>
+
+          <button
+            onClick={async () => {
+              const data = prompt("entre com o JSON")
+              await api.post("/database/import", { data: JSON.parse(data) })
+            }}
+          >
+            Importar Dados
+          </button>
+
           {/* Privacy Settings Section
           <SettingSection
             title="Privacidade"

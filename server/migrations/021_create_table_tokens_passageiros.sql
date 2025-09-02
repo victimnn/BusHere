@@ -1,5 +1,5 @@
 -- Up
-CREATE TABLE TokensLogin (
+CREATE TABLE TokensPassageiro (
     token_id INT AUTO_INCREMENT PRIMARY KEY, -- ID único para cada token
     passageiro_id INT NOT NULL, -- ID do usuário associado ao token
     token VARCHAR(255) NOT NULL, -- O token gerado para autenticação

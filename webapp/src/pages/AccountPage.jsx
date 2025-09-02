@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { PageHeader, InfoCard, ActionButton } from '../components/common';
+import api from "../api/api";
 
 const AccountPage = () => {
   const { user, logout } = useAuth();

@@ -1,9 +1,11 @@
 import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 function LoginPage() {
   const [user, setUser] = useState("");
   const [senha, setSenha] = useState("");
+   const [showSenha, setShowSenha] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -36,18 +38,31 @@ function LoginPage() {
               value={user}
               onChange={(e) => setUser(e.target.value)}
               required
+              placeholder="Insira o usuário ou email"
             />
           </div>
 
           <div className="mb-4">
             <label className="form-label font-family-segundaria">Senha</label>
             <input
-              type="password"
+              type={showSenha ? "text" : "password"}
               className="form-control"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
               required
+              placeholder="Insira a sua senha"
+              style={{maxWidth: "75%"}}
             />
+            <button
+                type="button"
+                className="btn btn-outline-secondary"
+                onClick={() => setShowSenha((prev) => !prev)}
+                tabIndex={-1}
+                aria-label={showSenha ? "Ocultar senha" : "Mostrar senha"}
+                
+              >
+                <i className={`bi ${showSenha ? "bi-eye-slash" : "bi-eye"}`}></i>
+              </button>
           </div>
 
           <button

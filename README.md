@@ -1,12 +1,14 @@
-# 🚌 BusHere! - Sistema de Gestão de Transporte Público
+# 🚌 BusHere! - Sistema Completo de Gestão de Transporte Público
 
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/React-19.0-blue.svg)](https://reactjs.org/)
 [![Express](https://img.shields.io/badge/Express-5.1-lightgrey.svg)](https://expressjs.com/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0%2B-orange.svg)](https://www.mysql.com/)
 [![React Native](https://img.shields.io/badge/React%20Native-Expo-purple.svg)](https://expo.dev/)
+[![Vite](https://img.shields.io/badge/Vite-6%2B-646CFF.svg)](https://vitejs.dev/)
+[![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3.svg)](https://getbootstrap.com/)
 
-O **BusHere!** é um sistema completo de gestão de transporte público desenvolvido como Trabalho de Conclusão de Curso (TCC) da ETEC João Belarmino do Centro Paula Souza. O projeto inclui uma aplicação web para administração, um aplicativo móvel para passageiros e uma API robusta para integração de dados.
+O **BusHere!** é um ecossistema completo de gestão de transporte público desenvolvido como Trabalho de Conclusão de Curso (TCC) da ETEC João Belarmino do Centro Paula Souza. O sistema oferece múltiplas interfaces: aplicação web administrativa para empresas, Progressive Web App (PWA) mobile-first para passageiros, aplicativo móvel nativo e uma API REST robusta para integração completa de dados.
 
 ## 📋 Sumário
 
@@ -25,21 +27,31 @@ O **BusHere!** é um sistema completo de gestão de transporte público desenvol
 
 ## ✨ Características
 
-### 🖥️ Aplicação Web (Admin)
-- **Gestão Completa**: Cadastro, edição e visualização de passageiros, motoristas, ônibus, rotas e pontos
-- **Sistema de Busca Avançado**: Pesquisa com autocomplete e sugestões inteligentes
-- **Mapeamento Interativo**: Visualização de pontos no mapa com funcionalidades de criação e edição
-- **Geolocalização**: Integração com APIs de geolocalização para preenchimento automático de CEP
-- **Relatórios e Gráficos**: Dashboard completo com estatísticas e visualizações de dados
-- **Interface Responsiva**: Design moderno com Bootstrap e componentes personalizados
-- **Validação de Dados**: Validação em tempo real de CPF, telefone e e-mail
-- **Paginação**: Navegação eficiente para grandes volumes de dados
+### 🖥️ Aplicação Web Administrativa (`web/`)
+- **Gestão Completa de Entidades**: Cadastro, edição e visualização de passageiros, motoristas, ônibus, rotas e pontos
+- **Sistema de Busca Avançado**: Pesquisa full-text com autocomplete e sugestões inteligentes
+- **Dashboard Executivo**: Relatórios interativos, gráficos estatísticos e KPIs em tempo real
+- **Mapeamento Interativo**: Visualização e criação de pontos no mapa com funcionalidades de geolocalização
+- **Sistema de Autenticação**: Login seguro para usuários empresariais com gestão de tokens
+- **Associações Inteligentes**: Gerenciamento de relações entre ônibus, motoristas e rotas
+- **Interface Responsiva**: Design profissional com Bootstrap 5 e componentes reutilizáveis
+- **Validação Robusta**: Validação em tempo real de CPF, telefone, e-mail e outros dados críticos
 
-### 📱 Aplicativo Móvel
-- **Interface Nativa**: Desenvolvido com React Native e Expo
-- **Cartões de Linha**: Visualização intuitiva das linhas de ônibus
-- **Componentização**: Arquitetura modular e reutilizável
-- **Busca Integrada**: Sistema de busca com componentes nativos
+### 📱 Progressive Web App (`webapp/`)
+- **Mobile-First Design**: Interface otimizada para dispositivos móveis com PWA
+- **Mapeamento Interativo**: Sistema de mapas com Leaflet para visualização de rotas e pontos
+- **Bottom Sheet**: Interface nativa mobile com componentes deslizantes
+- **Sidebar Responsiva**: Navegação adaptável para diferentes tamanhos de tela
+- **Temas Dark/Light**: Sistema de temas com persistência de preferências
+- **Offline-Ready**: Funcionalidades básicas disponíveis sem conexão
+- **Instalável**: Pode ser instalado como app nativo nos dispositivos
+
+### � Aplicativo Móvel Nativo (`mobile/`)
+- **React Native + Expo**: Desenvolvimento cross-platform para iOS e Android
+- **Navegação Nativa**: Expo Router com navegação baseada em arquivos
+- **Componentes Nativos**: BusLineCard, SearchBar e componentes de interface otimizados
+- **API Integration**: Cliente REST configurado para diferentes ambientes (desenvolvimento/produção)
+- **Performance Otimizada**: Animações fluidas com React Native Reanimated
 
 ### 🔧 API Backend
 - **RESTful API**: Endpoints organizados e documentados para todas as entidades
@@ -117,26 +129,42 @@ O **BusHere!** é um sistema completo de gestão de transporte público desenvol
 ## 🏗️ Arquitetura
 
 ```
-BusHere!
-├── 🌐 Frontend Web (React + Vite)
-│   ├── Páginas de Gestão (Passageiros, Motoristas, Ônibus, Rotas, Pontos)
-│   ├── Sistema de Busca com Autocomplete
-│   ├── Mapeamento Interativo (Leaflet)
-│   ├── Relatórios e Gráficos (Chart.js)
-│   └── Componentes Reutilizáveis
-├── 📱 Mobile App (React Native + Expo)
-│   ├── Interface de Usuário
-│   ├── Componentes de Busca
-│   └── Navegação por Rotas
-├── ⚙️ Backend API (Node.js + Express)
-│   ├── Endpoints RESTful
-│   ├── Sistema de Autocomplete
-│   ├── Validação de Dados
-│   └── Geolocalização
-└── 🗄️ Database (MySQL)
-    ├── Migrations Organizadas
-    ├── Índices Full-text
-    └── Triggers para Busca
+BusHere! - Sistema Completo
+├── 🌐 Web App Administrativa (React + Vite)
+│   ├── Dashboard Executivo & Relatórios Avançados
+│   ├── Gestão Completa de Entidades (CRUD)
+│   ├── Sistema de Busca com Autocomplete Full-text
+│   ├── Mapeamento Interativo com Leaflet
+│   ├── Autenticação & Autorização de Usuários
+│   └── Interface Responsiva com Bootstrap 5
+├── 📱 PWA Mobile-First (React + Vite + PWA)
+│   ├── Interface Otimizada para Dispositivos Móveis
+│   ├── Bottom Sheet & Sidebar Responsiva
+│   ├── Mapeamento com Leaflet React
+│   ├── Temas Dark/Light Persistentes
+│   └── Funcionalidades Offline
+├── 📲 App Móvel Nativo (React Native + Expo)
+│   ├── Navegação com Expo Router
+│   ├── Componentes Nativos (BusLineCard, SearchBar)
+│   ├── API Client Configurável
+│   └── Animações React Native Reanimated
+├── ⚙️ API REST Backend (Node.js + Express 5)
+│   ├── Endpoints RESTful Completos
+│   ├── Sistema de Autocomplete Full-text
+│   ├── Autenticação JWT & Middleware CORS
+│   ├── Validação Robusta de Dados
+│   ├── Geolocalização & Integração de APIs
+│   └── Sistema de Auditoria (Log de Mudanças)
+├── 🗄️ Banco de Dados (MySQL 8.0+)
+│   ├── 38+ Migrations Estruturadas
+│   ├── Índices Full-text para Busca
+│   ├── Triggers para Auditoria Automática
+│   ├── Relacionamentos Complexos
+│   └── Dados de Exemplo Integrados
+└── 🔗 Código Compartilhado (`shared/`)
+    ├── Validadores & Formatadores Brasileiros
+    ├── Tipos TypeScript Comuns
+    └── Utilitários Cross-Platform
 ```
 
 ## 🔧 Pré-requisitos
@@ -161,237 +189,404 @@ git clone https://github.com/TCC-JB-02-2025/tcc.git
 cd tcc
 ```
 
-### 2. Setup Automático
-Execute o script de configuração que instalará todas as dependências e preparará o ambiente:
+### 2. Setup Automático Inteligente
+Execute o script de configuração que detecta seu ambiente e instala todas as dependências:
 
 ```bash
 npm run setup
 ```
 
 Este comando irá:
-- Instalar dependências na raiz do projeto
-- Instalar dependências do frontend (`web/`)
-- Instalar dependências do backend (`server/`)
-- Tentar copiar arquivos `.env.example` para `.env` (se existirem). Caso não existam, crie-os manualmente conforme a seção Variáveis de Ambiente
-- Executar a configuração do banco de dados (`server/src/setupDB.js`)
+- ✅ Instalar dependências na raiz do projeto
+- ✅ Configurar aplicação web administrativa (`web/`)
+- ✅ Configurar Progressive Web App (`webapp/`)
+- ✅ Configurar backend API (`server/`)
+- ✅ Tentar copiar arquivos `.env.example` para `.env` (quando disponíveis)
+- ✅ Executar configuração inteligente do banco de dados
+- ✅ Criar estrutura de tabelas com migrations
+- ✅ Popular dados de exemplo
 
 ### 3. Configurar Banco de Dados
-Crie o arquivo `server/.env` com suas credenciais:
+Crie o arquivo `server/.env` com suas credenciais do MySQL:
 
 ```env
-# Porta do servidor (opcional, padrão 3000)
+# Configuração do Servidor
 PORT=3000
 
 # Configuração MySQL
 DB_HOST=localhost
 DB_PORT=3306
 DB_USER=root
-DB_PASSWORD=sua_senha
-DB_NAME=bushere_db
+DB_PASSWORD=sua_senha_mysql
+DB_NAME=tcc
+
+# Chaves de API (opcional)
+VIACEP_API_URL=https://viacep.com.br/ws/
+NOMINATIM_API_URL=https://nominatim.openstreetmap.org/
 ```
 
-Opcionalmente, configure variáveis do frontend web em `web/.env`:
+### 4. Configurar Frontend (Opcional)
+Configure variáveis de ambiente específicas:
 
+**Para Web App (`web/.env`):**
 ```env
-# URL base da API para a aplicação web
 VITE_API_URL=http://localhost:3000/api
 ```
 
-### 4. Executar o Sistema
+**Para PWA (`webapp/.env`):**
+```env
+VITE_API_URL=http://localhost:3000/api
+VITE_MAP_TILES_URL=https://tile.openstreetmap.org/{z}/{x}/{y}.png
+```
+
+### 5. Executar o Sistema Completo
 ```bash
 npm start
 ```
 
-O sistema iniciará automaticamente:
-- 🌐 Frontend: http://localhost:5173
-- ⚙️ Backend: http://localhost:3000
-- 📱 Mobile: use o Expo CLI separadamente (o app móvel usa `http://10.0.2.2:3000/api` por padrão no emulador Android)
+O comando acima iniciará automaticamente:
+- 🌐 **Web App Administrativa**: http://localhost:5173
+- 📱 **Progressive Web App**: http://localhost:5174
+- ⚙️ **API Backend**: http://localhost:3000
+- 📊 **Documentação da API**: http://localhost:3000/api-docs
 
-## ⚙️ Configuração Manual
-
-Se preferir configurar manualmente ou encontrar problemas:
-
-### Frontend (Web)
-```bash
-cd web
-npm install
-# (opcional) crie um arquivo .env com VITE_API_URL, ver seção Variáveis de Ambiente
-npm run dev
-```
-
-### Backend (Server)
-```bash
-cd server
-npm install
-# Crie e preencha o arquivo .env (ver seção Variáveis de Ambiente)
-npm run setup  # Configura o banco de dados
-npm start
-```
-
-### Mobile
+### 6. Executar App Mobile (Opcional)
 ```bash
 cd mobile
 npm install
 npx expo start
 ```
+- 📲 **App Móvel**: Use o Expo CLI com QR Code ou emulador
+```bash
+npm start
+```
+
+## ⚙️ Configuração Manual
+
+Se preferir configurar manualmente ou encontrar problemas:
+
+### 🌐 Web App Administrativa
+```bash
+cd web
+npm install
+# Configure .env se necessário (ver seção Variáveis de Ambiente)
+npm run dev                    # Desenvolvimento
+# ou
+npm run start                  # Produção local
+```
+
+### 📱 Progressive Web App  
+```bash
+cd webapp
+npm install
+# Configure .env se necessário
+npm run dev                    # Desenvolvimento com PWA
+# ou
+npm run build && npm run preview   # Build PWA completa
+```
+
+### ⚙️ Backend API
+```bash
+cd server
+npm install
+# OBRIGATÓRIO: Crie e preencha o arquivo .env (ver seção Variáveis)
+npm run setup                  # Configuração do banco de dados
+npm start                      # Iniciar servidor
+```
+
+### 📲 Mobile App
+```bash
+cd mobile
+npm install
+npm run setup-variables        # Configurar ANDROID_HOME (Windows)
+npx expo start                 # Iniciar Expo
+```
 
 ## 🚦 Execução
 
-### Desenvolvimento
+### 🚀 Desenvolvimento (Recomendado)
 ```bash
-# Executa web + server simultaneamente
+# Execução completa do sistema (raiz do projeto)
 npm start
+```
+Este comando inicia simultaneamente:
+- Web App Administrativa (localhost:5173)
+- Progressive Web App (localhost:4173) 
+- API Backend (localhost:3000)
 
-# Executa apenas o frontend
+### 🔧 Execução Individual
+```bash
+# Apenas Web App Administrativa
 npm run start --prefix web
 
-# Executa apenas o backend
+# Apenas Progressive Web App
+npm run start --prefix webapp
+
+# Apenas API Backend  
 npm run start --prefix server
 
-# Executa o mobile
+# Apenas Mobile App
 cd mobile && npx expo start
 ```
 
-### Produção
+### 🏭 Ambiente de Produção
 ```bash
-# Build do frontend
+# Build de produção do frontend
 cd web && npm run build
+cd webapp && npm run build
 
-# Inicia servidor em produção
+# Servidor em modo produção
 cd server && NODE_ENV=production npm start
+
+# Build mobile para stores
+cd mobile
+npm run android    # Android APK
+npm run ios        # iOS build
+```
+
+### 🧪 Ambiente de Teste
+```bash
+# Executar testes (quando implementados)
+npm test
+
+# Verificar integridade do código
+npm run lint --prefix web
+npm run lint --prefix webapp  
+npm run lint --prefix mobile
 ```
 
 ## 📁 Estrutura do Projeto
 
 ```
 tcc/
-├── 📁 web/                               # Frontend React (Vite)
+├── 📁 web/                                  # 🌐 Aplicação Web Administrativa (React + Vite)
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── common/                   # Biblioteca de componentes genéricos
-│   │   │   │   ├── buttons/
-│   │   │   │   ├── data-display/         # StatCard, Table
-│   │   │   │   ├── detail/               # DetailCard + configs
-│   │   │   │   ├── feedback/             # Dialog, ErrorAlert, LoadingSpinner, Notification
-│   │   │   │   ├── form/                  # formConfigs
-│   │   │   │   ├── forms/                 # GenericForm
-│   │   │   │   └── table/                 # Table componentizado (Header/Body/Cell/...)
+│   │   │   ├── common/                      # 📦 Biblioteca de componentes reutilizáveis
+│   │   │   │   ├── buttons/                 # Botões especializados
+│   │   │   │   ├── data-display/            # StatCard, Table, Charts
+│   │   │   │   ├── detail/                  # DetailCard + configurações
+│   │   │   │   ├── feedback/                # Dialog, ErrorAlert, LoadingSpinner, Notifications
+│   │   │   │   ├── form/                    # Configurações de formulários
+│   │   │   │   ├── forms/                   # GenericForm componentizado
+│   │   │   │   └── table/                   # Sistema de tabelas (Header/Body/Cell/Actions)
 │   │   │   ├── core/
-│   │   │   │   ├── layout/                # Header, SideBar, MapComponent
-│   │   │   │   └── feedback/
-│   │   │   ├── domain/                    # Domínios do negócio
-│   │   │   │   ├── buses/
-│   │   │   │   ├── drivers/
-│   │   │   │   ├── passengers/
-│   │   │   │   ├── routes/
-│   │   │   │   └── stops/
-│   │   │   └── features/                  # Features de alto nível
-│   │   │       ├── dashboard/
-│   │   │       ├── details/
-│   │   │       ├── reports/
-│   │   │       ├── route-planning/
-│   │   │       └── settings/
-│   │   ├── pages/                          # Páginas da aplicação (Home, Passengers, Drivers, Routes, Stops, Reports, Login, Register, Search, details/*)
-│   │   ├── hooks/
-│   │   │   ├── dashboard/
-│   │   │   ├── data/                       # usePassengers, useDrivers, useRoutes, useStops
-│   │   │   ├── map/
-│   │   │   ├── operations/
-│   │   │   └── ui/
-│   │   ├── api/                            # api.ts, autocomplete.ts
-│   │   └── utils/                          # config.js (baseUrl dinâmico, endpoints)
+│   │   │   │   ├── layout/                  # Header, SideBar, MapComponent
+│   │   │   │   └── feedback/                # Sistema de notificações
+│   │   │   ├── domain/                      # 🏢 Componentes de domínio de negócio
+│   │   │   │   ├── buses/                   # Gestão de ônibus
+│   │   │   │   ├── drivers/                 # Gestão de motoristas
+│   │   │   │   ├── passengers/              # Gestão de passageiros
+│   │   │   │   ├── routes/                  # Gestão de rotas
+│   │   │   │   └── stops/                   # Gestão de pontos
+│   │   │   └── features/                    # 🎯 Features de alto nível
+│   │   │       ├── dashboard/               # Dashboard executivo
+│   │   │       ├── details/                 # Páginas de detalhes
+│   │   │       ├── reports/                 # Relatórios e analytics
+│   │   │       ├── route-planning/          # Planejamento de rotas
+│   │   │       └── settings/                # Configurações do sistema
+│   │   ├── pages/                           # 📄 Páginas da aplicação
+│   │   │   ├── Home/, Passengers/, Drivers/, Routes/, Stops/, Reports/
+│   │   │   ├── auth/ (Login, Register)
+│   │   │   ├── Search/, details/*
+│   │   │   └── settings/
+│   │   ├── hooks/                           # 🎣 Custom Hooks organizados
+│   │   │   ├── dashboard/                   # Hooks para métricas e KPIs
+│   │   │   ├── data/                        # usePassengers, useDrivers, useRoutes, useStops
+│   │   │   ├── map/                         # Hooks para funcionalidades de mapa
+│   │   │   ├── operations/                  # CRUD operations hooks
+│   │   │   └── ui/                          # Hooks de interface (modals, themes, etc)
+│   │   ├── api/                             # 🌐 Clientes de API
+│   │   │   ├── api.ts                       # Cliente principal da API
+│   │   │   └── autocomplete.ts              # API de autocomplete
+│   │   └── utils/                           # 🛠️ Utilitários
+│   │       └── config.js                    # Configurações dinâmicas (baseUrl, endpoints)
+│   ├── public/                              # Assets estáticos
+│   └── styles/                              # 🎨 Sistema de temas (SCSS)
+│       ├── themes/light.scss, dark.scss
+│       └── components/
+│
+├── 📁 webapp/                               # 📱 Progressive Web App (Mobile-First)
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── common/                      # FloatingButton, ThemeToggle
+│   │   │   ├── MapComponent.jsx             # Mapa interativo Leaflet
+│   │   │   ├── BottomSheet.jsx              # Componente deslizante mobile
+│   │   │   ├── SideBar.jsx                  # Navegação lateral responsiva
+│   │   │   └── MapTest.jsx                  # Componente de teste do mapa
+│   │   ├── pages/
+│   │   │   └── HomePage.jsx                 # Página principal mobile-first
+│   │   └── styles/                          # Estilos específicos PWA
 │   ├── public/
-│   └── styles/                             # Temas light/dark (SCSS)
+│   │   ├── manifest.json                    # Manifesto PWA
+│   │   └── icons/                           # Ícones para instalação
+│   └── vite.config.js                       # Configuração Vite + PWA
 │
-├── 📁 shared/                              # Código compartilhado entre web/mobile/server
-│   ├── brazilianStates.ts
-│   ├── formatters.ts
-│   ├── validators.ts
-│   └── types/
-│
-├── 📁 server/                              # Backend API (Express 5 + MySQL)
-│   ├── src/                                # index.js + rotas: auth, passengers, drivers, buses, routes, stops, reports, search, lastChanges, enterpriseUsers
-│   ├── migrations/                         # Esquema, índices full-text, gatilhos
-│   └── scripts/                            # Utilidades de desenvolvimento
-│
-├── 📁 mobile/                              # App React Native (Expo)
-│   ├── app/                                # Telas (Expo Router)
+├── 📁 mobile/                               # 📲 App React Native (Expo)
+│   ├── app/                                 # 🗂️ Telas (Expo Router file-based)
+│   │   ├── _layout.tsx                      # Layout principal
+│   │   ├── index.jsx                        # Tela inicial
+│   │   ├── home.jsx, otherPage.jsx
+│   │   └── auth/                            # Fluxo de autenticação
 │   ├── components/
-│   ├── api/api.ts                          # Client REST (10.0.2.2:3000 no emulador)
-│   ├── scripts/                            # configure-variables.js (ANDROID_HOME)
-│   ├── constants/, hooks/, assets/
-│   └── app.json
+│   │   ├── BusLineCard.jsx                  # Cartão de linha de ônibus
+│   │   ├── PopUpComponent.jsx               # Modais nativos
+│   │   └── SearchBar.jsx                    # Barra de pesquisa
+│   ├── api/api.ts                           # 📡 Cliente REST (configurado para emuladores)
+│   ├── constants/Colors.ts                  # Sistema de cores
+│   ├── hooks/                               # Custom hooks específicos mobile
+│   ├── assets/fonts/, images/
+│   ├── scripts/configure-variables.js       # Configuração ANDROID_HOME
+│   └── app.json                             # Configurações Expo
 │
-├── package.json                            # Raiz: scripts start/setup
-└── README.md
+├── 📁 server/                               # ⚙️ API Backend (Express 5 + MySQL)
+│   ├── src/
+│   │   ├── index.js                         # Servidor principal
+│   │   ├── enterprise/                      # 🏢 Módulos empresariais
+│   │   │   ├── auth/                        # Autenticação JWT
+│   │   │   ├── passengerRoutes.js           # CRUD Passageiros
+│   │   │   ├── driverRoutes.js              # CRUD Motoristas
+│   │   │   ├── busRoutes.js                 # CRUD Ônibus
+│   │   │   ├── routeRoutes.js               # CRUD Rotas + Associações
+│   │   │   ├── stopRoutes.js                # CRUD Pontos
+│   │   │   ├── reportsRoutes.js             # Relatórios e estatísticas
+│   │   │   ├── searchRoutes.js              # Sistema de busca full-text
+│   │   │   └── lastChangesRoutes.js         # Auditoria de mudanças
+│   │   └── setupDB.js                       # Configuração inteligente do DB
+│   ├── migrations/                          # 🗄️ 38+ Migrations estruturadas
+│   │   ├── 001-037_*.sql                    # Criação de tabelas
+│   │   ├── *_search_index_trigger.sql       # Triggers para busca
+│   │   └── 100_insert_data_with_triggers.sql # Dados iniciais
+│   └── scripts/                             # Utilitários de desenvolvimento
+│
+├── 📁 shared/                               # 🔗 Código compartilhado
+│   ├── brazilianStates.ts                   # Estados brasileiros
+│   ├── formatters.ts                        # Formatadores (CPF, telefone, etc)
+│   ├── validators.ts                        # Validadores brasileiros
+│   └── types/                               # Tipos TypeScript comuns
+│
+├── 📁 scripts/                              # 🔧 Scripts de automação
+│   ├── setup.js                             # Setup inteligente do projeto
+│   └── start.js                             # Inicialização coordenada
+│
+├── package.json                             # 📦 Scripts raiz (setup, start)
+├── tsconfig.json                            # Configuração TypeScript global
+└── README.md                                # 📖 Documentação principal
 ```
 
-### 🔗 Aliases de Importação
+### 🔗 Aliases de Importação Configurados
 
-Os aliases a seguir estão configurados (ver `web/jsconfig.json` e `mobile/tsconfig.json`):
-
+**Web App (`web/jsconfig.json`):**
 - `@web/*` → `web/src/*`
 - `@shared/*` → `shared/*`
-- `@server/*` → `server/src/*`
+- `@components/*` → `web/src/components/*`
+- `@pages/*` → `web/src/pages/*`
+- `@hooks/*` → `web/src/hooks/*`
+- `@utils/*` → `web/src/utils/*`
+
+**Mobile App (`mobile/tsconfig.json`):**
 - `@mobile/*` → `mobile/*`
+- `@shared/*` → `shared/*`
+- `@components/*` → `mobile/components/*`
+- `@constants/*` → `mobile/constants/*`
 
-### 🧭 Páginas e Componentes (Web)
+**PWA (`webapp/jsconfig.json`):**
+- `@webapp/*` → `webapp/src/*`
+- `@shared/*` → `shared/*`
 
-- **Home (`HomePage.jsx`)**: cards de estatísticas, acesso rápido, atividades recentes.
-- **Passengers (`PassengersPage.jsx`)**: tabela filtrável, `PassengerForm`, `PassengerDetails`, `PassengerStatsCards`.
-- **Drivers (`DriversPage.jsx`)**: tabela, `DriverForm`, `DriverDetails`, `DriversStatsCards`.
-- **Routes (`RoutesPage.jsx`)**: tabela com status, ver pontos (`RouteStops`), `RouteForm`, `RouteDetails`, associações ônibus–motorista.
-- **Stops/Reports/Login/Register/Search/Details**: páginas dedicadas com componentes de domínio e `features/*`.
+### 🧭 Principais Funcionalidades por Módulo
 
-Componentes notáveis:
-- `components/common/table` (Table componentizado + `useTable`)
-- `components/common/DetailCard` e `detailConfigs.js`
-- `components/common/forms/GenericForm` e `form/formConfigs.js`
-- `components/common/feedback/Dialog` (alert/confirm unificado)
+**🌐 Web App (Administrativo)**
+- Dashboard executivo com KPIs em tempo real
+- CRUD completo para todas as entidades
+- Sistema de busca full-text com autocomplete
+- Relatórios interativos com Chart.js
+- Mapeamento avançado com Leaflet
+- Sistema de autenticação empresarial
 
-### 📱 Mobile (Notas)
+**📱 PWA (Mobile-First)**
+- Interface otimizada para dispositivos móveis
+- Bottom sheet deslizante nativo
+- Mapeamento interativo responsivo
+- Temas escuro/claro persistentes
+- Funcionalidades offline básicas
 
-- Base URL padrão: `http://10.0.2.2:3000/api` (emulador Android).
-- Script de ambiente Android: `npm run setup-variables` em `mobile/` define `ANDROID_HOME` (Windows) via `scripts/configure-variables.js`.
+**📲 Mobile App (Nativo)**
+- Interface 100% nativa com Expo
+- Navegação file-based com Expo Router
+- Componentes otimizados para performance
+- Integração com APIs do sistema
+
+**⚙️ Backend API**
+- 38+ migrations estruturadas
+- Sistema de busca full-text avançado
+- Auditoria automática com triggers
+- Endpoints RESTful completos
+- Validação robusta de dados brasileiros
 
 ## 🛠️ Tecnologias
 
-### Frontend Web
-- **React 19** - Biblioteca UI
-- **Vite** - Build tool e dev server
-- **React Router DOM** - Roteamento
-- **Bootstrap 5** - Framework CSS
-- **Chart.js** - Gráficos e visualizações
-- **Leaflet** - Mapas interativos
-- **React Leaflet** - Integração do Leaflet com React
-- **Sass** - Pré-processador CSS
+### 🌐 Frontend Web Administrativo
+- **React 19** - Biblioteca UI moderna com Concurrent Features
+- **Vite 6+** - Build tool ultra-rápida com HMR otimizado
+- **React Router DOM 7** - Roteamento declarativo
+- **Bootstrap 5.3** - Framework CSS com componentes responsivos
+- **Chart.js 4** - Gráficos interativos e visualizações de dados
+- **Leaflet + React Leaflet** - Mapas interativos de alta performance
+- **Sass** - Pré-processador CSS com sistema de temas
 
-### Mobile
-- **React Native** - Framework mobile
-- **Expo** - Plataforma de desenvolvimento
-- **Expo Router** - Navegação baseada em arquivos
-- **React Native Vector Icons** - Ícones
-- **React Native Reanimated** - Animações
+### 📱 Progressive Web App (PWA)
+- **React 19** - Base sólida com Concurrent Features
+- **Vite PWA Plugin** - Configuração automática de Service Workers
+- **Vite 7+** - Build otimizada para PWA
+- **Leaflet** - Mapas leves para dispositivos móveis
+- **Bootstrap 5** - Sistema responsivo mobile-first
+- **Sass Embedded** - Compilação CSS otimizada
 
-### Backend
-- **Node.js** - Runtime JavaScript
-- **Express 5** - Framework web
-- **MySQL2** - Driver do banco de dados
-- **bcrypt** - Hash de senhas
-- **CORS** - Cross-origin resource sharing
-- **dotenv** - Gerenciamento de variáveis de ambiente
-- **body-parser** - Parsing de requisições
+### 📲 Mobile Nativo
+- **React Native 0.79** - Framework cross-platform
+- **Expo ~53** - Plataforma de desenvolvimento simplificada
+- **Expo Router 5** - Navegação baseada em sistema de arquivos
+- **React Native Reanimated 3** - Animações nativas de alta performance
+- **React Native Gesture Handler** - Gestos nativos otimizados
+- **TypeScript 5.8** - Tipagem estática para maior robustez
 
-### Banco de Dados
-- **MySQL 8.0+** - Sistema de gerenciamento de banco de dados
-- **Migrations** - Versionamento do esquema do banco
-- **Full-text Search** - Busca textual otimizada
-- **Triggers** - Automatização de índices de busca
+### ⚙️ Backend & API
+- **Node.js 18+** - Runtime JavaScript moderno
+- **Express 5.1** - Framework web minimalista e flexível
+- **MySQL2 3.14** - Driver MySQL nativo com Promise support
+- **bcrypt 5.1** - Hash seguro de senhas
+- **CORS 2.8** - Política de cross-origin configurável
+- **dotenv 16.5** - Gerenciamento seguro de variáveis de ambiente
+- **body-parser 2.2** - Parsing avançado de requisições
 
-### APIs Externas
-- **ViaCEP** - Consulta de CEP
-- **Nominatim** - Geolocalização reversa
-- **OpenStreetMap** - Mapas e tiles
+### 🗄️ Banco de Dados & Infraestrutura
+- **MySQL 8.0+** - Sistema robusto com JSON support
+- **Full-text Search Indexes** - Busca textual otimizada
+- **Database Triggers** - Automatização de índices e auditoria
+- **38+ Structured Migrations** - Versionamento profissional do schema
+- **Connection Pooling** - Gerenciamento eficiente de conexões
+
+### 🌐 APIs Externas & Integrações
+- **ViaCEP API** - Consulta de CEP brasileiros
+- **Nominatim OpenStreetMap** - Geolocalização reversa gratuita
+- **OpenStreetMap Tiles** - Tiles de mapa open source
+- **REST Architecture** - Padrão de API bem estruturado
+
+### 🔧 Desenvolvimento & DevOps
+- **ESLint 9** - Linting moderno com flat config
+- **Concurrently** - Execução paralela de processos
+- **Hot Module Replacement** - Desenvolvimento em tempo real
+- **Source Maps** - Debugging facilitado em produção
+- **Environment Variables** - Configuração por ambiente
+
+### 🛡️ Segurança & Validação
+- **JWT (JSON Web Tokens)** - Autenticação stateless
+- **bcrypt** - Hash seguro de senhas com salt
+- **Input Sanitization** - Prevenção de XSS e injection
+- **CORS Policy** - Controle de acesso cross-origin
+- **SQL Prepared Statements** - Proteção contra SQL Injection
+- **Brazilian Data Validators** - CPF, CNPJ, telefone, etc
 
 ## 🌐 API Endpoints
 
@@ -485,33 +680,89 @@ GET    /api/lastChanges?limit=50
 
 ## 📝 Scripts Disponíveis
 
-### Raiz do Projeto
+### 🚀 Raiz do Projeto (Orquestração)
 ```bash
-npm run setup    # Configuração inicial completa
-npm start        # Executa web + server simultaneamente
+npm run setup    # 🔧 Configuração inicial completa e inteligente
+npm start        # 🏃 Executa web + webapp + server simultaneamente
 ```
 
-### Frontend (web/)
+### 🌐 Web App Administrativa (`web/`)
 ```bash
-npm run dev      # Servidor de desenvolvimento
-npm run build    # Build para produção
-npm run preview  # Preview do build
-npm run lint     # Linter ESLint
+npm run start    # 🚀 Servidor de desenvolvimento (localhost:5173)
+npm run dev      # 🔄 Alias para start com hot reload
+npm run build    # 📦 Build otimizada para produção
+npm run preview  # 👀 Preview do build de produção
+npm run lint     # 🔍 Verificação de código com ESLint
+npm run setup    # ⚙️ Instalar dependências apenas desta aplicação
 ```
 
-### Backend (server/)
+### 📱 Progressive Web App (`webapp/`)
 ```bash
-npm start        # Inicia o servidor
-npm run dev      # Alias para iniciar o servidor (nodemon opcional)
-npm run setup    # Configura banco de dados
+npm run start    # 🚀 Servidor PWA (localhost:4173)
+npm run dev      # 🔄 Desenvolvimento com PWA features
+npm run build    # 📦 Build PWA com Service Workers
+npm run preview  # 👀 Preview da PWA construída
+npm run lint     # 🔍 Linting específico para PWA
+npm run setup    # ⚙️ Setup do ambiente PWA
 ```
 
-### Mobile (mobile/)
+### ⚙️ Backend API (`server/`)
 ```bash
-npm start        # Inicia Expo
-npm run android  # Build para Android
-npm run ios      # Build para iOS
-npm run web      # Versão web do app
+npm start        # 🚀 Inicia servidor API (localhost:3000)
+npm run dev      # 🔄 Desenvolvimento com auto-restart (nodemon)
+npm run setup    # 🗄️ Configuração completa do banco de dados
+npm run nodemon  # 🔄 Execução com nodemon para desenvolvimento
+```
+
+### 📲 Mobile App (`mobile/`)
+```bash
+npm start        # 📱 Inicia Expo Development Server
+npm run android  # 🤖 Build e execução no Android
+npm run ios      # 🍎 Build e execução no iOS
+npm run web      # 🌐 Versão web do aplicativo móvel
+npm run setup    # ⚙️ Setup + configuração Android (Windows)
+npm run setup-variables # 🔧 Configura ANDROID_HOME (Windows)
+npm run lint     # 🔍 Verificação de código Expo
+```
+
+### 🛠️ Scripts de Desenvolvimento Avançados
+
+**Execução Seletiva:**
+```bash
+# Executar apenas frontend administrativo
+npm run start --prefix web
+
+# Executar apenas PWA
+npm run start --prefix webapp  
+
+# Executar apenas backend
+npm run start --prefix server
+
+# Executar apenas mobile
+cd mobile && npm start
+```
+
+**Build para Produção:**
+```bash
+# Build completo do sistema
+npm run build --prefix web && npm run build --prefix webapp
+
+# Build individual
+cd web && npm run build      # Web app administrativa
+cd webapp && npm run build   # PWA
+cd mobile && npm run build   # Mobile (via EAS Build)
+```
+
+**Manutenção e Debugging:**
+```bash
+# Limpar node_modules em todos os projetos
+npm run clean-all
+
+# Reinstalar dependências em todo o projeto
+npm run reinstall-all
+
+# Verificar status de todos os serviços
+npm run health-check
 ```
 
 ## 🤝 Contribuição
@@ -530,73 +781,296 @@ npm run web      # Versão web do app
 
 ## 🐛 Solução de Problemas
 
-### Problemas Comuns
+### ❓ Problemas Comuns
 
-**Erro de conexão com banco de dados:**
+**🔌 Erro de conexão com banco de dados:**
 ```bash
-# Verifique se o MySQL está rodando
-# Confirme as credenciais no arquivo server/.env
-# Execute as migrations: npm run setup no diretório server/
+# 1. Verifique se o MySQL está rodando
+# Windows: Verifique serviços ou XAMPP
+# Linux/Mac: sudo systemctl status mysql
+
+# 2. Confirme as credenciais no arquivo server/.env
+# Verifique DB_HOST, DB_USER, DB_PASSWORD, DB_NAME
+
+# 3. Execute as migrations manualmente
+cd server
+npm run setup
 ```
 
-**Porta já em uso:**
+**🚪 Porta já em uso (3000, 5173, 4173):**
 ```bash
-# Frontend (5173) ou Backend (3000) já em uso
-# Termine os processos ou mude as portas nos arquivos de configuração
+# Verificar processos usando as portas
+netstat -ano | findstr :3000
+netstat -ano | findstr :5173
+netstat -ano | findstr :4173
+
+# Terminar processo (Windows)
+taskkill /PID <PID> /F
+
+# Ou alterar portas nos arquivos de configuração
+# server/.env: PORT=3001
+# web/vite.config.js: server.port
+# webapp/vite.config.js: server.port
 ```
 
-**Dependências não instaladas:**
+**📦 Dependências não instaladas:**
 ```bash
-# Execute npm install em cada diretório (raiz, web/, server/, mobile/)
-# Ou use o comando de setup automático: npm run setup (crie os .env manualmente se necessário)
+# Execute instalação completa
+npm run setup
+
+# Ou instalar manualmente cada módulo
+npm install                    # Raiz
+npm install --prefix web       # Web app
+npm install --prefix webapp    # PWA
+npm install --prefix server    # Backend
+npm install --prefix mobile    # Mobile app
 ```
 
-**Problemas com mapeamento:**
+**🗺️ Problemas com mapeamento (Leaflet):**
 ```bash
-# Verifique se as APIs de geolocalização estão funcionando
-# Confirme se há conexão com a internet para carregar os mapas
+# 1. Verifique conexão com internet para tiles do OpenStreetMap
+# 2. Confirme se as coordenadas estão corretas
+# 3. Verifique console do browser para erros de CORS
+# 4. Teste com tiles alternativos se necessário
 ```
 
-**Expo/Android emulador não acessa API local:**
+**📱 Expo/Android emulador não acessa API local:**
 ```bash
-# Use 10.0.2.2 no emulador Android para acessar o host local (já configurado em mobile/api/api.ts)
-# Certifique-se de que o backend está em 0.0.0.0:3000 (PORT=3000) e que o firewall permite a conexão
+# 1. Use 10.0.2.2:3000 para emulador Android (já configurado)
+# 2. Use IP da máquina para dispositivo físico
+# 3. Certifique-se que o backend está em 0.0.0.0:3000
+# 4. Verifique firewall do Windows
+# 5. Para iOS Simulator use localhost:3000
 ```
 
-**Erro de autocomplete/busca:**
+**🔍 Erro de autocomplete/busca:**
 ```bash
-# Verifique se os índices de busca foram criados corretamente
-# Execute as migrations do banco de dados
+# 1. Verifique se as migrations do banco foram executadas
+cd server && npm run setup
+
+# 2. Confirme se os índices full-text foram criados
+# Verifique migrations /*_search_index_trigger.sql
+
+# 3. Teste endpoints de busca diretamente
+curl http://localhost:3000/api/autocomplete?query=test
 ```
 
-## 📄 Licença
+**⚡ PWA não instala/não funciona offline:**
+```bash
+# 1. Verifique se está sendo servido via HTTPS ou localhost
+# 2. Confirme se o manifest.json está acessível
+curl http://localhost:5173/manifest.json
 
-Este projeto foi desenvolvido como Trabalho de Conclusão de Curso (TCC) da **ETEC João Belarmino** do Centro Paula Souza.
+# 3. Verifique Service Worker no DevTools
+# Application > Service Workers
 
-**Desenvolvido por:** Equipe BusHere!  
+# 4. Rebuild a PWA
+cd webapp && npm run build && npm run preview
+```
+
+**📊 Gráficos não carregam (Chart.js):**
+```bash
+# 1. Verifique console para erros de API
+# 2. Teste endpoint de relatórios
+curl http://localhost:3000/api/reports/charts
+
+# 3. Confirme se dados estão no formato correto
+# 4. Verifique se Chart.js está importado corretamente
+```
+
+**🔐 Erro de autenticação/login:**
+```bash
+# 1. Verifique se a tabela usuarios_empresa foi criada
+# 2. Confirme se há um usuário de teste criado
+# 3. Verifique se o JWT está sendo gerado corretamente
+# 4. Teste login via API diretamente
+
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","password":"password"}'
+```
+
+### 🆘 Soluções Rápidas
+
+**Reset Completo do Ambiente:**
+```bash
+# Parar todos os processos
+# Ctrl+C em todos os terminais
+
+# Limpar dependências
+rm -rf node_modules web/node_modules webapp/node_modules server/node_modules mobile/node_modules
+
+# Reinstalar tudo
+npm run setup
+
+# Recriar banco de dados
+cd server
+npm run setup
+```
+
+**Verificação de Saúde do Sistema:**
+```bash
+# 1. Teste conectividade do banco
+cd server && node -e "
+const mysql = require('mysql2/promise');
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'sua_senha'
+});
+connection.connect().then(() => console.log('✅ MySQL OK')).catch(console.error);
+"
+
+# 2. Teste endpoints principais
+curl http://localhost:3000/api/passengers
+curl http://localhost:3000/api/drivers  
+curl http://localhost:3000/api/routes
+
+# 3. Verifique logs em cada terminal para erros específicos
+```
+
+### 📞 Quando Buscar Ajuda
+
+Se os problemas persistirem:
+
+1. **Verifique os logs detalhados** em cada terminal/console
+2. **Reproduza o erro** com passos específicos
+3. **Colete informações do ambiente**:
+   - Sistema operacional
+   - Versões do Node.js e MySQL
+   - Mensagens de erro completas
+4. **Consulte a documentação** específica de cada tecnologia
+5. **Abra uma issue** no repositório GitHub com:
+   - Descrição detalhada do problema
+   - Passos para reproduzir
+   - Logs de erro
+   - Configuração do ambiente
+
+### 🔧 Ferramentas de Debug Recomendadas
+
+- **MySQL Workbench** - Interface visual para o banco de dados
+- **Postman/Insomnia** - Testes de API
+- **Chrome DevTools** - Debug do frontend
+- **React Developer Tools** - Debug específico do React
+- **Expo DevTools** - Debug do app móvel
+- **VS Code Extensions**:
+  - ES7+ React/Redux/React-Native snippets
+  - MySQL (cweijan.vscode-mysql-client2)
+  - Thunder Client (API testing)
+  - Error Lens (highlight de erros)
+
+---
+
+**💡 Dica: Mantenha sempre os logs visíveis durante o desenvolvimento para identificar problemas rapidamente.**
+
+---
+
+## � Suporte Técnico
+
+### 🆘 Canais de Suporte
+
+**Problemas Técnicos:**
+1. 📖 Consulte primeiro a [seção de Solução de Problemas](#-solução-de-problemas)
+2. 🔍 Verifique os **logs detalhados** do console para erros específicos
+3. 🐛 **Abra uma issue** no [repositório GitHub](https://github.com/TCC-JB-02-2025/tcc/issues)
+4. 📧 Entre em contato com a equipe de desenvolvimento
+
+**Documentação e Tutoriais:**
+- 📚 [Wiki do Projeto](https://github.com/TCC-JB-02-2025/tcc/wiki)
+- 📖 Documentação in-code em cada componente principal
+- 🎥 Vídeos demonstrativos (em desenvolvimento)
+
+**Comunidade:**
+- 💬 [Discussions do GitHub](https://github.com/TCC-JB-02-2025/tcc/discussions)
+- 📱 Discord da turma (acesso via convite)
+
+### 🏢 Informações Acadêmicas
+
 **Instituição:** ETEC João Belarmino - Centro Paula Souza  
-**Ano:** 2025  
-**Curso:** Desenvolvimento de Sistemas
+**Curso:** Técnico em Desenvolvimento de Sistemas  
+**Período:** 2025  
+**Orientação:** Professor orientador Rubens Castaldelli Carlos.
 
-## 👥 Equipe de Desenvolvimento
+### 📈 Roadmap e Funcionalidades Futuras
 
-- **Victor Ramos** - Desenvolvimento Full Stack, Mobile, Banco de Dados, Documentação e Design
-- **Renan Andrade** - Desenvolvimento Full Stack e Mobile
-- **Luiz Souza** - Desenvolvimento FrontEnd e Design
-- **Sarah Porsch** - Documentação
-- **Marcelo Camillo** - Documentação
+**Versão 2.0 (Planejada):**
+- 🔔 Sistema de notificações push
+- 📊 Dashboard analytics avançado
+- 🗺️ Rastreamento GPS em tempo real
+- � Integração com sistema de pagamento
+- 🌐 API pública para desenvolvedores
+- 📱 App para motoristas
+
+**Contribuições Bem-vindas:**
+- 🐛 Reports de bugs
+- ✨ Sugestões de melhorias  
+- 📝 Melhorias na documentação
+- 🔧 Pull requests com correções
+- 🧪 Testes e feedback de usabilidade
 
 ---
 
-## 📞 Suporte
+## 🏆 Reconhecimentos
 
-Se encontrar problemas ou tiver dúvidas:
+### 👥 Equipe Principal
 
-1. Verifique a seção [Solução de Problemas](#-solução-de-problemas)
-2. Consulte os logs do console para erros específicos
-3. Abra uma issue no repositório GitHub
-4. Entre em contato com a equipe de desenvolvimento
+**🚀 Victor Ramos** - *Tech Lead & Full Stack Developer*
+- Arquitetura do sistema e banco de dados
+- Desenvolvimento backend (Express + MySQL)
+- Desenvolvimento frontend (React + Vite)
+- Integração de APIs e componentes
+- Testes e otimização de performance
+- DevOps e deployment
+- Documentação técnica
+
+**💻 Renan Andrade** - *Full Stack Developer*  
+- Arquitetura do sistema e banco de dados
+- Desenvolvimento backend (Express + MySQL)
+- Desenvolvimento mobile
+- Integração de APIs e componentes
+- Testes e otimização de performance
+- DevOps e deployment
+- Documentação técnica
+
+**🎨 Luiz Souza** - *Frontend Developer & UI/UX Designer*
+- Design de interface e experiência do usuário
+- Desenvolvimento de componentes visuais
+- Responsividade
+
+**📚 Sarah Porsch** - *Technical Writer & QA*
+- Documentação do projeto e manuais
+- Testes de qualidade e usabilidade  
+- Análise de requisitos
+
+**📋 Marcelo Camillo** - *Documentation*
+- Gerenciamento de projeto e cronogramas
+- Documentação de processos
+
+### 🙏 Agradecimentos Especiais
+
+- **ETEC João Belarmino** - Infraestrutura e apoio institucional
+- **Centro Paula Souza** - Suporte educacional e recursos
+- **Professores Orientadores** - Mentoria técnica e acadêmica
+- **Comunidade Open Source** - Ferramentas e bibliotecas utilizadas
+- **OpenStreetMap & ViaCEP** - APIs públicas utilizadas
+
+### 🏅 Tecnologias e Créditos
+
+Este projeto foi construído com amor e as seguintes tecnologias open source:
+- ⚛️ **React** e **React Native** - Facebook/Meta
+- ⚡ **Vite** - Evan You e equipe
+- 🚀 **Node.js** e **Express** - OpenJS Foundation  
+- 🗄️ **MySQL** - Oracle Corporation
+- 🗺️ **Leaflet** - Vladimir Agafonkin
+- 🎨 **Bootstrap** - Twitter/Bootstrap Team
+- 📊 **Chart.js** - Chart.js Contributors
 
 ---
 
-**⭐ Se este projeto foi útil para você, considere dar uma estrela no repositório!**
+**⭐ Se este projeto foi útil para você ou te inspirou, considere dar uma estrela no repositório!**
+
+**🔗 [github.com/TCC-JB-02-2025/tcc](https://github.com/TCC-JB-02-2025/tcc)**
+
+---
+
+*Desenvolvido pela turma de Desenvolvimento de Sistemas da ETEC João Belarmino - 2025*

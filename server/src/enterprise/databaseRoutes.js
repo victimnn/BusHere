@@ -31,31 +31,35 @@ module.exports = (pool) => {
 
   router.post("/import", async (req, res) => {
     const { data } = req.body;
+    const ignored = {};
 
     try {
-      //Obter a key e o valor de cada parte da informação
       const dataKeys = Object.keys(data);
       const dataValues = Object.values(data);
 
-      //Inserir os valores
-      dataKeys.forEach((key, index) => { //Para cada tabela
-        const values = dataValues[index];
-        if(values.length === 0) return; //Se não tiver valores, não faz nada
-        values.forEach((row) => {
-          try {
-            pool.query(`INSERT INTO ?? SET ?`, [key, row]);
-            console.log("Dados inseridos com sucesso:", { table: key, row });
-          } catch(error){
-            console.error("Erro ao inserir dados:");
-          }
-        });
-      });
+      for (let i = 0; i < dataKeys.length; i++) {
+        const key = dataKeys[i];
+        const values = dataValues[i];
+        ignored[key] = [];
 
+        if (values.length === 0) continue;
+
+        for (const row of values) {
+          try {
+            await pool.query(`INSERT INTO ?? SET ?`, [key, row]);
+            console.log("Dados inseridos com sucesso:", { table: key, row });
+          } catch (error) {
+            console.error("Erro ao inserir dados:", error);
+            ignored[key].push({ row, error: error.message });
+          }
+        }
+      }
+
+      res.json({ ignored });
     } catch (error) {
       console.error("Erro ao importar dados:", error);
       res.status(500).json({ error: "Erro ao importar dados: " + error.message });
     }
-
   });
 
 

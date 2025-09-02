@@ -44,6 +44,7 @@ function LoginPage() {
 
           <div className="mb-4">
             <label className="form-label font-family-segundaria">Senha</label>
+          <div className="input-group">
             <input
               type={showSenha ? "text" : "password"}
               className="form-control"
@@ -51,7 +52,7 @@ function LoginPage() {
               onChange={(e) => setSenha(e.target.value)}
               required
               placeholder="Insira a sua senha"
-              style={{maxWidth: "75%"}}
+              style={{maxWidth: "100%"}}
             />
             <button
                 type="button"
@@ -59,11 +60,12 @@ function LoginPage() {
                 onClick={() => setShowSenha((prev) => !prev)}
                 tabIndex={-1}
                 aria-label={showSenha ? "Ocultar senha" : "Mostrar senha"}
-                
+                style={{color: "#757575", borderColor: "#757575"}}
               >
                 <i className={`bi ${showSenha ? "bi-eye-slash" : "bi-eye"}`}></i>
               </button>
           </div>
+        </div>
 
           <button
             type="submit"
@@ -76,13 +78,13 @@ function LoginPage() {
 
         {/* Botões secundários */}
         <div className="d-flex justify-content-between mb-3">
-          <button className="btn w-50 me-2" style={{backgroundColor: "#d3d3d3ff", height: "90%"}}>Criar uma Conta</button>
-          <button className="btn w-50 me-2" style={{backgroundColor: "#c7c7c7ff", height: "90%"}}>Criar com Link</button>
+          <button className="btn btn-secondary w-50 me-2" style={{ borderColor: "#757575", height: "100%"}}>Criar uma Conta</button>
+          <button className="btn btn-secondary w-50 me-2" style={{ borderColor: "#757575", height: "100%"}}>Criar com Link</button>
         </div>
 
         {/* Link */}
-        <p className="text-center">
-          <a href="#" style={{ color: "#2e7d32", textDecoration: "none" }}>
+        <p className="text-center fw-semibold">
+          <a href="#" style={{ color: "#2e7d32"}}>
             Esqueceu a Conta BusHere ou a senha?
           </a>
         </p>

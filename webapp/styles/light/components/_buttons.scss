@@ -24,12 +24,21 @@
       color: $dark !important;
     }
   }
-    &.btn-primary-green {
+  &.btn-primary-green {
     background-color: $primary-green !important;
     color: $light !important;
 
     &:hover {
       background-color: $analogous-3 !important;
+    }
+  }
+  &.btn-secondary {
+    background-color: $light !important;
+    color: $gray !important;
+
+    &:hover {
+      background-color: $secondary !important;
+      color: $light !important;
     }
   }
 }

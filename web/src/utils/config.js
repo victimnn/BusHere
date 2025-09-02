@@ -32,7 +32,8 @@ export const getApiBaseUrl = () => {
  */
 export const getApiUrl = () => {
   const baseUrl = import.meta.env.VITE_API_URL || getApiBaseUrl();
-  return baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
+  //return baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
+  return baseUrl;
 };
 
 /**
@@ -40,7 +41,8 @@ export const getApiUrl = () => {
  */
 export const getServerBaseUrl = () => {
   const apiUrl = getApiUrl();
-  return apiUrl.replace('/api', '');
+  //return apiUrl.replace('/api', '');
+  return apiUrl;
 };
 
 /**

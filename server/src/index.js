@@ -79,7 +79,7 @@ app.use("/api/enterprise/routes", E_routeRoutes);
 app.use("/api/enterprise/reports", E_reportsRoutes);
 app.use("/api/enterprise/lastChanges", E_lastChangeRoutes);
 app.use("/api/enterprise/enterpriseUsers", E_enterpriseUserRoutes);
-app.use("/debug", E_debugRoutes);
+app.use("/api/enterprise/debug", E_debugRoutes);
 
 app.use("/api/passenger/auth", P_authRoutes);
 

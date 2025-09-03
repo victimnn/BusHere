@@ -13,10 +13,10 @@ function LoginPage() {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 bg-dark">
-      <div
-        className="card p-4 shadow"
-        style={{ width: "100%", height: "100%", backgroundColor: "#000", maxWidth: "400px" }}
+    <div className="d-flex justify-content-center align-items-center vh-100 h-100">
+      <div  
+        className="p-4"
+        style={{ width: "100%", height: "100%", maxWidth: "400px"}}
       >
         {/* Botão fechar */}
         <div className="d-flex justify-content-start">
@@ -77,15 +77,15 @@ function LoginPage() {
         </form>
 
         {/* Botões secundários */}
-        <div className="d-flex justify-content-between mb-3">
+        <div className="d-flex justify-content-between mb-3 mr-0">
           <button className="btn btn-secondary w-50 me-2" style={{ borderColor: "#757575", height: "100%"}}>Criar uma Conta</button>
-          <button className="btn btn-secondary w-50 me-2" style={{ borderColor: "#757575", height: "100%"}}>Criar com Link</button>
+          <button className="btn btn-secondary w-50" style={{ borderColor: "#757575", height: "100%"}}>Criar com Link</button>
         </div>
 
         {/* Link */}
         <p className="text-center fw-semibold">
-          <a href="#" style={{ color: "#2e7d32"}}>
-            Esqueceu a Conta BusHere ou a senha?
+          <a href="/" style={{ color: "#2e7d32"}}>
+            Esqueceu a senha?
           </a>
         </p>
       </div>

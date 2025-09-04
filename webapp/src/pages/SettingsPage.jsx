@@ -1,7 +1,69 @@
 import React, { useState } from 'react';
 import { PageHeader, InfoCard, ActionButton } from '../components/common';
+import api from "../api/api";
+
+function gerarCpf() {
+  // Função para gerar dígito verificador
+  function calcDV(nums) {
+    let x = 0;
+    for (let i = nums.length + 1, j = 0; i >= 2; i--, j++) x += +nums[j] * i;
+    const y = x % 11;
+    return y < 2 ? 0 : 11 - y;
+  }
+  // Gera 9 dígitos aleatórios
+  const nums = Array.from({length: 9}, () => Math.floor(Math.random() * 10));
+  const d1 = calcDV(nums);
+  const d2 = calcDV([...nums, d1]);
+  return [...nums, d1, d2].join("");
+}
 
 const SettingsPage = () => {
+  async function handleInsertTestUser() {
+    const email = prompt("Digite o email do usuário de teste:");
+    const password = prompt("Digite a senha do usuário de teste:");
+    try {
+      const response = await api.auth.register({
+        name: "Test User",
+        email: email,
+        password: password,
+        cpf: gerarCpf(),
+        address: {
+          street: "Test Street",
+          number: "123",
+          complement: "Apt 1",
+          neighborhood: "Test Neighborhood",
+          city: "Test City",
+          state: "Test State",
+          zip: "12345-678"
+        }
+      });
+      alert("Usuário de teste inserido com sucesso!:\n" + response.user.email+"/password");
+      console.log("Usuário de teste inserido com sucesso:", response);
+    } catch (error) {
+      alert("Usuario não inserido");
+      console.error("Erro ao inserir usuário de teste:", error);
+    }
+  }
+
+  async function handleLogin(){
+    const email = prompt("Digite o email do usuário de teste:");
+    const password = prompt("Digite a senha do usuário de teste:");
+    try {
+      const response = await api.auth.login({ email, password });
+      localStorage.setItem("token", response.token);
+      alert("Login realizado com sucesso! Token:\n" + response.token);
+      console.log("Login realizado com sucesso:", response);
+    } catch (error) {
+      alert("Erro ao realizar login");
+      console.error("Erro ao realizar login:", error);
+    }
+  }
+
+  async function handleLogout(){
+    api.auth.logout();
+    alert("Logout realizado com sucesso!");
+  }
+
   const [notifications, setNotifications] = useState({
     email: true,
     push: true,
@@ -189,6 +251,28 @@ const SettingsPage = () => {
                   >
                     Resetar Configurações
                   </ActionButton>
+
+                  <ActionButton 
+                    icon="bi-arrow-clockwise"
+                    variant="outline-warning"
+                    size="sm"
+                    fullWidth
+                    onClick={handleInsertTestUser}
+                  >
+                    registrar
+                  </ActionButton>
+
+                  <ActionButton
+                    icon="bi-arrow-clockwise"
+                    variant="outline-success"
+                    size="sm"
+                    fullWidth
+                    onClick={handleLogin}
+                  >
+                    login
+                  </ActionButton>
+
+
                 </div>
               </InfoCard>
             </div>

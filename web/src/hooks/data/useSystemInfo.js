@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getServerBaseUrl, logger } from '@web/utils/config';
+import { getServerBaseUrl, logger, getApiUrl } from '@web/utils/config';
 
 /**
  * Hook para obter informações do sistema em tempo real
@@ -139,16 +139,16 @@ export const useSystemInfo = () => {
 
       try {
         // Usar configuração centralizada para URL do servidor
-        const serverBaseUrl = getServerBaseUrl();
+        const apiUrl = getApiUrl();
         
-        logger.info('🔍 Fazendo health check para:', serverBaseUrl);
+        logger.info('🔍 Fazendo health check para:', apiUrl);
         
         // Criar AbortController para timeout (compatibilidade com navegadores antigos)
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000);
         
         // Usar o endpoint simplificado que retorna valores booleanos
-        const response = await fetch(`${serverBaseUrl}/debug/health-simple`, {
+        const response = await fetch(`${apiUrl}/debug/health-simple`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'

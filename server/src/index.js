@@ -61,6 +61,7 @@ const E_reportsRoutes = require("./enterprise/reportsRoutes.js")(pool);
 const E_lastChangeRoutes = require("./enterprise/lastChangeRoutes.js")(pool);
 const E_enterpriseUserRoutes = require("./enterprise/enterpriseUserRoutes.js")(pool);
 const E_debugRoutes = require("./enterprise/debugRoutes.js")(pool);
+const E_databaseRoutes = require("./enterprise/databaseRoutes.js")(pool)
 
 // Passageiros
 const P_authRoutes = require("./passenger/authRoutes.js")(pool);
@@ -79,7 +80,8 @@ app.use("/api/enterprise/routes", E_routeRoutes);
 app.use("/api/enterprise/reports", E_reportsRoutes);
 app.use("/api/enterprise/lastChanges", E_lastChangeRoutes);
 app.use("/api/enterprise/enterpriseUsers", E_enterpriseUserRoutes);
-app.use("/debug", E_debugRoutes);
+app.use("/api/enterprise/debug", E_debugRoutes);
+app.use("/api/enterprise/database", E_databaseRoutes);
 
 app.use("/api/passenger/auth", P_authRoutes);
 

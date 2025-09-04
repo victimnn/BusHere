@@ -150,18 +150,18 @@ module.exports = (pool) => {
         res.send(`
 <h1> Rotas de Debug </h1>
 <ul>
-    <li><a href="/debug/env">/debug/env</a></li>
-    <li><a href="/debug/setup-db">/debug/setup-db</a></li>
-    <li><a href="/debug/tables">/debug/tables</a></li>
+    <li><a href="/enterprise/debug/env">/debug/env</a></li>
+    <li><a href="/enterprise/debug/setup-db">/debug/setup-db</a></li>
+    <li><a href="/enterprise/debug/tables">/debug/tables</a></li>
 
     <input type="text" name="tableName" placeholder="Obter Colunas de tabela" />
     <button onClick="
-        window.location.href='/debug/tables/' + document.querySelector('input[name=tableName]').value;
+        window.location.href='/enterprise/debug/tables/' + document.querySelector('input[name=tableName]').value;
     ">Obter colunas</button>
 
 
-    <li><a href="/debug/health">/debug/health</a></li>
-    <li><a href="/debug/db-stats">/debug/db-stats</a></li>
+    <li><a href="/enterprise/debug/health">/debug/health</a></li>
+    <li><a href="/enterprise/debug/db-stats">/debug/db-stats</a></li>
 </ul>
         `);
     });

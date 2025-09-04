@@ -302,7 +302,7 @@ function Stops({ pageFunctions, isDark }) {
             <i className="bi bi-info-circle-fill text-primary me-3 fs-4"></i>
             <p className="mb-0 text-muted">
               <strong>Dica:</strong> Clique em uma linha da tabela para ver os detalhes completos do ponto.
-              Para adicionar um novo ponto, clique no mapa ou no botão "Novo Ponto".
+              Para adicionar um novo ponto, clique no botão "Novo Ponto".
             </p>
           </div>
         </div>

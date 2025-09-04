@@ -4,7 +4,7 @@ function DetailActions({ title = 'Ações', description, actions = [] }) {
 	return (
 		<section className="card border-0">
 			<div className="card-header bg-transparent">
-				<h5 className="card-title mb-0">{title}</h5>
+				<h5 className="card-title text-dark mb-0 fw-bold">{title}</h5>
 				{description && (
 					<p className="text-muted small mb-0">{description}</p>
 				)}

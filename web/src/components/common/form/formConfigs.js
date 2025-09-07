@@ -2,7 +2,8 @@
 import api from '../../../api/api';
 import { validateCPF, validateEmail, validatePhoneNumber, validateCEP, validateDate } from '@shared/validators';
 import { formatCPF, formatPhoneNumber, formatCEP, formatDate, formatDateFromDatabase, formatPlate } from '@shared/formatters';
-import { createFakePassengerData, createFakeBusData, createFakeRouteData, createFakeStopData, createFakeDriverData } from '../../../utils/fakers';
+import { reverseTransformDate, validateBirthDate, validateAdmissionDate, validateCNHValidity, validateLastMaintenanceDate, validateNextMaintenanceDate } from '@shared/dateUtils';
+import { createFakePassengerData, createFakeBusData, createFakeRouteData, createFakeStopData, createFakeDriverData, createFakeVehicleData } from '../../../utils/fakers';
 import { BRAZILIAN_STATES, isValidUF } from '@shared/brazilianStates';
 import { formatters } from '../detail/detailConfigs';
 
@@ -78,45 +79,21 @@ export const passengerFormConfig = {
     },
     {
       name: 'data_nascimento',
-      type: 'text',
+      type: 'date',
       label: 'Data de Nascimento',
       labelIcon: 'bi bi-calendar-plus-fill',
       inputIcon: 'bi bi-calendar-plus',
-      placeholder: 'DD/MM/AAAA',
-      maxLength: 10,
+      placeholder: 'Data de nascimento',
       size: 'lg',
-      formatter: formatDate,
-      transform: (value) => {
-        // Converte DD/MM/AAAA para AAAA-MM-DD antes de enviar ao banco
-        if (!value) return value;
-        const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-        if (dateRegex.test(value)) {
-          const [day, month, year] = value.split('/');
-          return `${year}-${month}-${day}`;
-        }
-        return value;
-      },
-      reverseTransform: formatDateFromDatabase,
       additionalProps: { 
+        max: new Date().toISOString().split('T')[0],
         autoComplete: 'new-password',
         'data-form-type': 'other',
         'data-lpignore': 'true',
         'data-1p-ignore': 'true'
       },
-      validator: (value) => {
-        if (!value) return null; // Campo opcional
-        // Valida o formato e a data
-        if (!validateDate(value, 1910, new Date().getFullYear())) {
-          return 'Data inválida. Use o formato DD/MM/AAAA e verifique se a data existe';
-        }            
-        // Verifica se a data não é futura
-        const [day, month, year] = value.split('/').map(num => parseInt(num, 10));
-        const admissaoDate = new Date(year, month - 1, day);
-        const today = new Date();
-            
-        if (admissaoDate > today) return 'Data de admissão não pode ser futura';
-        return null;
-      }
+      reverseTransform: reverseTransformDate,
+      validator: validateBirthDate
     },
     {
       name: 'tipo_passageiro',
@@ -144,254 +121,7 @@ export const passengerFormConfig = {
   fakeDataGenerator: createFakePassengerData
 };
 
-export const busFormConfig = {
-  fields: [
-    {
-      name: 'nome',
-      type: 'text',
-      label: 'Nome do Ônibus',
-      labelIcon: 'bi bi-bus-front-fill',
-      inputIcon: 'bi bi-info-circle',
-      placeholder: 'Nome identificador do ônibus',
-      required: true,
-      size: 'lg',
-      validator: (value) => {
-        return !value.trim() ? 'Nome do ônibus é obrigatório' : null;
-      }
-    },
-    {
-      name: 'placa',
-      type: 'text',
-      label: 'Placa',
-      labelIcon: 'bi bi-card-text',
-      inputIcon: 'bi bi-signpost',
-      placeholder: 'ABC-1234 ou ABC1D23',
-      maxLength: 7,
-      required: true,
-      size: 'lg',
-      formatter: (value) => formatPlate(value),
-      validator: (value) => {
-        if (!value.trim()) return 'Placa é obrigatória';
-        const cleanValue = value.replace(/[-\s]/g, '').toUpperCase();
-        const placaRegex = /^[A-Z]{3}\d{4}$|^[A-Z]{3}\d[A-Z]\d{2}$/;
-        if (!placaRegex.test(cleanValue)) {
-          return 'Formato de placa inválido (ex: ABC-1234 ou ABC1D23)';
-        }
-        return null;
-      }
-    },
-    {
-      name: 'modelo',
-      type: 'text',
-      label: 'Modelo',
-      labelIcon: 'bi bi-truck',
-      inputIcon: 'bi bi-gear',
-      placeholder: 'Modelo do ônibus',
-      size: 'lg',
-      validator: (value) => {
-        return value.trim() && value.length < 2 ? 'Modelo deve ter pelo menos 2 caracteres' : null;
-      }
-    },
-    {
-      name: 'marca',
-      type: 'text',
-      label: 'Marca',
-      labelIcon: 'bi bi-building',
-      inputIcon: 'bi bi-award',
-      placeholder: 'Marca do ônibus',
-      size: 'lg',
-      validator: (value) => {
-        return value.trim() && value.length < 2 ? 'Marca deve ter pelo menos 2 caracteres' : null;
-      }
-    },
-    {
-      name: 'ano_fabricacao',
-      type: 'text',
-      label: 'Ano de Fabricação',
-      labelIcon: 'bi bi-calendar-event',
-      inputIcon: 'bi bi-calendar',
-      placeholder: 'Ano de fabricação',
-      maxLength: 4,
-      additionalProps: { max: new Date().getFullYear() + 1, min: 1950 },
-      size: 'lg',
-      formatter: (value) => value.replace(/\D/g, ''), // Remove tudo que não for dígito
-      validator: (value) => {
-        if (value === '') return null;
-        const currentYear = new Date().getFullYear();
-        const ano = parseInt(value);
-        if (isNaN(ano)) return 'Ano deve ser um número';
-        if (ano < 1950) return 'Ano deve ser maior que 1950';
-        if (ano > currentYear + 1) return `Ano não pode ser maior que ${currentYear + 1}`;
-        if (value.length > 4) return 'Ano deve ter no máximo 4 dígitos';
-        return null;
-      }
-    },
-    {
-      name: 'capacidade',
-      type: 'text',
-      label: 'Capacidade',
-      labelIcon: 'bi bi-people',
-      inputIcon: 'bi bi-person-plus',
-      placeholder: 'Número de passageiros',
-      maxLength: 3,
-      additionalProps: { max: 200, min: 1 },
-      required: true,
-      size: 'lg',
-      formatter: (value) => value.replace(/\D/g, ''), // Remove tudo que não for dígito
-      validator: (value) => {
-        if (value === '') return 'Capacidade é obrigatória';
-        const capacidade = parseInt(value);
-        if (isNaN(capacidade)) return 'Capacidade deve ser um número';
-        if (capacidade < 1) return 'Capacidade deve ser maior que zero';
-        if (capacidade > 200) return 'Capacidade deve ser menor que 200';
-        if (value.length > 3) return 'Capacidade deve ter no máximo 3 dígitos';
-        return null;
-      }
-    },
-    {
-      name: 'quilometragem',
-      type: 'text',
-      label: 'Quilometragem (km)',
-      labelIcon: 'bi bi-speedometer',
-      inputIcon: 'bi bi-speedometer2',
-      placeholder: 'Quilometragem atual do veículo',
-      size: 'lg',
-      formatter: (value) => {
-        // Remove tudo que não for dígito ou ponto
-        const cleaned = value.replace(/[^\d.]/g, '');
-        // Garante apenas um ponto decimal
-        const parts = cleaned.split('.');
-        if (parts.length > 2) {
-          const formatted = parts[0] + '.' + parts.slice(1).join('');
-          const finalParts = formatted.split('.');
-          // Limita a 2 casas decimais
-          if (finalParts[1] && finalParts[1].length > 2) {
-            return finalParts[0] + '.' + finalParts[1].substring(0, 2);
-          }
-          return formatted;
-        }
-        // Limita a 2 casas decimais
-        if (parts.length === 2 && parts[1].length > 2) {
-          return parts[0] + '.' + parts[1].substring(0, 2);
-        }
-        return cleaned;
-      },
-      reverseTransform: (value) => {
-        // Converte o valor do banco para exibição no formulário
-        if (value === null || value === undefined || value === '') return '';
-        return String(value);
-      },
-      validator: (value) => {
-        if (value === '') return null; // Campo opcional
-        const km = parseFloat(value);
-        if (isNaN(km)) return 'Quilometragem deve ser um número';
-        if (km < 0) return 'Quilometragem deve ser maior ou igual a zero';
-        if (km > 9999999.99) return 'Quilometragem muito alta';
-        return null;
-      }
-    },
-    {
-      name: 'data_ultima_manutencao',
-      type: 'text',
-      label: 'Data da Última Manutenção',
-      labelIcon: 'bi bi-wrench',
-      inputIcon: 'bi bi-calendar-check',
-      placeholder: 'DD/MM/AAAA',
-      maxLength: 10,
-      size: 'lg',
-      formatter: formatDate,
-      transform: (value) => {
-        // Converte DD/MM/AAAA para AAAA-MM-DD antes de enviar ao banco
-        if (!value) return value;
-        const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-        if (dateRegex.test(value)) {
-          const [day, month, year] = value.split('/');
-          return `${year}-${month}-${day}`;
-        }
-        return value;
-      },
-      reverseTransform: formatDateFromDatabase,
-      validator: (value) => {
-        if (!value) return null; // Campo opcional
-        
-        // Valida o formato e a data
-        if (!validateDate(value, 1990, 2100)) {
-          return 'Data inválida. Use o formato DD/MM/AAAA e verifique se a data existe';
-        }
-        
-        // Verifica se a data não é futura
-        const [day, month, year] = value.split('/').map(num => parseInt(num, 10));
-        const manutencaoDate = new Date(year, month - 1, day);
-        const today = new Date();
-        
-        if (manutencaoDate > today) return 'Data da manutenção não pode ser futura';
-        return null;
-      }
-    },
-    {
-      name: 'data_proxima_manutencao',
-      type: 'text',
-      label: 'Data da Próxima Manutenção',
-      labelIcon: 'bi bi-calendar-event',
-      inputIcon: 'bi bi-calendar-plus',
-      placeholder: 'DD/MM/AAAA',
-      maxLength: 10,
-      size: 'lg',
-      formatter: formatDate,
-      transform: (value) => {
-        // Converte DD/MM/AAAA para AAAA-MM-DD antes de enviar ao banco
-        if (!value) return value;
-        const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-        if (dateRegex.test(value)) {
-          const [day, month, year] = value.split('/');
-          return `${year}-${month}-${day}`;
-        }
-        return value;
-      },
-      reverseTransform: formatDateFromDatabase,
-      validator: (value) => {
-        if (!value) return null; // Campo opcional
-        
-        // Valida o formato e a data
-        if (!validateDate(value, 1990, 2100)) {
-          return 'Data inválida. Use o formato DD/MM/AAAA e verifique se a data existe';
-        }
-        
-        // Verifica se a data não é no passado
-        const [day, month, year] = value.split('/').map(num => parseInt(num, 10));
-        const proximaManutencaoDate = new Date(year, month - 1, day);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); // Remove horas para comparar apenas a data
-        
-        if (proximaManutencaoDate < today) return 'Data da próxima manutenção não pode ser no passado';
-        return null;
-      }
-    },
-    {
-      name: 'status_onibus_id',
-      type: 'select',
-      label: 'Status',
-      labelIcon: 'bi bi-check2-circle',
-      inputIcon: 'bi bi-tag',
-      placeholder: 'Selecione o status',
-      required: true,
-      size: 'lg',
-      loadOptions: () => api.buses.getStatus(),
-      defaultOptions: [
-        { status_onibus_id: 1, nome: 'Em Operação', descricao: 'Ônibus ativo e em circulação' },
-        { status_onibus_id: 2, nome: 'Em Manutenção', descricao: 'Ônibus em manutenção preventiva ou corretiva' },
-        { status_onibus_id: 3, nome: 'Inativo', descricao: 'Ônibus temporariamente fora de operação' }
-      ],
-      optionValue: 'status_onibus_id',
-      optionLabel: 'nome',
-      validator: (value) => {
-        if (!value) return 'Status é obrigatório';
-        return null;
-      }
-    }
-  ],
-  fakeDataGenerator: createFakeBusData
-};
+
 
 export const routeFormConfig = {
   fields: [
@@ -506,27 +236,27 @@ export const routeFormConfig = {
       }
     },
     {
-      name: 'onibus_id',
+      name: 'veiculo_id',
       type: 'select',
-      label: 'Ônibus',
+      label: 'Veículo',
       labelIcon: 'bi bi-bus-front',
-      inputIcon: 'bi bi-truck',
-      placeholder: 'Selecione o ônibus',
+      inputIcon: 'bi bi-car-front',
+      placeholder: 'Selecione o veículo',
       required: false,
       size: 'lg',
       loadOptions: () => api.buses.list(1, 100).then(response => {
         const allBuses = response.data || [];
-        // Filtrar apenas ônibus ativos e em operação
+        // Filtrar apenas veículos ativos e em operação
         return allBuses.filter(bus => 
           (bus.ativo === true || bus.ativo === 1) && // ativo = true
           (bus.status_nome === 'Em Operação') // status = "Em Operação"
         );
       }),
       defaultOptions: [],
-      optionValue: 'onibus_id',
+      optionValue: 'veiculo_id',
       optionLabel: (option) => `${option.nome} - ${option.placa} (${option.marca} ${option.modelo})`,
       validator: (value) => {
-        // Ônibus é opcional durante a criação da rota
+        // Veículo é opcional durante a criação da rota
         return null;
       }
     },
@@ -551,9 +281,9 @@ export const routeFormConfig = {
       optionValue: 'motorista_id',
       optionLabel: (option) => `${option.nome} - CNH: ${option.cnh_numero}`,
       validator: (value, formData) => {
-        // Se um ônibus foi selecionado, o motorista também deve ser selecionado
-        if (formData && formData.onibus_id && !value) {
-          return 'Motorista é obrigatório quando um ônibus é selecionado';
+        // Se um veículo foi selecionado, o motorista também deve ser selecionado
+        if (formData && formData.veiculo_id && !value) {
+          return 'Motorista é obrigatório quando um veículo é selecionado';
         }
         return null;
       }
@@ -564,7 +294,7 @@ export const routeFormConfig = {
       label: 'Observações da Associação',
       labelIcon: 'bi bi-chat-text',
       inputIcon: 'bi bi-pencil-square',
-      placeholder: 'Observações sobre a associação do ônibus e motorista com esta rota',
+      placeholder: 'Observações sobre a associação do veículo e motorista com esta rota',
       required: false,
       size: 'lg',
       rows: 3,
@@ -784,48 +514,22 @@ export const driverFormConfig = {
     },
     {
       name: 'cnh_validade',
-      type: 'text',
+      type: 'date',
       label: 'Validade da CNH',
       labelIcon: 'bi bi-calendar-fill',
       inputIcon: 'bi bi-calendar',
-      placeholder: 'DD/MM/AAAA',
-      maxLength: 10,
+      placeholder: 'Data de validade da CNH',
       required: true,
       size: 'lg',
-      formatter: formatDate,
-      transform: (value) => {
-        // Converte DD/MM/AAAA para AAAA-MM-DD antes de enviar ao banco
-        if (!value) return value;
-        const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-        if (dateRegex.test(value)) {
-          const [day, month, year] = value.split('/');
-          return `${year}-${month}-${day}`;
-        }
-        return value;
-      },
-      reverseTransform: formatDateFromDatabase,
       additionalProps: { 
+        min: new Date().toISOString().split('T')[0],
         autoComplete: 'new-password',
         'data-form-type': 'other',
         'data-lpignore': 'true',
         'data-1p-ignore': 'true'
       },
-      validator: (value) => {
-        if (!value) return 'Validade da CNH é obrigatória';
-        
-        // Valida o formato e a data
-        if (!validateDate(value, 1990, 2100)) {
-          return 'Data inválida. Use o formato DD/MM/AAAA e verifique se a data existe';
-        }
-        
-        // Verifica se a CNH não está vencida
-        const [day, month, year] = value.split('/').map(num => parseInt(num, 10));
-        const validadeDate = new Date(year, month - 1, day);
-        const today = new Date();
-        
-        if (validadeDate <= today) return 'CNH não pode estar vencida';
-        return null;
-      }
+      reverseTransform: reverseTransformDate,
+      validator: validateCNHValidity
     },
     {
       name: 'telefone',
@@ -858,47 +562,21 @@ export const driverFormConfig = {
     },
     {
       name: 'data_admissao',
-      type: 'text',
+      type: 'date',
       label: 'Data de Admissão',
       labelIcon: 'bi bi-calendar-plus-fill',
       inputIcon: 'bi bi-calendar-plus',
-      placeholder: 'DD/MM/AAAA',
-      maxLength: 10,
+      placeholder: 'Data de admissão',
       size: 'lg',
-      formatter: formatDate,
-      transform: (value) => {
-        // Converte DD/MM/AAAA para AAAA-MM-DD antes de enviar ao banco
-        if (!value) return value;
-        const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
-        if (dateRegex.test(value)) {
-          const [day, month, year] = value.split('/');
-          return `${year}-${month}-${day}`;
-        }
-        return value;
-      },
-      reverseTransform: formatDateFromDatabase,
       additionalProps: { 
+        max: new Date().toISOString().split('T')[0],
         autoComplete: 'new-password',
         'data-form-type': 'other',
         'data-lpignore': 'true',
         'data-1p-ignore': 'true'
       },
-      validator: (value) => {
-        if (!value) return null; // Campo opcional
-        
-        // Valida o formato e a data
-        if (!validateDate(value, 1990, 2100)) {
-          return 'Data inválida. Use o formato DD/MM/AAAA e verifique se a data existe';
-        }
-        
-        // Verifica se a data não é futura
-        const [day, month, year] = value.split('/').map(num => parseInt(num, 10));
-        const admissaoDate = new Date(year, month - 1, day);
-        const today = new Date();
-        
-        if (admissaoDate > today) return 'Data de admissão não pode ser futura';
-        return null;
-      }
+      reverseTransform: reverseTransformDate,
+      validator: validateAdmissionDate
     },
     {
       name: 'status_motorista_id',
@@ -926,4 +604,199 @@ export const driverFormConfig = {
     }
   ],
   fakeDataGenerator: createFakeDriverData
+};
+
+export const vehicleFormConfig = {
+  fields: [
+    {
+      name: 'nome',
+      type: 'text',
+      label: 'Nome do Veículo',
+      labelIcon: 'bi bi-car-front-fill',
+      inputIcon: 'bi bi-info-circle',
+      placeholder: 'Nome identificador do veículo',
+      required: true,
+      size: 'lg',
+      validator: (value) => {
+        return !value.trim() ? 'Nome do veículo é obrigatório' : null;
+      }
+    },
+    {
+      name: 'placa',
+      type: 'text',
+      label: 'Placa',
+      labelIcon: 'bi bi-card-text',
+      inputIcon: 'bi bi-signpost',
+      placeholder: 'ABC-1234 ou ABC1D23',
+      maxLength: 7,
+      required: true,
+      size: 'lg',
+      formatter: (value) => formatPlate(value),
+      validator: (value) => {
+        if (!value.trim()) return 'Placa é obrigatória';
+        const cleanValue = value.replace(/[-\s]/g, '').toUpperCase();
+        const placaRegex = /^[A-Z]{3}\d{4}$|^[A-Z]{3}\d[A-Z]\d{2}$/;
+        if (!placaRegex.test(cleanValue)) {
+          return 'Formato de placa inválido (ex: ABC-1234 ou ABC1D23)';
+        }
+        return null;
+      }
+    },
+    {
+      name: 'tipo_veiculo_id',
+      type: 'select',
+      label: 'Tipo de Veículo',
+      labelIcon: 'bi bi-truck',
+      inputIcon: 'bi bi-truck-front',
+      placeholder: 'Selecione o tipo de veículo',
+      required: true,
+      size: 'lg',
+      loadOptions: () => api.vehicles.getTypes(),
+      defaultOptions: [
+        { tipo_veiculo_id: 1, nome: 'Ônibus', descricao: 'Veículo de transporte coletivo com capacidade para 40+ passageiros' },
+        { tipo_veiculo_id: 2, nome: 'Micro-ônibus', descricao: 'Veículo de transporte coletivo com capacidade para 15-30 passageiros' },
+        { tipo_veiculo_id: 3, nome: 'Van', descricao: 'Veículo de transporte coletivo com capacidade para 8-15 passageiros' }
+      ],
+      optionValue: 'tipo_veiculo_id',
+      optionLabel: 'nome',
+      validator: (value) => {
+        if (!value) return 'Tipo de veículo é obrigatório';
+        return null;
+      }
+    },
+    {
+      name: 'modelo',
+      type: 'text',
+      label: 'Modelo',
+      labelIcon: 'bi bi-car-front',
+      inputIcon: 'bi bi-gear',
+      placeholder: 'Modelo do veículo',
+      size: 'lg',
+      validator: (value) => {
+        return value.trim() && value.length < 2 ? 'Modelo deve ter pelo menos 2 caracteres' : null;
+      }
+    },
+    {
+      name: 'marca',
+      type: 'text',
+      label: 'Marca',
+      labelIcon: 'bi bi-building',
+      inputIcon: 'bi bi-award',
+      placeholder: 'Marca do veículo',
+      size: 'lg',
+      validator: (value) => {
+        return value.trim() && value.length < 2 ? 'Marca deve ter pelo menos 2 caracteres' : null;
+      }
+    },
+    {
+      name: 'ano_fabricacao',
+      type: 'text',
+      label: 'Ano de Fabricação',
+      labelIcon: 'bi bi-calendar-event',
+      inputIcon: 'bi bi-calendar',
+      placeholder: 'Ano de fabricação',
+      maxLength: 4,
+      additionalProps: { max: new Date().getFullYear() + 1, min: 1950 },
+      size: 'lg',
+      formatter: (value) => value.replace(/\D/g, ''), // Remove tudo que não for dígito
+      validator: (value) => {
+        if (value === '') return null;
+        const currentYear = new Date().getFullYear();
+        const ano = parseInt(value);
+        if (isNaN(ano)) return 'Ano deve ser um número';
+        if (ano < 1950) return 'Ano deve ser maior que 1950';
+        if (ano > currentYear + 1) return `Ano não pode ser maior que ${currentYear + 1}`;
+        if (value.length > 4) return 'Ano deve ter no máximo 4 dígitos';
+        return null;
+      }
+    },
+    {
+      name: 'capacidade',
+      type: 'text',
+      label: 'Capacidade',
+      labelIcon: 'bi bi-people',
+      inputIcon: 'bi bi-person-plus',
+      placeholder: 'Número de passageiros',
+      maxLength: 3,
+      additionalProps: { max: 200, min: 1 },
+      required: true,
+      size: 'lg',
+      formatter: (value) => value.replace(/\D/g, ''), // Remove tudo que não for dígito
+      validator: (value) => {
+        if (value === '') return 'Capacidade é obrigatória';
+        const capacidade = parseInt(value);
+        if (isNaN(capacidade)) return 'Capacidade deve ser um número';
+        if (capacidade < 1) return 'Capacidade deve ser maior que zero';
+        if (capacidade > 200) return 'Capacidade deve ser menor que 200';
+        return null;
+      }
+    },
+    {
+      name: 'quilometragem',
+      type: 'text',
+      label: 'Quilometragem',
+      labelIcon: 'bi bi-speedometer2',
+      inputIcon: 'bi bi-graph-up',
+      placeholder: 'Quilometragem atual',
+      maxLength: 10,
+      size: 'lg',
+      formatter: (value) => value.replace(/\D/g, ''), // Remove tudo que não for dígito
+      validator: (value) => {
+        if (value === '') return null;
+        const quilometragem = parseInt(value);
+        if (isNaN(quilometragem)) return 'Quilometragem deve ser um número';
+        if (quilometragem < 0) return 'Quilometragem não pode ser negativa';
+        if (quilometragem > 9999999) return 'Quilometragem muito alta';
+        return null;
+      }
+    },
+    {
+      name: 'data_ultima_manutencao',
+      type: 'date',
+      label: 'Última Manutenção',
+      labelIcon: 'bi bi-tools',
+      inputIcon: 'bi bi-calendar-check',
+      placeholder: 'Data da última manutenção',
+      size: 'lg',
+      additionalProps: { max: new Date().toISOString().split('T')[0] },
+      reverseTransform: reverseTransformDate,
+      validator: validateLastMaintenanceDate
+    },
+    {
+      name: 'data_proxima_manutencao',
+      type: 'date',
+      label: 'Próxima Manutenção',
+      labelIcon: 'bi bi-calendar-plus',
+      inputIcon: 'bi bi-calendar-event',
+      placeholder: 'Data da próxima manutenção',
+      size: 'lg',
+      additionalProps: { min: new Date().toISOString().split('T')[0] },
+      reverseTransform: reverseTransformDate,
+      validator: validateNextMaintenanceDate
+    },
+    {
+      name: 'status_veiculo_id',
+      alternativeKey: 'status_veiculo_id',
+      type: 'select',
+      label: 'Status',
+      labelIcon: 'bi bi-flag-fill',
+      inputIcon: 'bi bi-flag',
+      placeholder: 'Selecione o status',
+      required: true,
+      size: 'lg',
+      loadOptions: () => api.vehicles.getStatus(),
+      defaultOptions: [
+        { status_veiculo_id: 1, nome: 'Em Operação', descricao: 'Veículo em operação normal' },
+        { status_veiculo_id: 2, nome: 'Em Manutenção', descricao: 'Veículo em manutenção' },
+        { status_veiculo_id: 3, nome: 'Inativo', descricao: 'Veículo inativo' }
+      ],
+      optionValue: 'status_veiculo_id',
+      optionLabel: 'nome',
+      validator: (value) => {
+        if (!value) return 'Status é obrigatório';
+        return null;
+      }
+    }
+  ],
+  fakeDataGenerator: createFakeVehicleData
 };

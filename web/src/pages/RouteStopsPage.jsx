@@ -164,7 +164,7 @@ function RouteStopsPage({ pageFunctions, isDark }) {
                     tempo_viagem_estimado_minutos: route.tempo_viagem_estimado_minutos,
                     status_rota_id: route.status_rota_id,
                     ativo: route.ativo,
-                    onibus_id: route.onibus_id,
+                    veiculo_id: route.veiculo_id,
                     motorista_id: route.motorista_id,
                     observacoes_assignment: route.observacoes_assignment || ''
                 });

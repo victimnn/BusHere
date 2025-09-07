@@ -96,7 +96,8 @@ function SearchLink({ term }) {
 
   const itemTypeToLinkHash = {
     "Passenger": "passengers",
-    "Onibus": "buses",
+    "Veiculo": "vehicles",
+    "Veiculos": "vehicles",
     "Rota": "routes",
     "Ponto": "stops",
     "Motorista": "drivers",
@@ -106,7 +107,8 @@ function SearchLink({ term }) {
 
   const iconHash = {
     "Passenger": "bi bi-person-check",
-    "Onibus": "bi bi-bus-front",
+    "Veiculo": "bi bi-car-front",
+    "Veiculos": "bi bi-car-front",
     "Rota": "bi bi-sign-turn-right",  
     "Ponto": "bi bi-geo-alt",
     "Motorista": "bi bi-person-workspace",

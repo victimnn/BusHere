@@ -3,7 +3,7 @@ import PopUpComponent from '../../core/feedback/PopUpComponent';
 import { Table } from '@web/components/common/data-display';
 import { StatCard } from '@web/components/common/data-display';
 
-// Constantes para status de ônibus
+// Constantes para status de veículos
 const STATUS_MAP = { 
   1: 'Em Operação', 
   2: 'Em Manutenção', 
@@ -11,95 +11,96 @@ const STATUS_MAP = {
 };
 
 const STATS_MESSAGE = {
-  total: (count) => `Total de ${count} ônibus cadastrado(s)`,
-  operational: (count) => `${count} ônibus em operação`,
-  maintenance: (count) => `${count} ônibus em manutenção`,
-  inactive: (count) => `${count} ônibus inativo(s)`
+  total: (count) => `Total de ${count} veículo(s) cadastrado(s)`,
+  operational: (count) => `${count} veículo(s) em operação`,
+  maintenance: (count) => `${count} veículo(s) em manutenção`,
+  inactive: (count) => `${count} veículo(s) inativo(s)`
 };
 
 const STATS_CONFIG = {
   total: {
-    title: "Total de Ônibus",
-    iconClass: "bi bi-bus-front-fill",
+    title: "Total de Veículos",
+    iconClass: "bi bi-car-front-fill",
     className: "col-12 col-sm-6 col-lg-3",
     gradient: "bg-gradient-info",
-    popupTitle: 'Total de Ônibus'
+    popupTitle: 'Total de Veículos'
   },
   operational: {
     title: "Em Operação",
     iconClass: "bi bi-check-circle-fill",
     className: "col-12 col-sm-6 col-lg-3",
     gradient: "bg-gradient-primary",
-    popupTitle: 'Ônibus Em Operação'
+    popupTitle: 'Veículos Em Operação'
   },
   maintenance: {
     title: "Em Manutenção",
     iconClass: "bi bi-tools",
     className: "col-12 col-sm-6 col-lg-3",
     gradient: "bg-gradient-warning",
-    popupTitle: 'Ônibus Em Manutenção'
+    popupTitle: 'Veículos Em Manutenção'
   },
   inactive: {
     title: "Inativos",
     iconClass: "bi bi-x-circle-fill",
     className: "col-12 col-sm-6 col-lg-3",
     gradient: "bg-gradient-danger",
-    popupTitle: 'Ônibus Inativos'
+    popupTitle: 'Veículos Inativos'
   }
 };
 
-// Função utilitária para filtrar ônibus por categoria
-const filterBusesByCategory = (buses, category) => {
+// Função utilitária para filtrar veículos por categoria
+const filterVehiclesByCategory = (vehicles, category) => {
   switch (category) {
     case 'operational':
-      return buses.filter(bus => bus.status_onibus_id === 1);
+      return vehicles.filter(vehicle => vehicle.status_veiculo_id === 1);
     
     case 'maintenance':
-      return buses.filter(bus => bus.status_onibus_id === 2);
+      return vehicles.filter(vehicle => vehicle.status_veiculo_id === 2);
     
     case 'inactive':
-      return buses.filter(bus => bus.status_onibus_id === 3);
+      return vehicles.filter(vehicle => vehicle.status_veiculo_id === 3);
     
     case 'total':
     default:
-      return buses;
+      return vehicles;
   }
 };
 
-const BusesListPopup = ({ buses, category }) => {
+const VehiclesListPopup = ({ vehicles, category }) => {
   const tableHeaders = useMemo(() => [
     { id: "nome", label: "Nome", sortable: true },
     { id: "placa", label: "Placa", sortable: true },
+    { id: "tipo_nome", label: "Tipo", sortable: true },
     { id: "modelo", label: "Modelo", sortable: true },
     { id: "marca", label: "Marca", sortable: true },
     { id: "ano_fabricacao", label: "Ano", sortable: true },
     { id: "capacidade", label: "Capacidade", sortable: true },
-    { id: "status", label: "Status", sortable: true }
+    { id: "status_nome", label: "Status", sortable: true }
   ], []);
 
-  const processedBuses = useMemo(() => 
-    buses.map(bus => ({
-      ...bus,
-      status: bus.status_nome || STATUS_MAP[bus.status_onibus_id] || 'Não informado'
-    })), [buses]
+  const processedVehicles = useMemo(() => 
+    vehicles.map(vehicle => ({
+      ...vehicle,
+      status_nome: vehicle.status_nome || STATUS_MAP[vehicle.status_veiculo_id] || 'Não informado'
+    })), [vehicles]
   );
 
   return (
-    <div className="buses-list-popup" style={{ maxWidth: '90vw', width: '100%', minWidth: '800px' }}>
+    <div className="vehicles-list-popup" style={{ maxWidth: '90vw', width: '100%', minWidth: '800px' }}>
       <div className="mb-3">
-        <p className="text-muted mb-0">{STATS_MESSAGE[category](buses.length)}</p>
+        <p className="text-muted mb-0">{STATS_MESSAGE[category](vehicles.length)}</p>
       </div>
 
-      {buses.length === 0 ? (
+      {vehicles.length === 0 ? (
         <div className="text-center p-4">
-          <i className="bi bi-bus-front fs-1 text-muted mb-3 d-block"></i>
-          <p className="text-muted">Nenhum ônibus encontrado neste card de estatística.</p>
+          <i className="bi bi-car-front fs-1 text-muted mb-3 d-block"></i>
+          <p className="text-muted">Nenhum veículo encontrado neste card de estatística.</p>
         </div>
       ) : (
         <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
           <Table 
             headers={tableHeaders}
-            data={processedBuses}
+            data={processedVehicles}
             itemsPerPage={10}
             searchable={false}
             className="table-striped table-hover"
@@ -110,17 +111,17 @@ const BusesListPopup = ({ buses, category }) => {
   );
 };
 
-const BusStatsCards = ({ buses = [] }) => {
+const VehicleStatsCards = ({ vehicles = [] }) => {
   const popUpRef = useRef(null);
 
   // Memoização dos dados calculados para evitar recálculos desnecessários
   const statsData = useMemo(() => {
     const filteredData = {};
     Object.keys(STATS_CONFIG).forEach(category => {
-      filteredData[category] = filterBusesByCategory(buses, category);
+      filteredData[category] = filterVehiclesByCategory(vehicles, category);
     });
     return filteredData;
-  }, [buses]);
+  }, [vehicles]);
 
   // Configuração final dos stats com valores calculados
   const statsConfig = useMemo(() => 
@@ -134,15 +135,15 @@ const BusStatsCards = ({ buses = [] }) => {
   );
 
   // Função otimizada para mostrar popup
-  const showBusesPopup = (category) => {
-    const filteredBuses = statsData[category];
+  const showVehiclesPopup = (category) => {
+    const filteredVehicles = statsData[category];
     const config = statsConfig[category];
     
     popUpRef.current.show({
       title: config.popupTitle,
-      content: BusesListPopup,
+      content: VehiclesListPopup,
       props: {
-        buses: filteredBuses,
+        vehicles: filteredVehicles,
         category: category,
       }
     });
@@ -158,7 +159,7 @@ const BusStatsCards = ({ buses = [] }) => {
             value={config.value}
             iconClass={config.iconClass}
             gradient={config.gradient}
-            onClick={() => showBusesPopup(category)}
+            onClick={() => showVehiclesPopup(category)}
             className="col-xl-3 col-md-6 mb-4"
           />
         ))}
@@ -168,4 +169,4 @@ const BusStatsCards = ({ buses = [] }) => {
   );
 };
 
-export default BusStatsCards;
+export default VehicleStatsCards;

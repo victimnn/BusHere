@@ -9,9 +9,9 @@ DROP TRIGGER IF EXISTS after_motoristas_delete_log;
 DROP TRIGGER IF EXISTS after_rotas_insert_log;
 DROP TRIGGER IF EXISTS after_rotas_update_log;
 DROP TRIGGER IF EXISTS after_rotas_delete_log;
-DROP TRIGGER IF EXISTS after_onibus_insert_log;
-DROP TRIGGER IF EXISTS after_onibus_update_log;
-DROP TRIGGER IF EXISTS after_onibus_delete_log;
+DROP TRIGGER IF EXISTS after_veiculo_insert_log;
+DROP TRIGGER IF EXISTS after_veiculo_update_log;
+DROP TRIGGER IF EXISTS after_veiculo_delete_log;
 DROP TRIGGER IF EXISTS after_usuarios_empresa_insert_log;
 DROP TRIGGER IF EXISTS after_usuarios_empresa_update_log;
 DROP TRIGGER IF EXISTS after_usuarios_empresa_delete_log;
@@ -318,19 +318,19 @@ BEGIN
     );
 END;
 
--- Onibus
-CREATE TRIGGER after_onibus_insert_log
-AFTER INSERT ON Onibus
+-- Veiculos
+CREATE TRIGGER after_veiculo_insert_log
+AFTER INSERT ON Veiculos
 FOR EACH ROW
 BEGIN
     INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
-        'Onibus', 
-        NEW.onibus_id,
+        'Veiculos', 
+        NEW.veiculo_id,
         'INSERT', 
         NULL, 
         JSON_OBJECT(
-            'onibus_id', NEW.onibus_id,
+            'veiculo_id', NEW.veiculo_id,
             'nome', NEW.nome,
             'placa', NEW.placa,
             'modelo', NEW.modelo,
@@ -340,7 +340,8 @@ BEGIN
             'quilometragem', NEW.quilometragem,
             'data_ultima_manutencao', NEW.data_ultima_manutencao,
             'data_proxima_manutencao', NEW.data_proxima_manutencao,
-            'status_onibus_id', NEW.status_onibus_id,
+            'tipo_veiculo_id', NEW.tipo_veiculo_id,
+            'status_veiculo_id', NEW.status_veiculo_id,
             'ativo', NEW.ativo,
             'criacao', NEW.criacao,
             'atualizacao', NEW.atualizacao        ), 
@@ -348,17 +349,17 @@ BEGIN
     );
 END;
 
-CREATE TRIGGER after_onibus_update_log
-AFTER UPDATE ON Onibus
+CREATE TRIGGER after_veiculo_update_log
+AFTER UPDATE ON Veiculos
 FOR EACH ROW
 BEGIN
     INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
-        'Onibus', 
-        NEW.onibus_id,
+        'Veiculos', 
+        NEW.veiculo_id,
         'UPDATE', 
         JSON_OBJECT(
-            'onibus_id', OLD.onibus_id,
+            'veiculo_id', OLD.veiculo_id,
             'nome', OLD.nome,
             'placa', OLD.placa,
             'modelo', OLD.modelo,
@@ -368,13 +369,14 @@ BEGIN
             'quilometragem', OLD.quilometragem,
             'data_ultima_manutencao', OLD.data_ultima_manutencao,
             'data_proxima_manutencao', OLD.data_proxima_manutencao,
-            'status_onibus_id', OLD.status_onibus_id,
+            'tipo_veiculo_id', OLD.tipo_veiculo_id,
+            'status_veiculo_id', OLD.status_veiculo_id,
             'ativo', OLD.ativo,
             'criacao', OLD.criacao,
             'atualizacao', OLD.atualizacao
         ),
         JSON_OBJECT(
-            'onibus_id', NEW.onibus_id,
+            'veiculo_id', NEW.veiculo_id,
             'nome', NEW.nome,
             'placa', NEW.placa,
             'modelo', NEW.modelo,
@@ -384,7 +386,8 @@ BEGIN
             'quilometragem', NEW.quilometragem,
             'data_ultima_manutencao', NEW.data_ultima_manutencao,
             'data_proxima_manutencao', NEW.data_proxima_manutencao,
-            'status_onibus_id', NEW.status_onibus_id,
+            'tipo_veiculo_id', NEW.tipo_veiculo_id,
+            'status_veiculo_id', NEW.status_veiculo_id,
             'ativo', NEW.ativo,
             'criacao', NEW.criacao,
             'atualizacao', NEW.atualizacao        ),
@@ -392,17 +395,17 @@ BEGIN
     );
 END;
 
-CREATE TRIGGER after_onibus_delete_log
-AFTER DELETE ON Onibus
+CREATE TRIGGER after_veiculo_delete_log
+AFTER DELETE ON Veiculos
 FOR EACH ROW
 BEGIN
     INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
     VALUES (
-        'Onibus', 
-        OLD.onibus_id,
+        'Veiculos', 
+        OLD.veiculo_id,
         'DELETE', 
         JSON_OBJECT(
-            'onibus_id', OLD.onibus_id,
+            'veiculo_id', OLD.veiculo_id,
             'nome', OLD.nome,
             'placa', OLD.placa,
             'modelo', OLD.modelo,
@@ -412,7 +415,8 @@ BEGIN
             'quilometragem', OLD.quilometragem,
             'data_ultima_manutencao', OLD.data_ultima_manutencao,
             'data_proxima_manutencao', OLD.data_proxima_manutencao,
-            'status_onibus_id', OLD.status_onibus_id,
+            'tipo_veiculo_id', OLD.tipo_veiculo_id,
+            'status_veiculo_id', OLD.status_veiculo_id,
             'ativo', OLD.ativo,
             'criacao', OLD.criacao,
             'atualizacao', OLD.atualizacao        ),

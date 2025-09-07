@@ -98,12 +98,12 @@ const DetailedSummary = ({ reportData }) => {
                   <div className="mb-4">
                     <div className="d-flex justify-content-between align-items-center mb-2">
                       <span className="text-muted">Capacidade Total da Frota</span>
-                      <i className="fas fa-bus text-success"></i>
+                      <i className="fas fa-car text-success"></i>
                     </div>
                     <h4 className="text-success fw-bold mb-0">
-                      {(reportData.stats?.buses?.totalCapacity || 
-                       (reportData.buses && Array.isArray(reportData.buses) ? 
-                        reportData.buses.reduce((total, bus) => total + (parseInt(bus.capacidade) || 0), 0) : 0)).toLocaleString()} 
+                      {(reportData.stats?.vehicles?.totalCapacity || 
+                       (reportData.vehicles && Array.isArray(reportData.vehicles) ? 
+                        reportData.vehicles.reduce((total, vehicle) => total + (parseInt(vehicle.capacidade) || 0), 0) : 0)).toLocaleString()} 
                       <small className="text-muted fs-6 fw-normal"> passageiros</small>
                     </h4>
                   </div>

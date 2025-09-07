@@ -1,11 +1,11 @@
 // Utilitários para filtros de status nos relatórios
 
 /**
- * Verifica se um ônibus está em operação (ativo)
- * @param {string} statusNome - Nome do status do ônibus
+ * Verifica se um veículo está em operação (ativo)
+ * @param {string} statusNome - Nome do status do veículo
  * @returns {boolean}
  */
-export const isBusActive = (statusNome) => {
+export const isVehicleActive = (statusNome) => {
   if (!statusNome) return false;
   const status = statusNome.toLowerCase();
   return status.includes('operação') || 
@@ -34,12 +34,12 @@ export const isStopActive = (ativo) => {
 };
 
 /**
- * Filtra ônibus ativos de uma lista
- * @param {Array} buses - Lista de ônibus
+ * Filtra veículos ativos de uma lista
+ * @param {Array} vehicles - Lista de veículos
  * @returns {Array}
  */
-export const getActiveBuses = (buses) => {
-  return buses.filter(bus => isBusActive(bus.status_nome));
+export const getActiveVehicles = (vehicles) => {
+  return vehicles.filter(vehicle => isVehicleActive(vehicle.status_nome));
 };
 
 /**
@@ -63,7 +63,7 @@ export const getActiveStops = (stops) => {
 /**
  * Calcula totais de entidades ativas a partir de estatísticas do backend
  * @param {Array} statusArray - Array de status com contadores
- * @param {Function} filterFn - Função de filtro (isBusActive ou isRouteActive)
+ * @param {Function} filterFn - Função de filtro (isVehicleActive ou isRouteActive)
  * @returns {number}
  */
 export const getActiveCountFromStats = (statusArray, filterFn) => {
@@ -71,5 +71,5 @@ export const getActiveCountFromStats = (statusArray, filterFn) => {
   
   return statusArray
     .filter(status => filterFn(status.status_nome))
-    .reduce((sum, status) => sum + (status.total_onibus || status.total_rotas || 0), 0);
+    .reduce((sum, status) => sum + (status.total_veiculos || status.total_rotas || 0), 0);
 };

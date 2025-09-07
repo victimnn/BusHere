@@ -1,43 +1,8 @@
 import { faker } from '@faker-js/faker';
+import { generateBirthDate, generateAdmissionDate, generateCNHValidityDate, generateLastMaintenanceDate, generateNextMaintenanceDate, generateKilometers, generateBrazilianLicensePlate, generateValidCPF, generateCNH } from '@shared/fakeDataGenerators';
 import { formatPhoneNumber } from '@shared/formatters';
 
 function createFakePassengerData() {
-  function generateValidCPF() {
-    function calculateDigit(cpfPart) {
-        let sum = 0;
-        let multiplier = cpfPart.length + 1;
-        for (let i = 0; i < cpfPart.length; i++) {
-            sum += parseInt(cpfPart[i]) * multiplier;
-            multiplier--;
-        }
-        const remainder = sum % 11;
-        return remainder < 2 ? 0 : 11 - remainder;
-    }
-    let cpfNumbers = [];
-    for (let i = 0; i < 9; i++) {
-        cpfNumbers.push(Math.floor(Math.random() * 10));
-    }
-    let cpfBase = cpfNumbers.join('');
-    const firstDigit = calculateDigit(cpfBase);
-    cpfBase += firstDigit;
-    const secondDigit = calculateDigit(cpfBase);
-    cpfBase += secondDigit; 
-    return cpfBase.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-  }
-
-  // Função auxiliar para gerar data de nascimento
-  function generateBirthDate() {
-    // Gera uma data de nascimento entre 18 e 80 anos atrás
-    const today = new Date();
-    const minAge = 18;
-    const maxAge = 80;
-    const birthYear = today.getFullYear() - faker.number.int({ min: minAge, max: maxAge });
-    const birthMonth = faker.number.int({ min: 1, max: 12 });
-    const birthDay = faker.number.int({ min: 1, max: 28 }); // 28 para evitar problemas com fevereiro
-    
-    return `${String(birthDay).padStart(2, '0')}/${String(birthMonth).padStart(2, '0')}/${birthYear}`;
-  }
-
   return {
     nome: faker.person.fullName(),
     cpf: generateValidCPF(),
@@ -112,49 +77,6 @@ function createFakeBusData() {
   const brands = ['Mercedes-Benz', 'Volvo', 'Scania', 'Volkswagen', 'Iveco'];
   const models = ['O500', 'B270F', 'K310', 'Volksbus', 'CityClass'];
   
-  // Gera uma placa brasileira válida (formato antigo ou Mercosul)
-  const generateBrazilianLicensePlate = () => {
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const digits = '0123456789';
-    const isNewFormat = faker.datatype.boolean(); // 50% chance para cada formato
-    
-    if (isNewFormat) {
-      // Formato Mercosul: ABC1D23
-      return `${letters.charAt(faker.number.int({ min: 0, max: 25 }))}${letters.charAt(faker.number.int({ min: 0, max: 25 }))}${letters.charAt(faker.number.int({ min: 0, max: 25 }))}${digits.charAt(faker.number.int({ min: 0, max: 9 }))}${letters.charAt(faker.number.int({ min: 0, max: 25 }))}${digits.charAt(faker.number.int({ min: 0, max: 9 }))}${digits.charAt(faker.number.int({ min: 0, max: 9 }))}`;
-    } else {
-      // Formato antigo: ABC-1234
-      return `${letters.charAt(faker.number.int({ min: 0, max: 25 }))}${letters.charAt(faker.number.int({ min: 0, max: 25 }))}${letters.charAt(faker.number.int({ min: 0, max: 25 }))}-${digits.charAt(faker.number.int({ min: 0, max: 9 }))}${digits.charAt(faker.number.int({ min: 0, max: 9 }))}${digits.charAt(faker.number.int({ min: 0, max: 9 }))}${digits.charAt(faker.number.int({ min: 0, max: 9 }))}`;
-    }
-  };
-
-  // Função auxiliar para converter data para formato brasileiro DD/MM/AAAA
-  function formatDateToBrazilian(date) {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  }
-
-  function generateUltimaManutencaoDate() {
-    // Gera uma data de última manutenção entre 30 e 365 dias atrás
-    const pastDate = new Date();
-    pastDate.setDate(pastDate.getDate() - faker.number.int({ min: 30, max: 365 }));
-    return formatDateToBrazilian(pastDate); // Formato DD/MM/AAAA
-  }
-
-  function generateProximaManutencaoDate() {
-    // Gera uma data de próxima manutenção entre 30 e 180 dias no futuro
-    const futureDate = new Date();
-    futureDate.setDate(futureDate.getDate() + faker.number.int({ min: 30, max: 180 }));
-    return formatDateToBrazilian(futureDate); // Formato DD/MM/AAAA
-  }
-
-  function generateQuilometragem() {
-    // Gera quilometragem realista para ônibus (entre 50.000 e 800.000 km)
-    const km = faker.number.float({ min: 50000, max: 800000, fractionDigits: 2 });
-    return km.toString();
-  }
-  
   return {
     nome: `Ônibus ${faker.string.numeric(3)}`,
     placa: generateBrazilianLicensePlate(),
@@ -162,9 +84,9 @@ function createFakeBusData() {
     marca: faker.helpers.arrayElement(brands),
     ano_fabricacao: faker.number.int({ min: currentYear - 15, max: currentYear }).toString(),
     capacidade: faker.number.int({ min: 25, max: 80 }).toString(),
-    quilometragem: generateQuilometragem(),
-    data_ultima_manutencao: generateUltimaManutencaoDate(),
-    data_proxima_manutencao: generateProximaManutencaoDate(),
+    quilometragem: generateKilometers(50000, 800000),
+    data_ultima_manutencao: generateLastMaintenanceDate(),
+    data_proxima_manutencao: generateNextMaintenanceDate(),
     status_onibus_id: faker.helpers.arrayElement(['1', '2', '3'])
   };
 }
@@ -241,70 +163,64 @@ function createFakeStopData() {
 }
 
 function createFakeDriverData() {
-  function generateValidCPF() {
-    function calculateDigit(cpfPart) {
-        let sum = 0;
-        let multiplier = cpfPart.length + 1;
-        for (let i = 0; i < cpfPart.length; i++) {
-            sum += parseInt(cpfPart[i]) * multiplier;
-            multiplier--;
-        }
-        const remainder = sum % 11;
-        return remainder < 2 ? 0 : 11 - remainder;
-    }
-    let cpfNumbers = [];
-    for (let i = 0; i < 9; i++) {
-        cpfNumbers.push(Math.floor(Math.random() * 10));
-    }
-    let cpfBase = cpfNumbers.join('');
-    const firstDigit = calculateDigit(cpfBase);
-    cpfBase += firstDigit;
-    const secondDigit = calculateDigit(cpfBase);
-    cpfBase += secondDigit; 
-    return cpfBase.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-  }
-
-  function generateCNH() {
-    return faker.string.numeric(11); // CNH tem 11 dígitos
-  }
-
-  // Função auxiliar para converter data para formato brasileiro DD/MM/AAAA
-  function formatDateToBrazilian(date) {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  }
-
-  function generateValidadeDate() {
-    // Gera uma data de validade da CNH entre 1 ano e 5 anos no futuro
-    const futureDate = new Date();
-    futureDate.setFullYear(futureDate.getFullYear() + faker.number.int({ min: 1, max: 5 }));
-    return formatDateToBrazilian(futureDate); // Formato DD/MM/AAAA
-  }
-
-  function generateAdmissaoDate() {
-    // Gera uma data de admissão entre 10 anos atrás e hoje
-    const pastDate = new Date();
-    pastDate.setFullYear(pastDate.getFullYear() - faker.number.int({ min: 0, max: 10 }));
-    return formatDateToBrazilian(pastDate); // Formato DD/MM/AAAA
-  }
-
   return {
     nome: faker.person.fullName(),
     cpf: generateValidCPF(),
     cnh_numero: generateCNH(),
     cnh_categoria: faker.helpers.arrayElement(['D', 'AD', 'AE']), // Categorias apropriadas para ônibus
-    cnh_validade: generateValidadeDate(),
+    cnh_validade: generateCNHValidityDate(),
     telefone: `(${faker.string.numeric(2)}) ${faker.string.numeric(5)}-${faker.string.numeric(4)}`,
     email: faker.internet.email(),
-    data_admissao: generateAdmissaoDate(),
+    data_admissao: generateAdmissionDate(),
     status_motorista_id: faker.helpers.arrayElement(['1', '2', '3', '4']) // Ativo, Férias, Afastado, Inativo
   };
 }
 
+function createFakeVehicleData() {
+  const currentYear = new Date().getFullYear();
+  const brands = ['Mercedes-Benz', 'Volvo', 'Scania', 'Volkswagen', 'Iveco', 'Ford', 'Chevrolet'];
+  const models = ['O500', 'B270F', 'K310', 'Volksbus', 'CityClass', 'Sprinter', 'Master'];
+  const vehicleTypes = [
+    { tipo_veiculo_id: 1, nome: 'Ônibus' },
+    { tipo_veiculo_id: 2, nome: 'Micro-ônibus' },
+    { tipo_veiculo_id: 3, nome: 'Van' }
+  ];
+
+  const vehicleType = faker.helpers.arrayElement(vehicleTypes);
+  
+  // Ajusta capacidade baseada no tipo de veículo
+  let capacidade;
+  switch (vehicleType.tipo_veiculo_id) {
+    case 1: // Ônibus
+      capacidade = faker.number.int({ min: 40, max: 80 });
+      break;
+    case 2: // Micro-ônibus
+      capacidade = faker.number.int({ min: 15, max: 30 });
+      break;
+    case 3: // Van
+      capacidade = faker.number.int({ min: 8, max: 15 });
+      break;
+    default:
+      capacidade = faker.number.int({ min: 8, max: 80 });
+  }
+  
+  return {
+    nome: `${vehicleType.nome} ${faker.string.numeric(3)}`,
+    placa: generateBrazilianLicensePlate(),
+    tipo_veiculo_id: vehicleType.tipo_veiculo_id.toString(),
+    modelo: faker.helpers.arrayElement(models),
+    marca: faker.helpers.arrayElement(brands),
+    ano_fabricacao: faker.number.int({ min: currentYear - 15, max: currentYear }).toString(),
+    capacidade: capacidade.toString(),
+    quilometragem: generateKilometers(10000, 500000),
+    data_ultima_manutencao: generateLastMaintenanceDate(),
+    data_proxima_manutencao: generateNextMaintenanceDate(),
+    status_veiculo_id: faker.helpers.arrayElement(['1', '2', '3'])
+  };
+}
+
 export {
-    createFakePassengerData, createFakeRouteData, createFakeBusData, createFakeStopData, createFakeDriverData
+    createFakePassengerData, createFakeRouteData, createFakeBusData, createFakeStopData, createFakeDriverData, createFakeVehicleData
 };
 
 

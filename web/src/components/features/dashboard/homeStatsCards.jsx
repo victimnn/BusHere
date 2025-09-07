@@ -18,9 +18,9 @@ const HomeStatsCards = ({ stats }) => {
             className: "col-xl-3 col-lg-6 col-md-6 col-6"
         },
         {
-            title: "Frota de Ônibus",
-            value: stats.buses,
-            iconClass: "bi bi-bus-front-fill",
+            title: "Frota de Veículos",
+            value: stats.vehicles,
+            iconClass: "bi bi-car-front-fill",
             gradient: "bg-gradient-warning",
             className: "col-xl-3 col-lg-6 col-md-6 col-6"
         },

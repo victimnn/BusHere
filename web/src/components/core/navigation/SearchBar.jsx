@@ -23,7 +23,8 @@ function SuggestionModal({ suggestions, onSuggestionClick, icons }) {
   const itemTypeToText = (v) => {
     const types = {
       "Passenger": "Passageiros",
-      "Onibus": "Ônibus",
+      "Veiculo": "Veículos",
+      "Veiculos": "Veículos",
       "Rota": "Rotas",
       "Ponto": "Pontos",
       "Motorista": "Motoristas",
@@ -59,7 +60,8 @@ function SearchBar() {
 
   const icons = {
     "Passenger": "bi bi-person-check",
-    "Onibus": "bi bi-bus-front",
+    "Veiculo": "bi bi-car-front",
+    "Veiculos": "bi bi-car-front",
     "Rota": "bi bi-sign-turn-right",  
     "Ponto": "bi bi-geo-alt",
     "Motorista": "bi bi-person-workspace",

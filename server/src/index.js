@@ -55,7 +55,7 @@ const E_searchRoutes = require("./enterprise/searchRoutes.js")(pool);
 const E_passengerRoutes = require("./enterprise/passengerRoutes.js")(pool);
 const E_driverRoutes = require("./enterprise/driverRoutes.js")(pool);
 const E_stopRoutes = require("./enterprise/stopRoutes.js")(pool);
-const E_busRoutes = require("./enterprise/busRoutes.js")(pool);
+const E_vehicleRoutes = require("./enterprise/vehicleRoutes.js")(pool);
 const E_routeRoutes = require("./enterprise/routeRoutes.js")(pool);
 const E_reportsRoutes = require("./enterprise/reportsRoutes.js")(pool);
 const E_lastChangeRoutes = require("./enterprise/lastChangeRoutes.js")(pool);
@@ -75,7 +75,7 @@ app.use("/api/enterprise", E_searchRoutes); // Rota raiz da API
 app.use("/api/enterprise/passengers", E_passengerRoutes);
 app.use("/api/enterprise/drivers", E_driverRoutes);
 app.use("/api/enterprise/stops", E_stopRoutes);
-app.use("/api/enterprise/buses", E_busRoutes);
+app.use("/api/enterprise/vehicles", E_vehicleRoutes);
 app.use("/api/enterprise/routes", E_routeRoutes);
 app.use("/api/enterprise/reports", E_reportsRoutes);
 app.use("/api/enterprise/lastChanges", E_lastChangeRoutes);

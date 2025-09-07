@@ -24,15 +24,27 @@ module.exports = (pool) => {
         GROUP BY tp.tipo_passageiro_id, tp.nome
       `);
 
-      // Buscar estatísticas de ônibus
-      const [busesStats] = await pool.execute(`
+      // Buscar estatísticas de veículos
+      const [vehiclesStats] = await pool.execute(`
         SELECT 
-          COUNT(*) as total_onibus,
+          COUNT(*) as total_veiculos,
           SUM(capacidade) as capacidade_total,
-          so.nome as status_nome
-        FROM Onibus o
-        LEFT JOIN StatusOnibus so ON o.status_onibus_id = so.status_onibus_id
-        GROUP BY so.status_onibus_id, so.nome
+          sv.nome as status_nome
+        FROM Veiculos v
+        LEFT JOIN StatusVeiculo sv ON v.status_veiculo_id = sv.status_veiculo_id
+        GROUP BY sv.status_veiculo_id, sv.nome
+      `);
+
+      // Buscar estatísticas de tipos de veículos
+      const [vehicleTypesStats] = await pool.execute(`
+        SELECT 
+          COUNT(*) as total_veiculos,
+          SUM(capacidade) as capacidade_total,
+          tv.nome as tipo_nome,
+          tv.tipo_veiculo_id
+        FROM Veiculos v
+        LEFT JOIN TipoVeiculo tv ON v.tipo_veiculo_id = tv.tipo_veiculo_id
+        GROUP BY tv.tipo_veiculo_id, tv.nome
       `);
 
       // Buscar estatísticas de rotas
@@ -73,10 +85,11 @@ module.exports = (pool) => {
           total: passengersStats.reduce((sum, stat) => sum + (stat.total_passageiros || 0), 0),
           byType: passengersStats
         },
-        buses: {
-          total: busesStats.reduce((sum, stat) => sum + (stat.total_onibus || 0), 0),
-          totalCapacity: busesStats.reduce((sum, stat) => sum + (parseInt(stat.capacidade_total) || 0), 0),
-          byStatus: busesStats
+        vehicles: {
+          total: vehiclesStats.reduce((sum, stat) => sum + (stat.total_veiculos || 0), 0),
+          totalCapacity: vehiclesStats.reduce((sum, stat) => sum + (parseInt(stat.capacidade_total) || 0), 0),
+          byStatus: vehiclesStats,
+          byType: vehicleTypesStats
         },
         routes: {
           total: routesStats.reduce((sum, stat) => sum + (stat.total_rotas || 0), 0),
@@ -113,14 +126,14 @@ module.exports = (pool) => {
         LIMIT 10
       `);
       
-      // Dados para gráfico de ônibus por status
-      const [busesByStatus] = await pool.execute(`
+      // Dados para gráfico de veículos por status
+      const [vehiclesByStatus] = await pool.execute(`
         SELECT 
-          so.nome as label,
-          COUNT(o.onibus_id) as value
-        FROM StatusOnibus so
-        LEFT JOIN Onibus o ON so.status_onibus_id = o.status_onibus_id
-        GROUP BY so.status_onibus_id, so.nome
+          sv.nome as label,
+          COUNT(v.veiculo_id) as value
+        FROM StatusVeiculo sv
+        LEFT JOIN Veiculos v ON sv.status_veiculo_id = v.status_veiculo_id
+        GROUP BY sv.status_veiculo_id, sv.nome
         ORDER BY value DESC
       `);
       
@@ -147,10 +160,22 @@ module.exports = (pool) => {
         ORDER BY value DESC
         LIMIT 10
       `);
+
+      // Dados para gráfico de veículos por tipo
+      const [vehiclesByType] = await pool.execute(`
+        SELECT 
+          tv.nome as label,
+          COUNT(v.veiculo_id) as value
+        FROM TipoVeiculo tv
+        LEFT JOIN Veiculos v ON tv.tipo_veiculo_id = v.tipo_veiculo_id
+        GROUP BY tv.tipo_veiculo_id, tv.nome
+        ORDER BY value DESC
+      `);
       
       const chartData = {
         passengersByCity,
-        busesByStatus,
+        vehiclesByStatus,
+        vehiclesByType,
         routesByStatus,
         stopsByCity
       };
@@ -170,12 +195,12 @@ module.exports = (pool) => {
       const [utilizationData] = await pool.execute(`
         SELECT 
           (SELECT COUNT(*) FROM passageiros) as total_passengers,
-          (SELECT COALESCE(SUM(capacidade), 0) FROM onibus o 
-           LEFT JOIN status_onibus so ON o.status_onibus_id = so.status_onibus_id 
-           WHERE so.nome LIKE '%ativo%' OR so.nome LIKE '%operando%') as total_capacity,
-          (SELECT COUNT(*) FROM onibus o 
-           LEFT JOIN status_onibus so ON o.status_onibus_id = so.status_onibus_id 
-           WHERE so.nome LIKE '%ativo%' OR so.nome LIKE '%operando%') as active_buses,
+          (SELECT COALESCE(SUM(capacidade), 0) FROM veiculos v 
+           LEFT JOIN status_veiculo sv ON v.status_veiculo_id = sv.status_veiculo_id 
+           WHERE sv.nome LIKE '%ativo%' OR sv.nome LIKE '%operando%') as total_capacity,
+          (SELECT COUNT(*) FROM veiculos v 
+           LEFT JOIN status_veiculo sv ON v.status_veiculo_id = sv.status_veiculo_id 
+           WHERE sv.nome LIKE '%ativo%' OR sv.nome LIKE '%operando%') as active_vehicles,
           (SELECT COUNT(*) FROM rotas r 
            LEFT JOIN status_rota sr ON r.status_rota_id = sr.status_rota_id 
            WHERE sr.nome LIKE '%ativa%' OR sr.nome LIKE '%operando%') as active_routes

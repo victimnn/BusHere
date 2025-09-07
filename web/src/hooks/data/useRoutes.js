@@ -123,8 +123,8 @@ export const useRoutes = () => {
             };
         }
         
-        // Tentar remover associações de ônibus/motorista primeiro
-        if (route.onibus_id || route.motorista_id) {
+        // Tentar remover associações de veículo/motorista primeiro
+        if (route.veiculo_id || route.motorista_id) {
             try {
                 const assignmentsResponse = await api.routes.getAssignments(id);
                 const assignments = assignmentsResponse.data || [];
@@ -132,7 +132,7 @@ export const useRoutes = () => {
                 // Remover todas as associações ativas
                 for (const assignment of assignments) {
                     if (assignment.ativo) {
-                        await api.routes.deleteAssignment(id, assignment.onibus_rota_id);
+                        await api.routes.deleteAssignment(id, assignment.veiculo_rota_id);
                     }
                 }
             } catch (assignmentError) {
@@ -158,7 +158,7 @@ export const useRoutes = () => {
         if (error.status === 500) {
             errorMessage = "Erro interno do servidor. A rota pode ter dependências que impedem sua exclusão (pontos da rota, logs de localização, etc.).";
         } else if (error.message?.includes('constraint') || error.message?.includes('foreign key')) {
-            errorMessage = "Não é possível excluir esta rota pois existem dependências vinculadas (pontos, ônibus, motoristas ou dados históricos).";
+            errorMessage = "Não é possível excluir esta rota pois existem dependências vinculadas (pontos, veículos, motoristas ou dados históricos).";
         } else if (error.status === 409) {
             errorMessage = "Conflito: Esta rota está sendo utilizada e não pode ser excluída no momento.";
         }

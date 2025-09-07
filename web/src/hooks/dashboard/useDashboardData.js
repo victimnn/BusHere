@@ -5,7 +5,7 @@ export const useDashboardData = () => {
   const [stats, setStats] = useState({
     passengers: 0,
     drivers: 0,
-    buses: 0,
+    vehicles: 0,
     routes: 0
   });
   const [isLoading, setIsLoading] = useState(true);
@@ -27,7 +27,7 @@ export const useDashboardData = () => {
       setStats({
         passengers: statsData.passengers?.total || 0,
         drivers: driversResponse.total || 0,
-        buses: statsData.buses?.total || 0,
+        vehicles: statsData.vehicles?.total || 0,
         routes: statsData.routes?.total || 0
       });
       

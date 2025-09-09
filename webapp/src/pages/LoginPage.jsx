@@ -1,0 +1,96 @@
+import { useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
+
+function LoginPage() {
+  const [user, setUser] = useState("");
+  const [senha, setSenha] = useState("");
+   const [showSenha, setShowSenha] = useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Login com:", { user, senha });
+  };
+
+  return (
+    <div className="d-flex justify-content-center align-items-center vh-100 h-100">
+      <div  
+        className="p-4"
+        style={{ width: "100%", height: "100%", maxWidth: "400px"}}
+      >
+        {/* Botão fechar */}
+        <div className="d-flex justify-content-start">
+          <button className="btn text-dark p-0 m-0 fs-2 fw-bolder ">✕</button>
+        </div>
+
+        {/* Título */} 
+        <h5 className="text-center fw-bold mt-5 mb-4 font-family-principal fs-2 " style={{color: "#0F9C42"}}>
+          Inicie a sessão com seu <br /> nome de usuário ou email.
+        </h5>
+
+        {/* Formulário */}
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label font-family-segundaria">Usuario ou E-mail</label>
+            <input
+              type="text"
+              className="form-control"
+              value={user}
+              onChange={(e) => setUser(e.target.value)}
+              required
+              placeholder="Insira o usuário ou email"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="form-label font-family-segundaria">Senha</label>
+          <div className="input-group">
+            <input
+              type={showSenha ? "text" : "password"}
+              className="form-control"
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              required
+              placeholder="Insira a sua senha"
+              style={{maxWidth: "100%"}}
+            />
+            <button
+                type="button"
+                className="btn btn-outline-secondary"
+                onClick={() => setShowSenha((prev) => !prev)}
+                tabIndex={-1}
+                aria-label={showSenha ? "Ocultar senha" : "Mostrar senha"}
+                style={{color: "#757575", borderColor: "#757575"}}
+              >
+                <i className={`bi ${showSenha ? "bi-eye-slash" : "bi-eye"}`}></i>
+              </button>
+          </div>
+        </div>
+
+          <button
+            type="submit"
+            className="btn w-100 mb-3 text-white btn-primary-green fw-semibold"
+            style={{border: "none", letterSpacing: "1px", fontFamily: "Roboto, sans-serif"}}
+            >
+            Iniciar sessão
+          </button>
+        </form>
+
+        {/* Botões secundários */}
+        <div className="d-flex justify-content-between mb-3 mr-0">
+          <button className="btn btn-secondary w-50 me-2" style={{ borderColor: "#757575", height: "100%"}}>Criar uma Conta</button>
+          <button className="btn btn-secondary w-50" style={{ borderColor: "#757575", height: "100%"}}>Criar com Link</button>
+        </div>
+
+        {/* Link */}
+        <p className="text-center fw-semibold">
+          <a href="/" style={{ color: "#2e7d32"}}>
+            Esqueceu a senha?
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default LoginPage

@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useState } from 'react';
 import { AuthProvider } from "./context/AuthContext";
@@ -10,6 +9,7 @@ import NoticesPage from "./pages/NoticesPage";
 import BillsPage from "./pages/BillsPage";
 import SettingsPage from "./pages/SettingsPage";
 import HelpPage from "./pages/HelpPage";
+import LoginPage from "./pages/LoginPage";
 
 function App({ isDark, setIsDark }) {
   return (
@@ -23,6 +23,7 @@ function App({ isDark, setIsDark }) {
             <Route path="/boletos" element={<BillsPage />} />
             <Route path="/ajustes" element={<SettingsPage />} />
             <Route path="/ajuda" element={<HelpPage />} />
+            <Route path="/login" element={<LoginPage />} />
             {/* Adicione outras rotas conforme necessário */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

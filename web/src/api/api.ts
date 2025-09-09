@@ -6,7 +6,28 @@ function getBearerToken() {
 }
 
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/enterprise/api';
+
+// Sistema de logging otimizado
+const isDevelopment = import.meta.env.DEV;
+const requestCache = new Set<string>();
+const MAX_CACHE_SIZE = 100;
+
+const shouldLogRequest = (url: string, method: string): boolean => {
+  if (!isDevelopment) return false;
+  
+  // Não loga requisições repetitivas muito frequentes
+  const requestKey = `${method}:${url}`;
+  if (requestCache.has(requestKey)) return false;
+  
+  // Adiciona ao cache e limpa se necessário
+  requestCache.add(requestKey);
+  if (requestCache.size > MAX_CACHE_SIZE) {
+    requestCache.clear();
+  }
+  
+  return true;
+};
 
 const api = {
   _request: async (method: string, url: string, data: any = null, options: RequestInit = {}) => {
@@ -32,16 +53,27 @@ const api = {
 
     try {
       const response = await fetch(`${API_BASE_URL}${url}`, config);
-      console.log(`Fazendo ${method} ${url}`, data, config, response);
+      
+      // Log otimizado - só em desenvolvimento e evita repetições
+      if (shouldLogRequest(url, method)) {
+        console.log(`🌐 API ${method} ${url}`, {
+          status: response.status,
+          ok: response.ok,
+          data: data ? 'Dados enviados' : 'Sem dados'
+        });
+      }
+      
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: response.statusText }));
         const error = new Error(errorData.error || errorData.message || 'Ocorreu um erro na requisição') as Error & { status: number; data: any };
         error.status = response.status;
         error.data = errorData;
         
-        // Exemplo: se for 401 Unauthorized, você pode redirecionar para a página de login
+        // Log de erro otimizado
         if (response.status === 401) {
-          console.error('Unauthorized: Redirecionando para login...');
+          console.warn('🔒 Unauthorized: Token inválido ou expirado');
+        } else if (isDevelopment) {
+          console.error(`❌ API Error ${response.status}: ${url}`, errorData);
         }
         throw error;
       }
@@ -55,7 +87,10 @@ const api = {
       }
 
     } catch (error) {
-      console.error("Erro na requisição:", error);
+      // Log de erro otimizado - só em desenvolvimento
+      if (isDevelopment) {
+        console.error("❌ Erro na requisição:", url, error);
+      }
       throw error; // da erro denovo para poder ser tratado fora daqui
     }
   },
@@ -161,27 +196,28 @@ const api = {
     getStatus: () => api.get('/routes/status'),
     getStops: (id) => api.get(`/routes/stops/${id}`),
     
-    // Endpoints para associações ônibus-motorista-rota
+    // Endpoints para associações veículo-motorista-rota
     getAssignments: (routeId) => api.get(`/routes/${routeId}/assignments`),
     createAssignment: (routeId, assignmentData) => api.post(`/routes/${routeId}/assignments`, assignmentData),
     updateAssignment: (routeId, assignmentId, assignmentData) => api.put(`/routes/${routeId}/assignments/${assignmentId}`, assignmentData),
     deleteAssignment: (routeId, assignmentId) => api.delete(`/routes/${routeId}/assignments/${assignmentId}`)
   },
 
-  buses: {
+  vehicles: {
     list: (page = 1, limit = 10, search = '') => {
       const queryParams = new URLSearchParams({ 
         page: String(page), 
         limit: String(limit), 
         search: String(search) 
       });
-      return api.get(`/buses?${queryParams.toString()}`);
+      return api.get(`/vehicles?${queryParams.toString()}`);
     },
-    getById: (id) => api.get(`/buses/${id}`),
-    create: (busData) => api.post('/buses', busData),
-    update: (id, edits) => api.put(`/buses/${id}`, edits),
-    delete: (id) => api.delete(`/buses/${id}`),
-    getStatus: () => api.get('/buses/status'),
+    getById: (id) => api.get(`/vehicles/${id}`),
+    create: (vehicleData) => api.post('/vehicles', vehicleData),
+    update: (id, edits) => api.put(`/vehicles/${id}`, edits),
+    delete: (id) => api.delete(`/vehicles/${id}`),
+    getStatus: () => api.get('/vehicles/status'),
+    getTypes: () => api.get('/vehicles/types'),
   },
 
   stops: {

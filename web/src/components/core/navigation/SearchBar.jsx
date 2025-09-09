@@ -23,7 +23,8 @@ function SuggestionModal({ suggestions, onSuggestionClick, icons }) {
   const itemTypeToText = (v) => {
     const types = {
       "Passenger": "Passageiros",
-      "Onibus": "Ônibus",
+      "Veiculo": "Veículos",
+      "Veiculos": "Veículos",
       "Rota": "Rotas",
       "Ponto": "Pontos",
       "Motorista": "Motoristas",
@@ -59,7 +60,8 @@ function SearchBar() {
 
   const icons = {
     "Passenger": "bi bi-person-check",
-    "Onibus": "bi bi-bus-front",
+    "Veiculo": "bi bi-car-front",
+    "Veiculos": "bi bi-car-front",
     "Rota": "bi bi-sign-turn-right",  
     "Ponto": "bi bi-geo-alt",
     "Motorista": "bi bi-person-workspace",
@@ -126,19 +128,20 @@ function SearchBar() {
 
   return (
     <div className="search-bar-container w-100 d-flex justify-content-center">
-    <form onSubmit={handleSearch} className="search-form d-flex position-relative w-50 mx-auto" ref={searchBarRef}>
+    <form onSubmit={handleSearch} className="search-form d-flex position-relative w-100" ref={searchBarRef}>
       <div className="input-group shadow-sm border rounded-pill overflow-hidden">
         <input
           type="text"
-          className="form-control border-0 bg-light px-3"
+          className="form-control border-0 bg-light px-4 py-2"
           placeholder="Pesquisar..."
           aria-label="Search"
           value={searchTerm}
           onChange={handleInputChange}
+          style={{ fontSize: '1rem' }}
         />
         <button 
-        className="btn border-start bg-light px-3 d-flex align-items-center" type="submit">
-          <i className="fa-solid fa-magnifying-glass search-icon text-primary"></i>
+        className="btn border-start bg-light px-4 d-flex align-items-center" type="submit">
+          <i className="fa-solid fa-magnifying-glass search-icon text-primary fs-5"></i>
         </button>
       </div>
 

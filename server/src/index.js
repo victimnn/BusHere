@@ -49,32 +49,42 @@ const pool = mysql.createPool({
 });
 
 // Importando as rotas
-const authRoutes = require("./authRoutes")(pool);
-const searchRoutes = require("./searchRoutes")(pool);
-const passengerRoutes = require("./passengerRoutes")(pool);
-const driverRoutes = require("./driverRoutes")(pool);
-const stopRoutes = require("./stopRoutes")(pool);
-const busRoutes = require("./busRoutes")(pool);
-const routeRoutes = require("./routeRoutes")(pool);
-const reportsRoutes = require("./reportsRoutes")(pool);
-const lastChangeRoutes = require("./lastChangeRoutes")(pool);
-const enterpriseUserRoutes = require("./enterpriseUserRoutes")(pool);
-const debugRoutes = require("./debugRoutes.js")(pool);
-//const XXXXRoutes = require("./XXXX")(pool);
-//const YYYYRoutes = require("./YYYY")(pool);
+// Empresas
+const E_authRoutes = require("./enterprise/authRoutes.js")(pool);
+const E_searchRoutes = require("./enterprise/searchRoutes.js")(pool);
+const E_passengerRoutes = require("./enterprise/passengerRoutes.js")(pool);
+const E_driverRoutes = require("./enterprise/driverRoutes.js")(pool);
+const E_stopRoutes = require("./enterprise/stopRoutes.js")(pool);
+const E_vehicleRoutes = require("./enterprise/vehicleRoutes.js")(pool);
+const E_routeRoutes = require("./enterprise/routeRoutes.js")(pool);
+const E_reportsRoutes = require("./enterprise/reportsRoutes.js")(pool);
+const E_lastChangeRoutes = require("./enterprise/lastChangeRoutes.js")(pool);
+const E_enterpriseUserRoutes = require("./enterprise/enterpriseUserRoutes.js")(pool);
+const E_debugRoutes = require("./enterprise/debugRoutes.js")(pool);
+const E_databaseRoutes = require("./enterprise/databaseRoutes.js")(pool)
+
+// Passageiros
+const P_authRoutes = require("./passenger/authRoutes.js")(pool);
+
+
+
 
 // Usando as rotas
-app.use("/api/auth", authRoutes);
-app.use("/api", searchRoutes); // Rota raiz da API
-app.use("/api/passengers", passengerRoutes);
-app.use("/api/drivers", driverRoutes);
-app.use("/api/stops", stopRoutes);
-app.use("/api/buses", busRoutes);
-app.use("/api/routes", routeRoutes);
-app.use("/api/reports", reportsRoutes);
-app.use("/api/lastChanges", lastChangeRoutes);
-app.use("/api/enterpriseUsers", enterpriseUserRoutes);
-app.use("/debug", debugRoutes);
+app.use("/api/enterprise/auth", E_authRoutes);
+app.use("/api/enterprise", E_searchRoutes); // Rota raiz da API
+app.use("/api/enterprise/passengers", E_passengerRoutes);
+app.use("/api/enterprise/drivers", E_driverRoutes);
+app.use("/api/enterprise/stops", E_stopRoutes);
+app.use("/api/enterprise/vehicles", E_vehicleRoutes);
+app.use("/api/enterprise/routes", E_routeRoutes);
+app.use("/api/enterprise/reports", E_reportsRoutes);
+app.use("/api/enterprise/lastChanges", E_lastChangeRoutes);
+app.use("/api/enterprise/enterpriseUsers", E_enterpriseUserRoutes);
+app.use("/api/enterprise/debug", E_debugRoutes);
+app.use("/api/enterprise/database", E_databaseRoutes);
+
+app.use("/api/passenger/auth", P_authRoutes);
+
 //app.use("/api/XXXX", XXXXRoutes);
 //app.use("/api/YYYY", YYYYRoutes);
 

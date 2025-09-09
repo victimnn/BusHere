@@ -1,0 +1,209 @@
+/* Estilos específicos para o Header modernizado - Tema Light */
+
+// Importar variáveis do tema
+@import '../base/variables';
+
+/* Animação de slide down para o menu dropdown */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos para o header responsivo */
+.header-container {
+  transition: $transition-normal;
+  background-color: $body-bg !important;
+  border-color: $border-color !important;
+  box-shadow: $box-shadow-soft !important;
+}
+
+/* Melhorias para dispositivos móveis */
+@media (max-width: 767.98px) {
+  .header-container {
+    padding: 0.5rem !important;
+  }
+  
+  .user-info-container {
+    order: 2;
+    margin-top: 0.5rem;
+  }
+  
+  .search-container {
+    order: 3;
+    margin-top: 0.5rem;
+    
+    > div {
+      min-width: 350px !important;
+      max-width: 100% !important;
+    }
+  }
+}
+
+/* Estilos para o avatar do usuário */
+.user-avatar {
+  transition: $transition-normal;
+  background-color: $primary !important;
+  color: $primary-contrast !important;
+}
+
+.user-avatar:hover {
+  transform: scale(1.05);
+}
+
+/* Estilos para o menu dropdown */
+.user-dropdown {
+  backdrop-filter: blur(10px);
+  border: 1px solid $border-color;
+  background-color: $dropdown-bg;
+}
+
+/* Melhorias para o estado hover dos elementos interativos */
+.user-profile-card {
+  background-color: $bg-light !important;
+  border-color: $border-color !important;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: $box-shadow-soft;
+    background-color: $bg-medium !important;
+  }
+}
+
+/* Transições suaves para todos os elementos interativos */
+.header-container * {
+  transition: $transition-normal;
+}
+
+/* Estilos para o botão de logout */
+.logout-button {
+  transition: $transition-normal;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: $box-shadow-soft;
+  }
+}
+
+/* Melhorias para telas muito pequenas */
+@media (max-width: 575.98px) {
+  .page-title {
+    font-size: 1.25rem !important;
+    color: $text-primary !important;
+  }
+  
+  .user-name {
+    display: none !important;
+  }
+  
+  .user-email {
+    display: none !important;
+  }
+  
+  .search-container > div {
+    min-width: 300px !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Estilos para telas médias */
+@media (min-width: 576px) and (max-width: 991.98px) {
+  .page-title {
+    font-size: 1.5rem !important;
+    color: $text-primary !important;
+  }
+  
+  .search-container > div {
+    min-width: 450px !important;
+    max-width: 700px !important;
+  }
+}
+
+/* Estilos para telas grandes */
+@media (min-width: 992px) {
+  .page-title {
+    font-size: 1.75rem !important;
+    color: $text-primary !important;
+  }
+  
+  .search-container > div {
+    min-width: 500px !important;
+    max-width: 1000px !important;
+  }
+}
+
+/* Estilos específicos para o nome do usuário */
+.user-name {
+  color: $text-primary !important;
+}
+
+.user-email {
+  color: $text-muted !important;
+}
+
+/* Estilos para o estado não autenticado */
+.user-not-logged {
+  background-color: $bg-light !important;
+  border-color: $border-color !important;
+  color: $text-secondary !important;
+}
+
+/* Melhorias para a barra de pesquisa */
+.search-container {
+  > div {
+    width: 100%;
+    transition: $transition-normal;
+    
+    &:focus-within {
+      transform: scale(1.02);
+    }
+  }
+}
+
+/* Estilos específicos para a SearchBar */
+.search-container {
+  .search-bar-container {
+    width: 100%;
+    
+    .search-form {
+      width: 100%;
+      
+      .input-group {
+        width: 100%;
+        
+        .form-control {
+          height: $avatar-size;
+          font-size: $spacing-md;
+          background-color: $input-bg !important;
+          color: $body-color !important;
+          border-color: $input-border-color !important;
+          
+          &::placeholder {
+            color: $text-muted !important;
+          }
+          
+          &:focus {
+            box-shadow: $input-focus-box-shadow;
+          }
+        }
+        
+        .btn {
+          height: $avatar-size;
+          min-width: 60px;
+          background-color: $input-bg !important;
+          border-color: $input-border-color !important;
+          color: $text-primary !important;
+          
+          &:hover {
+            background-color: $bg-medium !important;
+          }
+        }
+      }
+    }
+  }
+}

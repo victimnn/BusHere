@@ -9,7 +9,7 @@ import RegisterPage from "./pages/RegisterPage";
 import HomePage from "./pages/HomePage";
 import PassengersPage from "./pages/PassengersPage";
 import DriversPage from "./pages/DriversPage";
-import BusesPage from "./pages/BusesPage";
+import VehiclesPage from "./pages/VehiclesPage";
 import RoutesPage from "./pages/RoutesPage";
 import ReportsPage from "./pages/ReportsPage";
 import SettingsPage from "./pages/SettingsPage";
@@ -17,9 +17,9 @@ import SearchPage from "./pages/SearchPage";
 import StopsPage from "./pages/StopsPage";
 import ErrorPage from "./pages/ErrorPage";
 
-import BusDetail from "./pages/details/BusDetail";
 import PassengerDetail from "./pages/details/PassengerDetail";
 import DriverDetail from "./pages/details/DriverDetail";
+import VehicleDetail from "./pages/details/VehicleDetail";
 import RouteDetail from "./pages/details/RouteDetail";
 import StopDetail from "./pages/details/StopDetail";
 import RouteStopsPage from "./pages/RouteStopsPage";
@@ -102,13 +102,13 @@ function App({ isDark, setIsDark }) {
                   <Route path="/" index element={<HomePage pageFunctions={pageFunctions} />} />
                   <Route path="/passengers" element={<PassengersPage pageFunctions={pageFunctions}/>} />
                   <Route path="/drivers" element={<DriversPage pageFunctions={pageFunctions}/>} />
-                  <Route path="/buses" element={<BusesPage pageFunctions={pageFunctions}/>} />
+                  <Route path="/vehicles" element={<VehiclesPage pageFunctions={pageFunctions}/>} />
                   <Route path="/routes" element={<RoutesPage pageFunctions={pageFunctions}/>} />
                   <Route path="/stops" element={<StopsPage pageFunctions={pageFunctions} isDark={isDark}/>} />
                   <Route path="/reports" element={<ReportsPage pageFunctions={pageFunctions}/>} />
                   <Route path="/settings" element={<SettingsPage pageFunctions={pageFunctions} isDark={isDark} setIsDark={setIsDark}/>} />
 
-                  <Route path="/buses/:busId" element={<BusDetail pageFunctions={pageFunctions}/>} />
+                  <Route path="/vehicles/:vehicleId" element={<VehicleDetail pageFunctions={pageFunctions}/>} />
                   <Route path="/passengers/:passengerId" element={<PassengerDetail pageFunctions={pageFunctions}/>} />
                   <Route path="/drivers/:driverId" element={<DriverDetail pageFunctions={pageFunctions}/>} />
                   <Route path="/routes/:routeId" element={<RouteDetail pageFunctions={pageFunctions}/>} />

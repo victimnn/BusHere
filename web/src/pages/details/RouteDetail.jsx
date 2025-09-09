@@ -191,23 +191,23 @@ function RouteDetail({ pageFunctions }) {
             </DetailSection>
           </DetailContainer>
 
-          {/* Seção de Ônibus e Motorista */}
-          {(route.onibus_nome || route.motorista_nome) && (
+          {/* Seção de Veículo e Motorista */}
+          {(route.veiculo_nome || route.motorista_nome) && (
             <DetailContainer columns={2}>
-              {route.onibus_nome && (
+              {route.veiculo_nome && (
                 <DetailSection 
-                  title="Ônibus Designado" 
-                  icon="bi-bus-front"
+                  title="Veículo Designado" 
+                  icon="bi-car-front"
                 >
                   <DetailItem 
-                    icon="bi-bus-front" 
-                    label="Nome do Ônibus" 
-                    value={route.onibus_nome} 
+                    icon="bi-car-front" 
+                    label="Nome do Veículo" 
+                    value={route.veiculo_nome} 
                   />
                   <DetailItem 
                     icon="bi-card-text" 
                     label="Placa" 
-                    value={route.onibus_placa || 'Não informado'} 
+                    value={route.veiculo_placa || 'Não informado'} 
                   />
                 </DetailSection>
               )}

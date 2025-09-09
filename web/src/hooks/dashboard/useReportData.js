@@ -4,7 +4,7 @@ import api from '@web/api/api';
 export const useReportData = () => {
   const [reportData, setReportData] = useState({
     passengers: [],
-    buses: [],
+    vehicles: [],
     stops: [],
     routes: [],
     drivers: [],
@@ -31,7 +31,7 @@ export const useReportData = () => {
 
       setReportData({
         passengers: [], // Não precisamos mais dos dados completos
-        buses: [],
+        vehicles: [],
         stops: chartData.stopsByCity || [],  // Carregar dados dos pontos do chartData
         routes: [],
         drivers: drivers, // Adicionar dados de motoristas
@@ -47,9 +47,9 @@ export const useReportData = () => {
       
       // Fallback para a API antiga se a nova falhar
       try {
-        const [passengersRes, busesRes, stopsRes, routesRes, driversRes] = await Promise.all([
+        const [passengersRes, vehiclesRes, stopsRes, routesRes, driversRes] = await Promise.all([
           api.passengers.list(1, 1000),
-          api.buses.list(1, 1000),
+          api.vehicles.list(1, 1000),
           api.stops.list(),
           api.routes.list(1, 1000),
           api.drivers.list(1, 1000), // Adicionar motoristas no fallback
@@ -57,7 +57,7 @@ export const useReportData = () => {
 
         setReportData({
           passengers: passengersRes?.data || [],
-          buses: busesRes?.data || [],
+          vehicles: vehiclesRes?.data || [],
           stops: stopsRes?.data || [],
           routes: routesRes?.data || [],
           drivers: driversRes?.data || [], // Adicionar dados de motoristas

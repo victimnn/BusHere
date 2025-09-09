@@ -10,7 +10,7 @@ export function useRouteForm(stats, initialData = null, pontosSelecionados = [],
         distancia_km: 0,
         tempo_viagem_estimado_minutos: 0,
         status_rota_id: 1,
-        onibus_id: null,
+        veiculo_id: null,
         motorista_id: null,
         observacoes_assignment: ''
     });
@@ -33,7 +33,7 @@ export function useRouteForm(stats, initialData = null, pontosSelecionados = [],
                 distancia_km: initialData.distancia_km || 0,
                 tempo_viagem_estimado_minutos: initialData.tempo_viagem_estimado_minutos || 0,
                 status_rota_id: initialData.status_rota_id || 1,
-                onibus_id: initialData.onibus_id || null,
+                veiculo_id: initialData.veiculo_id || null,
                 motorista_id: initialData.motorista_id || null,
                 observacoes_assignment: initialData.observacoes_assignment || ''
             }));

@@ -36,13 +36,13 @@ function Settings({ pageFunctions, isDark, setIsDark }) {
       value: "Ativado",
       icon: "bi-download"
     },
-    { 
-      id: 3, 
-      name: "Som do Sistema", 
-      description: "Reproduzir sons para ações e notificações",
-      value: "Ativado",
-      icon: "bi-volume-up"
-    }
+    // { 
+    //   id: 3, 
+    //   name: "Som do Sistema", 
+    //   description: "Reproduzir sons para ações e notificações",
+    //   value: "Ativado",
+    //   icon: "bi-volume-up"
+    // }
   ]);
 
   // Account Settings State
@@ -54,13 +54,13 @@ function Settings({ pageFunctions, isDark, setIsDark }) {
       value: "Ativado",
       icon: "bi-person-check"
     },
-    {
-      id: 2,
-      name: "Verificação em Duas Etapas",
-      description: "Segurança adicional para sua conta",
-      value: "Desativado",
-      icon: "bi-shield-check"
-    }
+    // {
+    //   id: 2,
+    //   name: "Verificação em Duas Etapas",
+    //   description: "Segurança adicional para sua conta",
+    //   value: "Desativado",
+    //   icon: "bi-shield-check"
+    // }
   ]);
 
   // Privacy Settings State
@@ -172,7 +172,22 @@ function Settings({ pageFunctions, isDark, setIsDark }) {
             ))}
           </SettingSection>
 
-          {/* Privacy Settings Section */}
+          <button
+            onClick={async () => console.log(await api.get("/database/export"))}
+          >
+            Exportar Dados
+          </button>
+
+          <button
+            onClick={async () => {
+              const data = prompt("entre com o JSON")
+              await api.post("/database/import", { data: JSON.parse(data) })
+            }}
+          >
+            Importar Dados
+          </button>
+
+          {/* Privacy Settings Section
           <SettingSection
             title="Privacidade"
             description="Controle suas informações pessoais"
@@ -187,10 +202,10 @@ function Settings({ pageFunctions, isDark, setIsDark }) {
                 onToggle={(id) => handleToggleSetting(privacySettings, setPrivacySettings, id)}
               />
             ))}
-          </SettingSection>
+          </SettingSection> */}
 
           {/* Settings Actions Section */}
-          <SettingsActions
+          {/* <SettingsActions
             isDark={isDark}
             setIsDark={setIsDark}
             generalSettings={generalSettings}
@@ -201,7 +216,7 @@ function Settings({ pageFunctions, isDark, setIsDark }) {
             setPrivacySettings={setPrivacySettings}
             popUpRef={popUpRef}
             animationDelay="0.6s"
-          />
+          /> */}
         </div>
       
         {/* Right Column - System Information */}

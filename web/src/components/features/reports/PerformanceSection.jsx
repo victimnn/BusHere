@@ -54,9 +54,9 @@ const PerformanceSection = ({ reportData }) => {
       title: "Taxa de Utilização da Frota",
       percentage: (() => {
         const totalPassageiros = reportData.stats?.passengers?.total || reportData.passengers?.length || 0;
-        const capacidadeTotal = reportData.stats?.buses?.totalCapacity || 
-                               (reportData.buses && Array.isArray(reportData.buses) ? 
-                                reportData.buses.reduce((total, bus) => total + (parseInt(bus.capacidade) || 0), 0) : 0);
+        const capacidadeTotal = reportData.stats?.vehicles?.totalCapacity || 
+                               (reportData.vehicles && Array.isArray(reportData.vehicles) ? 
+                                reportData.vehicles.reduce((total, vehicle) => total + (parseInt(vehicle.capacidade) || 0), 0) : 0);
         
         if (capacidadeTotal === 0) return 0;
         return ((totalPassageiros / capacidadeTotal) * 100).toFixed(1);

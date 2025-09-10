@@ -61,14 +61,18 @@ function RegisterPage() {
 
                     <button
                         type="submit"
-                        className="btn w-100 mb-3 mt-4 text-white btn-primary-green fw-semibold"
+                        className="btn w-100 mb-1 mt-4 text-white btn-primary-green fw-semibold"
                         style={{border: "none", letterSpacing: "1px", fontFamily: "Roboto, sans-serif"}}
                         >
                         Continuar
                     </button>
-
-                </div>       
+                </div>
             </form>
+            <p className=" text-center fw-semibold">
+                <a href="#" style={{ color: "#2e7d32"}}>
+                    Ja possui uma conta?
+                </a>
+            </p>
         </div> 
     </div>
     );

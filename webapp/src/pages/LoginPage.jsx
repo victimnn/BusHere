@@ -15,7 +15,7 @@ function LoginPage() {
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 h-100">
       <div  
-        className="p-4"
+        className="p-4 bg-theme"
         style={{ width: "100%", height: "100%", maxWidth: "400px"}}
       >
         {/* Botão fechar */}

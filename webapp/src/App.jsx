@@ -10,6 +10,7 @@ import BillsPage from "./pages/BillsPage";
 import SettingsPage from "./pages/SettingsPage";
 import HelpPage from "./pages/HelpPage";
 import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 
 function App({ isDark, setIsDark }) {
   return (
@@ -24,6 +25,7 @@ function App({ isDark, setIsDark }) {
             <Route path="/ajustes" element={<SettingsPage />} />
             <Route path="/ajuda" element={<HelpPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
             {/* Adicione outras rotas conforme necessário */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

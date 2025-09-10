@@ -5,7 +5,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 function LoginPage() {
   const [user, setUser] = useState("");
   const [senha, setSenha] = useState("");
-   const [showSenha, setShowSenha] = useState(false);
+  const [showSenha, setShowSenha] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -93,4 +93,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage
+export default LoginPage;

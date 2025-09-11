@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import api from '@web/api/api';
-import { formatCPF, formatPhoneNumber, removeFormatting, formatDateFromDatabase} from '@shared/formatters';
+import { formatCPF, formatPhoneNumber, removeFormatting, formatDateFromDatabase, formatCEP} from '@shared/formatters';
 
 // Tipos padrão como fallback
 const DEFAULT_PASSENGER_TYPES = [
@@ -23,6 +23,19 @@ const transformPassengerData = (passenger, getTipoPassageiroNome) => ({
   pcd: passenger.pcd,
   data_nascimento: passenger.data_nascimento ? formatDateFromDatabase(passenger.data_nascimento) : null,
   data_criacao: passenger.data_criacao ? formatDateFromDatabase(passenger.data_criacao) : null,
+  // Campos de endereço
+  logradouro: passenger.logradouro,
+  numero_endereco: passenger.numero_endereco,
+  complemento_endereco: passenger.complemento_endereco,
+  bairro: passenger.bairro,
+  cidade: passenger.cidade,
+  uf: passenger.uf,
+  cep: formatCEP(passenger.cep),
+  // Relacionamentos
+  rota_id: passenger.rota_id,
+  rota_nome: passenger.rota_nome,
+  ponto_id: passenger.ponto_id,
+  ponto_nome: passenger.ponto_nome,
 });
 
 // Função para preparar dados para o backend

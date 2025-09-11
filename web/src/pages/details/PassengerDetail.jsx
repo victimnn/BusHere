@@ -5,9 +5,9 @@ import PassengerForm from '@web/components/domain/passengers/PassengerForm';
 import Notification from '@web/components/common/feedback/Notification';
 import Dialog from '@web/components/common/feedback/Dialog';
 
-import { usePassengers, useDetailPage, useNotification } from '@web/hooks';
+import { usePassengers, useDetailPage, useNotification, useRoutes, useStops } from '@web/hooks';
 
-import { formatCPF, formatPhoneNumber, formatDateFromDatabase } from '@shared/formatters';
+import { formatCPF, formatPhoneNumber, formatDateFromDatabase, formatCEP } from '@shared/formatters';
 
 import {
   DetailPage,
@@ -32,6 +32,10 @@ function PassengerDetailPage({ pageFunctions }) {
   // Usar o hook de detail page
   const { data: passenger, loading, error, refetch } = useDetailPage(getPassengerById, passengerId);
 
+  // Hooks para buscar dados relacionados
+  const { routes, getRouteById } = useRoutes();
+  const { stops, getStopById } = useStops();
+
   // Hook para notificações
   const { notification, hideNotification, showSuccess, showError } = useNotification();
 
@@ -42,7 +46,19 @@ function PassengerDetailPage({ pageFunctions }) {
       email: passenger.email,
       telefone: passenger.telefone,
       tipo_passageiro: passenger.tipo_passageiro_id,
-      data_nascimento: passenger.data_nascimento
+      data_nascimento: passenger.data_nascimento,
+      pcd: passenger.pcd,
+      // Dados de endereço
+      cep: passenger.cep,
+      logradouro: passenger.logradouro,
+      numero_endereco: passenger.numero_endereco,
+      complemento_endereco: passenger.complemento_endereco,
+      bairro: passenger.bairro,
+      cidade: passenger.cidade,
+      uf: passenger.uf,
+      // Relacionamentos
+      rota_id: passenger.rota_id,
+      ponto_id: passenger.ponto_id
     };
     
     popUpRef.current.show({
@@ -111,6 +127,7 @@ function PassengerDetailPage({ pageFunctions }) {
     });
   };
 
+  // Função para formatar endereço completo
   const formatAddress = (p) => {
     if (!p.logradouro) return "Não informado";
     const parts = [
@@ -120,9 +137,36 @@ function PassengerDetailPage({ pageFunctions }) {
       p.bairro && `- ${p.bairro}`,
       p.cidade,
       p.uf && `- ${p.uf}`,
-      p.cep && `CEP: ${p.cep.replace(/(\d{5})(\d{3})/, '$1-$2')}`
+      p.cep && `CEP: ${formatCEP(p.cep)}`
     ].filter(Boolean);
     return parts.join(', ').replace(', -', ' -');
+  };
+
+  // Função para buscar dados da rota
+  const getRouteInfo = (rotaId) => {
+    if (!rotaId) return null;
+    const route = routes.find(r => r.rota_id === rotaId) || getRouteById?.(rotaId);
+    return route ? {
+      nome: route.nome,
+      status: route.status_rota_nome || 'Ativa'
+    } : null;
+  };
+
+  // Função para buscar dados do ponto
+  const getStopInfo = (pontoId) => {
+    if (!pontoId) return null;
+    const stop = stops.find(s => s.ponto_id === pontoId) || getStopById?.(pontoId);
+    return stop ? {
+      nome: stop.nome,
+      cidade: stop.cidade,
+      uf: stop.uf
+    } : null;
+  };
+
+  // Função para formatar status PCD
+  const formatPCDStatus = (pcd) => {
+    if (pcd === null || pcd === undefined) return "Não informado";
+    return pcd ? "Sim" : "Não";
   };
 
   // Configurar ações do passageiro
@@ -156,6 +200,11 @@ function PassengerDetailPage({ pageFunctions }) {
               ...(passenger.cpf ? [{
                 icon: "bi-card-text",
                 text: formatCPF(passenger.cpf)
+              }] : []),
+              ...(passenger.pcd ? [{
+                icon: "bi-person-heart",
+                text: "PCD",
+                variant: "bg-info"
               }] : [])
             ]}
           />
@@ -182,6 +231,12 @@ function PassengerDetailPage({ pageFunctions }) {
                 value={passenger.data_nascimento} 
                 formatter={formatDateFromDatabase} 
               />
+              <DetailItem 
+                icon="bi-person-heart" 
+                label="Pessoa com Deficiência (PCD)" 
+                value={passenger.pcd} 
+                formatter={formatPCDStatus} 
+              />
               {passenger.data_criacao && (
                 <DetailItem 
                   icon="bi-calendar-plus" 
@@ -207,11 +262,118 @@ function PassengerDetailPage({ pageFunctions }) {
                 value={passenger.telefone} 
                 formatter={formatPhoneNumber} 
               />
+            </DetailSection>
+          </DetailContainer>
+
+          <DetailContainer columns={2}>
+            <DetailSection 
+              title="Endereço" 
+              icon="bi-geo-alt"
+            >
               <DetailItem 
                 icon="bi-geo-alt" 
-                label="Endereço" 
+                label="Endereço Completo" 
                 value={formatAddress(passenger)} 
               />
+              {passenger.cep && (
+                <DetailItem 
+                  icon="bi-mailbox" 
+                  label="CEP" 
+                  value={passenger.cep} 
+                  formatter={formatCEP} 
+                />
+              )}
+              {passenger.logradouro && (
+                <DetailItem 
+                  icon="bi-signpost" 
+                  label="Logradouro" 
+                  value={passenger.logradouro} 
+                />
+              )}
+              {passenger.numero_endereco && (
+                <DetailItem 
+                  icon="bi-hash" 
+                  label="Número" 
+                  value={passenger.numero_endereco} 
+                />
+              )}
+              {passenger.complemento_endereco && (
+                <DetailItem 
+                  icon="bi-plus-circle" 
+                  label="Complemento" 
+                  value={passenger.complemento_endereco} 
+                />
+              )}
+              {passenger.bairro && (
+                <DetailItem 
+                  icon="bi-building" 
+                  label="Bairro" 
+                  value={passenger.bairro} 
+                />
+              )}
+              {passenger.cidade && (
+                <DetailItem 
+                  icon="bi-geo" 
+                  label="Cidade" 
+                  value={passenger.cidade} 
+                />
+              )}
+              {passenger.uf && (
+                <DetailItem 
+                  icon="bi-flag" 
+                  label="UF" 
+                  value={passenger.uf} 
+                />
+              )}
+            </DetailSection>
+
+            <DetailSection 
+              title="Informações de Transporte" 
+              icon="bi-bus-front"
+            >
+              {passenger.rota_id ? (
+                <>
+                  <DetailItem 
+                    icon="bi-bus-front" 
+                    label="Rota" 
+                    value={getRouteInfo(passenger.rota_id)?.nome || passenger.rota_nome || "Carregando..."} 
+                  />
+                  <DetailItem 
+                    icon="bi-check-circle" 
+                    label="Status da Rota" 
+                    value={getRouteInfo(passenger.rota_id)?.status || "Ativa"} 
+                  />
+                </>
+              ) : (
+                <DetailItem 
+                  icon="bi-exclamation-triangle" 
+                  label="Rota" 
+                  value="Nenhuma rota associada" 
+                />
+              )}
+              
+              {passenger.ponto_id ? (
+                <>
+                  <DetailItem 
+                    icon="bi-geo-alt-fill" 
+                    label="Ponto de Embarque" 
+                    value={getStopInfo(passenger.ponto_id)?.nome || passenger.ponto_nome || "Carregando..."} 
+                  />
+                  {getStopInfo(passenger.ponto_id)?.cidade && (
+                    <DetailItem 
+                      icon="bi-geo" 
+                      label="Localização" 
+                      value={`${getStopInfo(passenger.ponto_id)?.cidade}, ${getStopInfo(passenger.ponto_id)?.uf}`} 
+                    />
+                  )}
+                </>
+              ) : (
+                <DetailItem 
+                  icon="bi-exclamation-triangle" 
+                  label="Ponto de Embarque" 
+                  value="Nenhum ponto associado" 
+                />
+              )}
             </DetailSection>
           </DetailContainer>
 

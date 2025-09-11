@@ -12,7 +12,8 @@ function GenericForm({
   className = '',
   title = null,
   subtitle = null,
-  isCreateForm = null
+  isCreateForm = null,
+  steps = null // Nova prop para definir etapas
 }) {
   const [formData, setFormData] = useState(() => {
     const initialFormData = {};
@@ -26,9 +27,87 @@ function GenericForm({
   const [selectOptions, setSelectOptions] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [touchedFields, setTouchedFields] = useState({});
+  const [isLoadingCep, setIsLoadingCep] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
 
   // Memoize field configurations for better performance
   const fieldsConfig = useMemo(() => config.fields, [config.fields]);
+
+  // Funções para controlar as etapas
+  const nextStep = useCallback((e) => {
+    // Previne o comportamento padrão do formulário
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    if (steps && currentStep < steps.length - 1) {
+      // Valida campos obrigatórios da etapa atual
+      const currentStepFields = steps[currentStep]?.fields || [];
+      const stepErrors = {};
+      let hasErrors = false;
+      
+      currentStepFields.forEach(fieldName => {
+        const field = fieldsConfig.find(f => f.name === fieldName);
+        if (field && field.required) {
+          const value = formData[field.name] || '';
+          // Validação inline para evitar dependência circular
+          let error = null;
+          
+          // Validação de campo obrigatório
+          if (!value || value.toString().trim() === '') {
+            error = `${field.label} é obrigatório`;
+          }
+          
+          // Validação customizada
+          if (!error && field.validator) {
+            error = field.validator(value, formData);
+          }
+          
+          if (error) {
+            stepErrors[fieldName] = error;
+            hasErrors = true;
+          }
+        }
+      });
+      
+      if (hasErrors) {
+        // Atualiza erros e marca campos como tocados
+        setErrors(prev => ({ ...prev, ...stepErrors }));
+        setTouchedFields(prev => {
+          const newTouched = { ...prev };
+          currentStepFields.forEach(fieldName => {
+            if (stepErrors[fieldName]) {
+              newTouched[fieldName] = true;
+            }
+          });
+          return newTouched;
+        });
+        
+        // Mostra mensagem de erro
+        console.warn('Preencha todos os campos obrigatórios da etapa atual');
+        return;
+      }
+      
+      // Se não há erros, avança para próxima etapa
+      setCurrentStep(currentStep + 1);
+    }
+  }, [steps, currentStep, fieldsConfig, formData]);
+
+  const prevStep = useCallback((e) => {
+    // Previne o comportamento padrão do formulário
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  }, [currentStep]);
+
+  const isLastStep = steps ? currentStep === steps.length - 1 : true;
+  const isFirstStep = currentStep === 0;
 
   // Carrega os dados iniciais se disponíveis (para edição)
   useEffect(() => {
@@ -41,6 +120,11 @@ function GenericForm({
         // Aplica transformação reversa se disponível (ex: conversão de datas do banco para formato de exibição)
         if (field.reverseTransform && value) {
           value = field.reverseTransform(value);
+        }
+        
+        // Aplica formatação aos dados iniciais se disponível
+        if (field.formatter && value) {
+          value = field.formatter(value);
         }
         
         newFormData[field.name] = value;
@@ -92,25 +176,36 @@ function GenericForm({
       
       for (const field of fieldsConfig) {
         if (field.type === 'select') {
-          if (field.loadOptions) {
-            loadPromises.push(
-              field.loadOptions()
-                .then(response => {
-                  if (response && response.data) {
-                    newSelectOptions[field.name] = response.data;
-                  } else if (response && Array.isArray(response)) {
-                    newSelectOptions[field.name] = response;
-                  }
-                })
-                .catch(error => {
-                  console.error(`Erro ao carregar opções para ${field.name}:`, error);
-                  if (field.defaultOptions) {
-                    newSelectOptions[field.name] = field.defaultOptions;
-                  }
-                })
-            );
-          } else if (field.defaultOptions) {
-            newSelectOptions[field.name] = field.defaultOptions;
+          // Só carrega se não for um campo dependente ou se o campo pai já foi preenchido
+          if (!field.dependsOn || formData[field.dependsOn]) {
+            if (field.loadOptions) {
+              // Se é um campo dependente, passa o valor do campo pai
+              const loadFunction = field.dependsOn 
+                ? () => field.loadOptions(formData[field.dependsOn])
+                : field.loadOptions;
+                
+              loadPromises.push(
+                loadFunction()
+                  .then(response => {
+                    if (response && response.data) {
+                      newSelectOptions[field.name] = response.data;
+                    } else if (response && Array.isArray(response)) {
+                      newSelectOptions[field.name] = response;
+                    }
+                  })
+                  .catch(error => {
+                    console.error(`Erro ao carregar opções para ${field.name}:`, error);
+                    if (field.defaultOptions) {
+                      newSelectOptions[field.name] = field.defaultOptions;
+                    }
+                  })
+              );
+            } else if (field.defaultOptions) {
+              newSelectOptions[field.name] = field.defaultOptions;
+            }
+          } else {
+            // Campo dependente sem valor no campo pai - usa opções padrão
+            newSelectOptions[field.name] = field.defaultOptions || [];
           }
         }
       }
@@ -123,7 +218,7 @@ function GenericForm({
     };
 
     loadSelectOptions();
-  }, [fieldsConfig]);
+  }, [fieldsConfig, formData]);
 
   // Encontra a configuração do campo (memoized)
   const getFieldConfig = useCallback((fieldName) => {
@@ -148,6 +243,76 @@ function GenericForm({
     return null;
   }, [getFieldConfig, formData]);
 
+  // Verifica se a etapa atual está válida
+  const isCurrentStepValid = useMemo(() => {
+    if (!steps) return true;
+    
+    const currentStepFields = steps[currentStep]?.fields || [];
+    return currentStepFields.every(fieldName => {
+      const field = fieldsConfig.find(f => f.name === fieldName);
+      if (field && field.required) {
+        const value = formData[field.name] || '';
+        const error = validateField(field.name, value);
+        return !error;
+      }
+      return true;
+    });
+  }, [steps, currentStep, fieldsConfig, formData, validateField]);
+
+  // Função para buscar dados do CEP
+  const handleCepBlur = useCallback(async (cep) => {
+    if (!cep) return;
+    
+    // Remove formatação para contar apenas os dígitos
+    const cleanCep = cep.replace(/\D/g, '');
+    
+    // Só faz a requisição se tiver exatamente 8 dígitos
+    if (cleanCep.length !== 8) {
+      return;
+    }
+    
+    setIsLoadingCep(true);
+    
+    try {
+      // Importa a API dinamicamente para evitar dependência circular
+      const api = (await import('@web/api/api')).default;
+      const addressData = await api.passengers.getAddressByCep(cep);
+      
+      // Atualiza os campos de endereço com os dados do CEP
+      setFormData(prev => ({
+        ...prev,
+        logradouro: addressData.logradouro,
+        bairro: addressData.bairro,
+        cidade: addressData.cidade,
+        uf: addressData.uf,
+        cep: addressData.cep
+      }));
+      
+      // Limpa erros dos campos preenchidos automaticamente
+      setErrors(prev => ({
+        ...prev,
+        logradouro: null,
+        bairro: null,
+        cidade: null,
+        uf: null,
+        cep: null
+      }));
+      
+    } catch (error) {
+      console.error('Erro ao buscar CEP:', error);
+      
+      // Mostra erro apenas se o CEP for válido mas não encontrado
+      if (error.message === 'CEP não encontrado') {
+        setErrors(prev => ({
+          ...prev,
+          cep: 'CEP não encontrado'
+        }));
+      }
+    } finally {
+      setIsLoadingCep(false);
+    }
+  }, []);
+
   // Manipulador de foco nos campos
   const handleBlur = useCallback((e) => {
     const { name, value } = e.target;
@@ -159,7 +324,16 @@ function GenericForm({
       ...prev,
       [name]: errorMsg
     }));
-  }, [validateField]);
+
+    // Verifica se existe um evento customizado para este campo
+    const fieldConfig = getFieldConfig(name);
+    if (fieldConfig && fieldConfig.onBlur) {
+      // Chama o evento customizado se existir
+      if (fieldConfig.onBlur === 'handleCepBlur' && name === 'cep') {
+        handleCepBlur(value);
+      }
+    }
+  }, [validateField, getFieldConfig, handleCepBlur]);
 
   // Manipulador de alteração nos campos com validação otimizada
   const handleChange = useCallback((e) => {
@@ -173,7 +347,21 @@ function GenericForm({
       processedValue = fieldConfig.formatter(processedValue);
     }
     
+    
     const newFormData = { ...formData, [name]: processedValue };
+    
+    // Limpa campos dependentes quando o campo pai muda
+    fieldsConfig.forEach(field => {
+      if (field.dependsOn === name) {
+        newFormData[field.name] = field.defaultValue || '';
+        // Limpa opções do campo dependente
+        setSelectOptions(prev => ({
+          ...prev,
+          [field.name]: field.defaultOptions || []
+        }));
+      }
+    });
+    
     setFormData(newFormData);
     
     // Valida em tempo real apenas se o campo já foi tocado
@@ -184,7 +372,7 @@ function GenericForm({
         [name]: errorMsg
       }));
     }
-  }, [getFieldConfig, touchedFields, validateField, formData]);
+  }, [getFieldConfig, touchedFields, validateField, formData, fieldsConfig]);
 
   // Validação do formulário completo
   const validateForm = useCallback(() => {
@@ -354,9 +542,17 @@ function GenericForm({
                 step={field.step}
                 pattern={field.pattern}
                 autoComplete={field.autoComplete}
-                disabled={field.disabled || isLoading}
+                disabled={field.disabled || isLoading || (field.name === 'cep' && isLoadingCep) || (field.dependsOn && !formData[field.dependsOn])}
+                data-dependent={field.dependsOn ? 'true' : undefined}
                 {...(field.additionalProps || {})}
               />
+              {field.name === 'cep' && isLoadingCep && (
+                <span className="input-group-text bg-light">
+                  <div className="spinner-border spinner-border-sm text-primary" role="status">
+                    <span className="visually-hidden">Carregando...</span>
+                  </div>
+                </span>
+              )}
               {showError && <div className="invalid-feedback">{error}</div>}
             </div>
             {helpText}
@@ -364,25 +560,43 @@ function GenericForm({
         );
 
       case 'checkbox':
+        const isPcdField = field.name === 'pcd';
+        const checkboxClass = isPcdField 
+          ? `form-check-input form-check-input-lg ${validationClass}` 
+          : `form-check-input ${validationClass}`;
+        const containerClass = isPcdField 
+          ? 'form-check form-check-lg p-3 border rounded bg-light' 
+          : 'form-check';
+        const labelClass = isPcdField 
+          ? 'form-check-label fw-bold fs-5 text-primary' 
+          : 'form-check-label fw-semibold';
+        
         return (
           <div key={field.name} className="mb-4">
-            <div className="form-check">
+            <div className={containerClass}>
               <input
-                className={`form-check-input ${validationClass}`}
+                className={checkboxClass}
                 type="checkbox"
                 id={field.name}
                 name={field.name}
                 checked={value}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                disabled={field.disabled || isLoading}
+                disabled={field.disabled || isLoading || (field.dependsOn && !formData[field.dependsOn])}
+                data-dependent={field.dependsOn ? 'true' : undefined}
                 {...(field.additionalProps || {})}
               />
-              <label className="form-check-label fw-semibold" htmlFor={field.name}>
-                <i className={`${field.labelIcon} me-2 text-primary`}></i>
+              <label className={labelClass} htmlFor={field.name}>
+                <i className={`${field.labelIcon} me-2 ${isPcdField ? 'fs-4' : ''}`}></i>
                 {field.label}
                 {field.required && <span className="text-danger ms-1">*</span>}
               </label>
+              {isPcdField && (
+                <div className="form-text text-muted mt-2">
+                  <i className="bi bi-info-circle me-1"></i>
+                  Marque esta opção se o passageiro possui alguma deficiência
+                </div>
+              )}
               {showError && <div className="invalid-feedback d-block">{error}</div>}
             </div>
             {helpText}
@@ -408,7 +622,8 @@ function GenericForm({
                 value={value}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                disabled={field.disabled || isLoading}
+                disabled={field.disabled || isLoading || (field.dependsOn && !formData[field.dependsOn])}
+                data-dependent={field.dependsOn ? 'true' : undefined}
                 {...(field.additionalProps || {})}
               >
                 <option value="">{field.placeholder || 'Selecione uma opção'}</option>
@@ -451,7 +666,8 @@ function GenericForm({
                 placeholder={field.placeholder}
                 rows={field.rows || 3}
                 maxLength={field.maxLength}
-                disabled={field.disabled || isLoading}
+                disabled={field.disabled || isLoading || (field.dependsOn && !formData[field.dependsOn])}
+                data-dependent={field.dependsOn ? 'true' : undefined}
                 {...(field.additionalProps || {})}
               />
               {showError && <div className="invalid-feedback">{error}</div>}
@@ -481,7 +697,8 @@ function GenericForm({
                 onBlur={handleBlur}
                 accept={field.accept}
                 multiple={field.multiple}
-                disabled={field.disabled || isLoading}
+                disabled={field.disabled || isLoading || (field.dependsOn && !formData[field.dependsOn])}
+                data-dependent={field.dependsOn ? 'true' : undefined}
                 {...(field.additionalProps || {})}
               />
               {showError && <div className="invalid-feedback">{error}</div>}
@@ -496,7 +713,7 @@ function GenericForm({
   }, [formData, errors, touchedFields, selectOptions, handleChange, handleBlur, isLoading, validateField]);
 
   return (
-    <div className={`card border-0 shadow-sm ${className}`}>
+    <div className={`card border-0 shadow-sm ${steps ? 'multi-step-form' : ''} ${className}`}>
       {(title || subtitle) && (
         <div className="card-header bg-gradient-primary text-white">
           {title && <h5 className="card-title mb-0">{title}</h5>}
@@ -515,8 +732,45 @@ function GenericForm({
           </div>
         )}
 
-        {/* Renderiza campos agrupados se especificado */}
-        {config.groups ? (
+        {/* Renderiza campos com etapas se especificado */}
+        {steps ? (
+          <div>
+            {/* Indicador de etapas */}
+            <div className="mb-4">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h5 className="mb-0 text-primary">
+                  <i className={`${steps[currentStep]?.icon || 'bi bi-list-ol'} me-2`}></i>
+                  {steps[currentStep]?.title || `Etapa ${currentStep + 1}`}
+                </h5>
+                <div className="d-flex align-items-center gap-2">
+                  <span className="badge bg-primary fs-6">
+                    {currentStep + 1} de {steps.length}
+                  </span>
+                </div>
+              </div>
+              <div className="progress mb-4" style={{ height: '8px' }}>
+                <div 
+                  className={`progress-bar ${isCurrentStepValid ? 'bg-primary' : 'bg-warning'}`}
+                  role="progressbar" 
+                  style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+                ></div>
+              </div>
+            </div>
+
+            {/* Campos da etapa atual */}
+            <div className="row">
+              {steps[currentStep]?.fields?.map(fieldName => {
+                const field = fieldsConfig.find(f => f.name === fieldName);
+                return field ? (
+                  <div key={fieldName} className={field.colClass || 'col-12'}>
+                    {renderField(field)}
+                  </div>
+                ) : null;
+              })}
+            </div>
+          </div>
+        ) : config.groups ? (
+          // Renderiza campos agrupados se especificado
           config.groups.map((group, groupIndex) => (
             <div key={groupIndex} className="mb-4">
               {group.title && (
@@ -578,36 +832,108 @@ function GenericForm({
         <hr className="my-4" />
         
         {/* Botões principais */}
-        <div className="d-flex justify-content-end gap-3">
-          <button 
-            type="button" 
-            className="btn btn-outline-secondary btn-lg px-5" 
-            onClick={onCancel}
-            disabled={isSubmitting || isLoading}
-            style={{ minWidth: '140px' }}
-          >
-            <i className="bi bi-x-circle me-2"></i>
-            Cancelar
-          </button>
-          
-          <button 
-            type="submit" 
-            className="btn btn-primary text-white btn-lg px-5"
-            disabled={isSubmitting || isLoading || !isFormValid}
-            style={{ minWidth: '140px' }}
-          >
-            {isSubmitting ? (
-              <>
-                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                Processando...
-              </>
-            ) : (
-              <>
-                <i className={`bi ${initialData && !isCreateForm ? 'bi-pencil-square' : 'bi-plus-circle'} me-2`}></i>
-                {(initialData && !isCreateForm) ? 'Atualizar' : 'Cadastrar'}
-              </>
-            )}
-          </button>
+        <div className="d-flex justify-content-between gap-3">
+          {/* Botões de navegação para etapas */}
+          {steps ? (
+            <>
+              <div className="d-flex gap-2">
+                {!isFirstStep && (
+                  <button 
+                    type="button" 
+                    className="btn btn-outline-secondary btn-lg px-4" 
+                    onClick={(e) => prevStep(e)}
+                    disabled={isSubmitting || isLoading}
+                    style={{ minWidth: '120px' }}
+                  >
+                    <i className="bi bi-arrow-left me-2"></i>
+                    Anterior
+                  </button>
+                )}
+              </div>
+              
+              <div className="d-flex gap-2">
+                <button 
+                  type="button" 
+                  className="btn btn-outline-secondary btn-lg px-4" 
+                  onClick={onCancel}
+                  disabled={isSubmitting || isLoading}
+                  style={{ minWidth: '120px' }}
+                >
+                  <i className="bi bi-x-circle me-2"></i>
+                  Cancelar
+                </button>
+                
+                {!isLastStep ? (
+                  <button 
+                    type="button" 
+                    className="btn btn-primary text-white btn-lg px-4"
+                    onClick={(e) => nextStep(e)}
+                    disabled={isSubmitting || isLoading || !isCurrentStepValid}
+                    style={{ minWidth: '120px' }}
+                    title={!isCurrentStepValid ? 'Preencha todos os campos obrigatórios da etapa atual' : ''}
+                  >
+                    Próximo
+                    <i className="bi bi-arrow-right ms-2"></i>
+                  </button>
+                ) : (
+                  <button 
+                    type="submit" 
+                    className="btn btn-success text-white btn-lg px-4"
+                    disabled={isSubmitting || isLoading || !isFormValid}
+                    style={{ minWidth: '140px' }}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Processando...
+                      </>
+                    ) : (
+                      <>
+                        <i className={`bi ${initialData && !isCreateForm ? 'bi-pencil-square' : 'bi-check-circle'} me-2`}></i>
+                        {(initialData && !isCreateForm) ? 'Atualizar' : 'Finalizar'}
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+            </>
+          ) : (
+            // Botões normais quando não há etapas
+            <>
+              <div></div>
+              <div className="d-flex gap-2">
+                <button 
+                  type="button" 
+                  className="btn btn-outline-secondary btn-lg px-5" 
+                  onClick={onCancel}
+                  disabled={isSubmitting || isLoading}
+                  style={{ minWidth: '140px' }}
+                >
+                  <i className="bi bi-x-circle me-2"></i>
+                  Cancelar
+                </button>
+                
+                <button 
+                  type="submit" 
+                  className="btn btn-primary text-white btn-lg px-5"
+                  disabled={isSubmitting || isLoading || !isFormValid}
+                  style={{ minWidth: '140px' }}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Processando...
+                    </>
+                  ) : (
+                    <>
+                      <i className={`bi ${initialData && !isCreateForm ? 'bi-pencil-square' : 'bi-plus-circle'} me-2`}></i>
+                      {(initialData && !isCreateForm) ? 'Atualizar' : 'Cadastrar'}
+                    </>
+                  )}
+                </button>
+              </div>
+            </>
+          )}
 
           {showDeleteButton && onDelete && initialData && (
             <button
@@ -669,7 +995,9 @@ GenericForm.propTypes = {
         multiple: PropTypes.bool,
         // Props adicionais
         additionalProps: PropTypes.object,
-        alternativeKey: PropTypes.string
+        alternativeKey: PropTypes.string,
+        // Para campos dependentes
+        dependsOn: PropTypes.string
       })
     ).isRequired,
     fakeDataGenerator: PropTypes.func,
@@ -690,7 +1018,14 @@ GenericForm.propTypes = {
   className: PropTypes.string,
   title: PropTypes.string,
   subtitle: PropTypes.string,
-  isCreateForm: PropTypes.bool
+  isCreateForm: PropTypes.bool,
+  steps: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      icon: PropTypes.string,
+      fields: PropTypes.arrayOf(PropTypes.string).isRequired
+    })
+  )
 };
 
 export default GenericForm;

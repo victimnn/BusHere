@@ -89,3 +89,95 @@
 .bg-medium {
   background-color: $bg-medium !important;
 }
+
+
+// =============================================================================
+// CUSTOM STYLES FOR PCD CHECKBOX
+// =============================================================================
+
+.pcd-checkbox {
+  .form-check-input-lg {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-top: 0.25rem;
+  }
+  
+  .form-check-label {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    
+    &:hover {
+      color: var(--bs-primary) !important;
+      transform: translateX(2px);
+    }
+  }
+  
+  .form-check-input:checked {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
+  }
+  
+  .form-check-input:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
+  }
+  
+  .form-check-input:checked:focus {
+    box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.5);
+  }
+  
+  .form-text {
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    padding-left: 1.75rem;
+  }
+  
+  // Animação suave para o container
+  transition: all 0.3s ease-in-out;
+  
+  &:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.05) !important;
+    border-color: var(--bs-primary) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// =============================================================================
+// LIGHT MODE FIXES FOR CEP FIELD AND AUTOCOMPLETE
+// =============================================================================
+
+// Fix para campo CEP no modo claro
+.multi-step-form {
+  .form-control {
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 30px white inset !important;
+      -webkit-text-fill-color: var(--bs-dark) !important;
+      background-color: white !important;
+      color: var(--bs-dark) !important;
+    }
+  }
+  
+  // Fix específico para campo CEP em carregamento
+  .cep-loading {
+    background-color: var(--bs-light) !important;
+    color: var(--bs-dark) !important;
+    border-color: var(--bs-primary) !important;
+    
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 30px var(--bs-light) inset !important;
+      -webkit-text-fill-color: var(--bs-dark) !important;
+      background-color: var(--bs-light) !important;
+      color: var(--bs-dark) !important;
+    }
+  }
+}

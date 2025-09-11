@@ -20,6 +20,7 @@ function PassengerForm({ initialData, onSubmit, onCancel, isCreateForm = null })
       onSubmit={onSubmit}
       onCancel={onCancel}
       isCreateForm={isCreateForm}
+      steps={passengerFormConfig.steps}
     />
   );
 }

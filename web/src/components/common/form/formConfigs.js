@@ -96,6 +96,18 @@ export const passengerFormConfig = {
       validator: validateBirthDate
     },
     {
+      name: 'pcd',
+      type: 'checkbox',
+      label: 'Pessoa com Deficiência (PCD)',
+      labelIcon: 'bi bi-universal-access',
+      inputIcon: 'bi bi-universal-access',
+      size: 'lg',
+      className: 'pcd-checkbox',
+      additionalProps: { 
+        'data-form-type': 'other'
+      }
+    },
+    {
       name: 'tipo_passageiro',
       alternativeKey: 'tipo_passageiro_id',
       type: 'select',
@@ -116,6 +128,177 @@ export const passengerFormConfig = {
         if (!value) return 'Tipo de passageiro é obrigatório';
         return null;
       }
+    },
+    // Seção de Endereço - CEP primeiro para preenchimento automático
+    {
+      name: 'cep',
+      type: 'text',
+      label: 'CEP',
+      labelIcon: 'bi bi-mailbox',
+      inputIcon: 'bi bi-envelope',
+      placeholder: '00000-000',
+      maxLength: 9,
+      required: true,
+      size: 'lg',
+      formatter: formatCEP,
+      validator: (value) => {
+        if (!value.trim()) return 'CEP é obrigatório';
+        if (!validateCEP(value)) return 'CEP deve ter o formato 00000-000';
+        return null;
+      },
+      onBlur: 'handleCepBlur', // Evento para buscar dados do CEP
+      helpText: 'Digite o CEP para preenchimento automático do endereço'
+    },
+    {
+      name: 'logradouro',
+      type: 'text',
+      label: 'Logradouro',
+      labelIcon: 'bi bi-house-fill',
+      inputIcon: 'bi bi-geo',
+      placeholder: 'Nome da rua/avenida',
+      maxLength: 255,
+      required: true,
+      size: 'lg',
+      validator: (value) => {
+        if (!value.trim()) return 'Logradouro é obrigatório';
+        return null;
+      }
+    },
+    {
+      name: 'numero_endereco',
+      type: 'text',
+      label: 'Número',
+      labelIcon: 'bi bi-123',
+      inputIcon: 'bi bi-hash',
+      placeholder: 'Número do endereço',
+      maxLength: 20,
+      required: true,
+      size: 'lg',
+      validator: (value) => {
+        if (!value.trim()) return 'Número é obrigatório';
+        return null;
+      }
+    },
+    {
+      name: 'complemento_endereco',
+      type: 'text',
+      label: 'Complemento',
+      labelIcon: 'bi bi-house-door',
+      inputIcon: 'bi bi-plus-circle',
+      placeholder: 'Apartamento, bloco, etc.',
+      maxLength: 100,
+      size: 'lg'
+    },
+    {
+      name: 'bairro',
+      type: 'text',
+      label: 'Bairro',
+      labelIcon: 'bi bi-building',
+      inputIcon: 'bi bi-buildings',
+      placeholder: 'Nome do bairro',
+      maxLength: 100,
+      required: true,
+      size: 'lg',
+      validator: (value) => {
+        if (!value.trim()) return 'Bairro é obrigatório';
+        return null;
+      }
+    },
+    {
+      name: 'cidade',
+      type: 'text',
+      label: 'Cidade',
+      labelIcon: 'bi bi-geo-alt',
+      inputIcon: 'bi bi-building',
+      placeholder: 'Nome da cidade',
+      maxLength: 100,
+      required: true,
+      size: 'lg',
+      validator: (value) => {
+        if (!value.trim()) return 'Cidade é obrigatória';
+        return null;
+      }
+    },
+    {
+      name: 'uf',
+      type: 'select',
+      label: 'UF',
+      labelIcon: 'bi bi-flag',
+      inputIcon: 'bi bi-flag',
+      placeholder: 'Selecione o estado',
+      required: true,
+      size: 'lg',
+      defaultOptions: BRAZILIAN_STATES,
+      optionValue: 'value',
+      optionLabel: 'label',
+      validator: (value) => {
+        if (!value) return 'Estado é obrigatório';
+        if (!isValidUF(value)) return 'Estado inválido';
+        return null;
+      }
+    },
+    // Relacionamentos
+    {
+      name: 'rota_id',
+      type: 'select',
+      label: 'Rota',
+      labelIcon: 'bi bi-signpost-split-fill',
+      inputIcon: 'bi bi-signpost-split',
+      placeholder: 'Selecione uma rota (opcional)',
+      size: 'lg',
+      loadOptions: () => api.passengers.getRoutes(),
+      defaultOptions: [],
+      optionValue: 'rota_id',
+      optionLabel: (option) => `${option.nome} (${option.codigo_rota})`,
+      validator: (value) => {
+        return null; // Opcional
+      }
+    },
+    {
+      name: 'ponto_id',
+      type: 'select',
+      label: 'Ponto de Embarque',
+      labelIcon: 'bi bi-geo-alt-fill',
+      inputIcon: 'bi bi-pin-map',
+      placeholder: 'Selecione um ponto (opcional)',
+      size: 'lg',
+      loadOptions: () => api.passengers.getStops(),
+      defaultOptions: [],
+      optionValue: 'ponto_id',
+      optionLabel: (option) => `${option.nome} - ${option.cidade}/${option.uf}`,
+      validator: (value) => {
+        return null; // Opcional
+      }
+    }
+  ],
+  steps: [
+    {
+      title: 'Informações Básicas',
+      icon: 'bi bi-person-lines-fill',
+      fields: [
+        'nome',
+        'email', 
+        'cpf',
+        'telefone',
+        'data_nascimento',
+        'pcd',
+        'tipo_passageiro'
+      ]
+    },
+    {
+      title: 'Endereço e Localização',
+      icon: 'bi bi-geo-alt-fill',
+      fields: [
+        'cep',
+        'logradouro',
+        'numero_endereco',
+        'complemento_endereco',
+        'bairro',
+        'cidade',
+        'uf',
+        'rota_id',
+        'ponto_id'
+      ]
     }
   ],
   fakeDataGenerator: createFakePassengerData

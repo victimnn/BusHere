@@ -58,16 +58,76 @@ export const passengerConfig = {
       formatter: formatters.date
     },
     {
-      key: "data_criacao",
-      label: "Data de Cadastro",
-      icon: "bi bi-calendar-plus",
-      formatter: formatters.date
+      key: "pcd",
+      label: "Pessoa com Deficiência",
+      icon: "bi bi-universal-access",
+      formatter: (value) => value ? "Sim" : "Não"
     },
     {
       key: "tipo_passageiro",
       label: "Tipo de Passageiro",
       icon: "bi bi-person-badge",
       formatter: formatters.defaultValue
+    },
+    {
+      key: "logradouro",
+      label: "Logradouro",
+      icon: "bi bi-house",
+      formatter: formatters.defaultValue
+    },
+    {
+      key: "numero_endereco",
+      label: "Número",
+      icon: "bi bi-123",
+      formatter: formatters.defaultValue
+    },
+    {
+      key: "complemento_endereco",
+      label: "Complemento",
+      icon: "bi bi-house-door",
+      formatter: formatters.defaultValue
+    },
+    {
+      key: "bairro",
+      label: "Bairro",
+      icon: "bi bi-building",
+      formatter: formatters.defaultValue
+    },
+    {
+      key: "cidade",
+      label: "Cidade",
+      icon: "bi bi-geo-alt",
+      formatter: formatters.defaultValue
+    },
+    {
+      key: "uf",
+      label: "UF",
+      icon: "bi bi-flag",
+      formatter: formatters.defaultValue
+    },
+    {
+      key: "cep",
+      label: "CEP",
+      icon: "bi bi-mailbox",
+      formatter: (value) => value ? value.replace(/(\d{5})(\d{3})/, "$1-$2") : "Não informado"
+    },
+    {
+      key: "rota_nome",
+      label: "Rota",
+      icon: "bi bi-signpost-split",
+      formatter: formatters.defaultValue
+    },
+    {
+      key: "ponto_nome",
+      label: "Ponto de Embarque",
+      icon: "bi bi-geo-alt-fill",
+      formatter: formatters.defaultValue
+    },
+    {
+      key: "data_criacao",
+      label: "Data de Cadastro",
+      icon: "bi bi-calendar-plus",
+      formatter: formatters.date
     }
   ]
 };

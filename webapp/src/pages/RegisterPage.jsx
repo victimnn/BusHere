@@ -14,7 +14,7 @@ function RegisterPage() {
     return (
         <div className="d-flex justify-content-center align-items-center h-100"> 
             <div 
-                className="p-3"
+                className="p-4"
                 style={{ width: "100%", height: "100%", maxWidth: "400px"}}
             >    
 
@@ -27,7 +27,7 @@ function RegisterPage() {
                 </h5>
 
             <form onClick={handleSubmit}>
-                <div className="mb-3 ms-2">
+                <div className="mb-3 ">
                     <label className="form-label font-family-segundaria">E-mail</label>
                     <input 
                         type="text"
@@ -38,7 +38,7 @@ function RegisterPage() {
                         placeholder="Insira seu melhor e-mail" 
                     />
                 </div>
-                <div className="mb-4 ms-2">
+                <div className="mb-4">
                     <label className="form-label font-family-segundaria">Senha</label>
                     <div className="input-group">
                     <input 

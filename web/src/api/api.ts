@@ -6,7 +6,7 @@ function getBearerToken() {
 }
 
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/enterprise/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/enterprise';
 
 // Sistema de logging otimizado
 const isDevelopment = import.meta.env.DEV;

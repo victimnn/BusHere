@@ -116,6 +116,7 @@ const getErrorMessage = (error, action) => {
 export const useStops = () => {
   // Estados
   const [stops, setStops] = useState([]);
+  const [stopsStats, setStopsStats] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [mapCenter, setMapCenter] = useState([-22.698, -47.009]);
@@ -126,6 +127,21 @@ export const useStops = () => {
     
     return stops.map(stop => transformStopData(stop));
   }, [stops]);
+
+  // Função para buscar estatísticas dos pontos
+  const fetchStopsStats = useCallback(async () => {
+    try {
+      const response = await api.stops.getStats();
+      if (response?.data && Array.isArray(response.data)) {
+        setStopsStats(response.data);
+      } else {
+        setStopsStats([]);
+      }
+    } catch (err) {
+      console.error("Erro ao buscar estatísticas dos pontos:", err);
+      setStopsStats([]);
+    }
+  }, []);
 
   // Função otimizada para buscar pontos
   const fetchStops = useCallback(async (showLoadingState = true) => {
@@ -165,7 +181,8 @@ export const useStops = () => {
   // Função de retry para recarregar dados
   const refetch = useCallback(() => {
     fetchStops(true);
-  }, [fetchStops]);
+    fetchStopsStats();
+  }, [fetchStops, fetchStopsStats]);
 
   // Função para criar ponto
   const createStop = useCallback(async (formData) => {
@@ -278,11 +295,13 @@ export const useStops = () => {
   // Carregar dados iniciais
   useEffect(() => {
     fetchStops();
-  }, [fetchStops]);
+    fetchStopsStats();
+  }, [fetchStops, fetchStopsStats]);
 
   return {
     // Estados
     stops: transformedStops,
+    stopsStats,
     isLoading,
     error,
     mapCenter,

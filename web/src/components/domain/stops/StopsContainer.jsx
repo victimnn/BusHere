@@ -1,24 +1,36 @@
-function MajorStops({ stops = [] }) {
+function MajorStops({ stops = [], stopsStats = [] }) {
   return (
-    <StopsContainer stops={stops} />
+    <StopsContainer stops={stops} stopsStats={stopsStats} />
   );
 }
 
-function StopsContainer({ stops }) {
+function StopsContainer({ stops, stopsStats = [] }) {
+  // Função para encontrar estatísticas de um ponto específico
+  const getStopStats = (pontoId) => {
+    const stats = stopsStats.find(stat => stat.ponto_id === pontoId);
+    return {
+      passengers: stats?.total_passengers || 0,
+      routes: stats?.total_routes || 0
+    };
+  };
+
   return (
      <div className="w-100 h-100 stops-container" style={{ overflowY: "auto" }}>
       {/* Content */}
       <div className="p-3">
         {stops.length > 0 ? (
           <div className="d-flex flex-column gap-2">
-            {stops.map((stop, index) => (
-              <StopComponent 
-                key={stop.ponto_id || index}
-                name={stop.nome} 
-                passengers={Math.ceil(Math.random() * 40)}
-                routeAmount={Math.ceil(Math.random() * 10)}
-              />
-            ))}
+            {stops.map((stop, index) => {
+              const stats = getStopStats(stop.ponto_id);
+              return (
+                <StopComponent 
+                  key={stop.ponto_id || index}
+                  name={stop.nome} 
+                  passengers={stats.passengers}
+                  routeAmount={stats.routes}
+                />
+              );
+            })}
           </div>
         ) : (
           <div className="text-center text-muted p-4 empty-state">

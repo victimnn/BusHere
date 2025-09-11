@@ -30,25 +30,37 @@ module.exports = (pool) => {
     }
   });
 
-  // Rota para buscar informações de um ponto específico pelo ID
-  router.get("/:id", async (req, res) => {
-    const pontoId = req.params.id;
-    if (!pontoId) {
-      return res.status(400).json({ error: "O parâmetro 'id' é obrigatório" });
-    }
-    if (isNaN(pontoId)) {
-      return res.status(400).json({ error: "O parâmetro 'id' deve ser um número" });
-    }
-
+  // Rota para buscar estatísticas dos pontos (passageiros e rotas)
+  router.get("/stats", async (req, res) => {
     try {
-      const [rows] = await pool.query("SELECT * FROM Pontos WHERE ponto_id = ?", [pontoId]);
-      if (rows.length === 0) {
-        return res.status(404).json({ error: "Ponto não encontrado" });
-      }
-      return res.status(200).json(rows[0]);
+      // Consulta simplificada para testar
+      const [rows] = await pool.execute(`
+        SELECT 
+          p.ponto_id,
+          p.nome,
+          p.cidade,
+          p.uf,
+          p.ativo,
+          COALESCE((
+            SELECT COUNT(*) 
+            FROM Passageiros 
+            WHERE ponto_id = p.ponto_id AND ativo = true
+          ), 0) as total_passengers,
+          COALESCE((
+            SELECT COUNT(DISTINCT pr.rota_id) 
+            FROM PontosRota pr
+            INNER JOIN Rotas r ON pr.rota_id = r.rota_id
+            WHERE pr.ponto_id = p.ponto_id AND pr.ativo = true AND r.ativo = true
+          ), 0) as total_routes
+        FROM Pontos p
+        WHERE p.ativo = true
+        ORDER BY p.nome
+      `);
+      
+      res.json({ data: rows });
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ error: "Erro ao buscar ponto no banco de dados" });
+      console.error('Erro ao buscar estatísticas dos pontos:', error);
+      res.status(500).json({ error: 'Erro ao buscar estatísticas dos pontos' });
     }
   });
 
@@ -81,6 +93,28 @@ module.exports = (pool) => {
     } catch (error) {
       console.error(error);
       return res.status(500).json({ error: "Erro ao buscar pontos no banco de dados" });
+    }
+  });
+
+  // Rota para buscar informações de um ponto específico pelo ID
+  router.get("/:id", async (req, res) => {
+    const pontoId = req.params.id;
+    if (!pontoId) {
+      return res.status(400).json({ error: "O parâmetro 'id' é obrigatório" });
+    }
+    if (isNaN(pontoId)) {
+      return res.status(400).json({ error: "O parâmetro 'id' deve ser um número" });
+    }
+
+    try {
+      const [rows] = await pool.query("SELECT * FROM Pontos WHERE ponto_id = ?", [pontoId]);
+      if (rows.length === 0) {
+        return res.status(404).json({ error: "Ponto não encontrado" });
+      }
+      return res.status(200).json(rows[0]);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Erro ao buscar ponto no banco de dados" });
     }
   });
 

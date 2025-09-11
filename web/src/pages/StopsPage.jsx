@@ -68,6 +68,7 @@ function Stops({ pageFunctions, isDark }) {
   // Hook para gerenciar dados dos pontos
   const {
     stops,
+    stopsStats,
     isLoading,
     error,
     mapCenter,
@@ -283,7 +284,7 @@ function Stops({ pageFunctions, isDark }) {
                     isDark={isDark}
                   />
                   
-                  <StopsListSection stops={stops} />
+                  <StopsListSection stops={stops} stopsStats={stopsStats} />
                 </div>
 
                 {/* Tabela de Pontos */}

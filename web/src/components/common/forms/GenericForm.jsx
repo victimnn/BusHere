@@ -122,6 +122,11 @@ function GenericForm({
           value = field.reverseTransform(value);
         }
         
+        // Aplica formatação aos dados iniciais se disponível
+        if (field.formatter && value) {
+          value = field.formatter(value);
+        }
+        
         newFormData[field.name] = value;
         // Marca os campos preenchidos como tocados para validação na edição
         if (value && value !== '' && value !== field.defaultValue) {
@@ -171,25 +176,36 @@ function GenericForm({
       
       for (const field of fieldsConfig) {
         if (field.type === 'select') {
-          if (field.loadOptions) {
-            loadPromises.push(
-              field.loadOptions()
-                .then(response => {
-                  if (response && response.data) {
-                    newSelectOptions[field.name] = response.data;
-                  } else if (response && Array.isArray(response)) {
-                    newSelectOptions[field.name] = response;
-                  }
-                })
-                .catch(error => {
-                  console.error(`Erro ao carregar opções para ${field.name}:`, error);
-                  if (field.defaultOptions) {
-                    newSelectOptions[field.name] = field.defaultOptions;
-                  }
-                })
-            );
-          } else if (field.defaultOptions) {
-            newSelectOptions[field.name] = field.defaultOptions;
+          // Só carrega se não for um campo dependente ou se o campo pai já foi preenchido
+          if (!field.dependsOn || formData[field.dependsOn]) {
+            if (field.loadOptions) {
+              // Se é um campo dependente, passa o valor do campo pai
+              const loadFunction = field.dependsOn 
+                ? () => field.loadOptions(formData[field.dependsOn])
+                : field.loadOptions;
+                
+              loadPromises.push(
+                loadFunction()
+                  .then(response => {
+                    if (response && response.data) {
+                      newSelectOptions[field.name] = response.data;
+                    } else if (response && Array.isArray(response)) {
+                      newSelectOptions[field.name] = response;
+                    }
+                  })
+                  .catch(error => {
+                    console.error(`Erro ao carregar opções para ${field.name}:`, error);
+                    if (field.defaultOptions) {
+                      newSelectOptions[field.name] = field.defaultOptions;
+                    }
+                  })
+              );
+            } else if (field.defaultOptions) {
+              newSelectOptions[field.name] = field.defaultOptions;
+            }
+          } else {
+            // Campo dependente sem valor no campo pai - usa opções padrão
+            newSelectOptions[field.name] = field.defaultOptions || [];
           }
         }
       }
@@ -202,7 +218,7 @@ function GenericForm({
     };
 
     loadSelectOptions();
-  }, [fieldsConfig]);
+  }, [fieldsConfig, formData]);
 
   // Encontra a configuração do campo (memoized)
   const getFieldConfig = useCallback((fieldName) => {
@@ -333,6 +349,19 @@ function GenericForm({
     
     
     const newFormData = { ...formData, [name]: processedValue };
+    
+    // Limpa campos dependentes quando o campo pai muda
+    fieldsConfig.forEach(field => {
+      if (field.dependsOn === name) {
+        newFormData[field.name] = field.defaultValue || '';
+        // Limpa opções do campo dependente
+        setSelectOptions(prev => ({
+          ...prev,
+          [field.name]: field.defaultOptions || []
+        }));
+      }
+    });
+    
     setFormData(newFormData);
     
     // Valida em tempo real apenas se o campo já foi tocado
@@ -343,7 +372,7 @@ function GenericForm({
         [name]: errorMsg
       }));
     }
-  }, [getFieldConfig, touchedFields, validateField, formData]);
+  }, [getFieldConfig, touchedFields, validateField, formData, fieldsConfig]);
 
   // Validação do formulário completo
   const validateForm = useCallback(() => {
@@ -513,7 +542,8 @@ function GenericForm({
                 step={field.step}
                 pattern={field.pattern}
                 autoComplete={field.autoComplete}
-                disabled={field.disabled || isLoading || (field.name === 'cep' && isLoadingCep)}
+                disabled={field.disabled || isLoading || (field.name === 'cep' && isLoadingCep) || (field.dependsOn && !formData[field.dependsOn])}
+                data-dependent={field.dependsOn ? 'true' : undefined}
                 {...(field.additionalProps || {})}
               />
               {field.name === 'cep' && isLoadingCep && (
@@ -552,7 +582,8 @@ function GenericForm({
                 checked={value}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                disabled={field.disabled || isLoading}
+                disabled={field.disabled || isLoading || (field.dependsOn && !formData[field.dependsOn])}
+                data-dependent={field.dependsOn ? 'true' : undefined}
                 {...(field.additionalProps || {})}
               />
               <label className={labelClass} htmlFor={field.name}>
@@ -591,7 +622,8 @@ function GenericForm({
                 value={value}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                disabled={field.disabled || isLoading}
+                disabled={field.disabled || isLoading || (field.dependsOn && !formData[field.dependsOn])}
+                data-dependent={field.dependsOn ? 'true' : undefined}
                 {...(field.additionalProps || {})}
               >
                 <option value="">{field.placeholder || 'Selecione uma opção'}</option>
@@ -634,7 +666,8 @@ function GenericForm({
                 placeholder={field.placeholder}
                 rows={field.rows || 3}
                 maxLength={field.maxLength}
-                disabled={field.disabled || isLoading}
+                disabled={field.disabled || isLoading || (field.dependsOn && !formData[field.dependsOn])}
+                data-dependent={field.dependsOn ? 'true' : undefined}
                 {...(field.additionalProps || {})}
               />
               {showError && <div className="invalid-feedback">{error}</div>}
@@ -664,7 +697,8 @@ function GenericForm({
                 onBlur={handleBlur}
                 accept={field.accept}
                 multiple={field.multiple}
-                disabled={field.disabled || isLoading}
+                disabled={field.disabled || isLoading || (field.dependsOn && !formData[field.dependsOn])}
+                data-dependent={field.dependsOn ? 'true' : undefined}
                 {...(field.additionalProps || {})}
               />
               {showError && <div className="invalid-feedback">{error}</div>}
@@ -961,7 +995,9 @@ GenericForm.propTypes = {
         multiple: PropTypes.bool,
         // Props adicionais
         additionalProps: PropTypes.object,
-        alternativeKey: PropTypes.string
+        alternativeKey: PropTypes.string,
+        // Para campos dependentes
+        dependsOn: PropTypes.string
       })
     ).isRequired,
     fakeDataGenerator: PropTypes.func,

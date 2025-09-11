@@ -136,6 +136,48 @@ const api = {
     // Buscar tipos de passageiro
     getTypes: () => {
       return api.get('/passengers/tipos');
+    },
+
+    // Buscar rotas disponíveis
+    getRoutes: () => {
+      return api.get('/passengers/rotas');
+    },
+
+    // Buscar pontos disponíveis
+    getStops: () => {
+      return api.get('/passengers/pontos');
+    },
+
+    // Buscar dados de endereço por CEP
+    getAddressByCep: async (cep) => {
+      try {
+        const cleanCep = cep.replace(/\D/g, ''); // Remove formatação
+        if (cleanCep.length !== 8) {
+          throw new Error('CEP deve ter 8 dígitos');
+        }
+
+        const response = await fetch(`https://viacep.com.br/ws/${cleanCep}/json/`);
+        if (!response.ok) {
+          throw new Error('Erro ao buscar CEP');
+        }
+
+        const data = await response.json();
+        
+        if (data.erro) {
+          throw new Error('CEP não encontrado');
+        }
+
+        return {
+          logradouro: data.logradouro || '',
+          bairro: data.bairro || '',
+          cidade: data.localidade || '',
+          uf: data.uf || '',
+          cep: data.cep || cleanCep
+        };
+      } catch (error) {
+        console.error('Erro ao buscar CEP:', error);
+        throw error;
+      }
     }
   },
 
@@ -224,6 +266,11 @@ const api = {
     // Listar todos os pontos
     list: () => {
       return api.get('/stops');
+    },
+
+    // Obter estatísticas dos pontos (passageiros e rotas)
+    getStats: () => {
+      return api.get('/stops/stats');
     },
 
     // Obter detalhes de um ponto específico pelo ID

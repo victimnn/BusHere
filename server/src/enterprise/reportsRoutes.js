@@ -79,6 +79,24 @@ module.exports = (pool) => {
         ORDER BY total_pontos DESC
         LIMIT 10
       `);
+
+      // Buscar passageiros por rota
+      const [passengersByRoute] = await pool.execute(`
+        SELECT 
+          r.rota_id,
+          r.nome as rota_nome,
+          r.codigo_rota,
+          COUNT(p.passageiro_id) as total_passageiros,
+          COALESCE(SUM(v.capacidade), 0) as capacidade_total
+        FROM Rotas r
+        LEFT JOIN Passageiros p ON r.rota_id = p.rota_id AND p.ativo = true
+        LEFT JOIN VeiculoRota vr ON r.rota_id = vr.rota_id AND vr.ativo = true
+        LEFT JOIN Veiculos v ON vr.veiculo_id = v.veiculo_id AND v.ativo = true
+        WHERE r.ativo = true
+        GROUP BY r.rota_id, r.nome, r.codigo_rota
+        HAVING total_passageiros > 0
+        ORDER BY total_passageiros DESC
+      `);
       
       const stats = {
         passengers: {
@@ -94,7 +112,8 @@ module.exports = (pool) => {
         routes: {
           total: routesStats.reduce((sum, stat) => sum + (stat.total_rotas || 0), 0),
           totalDistance: routesStats.reduce((sum, stat) => sum + (parseFloat(stat.distancia_total) || 0), 0),
-          byStatus: routesStats
+          byStatus: routesStats,
+          passengersByRoute: passengersByRoute
         },
         stops: {
           ...stopsStats[0],

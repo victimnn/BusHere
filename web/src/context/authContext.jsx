@@ -9,7 +9,16 @@ const AuthContext = createContext();
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    console.warn('useAuth está sendo usado fora do AuthProvider. Retornando valores padrão.');
+    // Retorna valores padrão em vez de lançar erro
+    return {
+      user: null,
+      isAuthenticated: false,
+      isLoading: true,
+      login: () => {},
+      logout: () => {},
+      checkAuthStatus: () => Promise.resolve()
+    };
   }
   return context;
 }

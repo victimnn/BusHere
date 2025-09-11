@@ -18,22 +18,24 @@ export const useReportData = () => {
       setIsLoading(true);
       
       // Usar os novos endpoints otimizados
-      const [chartsRes, statsRes, driversRes] = await Promise.all([
+      const [chartsRes, statsRes, driversRes, routesRes] = await Promise.all([
         api.reports.getCharts(),
         api.reports.getStats(),
-        api.drivers.list(1, 1000) // Buscar dados de motoristas
+        api.drivers.list(1, 1000), // Buscar dados de motoristas
+        api.routes.list(1, 1000) // Buscar dados de rotas
       ]);
 
       // Preparar dados dos gráficos
       const chartData = chartsRes?.data || {};
       const stats = statsRes?.data || {};
       const drivers = driversRes?.data || [];
+      const routes = routesRes?.data || [];
 
       setReportData({
         passengers: [], // Não precisamos mais dos dados completos
         vehicles: [],
         stops: chartData.stopsByCity || [],  // Carregar dados dos pontos do chartData
-        routes: [],
+        routes: routes, // Adicionar dados de rotas
         drivers: drivers, // Adicionar dados de motoristas
         passengerCities: chartData.passengersByCity || [],
         chartData,

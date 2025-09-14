@@ -22,12 +22,7 @@ function LoginPage() {
         <div className="d-flex justify-content-start">
           <button className="btn text-dark mt-1 p-0 m-0 fs-2 fw-bolder btn-end">✕</button>
         </div>
-
-        {/* Título */} 
-
-        <h5 className="text-center fw-bold mt-5 mb-4 font-family-principal fs-2 " >
-          Inicie a sessão com seu <br /> nome de <span style={{color: "#0F9C42"}}>usuário</span> ou <span style={{color: "#0F9C42"}}>email</span>
-
+        
         <h5 className="text-center fw-bold mt-5 mb-4 font-family-principal fs-2 ">
           Inicie a sessão para <br/> começar a usar o <span style={{color: "#0F9C42"}}>BusHere!</span>
         </h5>

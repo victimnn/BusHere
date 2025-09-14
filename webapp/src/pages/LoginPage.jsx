@@ -20,12 +20,12 @@ function LoginPage() {
       >
         {/* Botão fechar */}
         <div className="d-flex justify-content-start">
-          <button className="btn text-dark p-0 m-0 fs-2 fw-bolder ">✕</button>
+          <button className="btn text-dark mt-1 p-0 m-0 fs-2 fw-bolder btn-end">✕</button>
         </div>
 
         {/* Título */} 
-        <h5 className="text-center fw-bold mt-5 mb-4 font-family-principal fs-2 " style={{color: "#0F9C42"}}>
-          Inicie a sessão com seu <br /> nome de usuário ou email.
+        <h5 className="text-center fw-bold mt-5 mb-4 font-family-principal fs-2 " >
+          Inicie a sessão com seu <br /> nome de <span style={{color: "#0F9C42"}}>usuário</span> ou <span style={{color: "#0F9C42"}}>email</span>
         </h5>
 
         {/* Formulário */}

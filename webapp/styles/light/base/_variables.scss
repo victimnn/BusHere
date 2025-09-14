@@ -122,7 +122,8 @@ $input-border-radius: 0.5rem;
 $input-bg: $bg-medium;
 $input-border-color: $text-muted;
 $input-focus-border-color: $primary;
-$input-focus-box-shadow: none;
+$input-focus-box-shadow: 0 0 0 0.2rem rgba(21, 209, 84, 0.25);
+$input-placeholder-color: $text-muted;
 
 // -----------------------------------------------------------------------------
 // TRANSIÇÕES E ANIMAÇÕES

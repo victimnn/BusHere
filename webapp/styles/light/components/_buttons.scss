@@ -41,4 +41,11 @@
       color: $light !important;
     }
   }
+  &.btn-end {
+    color: $dark !important;
+
+    &:hover {
+      color: $gray !important;
+    }
+  }
 }

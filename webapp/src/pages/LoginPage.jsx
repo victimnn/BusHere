@@ -17,15 +17,14 @@ function LoginPage() {
       <div  
         className="p-4"
         style={{ width: "100%", height: "100%", maxWidth: "400px"}}
-      >
+      > 
         {/* Botão fechar */}
         <div className="d-flex justify-content-start">
-          <button className="btn text-dark p-0 m-0 fs-2 fw-bolder ">✕</button>
+          <button className="btn text-dark mt-1 p-0 m-0 fs-2 fw-bolder btn-end">✕</button>
         </div>
-
-        {/* Título */} 
-        <h5 className="text-center fw-bold mt-5 mb-4 font-family-principal fs-2 " style={{color: "#0F9C42"}}>
-          Inicie a sessão com seu <br /> nome de usuário ou email.
+        
+        <h5 className="text-center fw-bold mt-5 mb-4 font-family-principal fs-2 ">
+          Inicie a sessão para <br/> começar a usar o <span style={{color: "#0F9C42"}}>BusHere!</span>
         </h5>
 
         {/* Formulário */}
@@ -56,11 +55,11 @@ function LoginPage() {
             />
             <button
                 type="button"
-                className="btn btn-outline-secondary"
+                className="btn btn-secondary"
                 onClick={() => setShowSenha((prev) => !prev)}
                 tabIndex={-1}
                 aria-label={showSenha ? "Ocultar senha" : "Mostrar senha"}
-                style={{color: "#757575", borderColor: "#757575"}}
+                
               >
                 <i className={`bi ${showSenha ? "bi-eye-slash" : "bi-eye"}`}></i>
               </button>
@@ -83,8 +82,8 @@ function LoginPage() {
         </div>
 
         {/* Link */}
-        <p className="text-center fw-semibold">
-          <a href="/" style={{ color: "#2e7d32"}}>
+        <p className="text-center fw-semibold ">
+          <a href="/">
             Esqueceu a senha?
           </a>
         </p>

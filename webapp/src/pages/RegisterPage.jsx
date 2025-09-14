@@ -3,34 +3,45 @@ import { useState } from "react";
 
 
 function RegisterPage() {
+    const [user, setUser] = useState("");
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     const [showSenha, setShowSenha] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("Registrar com:", { email, senha });
+        console.log("Registrar com:", { user, email, senha });
     };
     return (
         <div className="d-flex justify-content-center align-items-center h-100"> 
             <div 
-                className="p-3"
+                className="p-4"
                 style={{ width: "100%", height: "100%", maxWidth: "400px"}}
-            >    
-
+            >
             <div className="d-flex justify-content-start">
-                <button className="btn text-dark p-2 m-0 fs-2 fw-bolder ">✕</button>
+              <button className="btn text-dark mt-1 p-0 m-0 fs-2 fw-bolder btn-end">✕</button>
             </div>
 
-                <h5 className="text-center fw-bold mt-5 mb-4 font-family-principal fs-2 " style={{color: "#111"}}>
-                    Crie sua conta para <br/>começar a usar o <span style={{color: "#0F9C42"}}>BusHere!</span>
-                </h5>
+            <h5 className="text-center fw-bold mt-5 mb-4 font-family-principal fs-2 ">
+                Crie sua conta para <br/>começar a usar o <span style={{color: "#0F9C42"}}>BusHere</span>
+            </h5>
 
             <form onClick={handleSubmit}>
-                <div className="mb-3 ms-2">
-                    <label className="form-label font-family-segundaria">E-mail</label>
+                <div className="mb-3 ">
+                    <label className="form-label font-family-segundaria">Usuario</label>
                     <input 
                         type="text"
+                        className="form-control"
+                        value={user}
+                        onChange={(e) => setUser(e.target.value)}
+                        required
+                        placeholder="Insira seu usuário" 
+                    />
+                </div>
+                <div className="mb-3">
+                    <label className="form-label font-family-segundaria">E-mail</label>
+                    <input 
+                        type="email"
                         className="form-control"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -38,7 +49,8 @@ function RegisterPage() {
                         placeholder="Insira seu melhor e-mail" 
                     />
                 </div>
-                <div className="mb-4 ms-2">
+
+                <div className="mb-4">
                     <label className="form-label font-family-segundaria">Senha</label>
                     <div className="input-group">
                     <input 
@@ -61,7 +73,7 @@ function RegisterPage() {
 
                     <button
                         type="submit"
-                        className="btn w-100 mb-1 mt-4 text-white btn-primary-green fw-semibold"
+                        className="btn w-100 mt-4 text-white btn-primary-green fw-semibold"
                         style={{border: "none", letterSpacing: "1px", fontFamily: "Roboto, sans-serif"}}
                         >
                         Continuar
@@ -69,7 +81,7 @@ function RegisterPage() {
                 </div>
             </form>
             <p className=" text-center fw-semibold">
-                <a href="#" style={{ color: "#2e7d32"}}>
+                <a href="/login" style={{ color: "#2e7d32"}}>
                     Ja possui uma conta?
                 </a>
             </p>

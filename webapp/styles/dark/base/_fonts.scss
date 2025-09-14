@@ -1,9 +1,21 @@
 @import './variables';
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sawarabi+Gothic&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Sawarabi+Gothic&display=swap');
 
 
-$font-principal: 'Sora', Arial, sans-serif;
+$font-sora: 'Sora', Arial, sans-serif;
+$font-sawarabi: 'Sawarabi Gothic', Arial, sans-serif;
+$font-roboto: 'Roboto', Arial, sans-serif;
 
 .font-family-principal {
-    font-family: $font-principal;
+    font-family: $font-sora;
+}
+
+.font-family-segundaria {
+    font-family: $font-sawarabi;
+}
+
+.font-family-roboto {
+    font-family: $font-roboto;
 }

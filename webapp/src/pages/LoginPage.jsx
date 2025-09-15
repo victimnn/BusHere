@@ -24,7 +24,7 @@ function LoginPage() {
         </div>
         
         <h5 className="text-center fw-bold mt-5 mb-4 font-family-principal fs-2 ">
-          Inicie a sessão para <br/> começar a usar o <span style={{color: "#0F9C42"}}>BusHere!</span>
+          Inicie a sessão para <br/> começar a usar o <span style={{color: "#0F9C42"}}>BusHere</span>
         </h5>
 
         {/* Formulário */}

@@ -8,7 +8,7 @@ module.exports = (pool) => {
       const token = req.token;
 
       try {
-        const [tokenRows] = await pool.query("SELECT * FROM TokensPassageiros WHERE token = ?", [token]);
+        const [tokenRows] = await pool.query("SELECT * FROM TokensPassageiro WHERE token = ?", [token]);
         if (tokenRows.length === 0) {
             return res.status(401).json({ error: "Token inválido" });
         }

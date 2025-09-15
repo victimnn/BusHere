@@ -64,6 +64,28 @@ const SettingsPage = () => {
     alert("Logout realizado com sucesso!");
   }
 
+  async function handleGetRoute(){
+    try {
+      const response = await api.routes.get();
+      alert("Rotas obtidas com sucesso! Veja o console para detalhes.");
+      console.log("Rotas obtidas com sucesso:", response);
+    } catch (error) {
+      alert("Erro ao obter rotas");
+      console.error("Erro ao obter rotas:", error);
+    }
+  }
+
+  async function handleGetStops(){
+    try {
+      const response = await api.stops.getAll();
+      alert("Paradas obtidas com sucesso! Veja o console para detalhes.");
+      console.log("Paradas obtidas com sucesso:", response);
+    } catch (error) {
+      alert("Erro ao obter paradas");
+      console.error("Erro ao obter paradas:", error);
+    }
+  }
+
   const [notifications, setNotifications] = useState({
     email: true,
     push: true,
@@ -263,7 +285,7 @@ const SettingsPage = () => {
                   </ActionButton>
 
                   <ActionButton
-                    icon="bi-arrow-clockwise"
+                    icon="bi-box-arrow-in-left"
                     variant="outline-success"
                     size="sm"
                     fullWidth
@@ -272,6 +294,36 @@ const SettingsPage = () => {
                     login
                   </ActionButton>
 
+
+                  <ActionButton
+                    icon="bi-box-arrow-right"
+                    variant="outline-danger"
+                    size="sm"
+                    fullWidth
+                    onClick={handleLogout}
+                  >
+                    logout
+                  </ActionButton>
+
+                  <ActionButton
+                    icon="bi-sign-turn-right"
+                    variant="outline-secondary"
+                    size="sm"
+                    fullWidth
+                    onClick={handleGetRoute}
+                  >
+                    rota 
+                  </ActionButton>
+
+                  <ActionButton
+                    icon="bi-sign-stop"
+                    variant="outline-dark"
+                    size="sm"
+                    fullWidth
+                    onClick={handleGetStops}
+                  >
+                    paradas
+                  </ActionButton>
 
                 </div>
               </InfoCard>

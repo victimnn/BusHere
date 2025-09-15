@@ -1,3 +1,5 @@
+import { get } from "http";
+
 function getBearerToken() {
   const token = localStorage.getItem('token');
   return token ? `Bearer ${token}` : null;
@@ -9,9 +11,10 @@ const API_BASE_URL = 'http://localhost:3000/api/passenger';
 const api = {
   _request: async (method: string, url: string, data: any = null, options: RequestInit = {}) => {
     const token = getBearerToken(); // Obtém o token a cada requisição
-    const headers = {
+    
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...(options.headers || {}) // Mantém quaisquer headers passados explicitamente
+      ...(options.headers as Record<string, string> || {}) // Mantém quaisquer headers passados explicitamente
     };
 
     if (token) {
@@ -57,12 +60,12 @@ const api = {
       throw error; // da erro denovo para poder ser tratado fora daqui
     }
   },
-  
-  get: (url, options?) => api._request('GET', url, null, options),
-  post: (url, data?, options?) => api._request('POST', url, data, options),
-  put: (url, data, options?) => api._request('PUT', url, data, options),
-  patch: (url, data, options?) => api._request('PATCH', url, data, options),
-  delete: (url, options?) => api._request('DELETE', url, null, options),
+
+  get: (url: string, options?: RequestInit) => api._request('GET', url, null, options),
+  post: (url: string, data?: any, options?: RequestInit) => api._request('POST', url, data, options),
+  put: (url: string, data?: any, options?: RequestInit) => api._request('PUT', url, data, options),
+  patch: (url: string, data?: any, options?: RequestInit) => api._request('PATCH', url, data, options),
+  delete: (url: string, options?: RequestInit) => api._request('DELETE', url, null, options),
 
   auth: {
     me: async () => {
@@ -80,7 +83,7 @@ const api = {
       }
     },
 
-    login: async ({ email, password }) => {
+    login: async ({ email, password }: { email: string; password: string }) => {
       try {
         const response = await api.post('/auth/login', { email, password });
         if (response && response.token) {
@@ -105,7 +108,7 @@ const api = {
       }
     },
 
-    changePassword: async (currentPassword, newPassword) => {
+    changePassword: async (currentPassword: string, newPassword: string) => {
       try {
         const response = await api.post('/auth/change-password', 
           {
@@ -119,7 +122,7 @@ const api = {
       }
     },
 
-    register: async (userData) => {
+    register: async (userData: { [key: string]: any }) => {
       const requiredFields = ["name","cpf","email","password","address"];
       const addressRequiredFields = ["street","number","complement","neighborhood","city","state","zip"];
 
@@ -139,7 +142,43 @@ const api = {
         throw error; // Propaga o erro para ser tratado onde for chamado
       }
     },
-  }
+  },
+
+  stops: {
+    getAll: async () => {
+      try {
+        const response = await api.get('/stops');
+        return response; // Retorna a lista de pontos
+      } catch (error) {
+        console.error("Erro ao buscar pontos:", error);
+        throw error; // Propaga o erro para ser tratado onde for chamado
+      }
+    },
+
+    
+
+    get: async (id: string) => {
+      try {
+        const response = await api.get(`/stops/${id}`);
+        return response; // Retorna os dados do ponto
+      } catch (error) {
+        console.error(`Erro ao buscar ponto com ID ${id}:`, error);
+        throw error; // Propaga o erro para ser tratado onde for chamado
+      }
+    },
+  },
+
+  routes: {
+    get: async () => {
+      try {
+        const response = await api.get('/routes');
+        return response; // Retorna a lista de rotas
+      } catch (error) {
+        console.error("Erro ao buscar rotas:", error);
+        throw error; // Propaga o erro para ser tratado onde for chamado
+      }
+    }
+  },
 };
 
 export default api;

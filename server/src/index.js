@@ -65,7 +65,7 @@ const E_databaseRoutes = require("./enterprise/databaseRoutes.js")(pool)
 
 // Passageiros
 const P_authRoutes = require("./passenger/authRoutes.js")(pool);
-//const P_stopRoutes = require("./passenger/stopRoutes.js")(pool);
+const P_stopRoutes = require("./passenger/stopRoutes.js")(pool);
 const P_routeRoutes = require("./passenger/routeRoutes.js")(pool);
 
 
@@ -84,7 +84,7 @@ app.use("/api/enterprise/debug", E_debugRoutes);
 app.use("/api/enterprise/database", E_databaseRoutes);
 
 app.use("/api/passenger/auth", P_authRoutes);
-//app.use("/api/passenger/stops", P_stopRoutes);
+app.use("/api/passenger/stops", P_stopRoutes);
 app.use("/api/passenger/routes", P_routeRoutes);
 
 

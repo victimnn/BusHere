@@ -27,7 +27,7 @@ function HomePage({pageFunctions}) {
     const quickAccessItems = [
         { title: 'Passageiros', icon: 'bi-people-fill', path: '/passengers', color: 'primary' },
         { title: 'Motoristas', icon: 'bi-person-fill-gear', path: '/drivers', color: 'info' },
-        { title: 'Ônibus', icon: 'bi-bus-front-fill', path: '/buses', color: 'warning' },
+        { title: 'Veículos', icon: 'bi-car-front-fill', path: '/vehicles', color: 'warning' },
         { title: 'Rotas', icon: 'bi-signpost-split-fill', path: '/routes', color: 'danger' }
     ];
 

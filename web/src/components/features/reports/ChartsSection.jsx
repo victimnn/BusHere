@@ -66,51 +66,69 @@ const ChartsSection = ({ chartData }) => {
   };
 
   return (
-    <div className="row g-3 mb-4">
-      <ChartCard
-        title="Passageiros por Cidade"
-        subtitle="Distribuição de categorias"
-        iconClass="fas fa-chart-pie"
-        iconBg="bg-primary"
-      >
-        <Pie data={chartData.passengersByCity} options={pieOptions} id="chart-passengersByCity" />
-      </ChartCard>
+    <div className="mb-4">
+      {/* Primeira linha: Passageiros e Motoristas */}
+      <div className="row g-3 mb-3">
+        <ChartCard
+          title="Passageiros por Cidade"
+          subtitle="Distribuição de categorias"
+          iconClass="fas fa-chart-pie"
+          iconBg="bg-primary"
+        >
+          <Pie data={chartData.passengersByCity} options={pieOptions} id="chart-passengersByCity" />
+        </ChartCard>
 
-      <ChartCard
-        title="Status dos Ônibus"
-        subtitle="Estado operacional da frota"
-        iconClass="fas fa-chart-bar"
-        iconBg="bg-success"
-      >
-        <Bar data={chartData.busStatus} options={chartOptions} id="chart-busStatus" />
-      </ChartCard>
+        <ChartCard
+          title="Status dos Motoristas"
+          subtitle="Distribuição por estado operacional"
+          iconClass="fas fa-user-tie"
+          iconBg="bg-danger"
+        >
+          <Bar data={chartData.driversStatus} options={chartOptions} id="chart-driversStatus" />
+        </ChartCard>
+      </div>
 
-      <ChartCard
-        title="Pontos por Cidade"
-        subtitle="Distribuição geográfica"
-        iconClass="fas fa-map"
-        iconBg="bg-info"
-      >
-        <Bar data={chartData.stopsByCity} options={chartOptions} id="chart-stopsByCity" />
-      </ChartCard>
+      {/* Segunda linha: Veículos */}
+      <div className="row g-3 mb-3">
+        <ChartCard
+          title="Status dos Veículos"
+          subtitle="Estado operacional da frota"
+          iconClass="fas fa-chart-bar"
+          iconBg="bg-success"
+        >
+          <Bar data={chartData.vehicleStatus} options={chartOptions} id="chart-vehicleStatus" />
+        </ChartCard>
 
-      <ChartCard
-        title="Rotas por Status"
-        subtitle="Estado das rotas cadastradas"
-        iconClass="fas fa-route"
-        iconBg="bg-warning"
-      >
-        <Bar data={chartData.routeStatus} options={chartOptions} id="chart-routeStatus" />
-      </ChartCard>
+        <ChartCard
+          title="Tipos de Veículos"
+          subtitle="Distribuição por categoria"
+          iconClass="fas fa-car"
+          iconBg="bg-warning"
+        >
+          <Bar data={chartData.vehicleTypes} options={chartOptions} id="chart-vehicleTypes" />
+        </ChartCard>
+      </div>
 
-      <ChartCard
-        title="Status dos Motoristas"
-        subtitle="Distribuição por estado operacional"
-        iconClass="fas fa-user-tie"
-        iconBg="bg-danger"
-      >
-        <Bar data={chartData.driversStatus} options={chartOptions} id="chart-driversStatus" />
-      </ChartCard>
+      {/* Terceira linha: Pontos e Rotas */}
+      <div className="row g-3">
+        <ChartCard
+          title="Pontos por Cidade"
+          subtitle="Distribuição geográfica"
+          iconClass="fas fa-map"
+          iconBg="bg-info"
+        >
+          <Bar data={chartData.stopsByCity} options={chartOptions} id="chart-stopsByCity" />
+        </ChartCard>
+
+        <ChartCard
+          title="Rotas por Status"
+          subtitle="Estado das rotas cadastradas"
+          iconClass="fas fa-route"
+          iconBg="bg-secondary"
+        >
+          <Bar data={chartData.routeStatus} options={chartOptions} id="chart-routeStatus" />
+        </ChartCard>
+      </div>
     </div>
   );
 };

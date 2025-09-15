@@ -140,27 +140,27 @@ const createSummarySection = (doc, reportData) => {
   const stats = reportData.stats || {};
   
   // Função para obter dados corretos com fallbacks
-  const getBusData = () => {
-    if (stats.buses?.total) return stats.buses.total;
-    if (stats.buses?.byStatus && Array.isArray(stats.buses.byStatus)) {
-      return stats.buses.byStatus.reduce((total, status) => total + (status.total_onibus || 0), 0);
+  const getVehicleData = () => {
+    if (stats.vehicles?.total) return stats.vehicles.total;
+    if (stats.vehicles?.byStatus && Array.isArray(stats.vehicles.byStatus)) {
+      return stats.vehicles.byStatus.reduce((total, status) => total + (status.total_veiculos || 0), 0);
     }
-    if (reportData.buses && Array.isArray(reportData.buses)) {
-      return reportData.buses.length;
+    if (reportData.vehicles && Array.isArray(reportData.vehicles)) {
+      return reportData.vehicles.length;
     }
     return 0;
   };
 
-  const getActiveBusData = () => {
-    if (stats.buses?.ativos) return stats.buses.ativos;
-    if (stats.buses?.byStatus && Array.isArray(stats.buses.byStatus)) {
+  const getActiveVehicleData = () => {
+    if (stats.vehicles?.ativos) return stats.vehicles.ativos;
+    if (stats.vehicles?.byStatus && Array.isArray(stats.vehicles.byStatus)) {
       const activeStatuses = ['Ativo', 'Em Operação', 'Disponível'];
-      return stats.buses.byStatus
+      return stats.vehicles.byStatus
         .filter(status => activeStatuses.includes(status.status_nome))
-        .reduce((total, status) => total + (status.total_onibus || 0), 0);
+        .reduce((total, status) => total + (status.total_veiculos || 0), 0);
     }
-    if (reportData.buses && Array.isArray(reportData.buses)) {
-      return reportData.buses.filter(bus => bus.ativo === true || bus.ativo === 1).length;
+    if (reportData.vehicles && Array.isArray(reportData.vehicles)) {
+      return reportData.vehicles.filter(vehicle => vehicle.ativo === true || vehicle.ativo === 1).length;
     }
     return 0;
   };
@@ -211,14 +211,14 @@ const createSummarySection = (doc, reportData) => {
 
   const statLines = [
     ['Total de Passageiros', stats.passengers?.total || reportData.passengers?.length || 0],
-    ['Total de Ônibus', getBusData()],
-    ['Ônibus Ativos', getActiveBusData()],
+    ['Total de Veículos', getVehicleData()],
+    ['Veículos Ativos', getActiveVehicleData()],
     ['Total de Pontos de Parada', stats.stops?.total_pontos || reportData.stops?.length || 0],
     ['Total de Rotas', getRouteData()],
     ['Rotas em Operação', getActiveRouteData()],
     ['Total de Motoristas', getDriverData()],
     ['Motoristas Ativos', getActiveDriverData()],
-    ['Capacidade Total da Frota', stats.buses?.totalCapacity || 0],
+    ['Capacidade Total da Frota', stats.vehicles?.totalCapacity || 0],
     ['Distância Total das Rotas (km)', stats.routes?.totalDistance?.toFixed(2) || 0],
   ];
 
@@ -405,7 +405,7 @@ const createDriversSection = (doc, reportData) => {
   });
 };
 
-// Adiciona os gráficos ao PDF, corrigindo a distorção e otimizando o espaço.
+// Adiciona os gráficos ao PDF com um gráfico por linha seguindo a ordem
 const addCharts = (doc, chartIds, chartTitles) => {
   doc.addPage();
   let y = 100; // Posição Y inicial, após o cabeçalho
@@ -421,25 +421,24 @@ const addCharts = (doc, chartIds, chartTitles) => {
   doc.text("Análise Gráfica", margin, y);
   y += 30;
 
-  // Define a área máxima para cada gráfico, permitindo 2 por página.
+  // Define a área máxima para cada gráfico (1 por página)
   const availablePageHeight = pageHeight - y - footerHeight;
-  const maxChartHeight = (availablePageHeight / 2) - 20; // Altura máxima para cada gráfico, com margem
+  const maxChartHeight = availablePageHeight - 40; // Altura máxima para cada gráfico
   const maxChartWidth = pageWidth - (margin * 2);
   const spaceBetweenCharts = 40;
 
   chartIds.forEach((chartId, i) => {
     const chartCanvas = document.getElementById(chartId);
     if (chartCanvas) {
-      // --- Lógica de Redimensionamento para Manter a Proporção ---
+      // Lógica de Redimensionamento para Manter a Proporção
       const canvasWidth = chartCanvas.width;
       const canvasHeight = chartCanvas.height;
       const widthRatio = maxChartWidth / canvasWidth;
       const heightRatio = maxChartHeight / canvasHeight;
-      const scale = Math.min(widthRatio, heightRatio); // Usa a menor proporção para garantir que caiba
+      const scale = Math.min(widthRatio, heightRatio);
 
       const finalWidth = canvasWidth * scale;
       const finalHeight = canvasHeight * scale;
-      // --- Fim da Lógica de Redimensionamento ---
 
       // Verifica se há espaço para o próximo gráfico na página atual
       if (y + finalHeight + spaceBetweenCharts > pageHeight - footerHeight) {
@@ -470,6 +469,294 @@ const addCharts = (doc, chartIds, chartTitles) => {
   });
 };
 
+// Cria a seção de estatísticas de rotas
+const createRoutesSection = (doc, reportData) => {
+  doc.addPage();
+  let y = 100; // Posição inicial após o cabeçalho
+
+  // Título da Seção
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.setTextColor('#f39c12'); // Laranja para rotas
+  doc.text("Estatísticas de Rotas", 40, y);
+  y += 20;
+
+  const stats = reportData.stats || {};
+  
+  // Função para obter dados de rotas com fallbacks
+  const getRouteData = () => {
+    if (stats.routes?.total) return stats.routes.total;
+    if (stats.routes?.byStatus && Array.isArray(stats.routes.byStatus)) {
+      return stats.routes.byStatus.reduce((total, status) => total + (status.total_rotas || 0), 0);
+    }
+    if (reportData.routes && Array.isArray(reportData.routes)) {
+      return reportData.routes.length;
+    }
+    return 0;
+  };
+
+  const getActiveRouteData = () => {
+    if (stats.routes?.ativas) return stats.routes.ativas;
+    if (stats.routes?.byStatus && Array.isArray(stats.routes.byStatus)) {
+      const activeStatuses = ['Ativa', 'Em Operação', 'Disponível'];
+      return stats.routes.byStatus
+        .filter(status => activeStatuses.includes(status.status_nome))
+        .reduce((total, status) => total + (status.total_rotas || 0), 0);
+    }
+    if (reportData.routes && Array.isArray(reportData.routes)) {
+      return reportData.routes.filter(route => route.ativo === true || route.ativo === 1).length;
+    }
+    return 0;
+  };
+
+  const getRoutesByStatus = () => {
+    if (stats.routes?.byStatus && Array.isArray(stats.routes.byStatus)) {
+      return stats.routes.byStatus;
+    }
+    
+    // Fallback: calcular a partir dos dados brutos
+    if (reportData.routes && Array.isArray(reportData.routes)) {
+      const statusCount = {};
+      reportData.routes.forEach(route => {
+        const status = route.status_nome || 'Desconhecido';
+        statusCount[status] = (statusCount[status] || 0) + 1;
+      });
+      
+      return Object.entries(statusCount).map(([status, count]) => ({
+        status_nome: status,
+        total_rotas: count
+      }));
+    }
+    
+    return [];
+  };
+
+  const getPassengersByRoute = () => {
+    if (stats.routes?.passengersByRoute && Array.isArray(stats.routes.passengersByRoute)) {
+      return stats.routes.passengersByRoute.map(route => ({
+        rota_nome: route.rota_nome || 'Rota sem nome',
+        total_passageiros: route.total_passageiros || 0,
+        capacidade_rota: route.capacidade_total || 0
+      }));
+    }
+    
+    // Fallback: calcular a partir dos dados brutos se disponível
+    if (reportData.routes && Array.isArray(reportData.routes)) {
+      return reportData.routes.map(route => ({
+        rota_nome: route.nome || 'Rota sem nome',
+        total_passageiros: route.total_passageiros || 0,
+        capacidade_rota: route.capacidade_total || 0
+      })).filter(route => route.total_passageiros > 0);
+    }
+    
+    return [];
+  };
+
+  const totalRoutes = getRouteData();
+  const activeRoutes = getActiveRouteData();
+  const routesByStatus = getRoutesByStatus();
+  const passengersByRoute = getPassengersByRoute();
+
+  // Estatísticas principais de rotas
+  const routeStats = [
+    ['Total de Rotas', totalRoutes],
+    ['Rotas Ativas', activeRoutes],
+    ['Rotas Inativas', totalRoutes - activeRoutes],
+    ['Taxa de Atividade', totalRoutes > 0 ? `${((activeRoutes / totalRoutes) * 100).toFixed(1)}%` : 'N/A'],
+    ['Distância Total (km)', stats.routes?.totalDistance?.toFixed(2) || 0],
+  ];
+
+  autoTable(doc, {
+    startY: y,
+    head: [['Indicador', 'Valor']],
+    body: routeStats,
+    theme: 'grid',
+    headStyles: { fillColor: '#f39c12', textColor: '#ffffff', fontStyle: 'bold' },
+    styles: { fontSize: 11, cellPadding: 6, halign: 'left' },
+    alternateRowStyles: { fillColor: '#fef9e7' }, // Laranja bem claro
+    margin: { left: 40, right: 40 },
+  });
+  
+  y = doc.lastAutoTable.finalY + 30;
+
+  // Distribuição por status (se houver dados)
+  if (routesByStatus.length > 0) {
+    doc.setFontSize(16);
+    doc.setTextColor('#e67e22'); // Laranja mais escuro
+    doc.text("Distribuição por Status", 40, y);
+    y += 20;
+
+    const statusData = routesByStatus.map(status => [
+      status.status_nome,
+      status.total_rotas || status.total || 0
+    ]);
+
+    autoTable(doc, {
+      startY: y,
+      head: [['Status', 'Quantidade']],
+      body: statusData,
+      theme: 'grid',
+      headStyles: { fillColor: '#e67e22', textColor: '#ffffff', fontStyle: 'bold' },
+      styles: { fontSize: 11, cellPadding: 6, halign: 'left' },
+      alternateRowStyles: { fillColor: '#fef9e7' },
+      margin: { left: 40, right: 40 },
+    });
+    
+    y = doc.lastAutoTable.finalY + 30;
+  }
+
+  // Passageiros por rota (se houver dados)
+  if (passengersByRoute.length > 0) {
+    doc.setFontSize(16);
+    doc.setTextColor('#e67e22');
+    doc.text("Lista Detalhada de Passageiros por Rota", 40, y);
+    y += 20;
+
+    // Ordenar rotas por número de passageiros (decrescente)
+    const sortedRoutes = [...passengersByRoute].sort((a, b) => b.total_passageiros - a.total_passageiros);
+
+    const routePassengerData = sortedRoutes.map((route, index) => {
+      const ocupacao = route.capacidade_rota > 0 
+        ? (route.total_passageiros / route.capacidade_rota) * 100 
+        : 0;
+      const status = ocupacao >= 90 ? 'Lotada' : 
+                    ocupacao >= 70 ? 'Quase Lotada' : 
+                    ocupacao >= 50 ? 'Moderada' : 'Disponível';
+      
+      return [
+        `#${index + 1}`,
+        route.rota_nome.length > 25 ? route.rota_nome.substring(0, 25) + '...' : route.rota_nome,
+        route.total_passageiros.toLocaleString(),
+        route.capacidade_rota > 0 ? route.capacidade_rota.toLocaleString() : 'N/A',
+        route.capacidade_rota > 0 ? `${ocupacao.toFixed(1)}%` : 'N/A',
+        status
+      ];
+    });
+
+    autoTable(doc, {
+      startY: y,
+      head: [['#', 'Nome da Rota', 'Passageiros', 'Capacidade', 'Ocupação', 'Status']],
+      body: routePassengerData,
+      theme: 'grid',
+      headStyles: { fillColor: '#e67e22', textColor: '#ffffff', fontStyle: 'bold' },
+      styles: { fontSize: 9, cellPadding: 4, halign: 'left' },
+      alternateRowStyles: { fillColor: '#fef9e7' },
+      margin: { left: 40, right: 40 },
+      columnStyles: {
+        0: { halign: 'center', cellWidth: 20 },
+        2: { halign: 'center', cellWidth: 50 },
+        3: { halign: 'center', cellWidth: 50 },
+        4: { halign: 'center', cellWidth: 50 },
+        5: { halign: 'center', cellWidth: 60 }
+      }
+    });
+    
+    y = doc.lastAutoTable.finalY + 30;
+
+    // Resumo estatístico
+    const totalPassengers = passengersByRoute.reduce((sum, route) => sum + route.total_passageiros, 0);
+    const totalCapacity = passengersByRoute.reduce((sum, route) => sum + (route.capacidade_rota || 0), 0);
+    const averageOccupancy = totalCapacity > 0 ? (totalPassengers / totalCapacity) * 100 : 0;
+    const mostUsedRoute = sortedRoutes[0];
+    const leastUsedRoute = sortedRoutes[sortedRoutes.length - 1];
+
+    doc.setFontSize(14);
+    doc.setTextColor('#e67e22');
+    doc.text("Resumo Estatístico", 40, y);
+    y += 20;
+
+    const summaryData = [
+      ['Total de Passageiros em Rotas', totalPassengers.toLocaleString()],
+      ['Capacidade Total das Rotas', totalCapacity.toLocaleString()],
+      ['Taxa Média de Ocupação', `${averageOccupancy.toFixed(1)}%`],
+      ['Rota Mais Utilizada', mostUsedRoute ? `${mostUsedRoute.rota_nome} (${mostUsedRoute.total_passageiros} passageiros)` : 'N/A'],
+      ['Rota Menos Utilizada', leastUsedRoute ? `${leastUsedRoute.rota_nome} (${leastUsedRoute.total_passageiros} passageiros)` : 'N/A'],
+      ['Número de Rotas com Passageiros', passengersByRoute.length.toString()]
+    ];
+
+    autoTable(doc, {
+      startY: y,
+      head: [['Métrica', 'Valor']],
+      body: summaryData,
+      theme: 'grid',
+      headStyles: { fillColor: '#e67e22', textColor: '#ffffff', fontStyle: 'bold' },
+      styles: { fontSize: 10, cellPadding: 5, halign: 'left' },
+      alternateRowStyles: { fillColor: '#fef9e7' },
+      margin: { left: 40, right: 40 },
+    });
+  }
+};
+
+// Cria a seção de tipos de veículos
+const createVehicleTypesSection = (doc, reportData) => {
+  doc.addPage();
+  let y = 100; // Posição inicial após o cabeçalho
+
+  // Título da Seção
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18);
+  doc.setTextColor('#16a085'); // Verde mais escuro
+  doc.text("Tipos de Veículos", 40, y);
+  y += 20;
+
+  const stats = reportData.stats || {};
+  const chartData = reportData.chartData || {};
+
+  // Função para obter dados de tipos de veículos
+  const getVehicleTypesData = () => {
+    if (stats.vehicles?.byType && Array.isArray(stats.vehicles.byType)) {
+      return stats.vehicles.byType;
+    }
+    if (chartData.vehiclesByType && Array.isArray(chartData.vehiclesByType)) {
+      return chartData.vehiclesByType.map(item => ({
+        tipo_nome: item.label,
+        total_veiculos: item.value,
+        capacidade_total: 0 // Não disponível nos dados do gráfico
+      }));
+    }
+    return [];
+  };
+
+  const vehicleTypesData = getVehicleTypesData();
+
+  if (vehicleTypesData.length > 0) {
+    // Cabeçalho da tabela
+    const tableHeaders = ['Tipo de Veículo', 'Quantidade', 'Capacidade Total'];
+    const tableBody = vehicleTypesData.map(type => [
+      type.tipo_nome || 'Não informado',
+      type.total_veiculos || 0,
+      type.capacidade_total ? `${type.capacidade_total} passageiros` : 'N/A'
+    ]);
+
+    autoTable(doc, {
+      startY: y,
+      head: [tableHeaders],
+      body: tableBody,
+      styles: {
+        fontSize: 10,
+        cellPadding: 8,
+        overflow: 'linebreak',
+        halign: 'left'
+      },
+      headStyles: {
+        fillColor: '#16a085',
+        textColor: '#ffffff',
+        fontStyle: 'bold'
+      },
+      alternateRowStyles: {
+        fillColor: '#f8f9fa'
+      },
+      margin: { left: 40, right: 40 },
+      tableWidth: 'auto',
+    });
+  } else {
+    // Mensagem quando não há dados
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(12);
+    doc.setTextColor('#7f8c8d');
+    doc.text("Nenhum dado de tipos de veículos disponível.", 40, y);
+  }
+};
 
 // --- Função Principal de Geração ---
 
@@ -489,19 +776,25 @@ export async function generateReportPDF(reportData) {
   // 2. Resumo e Estatísticas
   createSummarySection(doc, reportData);
 
-  // 3. Estatísticas de Motoristas
+  // 3. Estatísticas de Motoristas (Análise de Eficiência)
   createDriversSection(doc, reportData);
 
-  // 4. Gráficos
+  // 4. Estatísticas de Tipos de Veículos (após análise de eficiência)
+  createVehicleTypesSection(doc, reportData);
+
+  // 5. Estatísticas de Rotas (nova seção)
+  createRoutesSection(doc, reportData);
+
+  // 6. Gráficos
   const chartIds = [
-    'chart-passengersByCity', 'chart-busStatus',
+    'chart-passengersByCity', 'chart-driversStatus',
+    'chart-vehicleStatus', 'chart-vehicleTypes',
     'chart-stopsByCity', 'chart-routeStatus',
-    'chart-driversStatus',
   ];
   const chartTitles = [
-    'Passageiros por Cidade', 'Status da Frota de Ônibus',
-    'Pontos de Parada por Cidade', 'Status das Rotas',
-    'Status dos Motoristas',
+    'Passageiros por Cidade', 'Status dos Motoristas',
+    'Status dos Veículos', 'Tipos de Veículos',
+    'Pontos por Cidade', 'Rotas por Status',
   ];
   addCharts(doc, chartIds, chartTitles);
 

@@ -102,8 +102,8 @@ function Login({pageFunctions}){
                 className="btn btn-outline-secondary"
                 onClick={() => setShowPassword((v) => !v)}
                 aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
-              >
-                <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+              ><i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`}></i>
+                
               </button>
             </div>
             {errors.password && <div className="invalid-feedback d-block" style={{display: 'block !important', opacity: '1 !important', transform: 'none !important'}}>{errors.password}</div>}

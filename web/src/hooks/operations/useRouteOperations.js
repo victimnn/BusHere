@@ -114,12 +114,12 @@ export const transformRouteData = (route, getStatusRotaNome) => {
         status: statusText,
         status_nome: statusText,
         ativo: route.ativo,
-        // Informações de ônibus e motorista
-        onibus_id: route.onibus_id || null,
+        // Informações de veículo e motorista
+        veiculo_id: route.veiculo_id || null,
         motorista_id: route.motorista_id || null,
         observacoes_assignment: route.observacoes_assignment || null,
-        onibus_nome: route.onibus_nome || null,
-        onibus_placa: route.onibus_placa || null,
+        veiculo_nome: route.veiculo_nome || null,
+        veiculo_placa: route.veiculo_placa || null,
         motorista_nome: route.motorista_nome || null,
         motorista_cnh: route.motorista_cnh || null
     };

@@ -50,15 +50,15 @@ export const useChartData = (reportData) => {
     }]
   };
 
-  // Dados para gráfico de status dos ônibus
-  const busStatusData = {
-    labels: reportData.chartData?.busesByStatus?.map(item => item.label) ||
-            [...new Set(reportData.buses.map(bus => bus.status_nome || 'Não informado'))],
+  // Dados para gráfico de status dos veículos
+  const vehicleStatusData = {
+    labels: reportData.chartData?.vehiclesByStatus?.map(item => item.label) ||
+            [...new Set(reportData.vehicles.map(vehicle => vehicle.status_nome || 'Não informado'))],
     datasets: [{
-      label: 'Quantidade de Ônibus',
-      data: reportData.chartData?.busesByStatus?.map(item => item.value) ||
-            [...new Set(reportData.buses.map(bus => bus.status_nome || 'Não informado'))].map(status =>
-              reportData.buses.filter(bus => (bus.status_nome || 'Não informado') === status).length
+      label: 'Quantidade de Veículos',
+      data: reportData.chartData?.vehiclesByStatus?.map(item => item.value) ||
+            [...new Set(reportData.vehicles.map(vehicle => vehicle.status_nome || 'Não informado'))].map(status =>
+              reportData.vehicles.filter(vehicle => (vehicle.status_nome || 'Não informado') === status).length
             ),
       backgroundColor: [
         'rgba(18, 190, 77, 0.8)',   // Primary green
@@ -146,9 +146,34 @@ export const useChartData = (reportData) => {
     }]
   };
 
+  // Dados para gráfico de tipos de veículos
+  const vehicleTypesData = {
+    labels: reportData.chartData?.vehiclesByType?.map(item => item.label) || [],
+    datasets: [{
+      label: 'Quantidade de Veículos',
+      data: reportData.chartData?.vehiclesByType?.map(item => item.value) || [],
+      backgroundColor: [
+        'rgba(18, 190, 77, 0.8)',   // Primary green
+        'rgba(255, 107, 107, 0.8)', // Accent red  
+        'rgba(255, 193, 7, 0.8)',   // Warning yellow
+        'rgba(30, 144, 255, 0.8)',  // Info blue
+        'rgba(155, 89, 182, 0.8)',  // Purple
+      ],
+      borderColor: [
+        'rgba(18, 190, 77, 1)',
+        'rgba(255, 107, 107, 1)',
+        'rgba(255, 193, 7, 1)',
+        'rgba(30, 144, 255, 1)',
+        'rgba(155, 89, 182, 1)',
+      ],
+      borderWidth: 2
+    }]
+  };
+
   return {
     passengersByCity: passengersByCityData,
-    busStatus: busStatusData,
+    vehicleStatus: vehicleStatusData,
+    vehicleTypes: vehicleTypesData,
     routeStatus: routeStatusData,
     stopsByCity: stopsByCityData,
     driversStatus: driversStatusData

@@ -36,7 +36,7 @@ function RoutesPage({ pageFunctions }) {
     refetch
   } = useRoutes();
 
-  // Hook para operações com associações ônibus-motorista
+  // Hook para operações com associações veículo-motorista
   const { updateRouteWithAssignment } = useRouteWithStops();
 
   // Hook para notificações
@@ -64,15 +64,15 @@ function RoutesPage({ pageFunctions }) {
     { id: "nome", label: "Nome", sortable: true },
     { id: "origem_descricao", label: "Origem", sortable: true },
     { id: "destino_descricao", label: "Destino", sortable: true },
-    { id: "onibus_nome", 
-      label: "Ônibus", 
+    { id: "veiculo_nome", 
+      label: "Veículo", 
       sortable: true,
       formatter: (value, route) => {
         if (!value) return <span className="text-muted">Não atribuído</span>;
         return (
           <div className="d-flex flex-column">
             <small className="fw-semibold">{value}</small>
-            {route.onibus_placa && <small className="text-muted">{route.onibus_placa}</small>}
+            {route.veiculo_placa && <small className="text-muted">{route.veiculo_placa}</small>}
           </div>
         );
       }

@@ -2,22 +2,22 @@ import React, { useRef, useMemo } from 'react';
 import PopUpComponent from '../../core/feedback/PopUpComponent';
 import { Table } from '@web/components/common/data-display';
 import StatCard from '../../common/data-display/StatCard';
-import { isBusActive, isRouteActive, getActiveCountFromStats, getActiveBuses, getActiveRoutes } from '@web/utils/reportFilters';
+import { isVehicleActive, isRouteActive, getActiveCountFromStats, getActiveVehicles, getActiveRoutes } from '@web/utils/reportFilters';
 
 const StatsCards = ({ reportData }) => {
   const popUpRef = useRef(null);
 
   // Funções auxiliares para obter dados corretos
-  const getActiveBusData = () => {
-    if (reportData.stats?.buses?.ativos) return reportData.stats.buses.ativos;
-    if (reportData.stats?.buses?.byStatus && Array.isArray(reportData.stats.buses.byStatus)) {
+  const getActiveVehicleData = () => {
+    if (reportData.stats?.vehicles?.ativos) return reportData.stats.vehicles.ativos;
+    if (reportData.stats?.vehicles?.byStatus && Array.isArray(reportData.stats.vehicles.byStatus)) {
       const activeStatuses = ['Ativo', 'Em Operação', 'Disponível'];
-      return reportData.stats.buses.byStatus
+      return reportData.stats.vehicles.byStatus
         .filter(status => activeStatuses.includes(status.status_nome))
-        .reduce((total, status) => total + (status.total_onibus || 0), 0);
+        .reduce((total, status) => total + (status.total_veiculos || 0), 0);
     }
-    if (reportData.buses && Array.isArray(reportData.buses)) {
-      return reportData.buses.filter(bus => bus.ativo === true || bus.ativo === 1).length;
+    if (reportData.vehicles && Array.isArray(reportData.vehicles)) {
+      return reportData.vehicles.filter(vehicle => vehicle.ativo === true || vehicle.ativo === 1).length;
     }
     return 0;
   };
@@ -55,12 +55,12 @@ const StatsCards = ({ reportData }) => {
       popupTitle: 'Total de Passageiros',
       data: reportData.stats?.passengers?.total || reportData.passengers?.length || 0
     },
-    buses: {
-      title: "Ônibus Ativos",
-      iconClass: "bi bi-bus-front-fill",
+    vehicles: {
+      title: "Veículos Ativos",
+      iconClass: "bi bi-car-front-fill",
       gradient: "bg-gradient-info",
-      popupTitle: 'Ônibus Ativos',
-      data: getActiveBusData()
+      popupTitle: 'Veículos Ativos',
+      data: getActiveVehicleData()
     },
     routes: {
       title: "Rotas Ativas",
@@ -128,13 +128,13 @@ const StatsDetailsPopup = ({ statsType, config, reportData }) => {
           </div>
         );
       
-      case 'buses':
+      case 'vehicles':
         return (
           <div className="text-center p-4">
-            <i className="bi bi-bus-front-fill fs-1 text-muted mb-3 d-block"></i>
+            <i className="bi bi-car-front-fill fs-1 text-muted mb-3 d-block"></i>
             <h5 className="mb-3">{config.title}</h5>
             <p className="text-muted mb-0">
-              {config.data} ônibus ativo(s) em operação no sistema.
+              {config.data} veículo(s) ativo(s) em operação no sistema.
             </p>
           </div>
         );

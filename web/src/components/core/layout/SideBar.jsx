@@ -116,9 +116,9 @@ function SideBar() {
             isOpen={isHovered}
           />
           <SideButton
-            name="Ônibus"
-            icon="bus-front-fill"
-            href="buses"
+            name="Veículos"
+            icon="car-front-fill"
+            href="vehicles"
             isOpen={isHovered}
           />
           <SideButton

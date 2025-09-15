@@ -102,3 +102,72 @@
   border-color: #dc3545 !important;
   box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
 }
+
+// -----------------------------------------------------------------------------
+// CAMPOS DESABILITADOS NO MODO ESCURO
+// -----------------------------------------------------------------------------
+.form-control:disabled,
+.form-select:disabled {
+  background-color: $bg-dark !important;
+  border-color: $border-light !important;
+  color: $text-muted !important;
+  opacity: 0.7 !important;
+  
+  &::placeholder {
+    color: $text-muted !important;
+    opacity: 0.6 !important;
+  }
+}
+
+// Estilo específico para campos dependentes desabilitados
+.form-control[disabled][data-dependent="true"],
+.form-select[disabled][data-dependent="true"] {
+  background-color: $bg-dark !important;
+  border-color: $border-light !important;
+  color: $text-muted !important;
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  
+  &::placeholder {
+    color: $text-muted !important;
+    opacity: 0.5 !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// CORREÇÃO PARA AUTOFILL DO CHROME NO MODO ESCURO
+// -----------------------------------------------------------------------------
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:hover,
+.form-control:-webkit-autofill:focus,
+.form-control:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px $bg-medium inset !important;
+  -webkit-text-fill-color: $text-primary !important;
+  background-color: $bg-medium !important;
+  border-color: $input-border-color !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+// Estilo específico para campos dependentes com autofill
+.form-control[data-dependent="true"]:-webkit-autofill,
+.form-control[data-dependent="true"]:-webkit-autofill:hover,
+.form-control[data-dependent="true"]:-webkit-autofill:focus,
+.form-control[data-dependent="true"]:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px $bg-dark inset !important;
+  -webkit-text-fill-color: $text-muted !important;
+  background-color: $bg-dark !important;
+  border-color: $border-light !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+// Para campos desabilitados com autofill
+.form-control:disabled:-webkit-autofill,
+.form-control:disabled:-webkit-autofill:hover,
+.form-control:disabled:-webkit-autofill:focus,
+.form-control:disabled:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px $bg-dark inset !important;
+  -webkit-text-fill-color: $text-muted !important;
+  background-color: $bg-dark !important;
+  border-color: $border-light !important;
+  transition: background-color 5000s ease-in-out 0s;
+}

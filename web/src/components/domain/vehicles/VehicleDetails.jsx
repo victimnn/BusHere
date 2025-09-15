@@ -1,23 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DetailCard from '../../common/detail/DetailCard';
-import { busConfig } from '../../common/detail/detailConfigs';
+import { vehicleConfig } from '../../common/detail/detailConfigs';
 
-function BusDetails({ bus, onEdit, onDelete }) {
+function VehicleDetails({ vehicle, onEdit, onDelete }) {
   return (
     <DetailCard 
-      item={bus}
+      item={vehicle}
       onEdit={onEdit}
       onDelete={onDelete}
-      config={busConfig}
+      config={vehicleConfig}
     />
   );
 }
 
-BusDetails.propTypes = {
-  bus: PropTypes.object,
+VehicleDetails.propTypes = {
+  vehicle: PropTypes.object,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 };
 
-export default BusDetails;
+export default VehicleDetails;

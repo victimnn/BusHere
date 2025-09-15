@@ -24,4 +24,28 @@
       color: $dark !important;
     }
   }
+  &.btn-primary-green {
+    background-color: $primary-green !important;
+    color: $dark !important;
+
+    &:hover {
+      background-color: $analogous-3 !important;
+    }
+  }
+  &.btn-secondary {
+    background-color: $light !important;
+    color: $dark !important;
+
+    &:hover {
+      background-color: $dark !important;
+      color: $light !important;
+    }
+  }
+  &.btn-end {
+    color: $dark !important;
+
+    &:hover {
+      color: $gray !important;
+    }
+  }
 }

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import api from '@web/api/api';
 
-// Hook para carregar opções de ônibus com filtros
-export const useBusOptions = () => {
+// Hook para carregar opções de veículos com filtros
+export const useVehicleOptions = () => {
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -11,17 +11,17 @@ export const useBusOptions = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api.buses.list(1, 100);
-      const allBuses = response.data || [];
-      // Filtrar apenas ônibus ativos e em operação
-      const filteredBuses = allBuses.filter(bus => 
-        (bus.ativo === true || bus.ativo === 1) && // ativo = true
-        (bus.status_nome === 'Em Operação') // status = "Em Operação"
+      const response = await api.vehicles.list(1, 100);
+      const allVehicles = response.data || [];
+      // Filtrar apenas veículos ativos e em operação
+      const filteredVehicles = allVehicles.filter(vehicle => 
+        (vehicle.ativo === true || vehicle.ativo === 1) && // ativo = true
+        (vehicle.status_nome === 'Em Operação') // status = "Em Operação"
       );
-      setOptions(filteredBuses);
+      setOptions(filteredVehicles);
     } catch (err) {
       setError(err);
-      console.error('Erro ao carregar ônibus:', err);
+      console.error('Erro ao carregar veículos:', err);
     } finally {
       setLoading(false);
     }
@@ -67,13 +67,13 @@ export const useDriverOptions = () => {
   return { options, loading, error, reload: loadOptions };
 };
 
-// Hook para formatar opções de ônibus para select
-export const useFormattedBusOptions = () => {
-  const { options, loading, error, reload } = useBusOptions();
+// Hook para formatar opções de veículos para select
+export const useFormattedVehicleOptions = () => {
+  const { options, loading, error, reload } = useVehicleOptions();
   
-  const formattedOptions = options.map(bus => ({
-    value: bus.onibus_id,
-    label: `${bus.nome} - ${bus.placa} (${bus.marca} ${bus.modelo})`
+  const formattedOptions = options.map(vehicle => ({
+    value: vehicle.veiculo_id,
+    label: `${vehicle.nome} - ${vehicle.placa} (${vehicle.marca} ${vehicle.modelo})`
   }));
 
   return { options: formattedOptions, loading, error, reload };

@@ -1,5 +1,5 @@
 // Hooks relacionados a dados (Data Layer)
-export { useBuses } from './data/useBuses';
+export { useVehicles } from './data/useVehicles';
 export { useDrivers } from './data/useDrivers';
 export { usePassengers } from './data/usePassengers';
 export { useRoutes } from './data/useRoutes';
@@ -18,9 +18,9 @@ export {
   useCoordinateUtils
 } from './operations/useRouteOperations';
 export { 
-  useBusOptions, 
+  useVehicleOptions, 
   useDriverOptions, 
-  useFormattedBusOptions, 
+  useFormattedVehicleOptions, 
   useFormattedDriverOptions 
 } from './operations/useFormOptions';
 

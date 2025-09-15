@@ -9,6 +9,8 @@ $primary: #15D154;           // Verde mais vibrante para dark mode
 $primary-light: #4AE575;     // Verde claro mais luminoso
 $primary-dark: #0FA842;      // Verde escuro adaptado
 $primary-contrast: #000000;  // Contraste invertido para dark mode
+$primary-green: #0F9C42;
+$theme: #ffffff;
 
 // -----------------------------------------------------------------------------
 // CORES SECUNDÁRIAS
@@ -26,6 +28,7 @@ $accent-dark: #E55555;       // Vermelho escuro adaptado
 
 $analogous-1: #15D1B5;       // Ciano adaptado para dark mode
 $analogous-2: #15D125;       // Verde análogo adaptado
+$analogous-3: #107a27;
 
 // -----------------------------------------------------------------------------
 // CORES DE FEEDBACK
@@ -72,6 +75,7 @@ $spacing-xl: 3rem;
 $border-color: #374151;      // Bordas escuras mas visíveis
 $border-light: #2A2D31;      // Bordas mais sutis
 $border-medium: #4B5563;     // Bordas médias
+$border-theme: #ffffff;
 $border-radius: 0.375rem;
 $border-radius-sm: 0.25rem;
 $border-radius-lg: 0.5rem;
@@ -116,8 +120,8 @@ $font-family-base: "Helvetica Neue", Helvetica, Arial, sans-serif;
 $input-btn-padding-y: 0.625rem;
 $input-btn-padding-x: 1rem;
 $input-border-radius: 0.5rem;
-$input-bg: $bg-medium;                    // Fundo escuro para inputs
-$input-border-color: $border-color;      // Bordas adaptadas
+$input-bg: $bg-medium;      // Fundo escuro para inputs
+$input-border-color: $gray;      // Bordas adaptadas
 $input-focus-border-color: $primary;     // Foco verde consistente
 $input-focus-box-shadow: 0 0 0 0.2rem rgba(21, 209, 84, 0.25);  // Sombra de foco adaptada
 $input-color: $text-primary;             // Texto claro nos inputs
@@ -175,4 +179,5 @@ $theme-colors: (
   "text-primary": $text-primary,
   "text-secondary": $text-secondary,
   "text-muted": $text-muted,
+  "theme" :  $theme,
 );

@@ -38,9 +38,22 @@ module.exports = (pool) => {
           TP.nome AS tipo_passageiro_nome,
           P.ativo,
           P.pcd,
+          P.logradouro,
+          P.numero_endereco,
+          P.complemento_endereco,
+          P.bairro,
+          P.cidade,
+          P.uf,
+          P.cep,
+          P.rota_id,
+          R.nome AS rota_nome,
+          P.ponto_id,
+          PO.nome AS ponto_nome,
           COUNT(*) OVER() as total_passengers_found
         FROM Passageiros P
         LEFT JOIN TipoPassageiro TP ON P.tipo_passageiro_id = TP.tipo_passageiro_id
+        LEFT JOIN Rotas R ON P.rota_id = R.rota_id
+        LEFT JOIN Pontos PO ON P.ponto_id = PO.ponto_id
         ${whereClause}
         ORDER BY passageiro_id ${limitClause}`,
         params
@@ -81,6 +94,46 @@ module.exports = (pool) => {
     }
   });
 
+  // Rota para buscar rotas disponíveis
+  router.get('/rotas', async (req, res) => {
+    try {
+      const [rows] = await pool.execute(
+        `SELECT R.rota_id, R.nome, R.codigo_rota 
+        FROM Rotas R
+        LEFT JOIN StatusRota SR ON R.status_rota_id = SR.status_rota_id
+        WHERE R.ativo = true 
+        AND (SR.nome = 'Ativa' OR R.status_rota_id IS NULL)
+        ORDER BY R.nome`
+      );
+
+      res.json({
+        data: rows
+      });
+    } catch (error) {
+      console.error('Erro ao buscar rotas:', error);
+      res.status(500).json({ error: 'Erro ao buscar rotas', details: error.message });
+    }
+  });
+
+  // Rota para buscar pontos disponíveis
+  router.get('/pontos', async (req, res) => {
+    try {
+      const [rows] = await pool.execute(
+        `SELECT ponto_id, nome, cidade, uf 
+        FROM Pontos 
+        WHERE ativo = true 
+        ORDER BY nome`
+      );
+
+      res.json({
+        data: rows
+      });
+    } catch (error) {
+      console.error('Erro ao buscar pontos:', error);
+      res.status(500).json({ error: 'Erro ao buscar pontos', details: error.message });
+    }
+  });
+
   // Rota para obter detalhes de um passageiro específico
   router.get('/:id', async (req, res) => {
     try {
@@ -102,13 +155,19 @@ module.exports = (pool) => {
         P.cidade, 
         P.uf, 
         P.cep,
-        P.data_nascimento,
         P.tipo_passageiro_id,
+        TP.nome AS tipo_passageiro_nome,
+        P.rota_id,
+        R.nome AS rota_nome,
+        P.ponto_id,
+        PO.nome AS ponto_nome,
         P.data_criacao, 
         P.data_atualizacao, 
         P.ativo
         FROM Passageiros P
         LEFT JOIN TipoPassageiro TP ON P.tipo_passageiro_id = TP.tipo_passageiro_id
+        LEFT JOIN Rotas R ON P.rota_id = R.rota_id
+        LEFT JOIN Pontos PO ON P.ponto_id = PO.ponto_id
         WHERE P.passageiro_id = ?`,
         [id]
       );
@@ -129,7 +188,7 @@ module.exports = (pool) => {
     // LOG: Verificar dados recebidos
     console.log('POST /passengers req.body:', req.body);
 
-    const requiredFields = ['nome_completo', 'cpf', 'email', 'senha_hash', 'logradouro', 'numero_endereco', 'bairro', 'cidade', 'uf', 'cep', 'data_nascimento' ,'tipo_passageiro_id'];
+    const requiredFields = ['nome_completo', 'cpf', 'email', 'senha_hash', 'logradouro', 'numero_endereco', 'bairro', 'cidade', 'uf', 'cep', 'tipo_passageiro_id'];
     for (const field of requiredFields) {
       if (!req.body[field]) {
         console.error(`Campo obrigatório faltando: ${field}`);
@@ -196,9 +255,12 @@ module.exports = (pool) => {
         P.cidade, 
         P.uf, 
         P.cep,
-        P.tipo_passageiro_id, 
-        R.rota_id, 
-        PO.ponto_id, 
+        P.tipo_passageiro_id,
+        TP.nome AS tipo_passageiro_nome,
+        P.rota_id,
+        R.nome AS rota_nome,
+        P.ponto_id,
+        PO.nome AS ponto_nome,
         P.data_criacao, 
         P.data_atualizacao, 
         P.ativo
@@ -296,9 +358,12 @@ module.exports = (pool) => {
         P.cidade, 
         P.uf, 
         P.cep,
-        P.tipo_passageiro_id, 
-        R.rota_id, 
-        PO.ponto_id, 
+        P.tipo_passageiro_id,
+        TP.nome AS tipo_passageiro_nome,
+        P.rota_id,
+        R.nome AS rota_nome,
+        P.ponto_id,
+        PO.nome AS ponto_nome,
         P.data_criacao, 
         P.data_atualizacao, 
         P.ativo

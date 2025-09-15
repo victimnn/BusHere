@@ -36,19 +36,19 @@ module.exports = (pool) => {
           R.status_rota_id,
           SR.nome AS status_nome,
           R.ativo,
-          OBR.onibus_id,
-          OBR.motorista_id,
-          OBR.observacoes AS observacoes_assignment,
-          O.nome AS onibus_nome,
-          O.placa AS onibus_placa,
+          VR.veiculo_id,
+          VR.motorista_id,
+          VR.observacoes AS observacoes_assignment,
+          V.nome AS veiculo_nome,
+          V.placa AS veiculo_placa,
           M.nome AS motorista_nome,
           M.cnh_numero AS motorista_cnh,
           COUNT(*) OVER() as total_routes_found
         FROM Rotas R
         JOIN StatusRota SR ON R.status_rota_id = SR.status_rota_id
-        LEFT JOIN OnibusRota OBR ON R.rota_id = OBR.rota_id AND OBR.ativo = TRUE
-        LEFT JOIN Onibus O ON OBR.onibus_id = O.onibus_id AND O.ativo = TRUE
-        LEFT JOIN Motoristas M ON OBR.motorista_id = M.motorista_id AND M.ativo = TRUE
+        LEFT JOIN VeiculoRota VR ON R.rota_id = VR.rota_id AND VR.ativo = TRUE
+        LEFT JOIN Veiculos V ON VR.veiculo_id = V.veiculo_id AND V.ativo = TRUE
+        LEFT JOIN Motoristas M ON VR.motorista_id = M.motorista_id AND M.ativo = TRUE
         ${whereClause}
         ORDER BY R.rota_id ${limitClause}`,
         params
@@ -529,24 +529,24 @@ module.exports = (pool) => {
     }
   });
 
-  // ENDPOINTS PARA ONIBUS-ROTA (Associação de ônibus e motorista a rotas)
+  // ENDPOINTS PARA VEICULO-ROTA (Associação de veículo e motorista a rotas)
 
-  // Teste da tabela OnibusRota
+  // Teste da tabela VeiculoRota
   router.get('/:id/test-assignments', async (req, res) => {
     try {
       const { id } = req.params;
-      console.log('Testando tabela OnibusRota para rota_id:', id);
+      console.log('Testando tabela VeiculoRota para rota_id:', id);
       
       // Teste 1: Verificar se a tabela existe
-      const [testResult] = await pool.execute('SELECT COUNT(*) as count FROM OnibusRota WHERE rota_id = ?', [id]);
+      const [testResult] = await pool.execute('SELECT COUNT(*) as count FROM VeiculoRota WHERE rota_id = ?', [id]);
       console.log('Resultado do teste:', testResult);
       
       // Teste 2: Verificar estrutura da tabela
-      const [tableStructure] = await pool.execute('DESCRIBE OnibusRota');
-      console.log('Estrutura da tabela OnibusRota:', tableStructure);
+      const [tableStructure] = await pool.execute('DESCRIBE VeiculoRota');
+      console.log('Estrutura da tabela VeiculoRota:', tableStructure);
       
       // Teste 3: Verificar dados existentes
-      const [allData] = await pool.execute('SELECT * FROM OnibusRota LIMIT 5');
+      const [allData] = await pool.execute('SELECT * FROM VeiculoRota LIMIT 5');
       console.log('Dados existentes:', allData);
       
       // Teste 4: Verificar se rota existe
@@ -554,7 +554,7 @@ module.exports = (pool) => {
       console.log('Rota existe:', routeExists);
       
       // Teste 5: Verificar se ônibus ID 5 existe
-      const [busExists] = await pool.execute('SELECT onibus_id FROM Onibus WHERE onibus_id = 5 AND ativo = TRUE');
+      const [busExists] = await pool.execute('SELECT veiculo_id FROM Veiculos WHERE veiculo_id = 5 AND ativo = TRUE');
       console.log('Ônibus ID 5 existe:', busExists);
       
       // Teste 6: Verificar se motorista ID 1 existe
@@ -571,8 +571,8 @@ module.exports = (pool) => {
         driverExists: driverExists.length > 0
       });
     } catch (error) {
-      console.error('Erro no teste da tabela OnibusRota:', error);
-      res.status(500).json({ error: 'Erro ao acessar tabela OnibusRota', details: error.message, stack: error.stack });
+      console.error('Erro no teste da tabela VeiculoRota:', error);
+      res.status(500).json({ error: 'Erro ao acessar tabela VeiculoRota', details: error.message, stack: error.stack });
     }
   });
 
@@ -580,12 +580,12 @@ module.exports = (pool) => {
   router.post('/:id/test-insert', async (req, res) => {
     try {
       const { id } = req.params;
-      console.log('Testando inserção na tabela OnibusRota para rota_id:', id);
+      console.log('Testando inserção na tabela VeiculoRota para rota_id:', id);
       
       // Tentar inserir um registro de teste
       const testData = {
         rota_id: id,
-        onibus_id: 5,
+        veiculo_id: 5,
         motorista_id: 1,
         observacoes: 'Teste de inserção',
         ativo: true
@@ -593,11 +593,11 @@ module.exports = (pool) => {
       
       console.log('Dados de teste para inserção:', testData);
       
-      const [result] = await pool.query('INSERT INTO OnibusRota SET ?', testData);
+      const [result] = await pool.query('INSERT INTO VeiculoRota SET ?', testData);
       console.log('Resultado da inserção:', result);
       
       // Buscar o registro inserido
-      const [inserted] = await pool.execute('SELECT * FROM OnibusRota WHERE onibus_rota_id = ?', [result.insertId]);
+      const [inserted] = await pool.execute('SELECT * FROM VeiculoRota WHERE veiculo_rota_id = ?', [result.insertId]);
       console.log('Registro inserido:', inserted[0]);
       
       res.json({ 
@@ -625,23 +625,23 @@ module.exports = (pool) => {
       
       const [rows] = await pool.execute(
         `SELECT 
-          OBR.onibus_rota_id,
+          OBR.veiculo_rota_id,
           OBR.rota_id,
-          OBR.onibus_id,
+          OBR.veiculo_id,
           OBR.motorista_id,
           OBR.observacoes,
           OBR.ativo,
           OBR.criacao,
           OBR.atualizacao,
-          O.nome as onibus_nome,
-          O.placa as onibus_placa,
-          O.modelo as onibus_modelo,
-          O.marca as onibus_marca,
+          O.nome as veiculo_nome,
+          O.placa as veiculo_placa,
+          O.modelo as veiculo_modelo,
+          O.marca as veiculo_marca,
           M.nome as motorista_nome,
           M.cnh_numero as motorista_cnh,
           M.telefone as motorista_telefone
-        FROM OnibusRota OBR
-        LEFT JOIN Onibus O ON OBR.onibus_id = O.onibus_id
+        FROM VeiculoRota OBR
+        LEFT JOIN Veiculos O ON OBR.veiculo_id = O.veiculo_id
         LEFT JOIN Motoristas M ON OBR.motorista_id = M.motorista_id
         WHERE OBR.rota_id = ? AND OBR.ativo = TRUE
         ORDER BY OBR.criacao DESC`,
@@ -660,16 +660,16 @@ module.exports = (pool) => {
     try {
       const { id } = req.params;
       const { 
-        onibus_id, 
+        veiculo_id, 
         motorista_id, 
         observacoes 
       } = req.body;
 
       console.log('Criando associação para rota_id:', id);
-      console.log('Dados recebidos:', { onibus_id, motorista_id, observacoes });
+      console.log('Dados recebidos:', { veiculo_id, motorista_id, observacoes });
 
       // Validações obrigatórias
-      if (!onibus_id || !motorista_id) {
+      if (!veiculo_id || !motorista_id) {
         return res.status(400).json({ 
           error: 'Ônibus e motorista são obrigatórios' 
         });
@@ -689,8 +689,8 @@ module.exports = (pool) => {
       // Verificar se o ônibus existe e está ativo
       console.log('Verificando se o ônibus existe...');
       const [busCheck] = await pool.execute(
-        'SELECT onibus_id FROM Onibus WHERE onibus_id = ? AND ativo = TRUE', 
-        [onibus_id]
+        'SELECT veiculo_id FROM Veiculos WHERE veiculo_id = ? AND ativo = TRUE', 
+        [veiculo_id]
       );
       console.log('Resultado da verificação do ônibus:', busCheck);
       if (busCheck.length === 0) {
@@ -711,9 +711,9 @@ module.exports = (pool) => {
       // Verificar se já existe uma associação ativa para esta rota com o mesmo ônibus ou motorista
       console.log('Verificando associações existentes...');
       const [existingAssignment] = await pool.execute(
-        `SELECT onibus_rota_id FROM OnibusRota 
-         WHERE rota_id = ? AND (onibus_id = ? OR motorista_id = ?) AND ativo = TRUE`,
-        [id, onibus_id, motorista_id]
+        `SELECT veiculo_rota_id FROM VeiculoRota 
+         WHERE rota_id = ? AND (veiculo_id = ? OR motorista_id = ?) AND ativo = TRUE`,
+        [id, veiculo_id, motorista_id]
       );
       console.log('Associações existentes encontradas:', existingAssignment);
       
@@ -727,7 +727,7 @@ module.exports = (pool) => {
       console.log('Criando a associação...');
       const assignmentData = {
         rota_id: id,
-        onibus_id,
+        veiculo_id,
         motorista_id,
         observacoes: observacoes || null,
         ativo: true
@@ -735,7 +735,7 @@ module.exports = (pool) => {
       console.log('Dados da associação a ser criada:', assignmentData);
 
       const [result] = await pool.query(
-        'INSERT INTO OnibusRota SET ?', 
+        'INSERT INTO VeiculoRota SET ?', 
         assignmentData
       );
       console.log('Resultado da inserção:', result);
@@ -744,25 +744,25 @@ module.exports = (pool) => {
       console.log('Buscando associação criada com ID:', result.insertId);
       const [newAssignment] = await pool.execute(
         `SELECT 
-          OBR.onibus_rota_id,
+          OBR.veiculo_rota_id,
           OBR.rota_id,
-          OBR.onibus_id,
+          OBR.veiculo_id,
           OBR.motorista_id,
           OBR.observacoes,
           OBR.ativo,
           OBR.criacao,
           OBR.atualizacao,
-          O.nome as onibus_nome,
-          O.placa as onibus_placa,
-          O.modelo as onibus_modelo,
-          O.marca as onibus_marca,
+          O.nome as veiculo_nome,
+          O.placa as veiculo_placa,
+          O.modelo as veiculo_modelo,
+          O.marca as veiculo_marca,
           M.nome as motorista_nome,
           M.cnh_numero as motorista_cnh,
           M.telefone as motorista_telefone
-        FROM OnibusRota OBR
-        LEFT JOIN Onibus O ON OBR.onibus_id = O.onibus_id
+        FROM VeiculoRota OBR
+        LEFT JOIN Veiculos O ON OBR.veiculo_id = O.veiculo_id
         LEFT JOIN Motoristas M ON OBR.motorista_id = M.motorista_id
-        WHERE OBR.onibus_rota_id = ?`,
+        WHERE OBR.veiculo_rota_id = ?`,
         [result.insertId]
       );
       console.log('Associação criada:', newAssignment[0]);
@@ -778,7 +778,7 @@ module.exports = (pool) => {
       console.error('SQL Message:', error.sqlMessage);
       console.error('Errno:', error.errno);
       console.error('Stack trace:', error.stack);
-      console.error('Dados que causaram erro:', { rota_id: rota_id, onibus_id, motorista_id, observacoes });
+      console.error('Dados que causaram erro:', { rota_id: rota_id, veiculo_id, motorista_id, observacoes });
       
       if (error.code === 'ER_DUP_ENTRY') {
         return res.status(409).json({ 
@@ -788,7 +788,7 @@ module.exports = (pool) => {
       
       if (error.code === 'ER_NO_SUCH_TABLE') {
         return res.status(500).json({ 
-          error: 'Tabela OnibusRota não encontrada. Execute as migrations.' 
+          error: 'Tabela VeiculoRota não encontrada. Execute as migrations.' 
         });
       }
       
@@ -813,7 +813,7 @@ module.exports = (pool) => {
     try {
       const { id, assignmentId } = req.params;
       const { 
-        onibus_id, 
+        veiculo_id, 
         motorista_id, 
         observacoes,
         ativo 
@@ -821,7 +821,7 @@ module.exports = (pool) => {
 
       // Verificar se a associação existe
       const [assignmentCheck] = await pool.execute(
-        'SELECT onibus_rota_id FROM OnibusRota WHERE onibus_rota_id = ? AND rota_id = ?',
+        'SELECT veiculo_rota_id FROM VeiculoRota WHERE veiculo_rota_id = ? AND rota_id = ?',
         [assignmentId, id]
       );
       
@@ -832,16 +832,16 @@ module.exports = (pool) => {
       const updatedData = {};
       
       // Validar e adicionar campos que foram fornecidos
-      if (onibus_id !== undefined) {
+      if (veiculo_id !== undefined) {
         // Verificar se o ônibus existe e está ativo
         const [busCheck] = await pool.execute(
-          'SELECT onibus_id FROM Onibus WHERE onibus_id = ? AND ativo = TRUE', 
-          [onibus_id]
+          'SELECT veiculo_id FROM Veiculos WHERE veiculo_id = ? AND ativo = TRUE', 
+          [veiculo_id]
         );
         if (busCheck.length === 0) {
           return res.status(400).json({ error: 'Ônibus não encontrado ou inativo' });
         }
-        updatedData.onibus_id = onibus_id;
+        updatedData.veiculo_id = veiculo_id;
       }
 
       if (motorista_id !== undefined) {
@@ -865,32 +865,32 @@ module.exports = (pool) => {
 
       // Atualizar a associação
       await pool.query(
-        'UPDATE OnibusRota SET ? WHERE onibus_rota_id = ?', 
+        'UPDATE VeiculoRota SET ? WHERE veiculo_rota_id = ?', 
         [updatedData, assignmentId]
       );
 
       // Buscar a associação atualizada com dados completos
       const [updatedAssignment] = await pool.execute(
         `SELECT 
-          OBR.onibus_rota_id,
+          OBR.veiculo_rota_id,
           OBR.rota_id,
-          OBR.onibus_id,
+          OBR.veiculo_id,
           OBR.motorista_id,
           OBR.observacoes,
           OBR.ativo,
           OBR.criacao,
           OBR.atualizacao,
-          O.nome as onibus_nome,
-          O.placa as onibus_placa,
-          O.modelo as onibus_modelo,
-          O.marca as onibus_marca,
+          O.nome as veiculo_nome,
+          O.placa as veiculo_placa,
+          O.modelo as veiculo_modelo,
+          O.marca as veiculo_marca,
           M.nome as motorista_nome,
           M.cnh_numero as motorista_cnh,
           M.telefone as motorista_telefone
-        FROM OnibusRota OBR
-        LEFT JOIN Onibus O ON OBR.onibus_id = O.onibus_id
+        FROM VeiculoRota OBR
+        LEFT JOIN Veiculos O ON OBR.veiculo_id = O.veiculo_id
         LEFT JOIN Motoristas M ON OBR.motorista_id = M.motorista_id
-        WHERE OBR.onibus_rota_id = ?`,
+        WHERE OBR.veiculo_rota_id = ?`,
         [assignmentId]
       );
 
@@ -912,7 +912,7 @@ module.exports = (pool) => {
       const { id, assignmentId } = req.params;
       
       const [result] = await pool.execute(
-        'UPDATE OnibusRota SET ativo = FALSE WHERE onibus_rota_id = ? AND rota_id = ?',
+        'UPDATE VeiculoRota SET ativo = FALSE WHERE veiculo_rota_id = ? AND rota_id = ?',
         [assignmentId, id]
       );
       
@@ -922,7 +922,7 @@ module.exports = (pool) => {
       
       res.json({ 
         message: 'Associação removida com sucesso', 
-        onibus_rota_id: assignmentId 
+        veiculo_rota_id: assignmentId 
       });
     } catch (error) {
       console.error('Erro ao remover associação:', error);

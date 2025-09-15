@@ -24,11 +24,15 @@ const TABLE_HEADERS = [
   { id: "email", label: "E-mail", sortable: true },
   { id: "telefone", label: "Telefone", sortable: false },
   { id: "data_nascimento", label: "Data Nascimento", sortable: false },
+  { id: "pcd", label: "PCD", sortable: true, formatter: (value) => value ? "Sim" : "Não" },
   { id: "tipo_passageiro", 
     label: "Tipo", 
     sortable: true,
     formatter: (value) => formatType(value)
-  }
+  },
+  { id: "cidade", label: "Cidade", sortable: true },
+  { id: "rota_nome", label: "Rota", sortable: true, formatter: (value) => value || "Não informado" },
+  { id: "ponto_nome", label: "Ponto", sortable: true, formatter: (value) => value || "Não informado" }
 ];
 
 function Passengers({ pageFunctions }) {
@@ -80,7 +84,17 @@ function Passengers({ pageFunctions }) {
       email: passenger.email,
       telefone: passenger.telefone,
       tipo_passageiro: passenger.tipo_passageiro_id,
-      data_nascimento: passenger.data_nascimento
+      data_nascimento: passenger.data_nascimento,
+      pcd: passenger.pcd,
+      logradouro: passenger.logradouro,
+      numero_endereco: passenger.numero_endereco,
+      complemento_endereco: passenger.complemento_endereco,
+      bairro: passenger.bairro,
+      cidade: passenger.cidade,
+      uf: passenger.uf,
+      cep: passenger.cep,
+      rota_id: passenger.rota_id,
+      ponto_id: passenger.ponto_id
     };
 
     popUpRef.current.show({

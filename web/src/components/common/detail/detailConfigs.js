@@ -58,86 +58,76 @@ export const passengerConfig = {
       formatter: formatters.date
     },
     {
-      key: "data_criacao",
-      label: "Data de Cadastro",
-      icon: "bi bi-calendar-plus",
-      formatter: formatters.date
+      key: "pcd",
+      label: "Pessoa com Deficiência",
+      icon: "bi bi-universal-access",
+      formatter: (value) => value ? "Sim" : "Não"
     },
     {
       key: "tipo_passageiro",
       label: "Tipo de Passageiro",
       icon: "bi bi-person-badge",
       formatter: formatters.defaultValue
-    }
-  ]
-};
-
-export const busConfig = {
-  title: "Detalhes do Ônibus",
-  headerIcon: "bi bi-bus-front-fill",
-  emptyIcon: "bi bi-bus-front",
-  emptyMessage: "Nenhum ônibus selecionado",
-  idField: "onibus_id",
-  fields: [
+    },
     {
-      key: "nome",
-      label: "Nome",
-      icon: "bi bi-info-circle",
+      key: "logradouro",
+      label: "Logradouro",
+      icon: "bi bi-house",
       formatter: formatters.defaultValue
     },
     {
-      key: "placa",
-      label: "Placa",
-      icon: "bi bi-card-text",
-      formatter: formatters.plate
-    },
-    {
-      key: "modelo",
-      label: "Modelo",
-      icon: "bi bi-truck",
+      key: "numero_endereco",
+      label: "Número",
+      icon: "bi bi-123",
       formatter: formatters.defaultValue
     },
     {
-      key: "marca",
-      label: "Marca",
+      key: "complemento_endereco",
+      label: "Complemento",
+      icon: "bi bi-house-door",
+      formatter: formatters.defaultValue
+    },
+    {
+      key: "bairro",
+      label: "Bairro",
       icon: "bi bi-building",
       formatter: formatters.defaultValue
     },
     {
-      key: "ano_fabricacao",
-      label: "Ano de Fabricação",
-      icon: "bi bi-calendar-event",
+      key: "cidade",
+      label: "Cidade",
+      icon: "bi bi-geo-alt",
       formatter: formatters.defaultValue
     },
     {
-      key: "capacidade",
-      label: "Capacidade",
-      icon: "bi bi-people",
-      formatter: (value) => value ? `${value} passageiros` : "Não informado"
-    },
-    {
-      key: "quilometragem",
-      label: "Quilometragem",
-      icon: "bi bi-speedometer",
-      formatter: formatters.kilometers
-    },
-    {
-      key: "data_ultima_manutencao",
-      label: "Última Manutenção",
-      icon: "bi bi-wrench",
-      formatter: formatters.date
-    },
-    {
-      key: "data_proxima_manutencao",
-      label: "Próxima Manutenção",
-      icon: "bi bi-calendar-plus",
-      formatter: formatters.date
-    },
-    {
-      key: "status",
-      label: "Status",
+      key: "uf",
+      label: "UF",
       icon: "bi bi-flag",
       formatter: formatters.defaultValue
+    },
+    {
+      key: "cep",
+      label: "CEP",
+      icon: "bi bi-mailbox",
+      formatter: (value) => value ? value.replace(/(\d{5})(\d{3})/, "$1-$2") : "Não informado"
+    },
+    {
+      key: "rota_nome",
+      label: "Rota",
+      icon: "bi bi-signpost-split",
+      formatter: formatters.defaultValue
+    },
+    {
+      key: "ponto_nome",
+      label: "Ponto de Embarque",
+      icon: "bi bi-geo-alt-fill",
+      formatter: formatters.defaultValue
+    },
+    {
+      key: "data_criacao",
+      label: "Data de Cadastro",
+      icon: "bi bi-calendar-plus",
+      formatter: formatters.date
     }
   ]
 };
@@ -316,6 +306,82 @@ export const driverConfig = {
     {
       key: "data_admissao",
       label: "Data de Admissão",
+      icon: "bi bi-calendar-plus",
+      formatter: formatters.date
+    },
+    {
+      key: "status_nome",
+      label: "Status",
+      icon: "bi bi-flag",
+      formatter: formatters.defaultValue
+    }
+  ]
+};
+
+export const vehicleConfig = {
+  title: "Detalhes do Veículo",
+  headerIcon: "bi bi-car-front-fill",
+  emptyIcon: "bi bi-car-front",
+  emptyMessage: "Nenhum veículo selecionado",
+  idField: "veiculo_id",
+  fields: [
+    {
+      key: "nome",
+      label: "Nome",
+      icon: "bi bi-info-circle",
+      formatter: formatters.defaultValue
+    },
+    {
+      key: "placa",
+      label: "Placa",
+      icon: "bi bi-card-text",
+      formatter: formatters.plate
+    },
+    {
+      key: "tipo_nome",
+      label: "Tipo de Veículo",
+      icon: "bi bi-truck",
+      formatter: formatters.defaultValue
+    },
+    {
+      key: "modelo",
+      label: "Modelo",
+      icon: "bi bi-car-front",
+      formatter: formatters.defaultValue
+    },
+    {
+      key: "marca",
+      label: "Marca",
+      icon: "bi bi-building",
+      formatter: formatters.defaultValue
+    },
+    {
+      key: "ano_fabricacao",
+      label: "Ano de Fabricação",
+      icon: "bi bi-calendar-event",
+      formatter: formatters.defaultValue
+    },
+    {
+      key: "capacidade",
+      label: "Capacidade",
+      icon: "bi bi-people",
+      formatter: (value) => value ? `${value} passageiros` : "Não informado"
+    },
+    {
+      key: "quilometragem",
+      label: "Quilometragem",
+      icon: "bi bi-speedometer",
+      formatter: formatters.kilometers
+    },
+    {
+      key: "data_ultima_manutencao",
+      label: "Última Manutenção",
+      icon: "bi bi-wrench",
+      formatter: formatters.date
+    },
+    {
+      key: "data_proxima_manutencao",
+      label: "Próxima Manutenção",
       icon: "bi bi-calendar-plus",
       formatter: formatters.date
     },

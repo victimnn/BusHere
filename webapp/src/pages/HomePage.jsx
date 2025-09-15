@@ -6,6 +6,8 @@ import SideBar from "../components/SideBar";
 import MapTest from "../components/MapTest";
 import { FloatingButton } from "../components/common";
 
+import api from "./../api/api"
+
 /**
  * Página principal da aplicação
  * Contém o mapa, bottom sheet, sidebar e botão flutuante
@@ -16,11 +18,33 @@ const HomePage = ({ isDark, setIsDark }) => {
 	const [sideBarIsOpen, setSideBarIsOpen] = useState(false);
 	const [showMap, setShowMap] = useState(true); // Toggle para testar mapa vs teste
 	
+	const [stops, setStops] = useState([]);
+	const [route, setRoute] = useState(null);
+	const [markers, setMarkers] = useState([]);
 	// Debug: log do estado
 	useEffect(() => {
 		console.log('HomePage renderizada, estado atual:', { anchor, sideBarIsOpen, showMap });
 	}, [anchor, sideBarIsOpen, showMap]);
 	
+	useEffect(() => {
+		// Função para buscar os pontos de parada da API
+		const fetchThings = async () => {
+			try {
+				const stopsResponse = await api.stops.getAll();
+				setStops(stopsResponse);
+				console.log("Pontos de parada carregados:", stopsResponse);
+
+				const routeResponse = await api.routes.get();
+				setRoute(routeResponse);
+				console.log("Rota carregada:", routeResponse);
+			} catch (error) {
+				console.error("Erro ao carregar pontos de parada:", error);
+			}
+		};
+		
+		fetchThings();
+	}, []);
+
 	// Dados de exemplo para os marcadores do mapa
 	const mapMarkers = [
 		{
@@ -83,6 +107,9 @@ const HomePage = ({ isDark, setIsDark }) => {
 		handleSidebarClose();
 	};
 	
+
+
+
 	return (
 		<div className="home-page" style={{ height: '100vh', width: '100vw', position: 'relative' }}>
 			{/* FloatingButton para abrir sidebar */}

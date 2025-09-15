@@ -77,7 +77,7 @@ function LoginPage() {
 
         {/* Botões secundários */}
         <div className="d-flex justify-content-between mb-3 mr-0">
-          <button className="btn btn-secondary w-50 me-2" style={{ borderColor: "#757575", height: "100%"}}>Criar uma Conta</button>
+          <button className="btn btn-secondary w-50 me-2" style={{ borderColor: "#757575", height: "100%"}} onClick={() => window.location.href = "/register"}>Criar uma Conta</button>
           <button className="btn btn-secondary w-50" style={{ borderColor: "#757575", height: "100%"}}>Criar com Link</button>
         </div>
 

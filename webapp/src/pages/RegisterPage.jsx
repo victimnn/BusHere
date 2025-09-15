@@ -3,14 +3,13 @@ import { useState } from "react";
 
 
 function RegisterPage() {
-    const [user, setUser] = useState("");
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     const [showSenha, setShowSenha] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("Registrar com:", { user, email, senha });
+        console.log("Registrar com:", {email, senha });
     };
     return (
         <div className="d-flex justify-content-center align-items-center h-100"> 
@@ -27,17 +26,6 @@ function RegisterPage() {
             </h5>
 
             <form onClick={handleSubmit}>
-                <div className="mb-3 ">
-                    <label className="form-label font-family-segundaria">Usuario</label>
-                    <input 
-                        type="text"
-                        className="form-control"
-                        value={user}
-                        onChange={(e) => setUser(e.target.value)}
-                        required
-                        placeholder="Insira seu usuário" 
-                    />
-                </div>
                 <div className="mb-3">
                     <label className="form-label font-family-segundaria">E-mail</label>
                     <input 
@@ -50,7 +38,7 @@ function RegisterPage() {
                     />
                 </div>
 
-                <div className="mb-4">
+                <div className="mb-3">
                     <label className="form-label font-family-segundaria">Senha</label>
                     <div className="input-group">
                     <input 
@@ -63,7 +51,7 @@ function RegisterPage() {
                     />
                         <button
                             type="button"
-                            className="btn btn-outline-secondary"
+                            className="btn btn-secondary"
                             onClick={() => setShowSenha((prev) => !prev)}
                             tabIndex={-1}
                             aria-label={showSenha ? "Ocultar senha" : "Mostrar senha"}
@@ -80,6 +68,9 @@ function RegisterPage() {
                     </button>
                 </div>
             </form>
+            <div className="d-flex justify-content-between mb-3 mr-0">
+                <button className="btn btn-secondary w-100" style={{ borderColor: "#757575"}}>Criar com Link</button>
+            </div>
             <p className=" text-center fw-semibold">
                 <a href="/login" style={{ color: "#2e7d32"}}>
                     Ja possui uma conta?

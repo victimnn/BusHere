@@ -17,7 +17,7 @@ function RegisterPage() {
                 className="p-4"
                 style={{ width: "100%", height: "100%", maxWidth: "400px"}}
             >
-            <div className="d-flex justify-content-start">
+            <div className="d-flex justify-content-start" onClick={() => window.history.back()}>
               <button className="btn text-dark mt-1 p-0 m-0 fs-2 fw-bolder btn-end">✕</button>
             </div>
 

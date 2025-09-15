@@ -25,7 +25,7 @@ function RegisterPage() {
                 Crie sua conta para <br/>começar a usar o <span style={{color: "#0F9C42"}}>BusHere</span>
             </h5>
 
-            <form onClick={handleSubmit}>
+            <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label className="form-label font-family-segundaria">E-mail</label>
                     <input 

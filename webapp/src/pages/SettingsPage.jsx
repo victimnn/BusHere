@@ -1,7 +1,91 @@
 import React, { useState } from 'react';
 import { PageHeader, InfoCard, ActionButton } from '../components/common';
+import api from "../api/api";
+
+function gerarCpf() {
+  // Função para gerar dígito verificador
+  function calcDV(nums) {
+    let x = 0;
+    for (let i = nums.length + 1, j = 0; i >= 2; i--, j++) x += +nums[j] * i;
+    const y = x % 11;
+    return y < 2 ? 0 : 11 - y;
+  }
+  // Gera 9 dígitos aleatórios
+  const nums = Array.from({length: 9}, () => Math.floor(Math.random() * 10));
+  const d1 = calcDV(nums);
+  const d2 = calcDV([...nums, d1]);
+  return [...nums, d1, d2].join("");
+}
 
 const SettingsPage = () => {
+  async function handleInsertTestUser() {
+    const email = prompt("Digite o email do usuário de teste:");
+    const password = prompt("Digite a senha do usuário de teste:");
+    try {
+      const response = await api.auth.register({
+        name: "Test User",
+        email: email,
+        password: password,
+        cpf: gerarCpf(),
+        address: {
+          street: "Test Street",
+          number: "123",
+          complement: "Apt 1",
+          neighborhood: "Test Neighborhood",
+          city: "Test City",
+          state: "Test State",
+          zip: "12345-678"
+        }
+      });
+      alert("Usuário de teste inserido com sucesso!:\n" + response.user.email+"/password");
+      console.log("Usuário de teste inserido com sucesso:", response);
+    } catch (error) {
+      alert("Usuario não inserido");
+      console.error("Erro ao inserir usuário de teste:", error);
+    }
+  }
+
+  async function handleLogin(){
+    const email = prompt("Digite o email do usuário de teste:");
+    const password = prompt("Digite a senha do usuário de teste:");
+    try {
+      const response = await api.auth.login({ email, password });
+      localStorage.setItem("token", response.token);
+      alert("Login realizado com sucesso! Token:\n" + response.token);
+      console.log("Login realizado com sucesso:", response);
+    } catch (error) {
+      alert("Erro ao realizar login");
+      console.error("Erro ao realizar login:", error);
+    }
+  }
+
+  async function handleLogout(){
+    api.auth.logout();
+    alert("Logout realizado com sucesso!");
+  }
+
+  async function handleGetRoute(){
+    try {
+      const response = await api.routes.get();
+      alert("Rotas obtidas com sucesso! Veja o console para detalhes.");
+      console.log("Rotas obtidas com sucesso:", response);
+    } catch (error) {
+      alert("Erro ao obter rotas");
+      console.error("Erro ao obter rotas:", error);
+    }
+  }
+
+  async function handleGetStops(){
+    try {
+      const response = await api.stops.getAll();
+      alert("Paradas obtidas com sucesso! Veja o console para detalhes.");
+      console.log("Paradas obtidas com sucesso:", response);
+    } catch (error) {
+      alert("Erro ao obter paradas");
+      console.error("Erro ao obter paradas:", error);
+    }
+  }
+
   const [notifications, setNotifications] = useState({
     email: true,
     push: true,
@@ -189,6 +273,58 @@ const SettingsPage = () => {
                   >
                     Resetar Configurações
                   </ActionButton>
+
+                  <ActionButton 
+                    icon="bi-arrow-clockwise"
+                    variant="outline-warning"
+                    size="sm"
+                    fullWidth
+                    onClick={handleInsertTestUser}
+                  >
+                    registrar
+                  </ActionButton>
+
+                  <ActionButton
+                    icon="bi-box-arrow-in-left"
+                    variant="outline-success"
+                    size="sm"
+                    fullWidth
+                    onClick={handleLogin}
+                  >
+                    login
+                  </ActionButton>
+
+
+                  <ActionButton
+                    icon="bi-box-arrow-right"
+                    variant="outline-danger"
+                    size="sm"
+                    fullWidth
+                    onClick={handleLogout}
+                  >
+                    logout
+                  </ActionButton>
+
+                  <ActionButton
+                    icon="bi-sign-turn-right"
+                    variant="outline-secondary"
+                    size="sm"
+                    fullWidth
+                    onClick={handleGetRoute}
+                  >
+                    rota 
+                  </ActionButton>
+
+                  <ActionButton
+                    icon="bi-sign-stop"
+                    variant="outline-dark"
+                    size="sm"
+                    fullWidth
+                    onClick={handleGetStops}
+                  >
+                    paradas
+                  </ActionButton>
+
                 </div>
               </InfoCard>
             </div>

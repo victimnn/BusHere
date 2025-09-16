@@ -1,0 +1,85 @@
+// =============================================================================
+// LOGIN PAGE STYLES - DESIGN SIMPLIFICADO
+// =============================================================================
+
+.login-container {
+  // Remover gradientes e efeitos complexos
+  background: #f8f9fa;
+  min-height: 100vh;
+  padding: 1rem;
+
+  .login-card {
+    // Simplificar card - remover sombras e efeitos hover
+    background: white;
+    border-radius: 0.5rem;
+    border: 1px solid #e9ecef;
+
+    .card-body {
+      padding: 2rem;
+    }
+  }
+
+  // Simplificar campos de formulário
+  .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 0.375rem;
+    padding: 0.75rem;
+
+    &:focus {
+      border-color: #0F9C42;
+      box-shadow: 0 0 0 0.2rem rgba(15, 156, 66, 0.25);
+    }
+  }
+
+  // Simplificar botões
+  .btn-primary-green {
+    background-color: #0F9C42;
+    border-color: #0F9C42;
+    
+    &:hover {
+      background-color: #0E8F3A;
+      border-color: #0E8F3A;
+    }
+  }
+
+  .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    
+    &:hover {
+      background-color: #5c636a;
+      border-color: #5c636a;
+    }
+  }
+
+  // Simplificar alertas
+  .alert {
+    border-radius: 0.375rem;
+    padding: 0.75rem;
+  }
+
+  // Links simples
+  a {
+    color: #2e7d32;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  // Responsividade básica
+  @media (max-width: 576px) {
+    padding: 0.5rem;
+    
+    .login-card {
+      border-radius: 0;
+      border: none;
+      height: 100vh;
+      
+      .card-body {
+        padding: 1.5rem;
+      }
+    }
+  }
+}

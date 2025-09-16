@@ -14,6 +14,9 @@ export const useRegister = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [registrationStatus, setRegistrationStatus] = useState(null); // 'loading', 'success', 'error'
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const navigate = useNavigate();
 
   // Estados do formulário
@@ -377,43 +380,56 @@ export const useRegister = () => {
 
     setError('');
     setLoading(true);
+    setRegistrationStatus('loading');
 
     try {
-      // Preparar dados para o backend
+      // Preparar dados para o backend no formato que ele espera
       const registrationData = {
-        name: formData.nome.trim(),
+        nome_completo: formData.nome.trim(),
         cpf: removeFormatting(formData.cpf),
-        email: formData.email.trim(),
+        email: formData.email.trim().toLowerCase(),
         password: formData.password,
-        phone: removeFormatting(formData.telefone),
-        birth_date: formData.dataNascimento,
-        address: {
-          street: formData.logradouro.trim(),
-          number: formData.numero.trim(),
-          complement: formData.complemento.trim() || null,
-          neighborhood: formData.bairro.trim(),
-          city: formData.cidade.trim(),
-          state: formData.uf,
-          zip: removeFormatting(formData.cep)
-        }
+        telefone: removeFormatting(formData.telefone),
+        data_nascimento: formData.dataNascimento,
+        pcd: false, // Default value
+        logradouro: formData.logradouro.trim(),
+        numero_endereco: formData.numero.trim(),
+        complemento_endereco: formData.complemento.trim() || null,
+        bairro: formData.bairro.trim(),
+        cidade: formData.cidade.trim(),
+        uf: formData.uf,
+        cep: removeFormatting(formData.cep),
+        tipo_passageiro_id: 1, // Default para estudante
+        ativo: true
       };
 
       // Chamar API de registro
       const response = await api.auth.register(registrationData);
       
-      if (response && response.success) {
-        // Redirecionar para login com mensagem de sucesso
-        navigate('/login', { 
-          state: { 
-            message: 'Conta criada com sucesso! Faça login para continuar.',
-            type: 'success'
-          }
-        });
+      if (response && (response.success || response.message)) {
+        // Limpar erro se houver
+        setError('');
+        
+        // Mostrar sucesso e modal de celebração
+        setRegistrationStatus('success');
+        setSuccess('Conta criada com sucesso! Redirecionando para o login...');
+        setShowSuccessModal(true);
+        
+        setTimeout(() => {
+          navigate('/login', { 
+            state: { 
+              message: 'Conta criada com sucesso! Faça login para continuar.',
+              type: 'success'
+            }
+          });
+        }, 3500); // Aumentei para 3.5s para mostrar o modal
+        
         return true;
       }
       
       return false;
     } catch (err) {
+      setRegistrationStatus('error');
       const errorMessage = handleRegistrationError(err);
       setError(errorMessage);
       return false;
@@ -432,11 +448,22 @@ export const useRegister = () => {
     navigate('/login');
   }, [navigate]);
 
+  // Função para limpar estados de feedback
+  const clearFeedback = useCallback(() => {
+    setError('');
+    setSuccess('');
+    setRegistrationStatus(null);
+    setShowSuccessModal(false);
+  }, []);
+
   return {
     // Estados da aplicação
     currentStep,
     loading,
     error,
+    success,
+    registrationStatus,
+    showSuccessModal,
     
     // Estados do formulário
     formData,
@@ -459,8 +486,9 @@ export const useRegister = () => {
     goBack,
     goToLogin,
     
-    // Função para limpar erro
+    // Função para limpar feedback
     clearError: () => setError(''),
+    clearFeedback,
     
     // Dados úteis
     BRAZILIAN_STATES

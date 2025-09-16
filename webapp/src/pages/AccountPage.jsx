@@ -23,7 +23,7 @@ const AccountPage = () => {
                   <i className="bi bi-person text-white" style={{ fontSize: '24px' }}></i>
                 </div>
                 <div className="flex-grow-1">
-                  <h5 className="mb-1 fw-bold">{user?.name}</h5>
+                  <h5 className="mb-1 fw-bold">{user?.nome_completo || 'Usuário'}</h5>
                   <p className="text-muted mb-0 small">{user?.email}</p>
                 </div>
               </div>
@@ -37,15 +37,27 @@ const AccountPage = () => {
                     <div className="row g-2">
                       <div className="col-6">
                         <small className="text-muted d-block">Nome</small>
-                        <span className="fw-medium">{user?.name}</span>
+                        <span className="fw-medium">{user?.nome_completo || 'Não informado'}</span>
                       </div>
                       <div className="col-6">
                         <small className="text-muted d-block">Email</small>
-                        <span className="fw-medium">{user?.email}</span>
+                        <span className="fw-medium">{user?.email || 'Não informado'}</span>
                       </div>
                       <div className="col-6">
-                        <small className="text-muted d-block">ID</small>
-                        <span className="fw-medium">{user?.id}</span>
+                        <small className="text-muted d-block">CPF</small>
+                        <span className="fw-medium">{user?.cpf || 'Não informado'}</span>
+                      </div>
+                      <div className="col-6">
+                        <small className="text-muted d-block">Telefone</small>
+                        <span className="fw-medium">{user?.telefone || 'Não informado'}</span>
+                      </div>
+                      <div className="col-6">
+                        <small className="text-muted d-block">Cidade</small>
+                        <span className="fw-medium">{user?.cidade || 'Não informado'}</span>
+                      </div>
+                      <div className="col-6">
+                        <small className="text-muted d-block">UF</small>
+                        <span className="fw-medium">{user?.uf || 'Não informado'}</span>
                       </div>
                     </div>
                   </InfoCard>

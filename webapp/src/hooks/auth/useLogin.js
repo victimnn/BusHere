@@ -80,12 +80,11 @@ export const useLogin = () => {
           localStorage.setItem('rememberLogin', 'true');
         }
         
-        // Buscar dados do usuário autenticado
-        const userData = await api.auth.me();
-        login(userData);
+        // Login no contexto (que já tem os dados do usuário da resposta)
+        await login(response);
         
-        // Redirecionamento para profile
-        navigate('/profile', { replace: true });
+        // Redirecionamento para home
+        navigate('/', { replace: true });
         return true;
       }
       

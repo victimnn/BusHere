@@ -183,7 +183,11 @@ module.exports = (pool) => {
         success: true,
         message: "Login realizado com sucesso", 
         user: userResponse, 
-        token: token 
+        token: token,
+        data: {
+          user: userResponse,
+          token: token
+        }
       });
     } catch (error) {
       res.status(500).json({ 

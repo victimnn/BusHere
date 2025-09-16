@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const SideBarContent = ({ isDark, setIsDark, onNavigate }) => {
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -37,7 +37,7 @@ const SideBarContent = ({ isDark, setIsDark, onNavigate }) => {
                         <i className="bi bi-person"></i>
                     </div>
                     <div className="sidebar-user-details">
-                        <h6 className="sidebar-username">{user?.name || 'Usuário'}</h6>
+                        <h6 className="sidebar-username">{user?.nome_completo || 'Usuário'}</h6>
                         <small className="sidebar-welcome">Bem-vindo!</small>
                     </div>
                     

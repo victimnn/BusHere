@@ -7,13 +7,20 @@ import {
   RegisterFooter,
   AuthErrorAlert
 } from '../components/common';
+import AuthSuccessAlert from '../components/auth/AuthSuccessAlert';
+import RegistrationStatusAlert from '../components/auth/RegistrationStatusAlert';
+import RegistrationSuccessModal from '../components/auth/RegistrationSuccessModal';
 import { useRegister } from '../hooks';
+import '../styles/components/registration-feedback.css';
 
 function RegisterPage() {
   const {
     currentStep,
     loading,
     error,
+    success,
+    registrationStatus,
+    showSuccessModal,
     formData,
     fieldErrors,
     isStep1Valid,
@@ -26,6 +33,7 @@ function RegisterPage() {
     handleSubmit,
     goBack,
     clearError,
+    clearFeedback,
     BRAZILIAN_STATES
   } = useRegister();
 
@@ -56,6 +64,7 @@ function RegisterPage() {
             title={getStepTitle()}
             subtitle={getStepSubtitle()}
             onBack={goBack}
+            onPrevStep={handlePrevStep}
             loading={loading}
           />
 
@@ -63,6 +72,20 @@ function RegisterPage() {
           <AuthErrorAlert 
             error={error} 
             onClose={clearError}
+          />
+
+          {/* Alert de sucesso */}
+          <AuthSuccessAlert 
+            message={success} 
+            onClose={clearFeedback}
+            autoClose={false}
+          />
+
+          {/* Status do registro com feedback visual */}
+          <RegistrationStatusAlert
+            status={registrationStatus}
+            onClose={clearFeedback}
+            showProgress={true}
           />
 
           {/* Formulário Mobile-First */}
@@ -101,6 +124,13 @@ function RegisterPage() {
           <RegisterFooter currentStep={currentStep} />
         </div>
       </div>
+
+      {/* Modal de sucesso com celebração */}
+      <RegistrationSuccessModal
+        isVisible={showSuccessModal}
+        onClose={clearFeedback}
+        userName={formData.nome}
+      />
     </div>
   );
 }

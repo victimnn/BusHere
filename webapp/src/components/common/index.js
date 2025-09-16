@@ -5,3 +5,5 @@ export { default as ActionButton } from './ActionButton';
 export { default as StatusBadge } from './StatusBadge';
 export { default as ContactInfo } from './ContactInfo';
 export { default as FloatingButton } from './FloatingButton';
+export { default as FormField } from './FormField';
+export { default as PasswordField } from './PasswordField';

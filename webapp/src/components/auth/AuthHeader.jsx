@@ -16,9 +16,9 @@ const AuthHeader = memo(({
     <div className="mb-4">
       {/* Top bar com botão fechar */}
       {showCloseButton && (
-        <div className="d-flex justify-content-start">
+        <div className="d-flex">
           <button
-            className="btn btn-link text-dark p-3"
+            className="btn btn-link text-dark p-0 mb-3"
             onClick={onClose}
             aria-label="Fechar"
             type="button"

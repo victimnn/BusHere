@@ -37,8 +37,6 @@ const LoginForm = memo(({
         placeholder="seu@email.com"
         autoComplete="email"
         disabled={loading}
-        inputClassName="form-control-lg"
-        style={{ height: '60px', fontSize: '18px' }}
         error={emailError}
       />
 
@@ -51,8 +49,6 @@ const LoginForm = memo(({
         required
         autoComplete="current-password"
         disabled={loading}
-        inputClassName="form-control-lg"
-        style={{ height: '60px', fontSize: '18px' }}
         buttonVariant="outline-secondary"
         error={passwordError}
       />
@@ -81,11 +77,19 @@ const LoginForm = memo(({
         </div>
         <Link 
           to="/forgot-password" 
-          className="text-decoration-none text-success fs-6 fw-medium hover-underline"
+          className="text-decoration-none text-success fs-6 fw-medium"
           style={{ 
             transition: 'all 0.2s ease',
             padding: '4px 8px',
             borderRadius: '6px'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = 'rgba(18, 190, 77, 0.1)';
+            e.target.style.textDecoration = 'underline';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = 'transparent';
+            e.target.style.textDecoration = 'none';
           }}
         >
           Esqueceu a senha?

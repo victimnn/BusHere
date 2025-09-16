@@ -11,25 +11,37 @@ const RegisterHeader = memo(({
   title, 
   subtitle, 
   onBack, 
+  onPrevStep,
   loading = false 
 }) => {
+  const handleBackClick = () => {
+    if (currentStep === 2 && onPrevStep) {
+      onPrevStep();
+    } else {
+      onBack();
+    }
+  };
+
   return (
     <div className="mb-3 mb-md-4">
       {/* Top bar com botão voltar e progresso */}
-      <div className="d-flex align-items-center justify-content-between mb-3">
-        <button
-          className="btn btn-link text-dark p-0 fs-4"
-          onClick={onBack}
-          aria-label="Voltar"
-          type="button"
-          disabled={loading}
-        >
-          <i className="bi bi-arrow-left"></i>
-        </button>
+      <div className="d-flex align-items-center mb-3">
+        {/* Botão voltar com largura fixa */}
+        <div style={{ width: "40px" }}>
+          <button
+            className="btn btn-link text-dark p-0 fs-4"
+            onClick={handleBackClick}
+            aria-label="Voltar"
+            type="button"
+            disabled={loading}
+          >
+            <i className="bi bi-arrow-left"></i>
+          </button>
+        </div>
         
-        {/* Indicador de progresso mobile */}
+        {/* Indicador de progresso centralizado */}
         <div className="flex-grow-1 mx-3">
-          <div className="progress" style={{ height: "6px" }}>
+          <div className="progress" style={{ height: "8px" }}>
             <div 
               className="progress-bar bg-success" 
               style={{ 
@@ -41,9 +53,11 @@ const RegisterHeader = memo(({
               aria-valuemax={totalSteps}
             ></div>
           </div>
-          <div className="text-end mt-1">
-            <small className="text-muted fw-medium">{currentStep}/{totalSteps}</small>
-          </div>
+        </div>
+
+        {/* Contador de etapas com largura fixa */}
+        <div style={{ width: "40px" }} className="text-end">
+          <small className="text-muted fw-medium">{currentStep}/{totalSteps}</small>
         </div>
       </div>
       
@@ -70,6 +84,7 @@ RegisterHeader.propTypes = {
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
   subtitle: PropTypes.string,
   onBack: PropTypes.func.isRequired,
+  onPrevStep: PropTypes.func,
   loading: PropTypes.bool
 };
 

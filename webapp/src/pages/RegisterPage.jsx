@@ -11,7 +11,6 @@ import AuthSuccessAlert from '../components/auth/AuthSuccessAlert';
 import RegistrationStatusAlert from '../components/auth/RegistrationStatusAlert';
 import RegistrationSuccessModal from '../components/auth/RegistrationSuccessModal';
 import { useRegister } from '../hooks';
-import '../styles/components/registration-feedback.css';
 
 function RegisterPage() {
   const {

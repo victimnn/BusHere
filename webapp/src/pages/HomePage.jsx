@@ -82,6 +82,14 @@ const HomePage = ({ isDark, setIsDark }) => {
 				>
 					{showMap ? 'Mostrar Teste' : 'Mostrar Mapa'}
 				</button>
+
+				<button className="btn btn-secondary btn-sm w-100" onClick={() => { window.location.href = '/login'; }}>
+					Ir para Login
+				</button>
+
+				<button className="btn btn-secondary btn-sm w-100" onClick={() => { window.location.href = '/register'; }}>
+					Ir para Registro
+				</button>
 			</div>
 		)
 	};

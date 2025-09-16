@@ -7,3 +7,6 @@ export { default as ContactInfo } from './ContactInfo';
 export { default as FloatingButton } from './FloatingButton';
 export { default as FormField } from './FormField';
 export { default as PasswordField } from './PasswordField';
+
+// Exportar também os componentes de autenticação
+export * from '../auth';

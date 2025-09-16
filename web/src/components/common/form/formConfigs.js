@@ -49,7 +49,7 @@ export const passengerFormConfig = {
       maxLength: 14,
       required: true,
       size: 'lg',
-      formatter: formatCPF,
+      formatter: (value) => formatCPF((value || '').toString()),
       additionalProps: { 
         autoComplete: 'new-password',
         'data-form-type': 'other',
@@ -71,7 +71,7 @@ export const passengerFormConfig = {
       placeholder: '(00) 00000-0000',
       maxLength: 15,
       size: 'lg',
-      formatter: formatPhoneNumber,
+      formatter: (value) => formatPhoneNumber((value || '').toString()),
       validator: (value) => {
         if (value && !validatePhoneNumber(value)) return 'Formato: (00) 00000-0000';
         return null;
@@ -140,7 +140,7 @@ export const passengerFormConfig = {
       maxLength: 9,
       required: true,
       size: 'lg',
-      formatter: formatCEP,
+      formatter: (value) => formatCEP((value || '').toString()),
       validator: (value) => {
         if (!value.trim()) return 'CEP é obrigatório';
         if (!validateCEP(value)) return 'CEP deve ter o formato 00000-000';
@@ -587,7 +587,7 @@ export const stopFormConfig = {
       placeholder: '00000-000',
       maxLength: 9,
       size: 'lg',
-      formatter: formatCEP,
+      formatter: (value) => formatCEP((value || '').toString()),
       validator: (value) => {
         if (!value.trim()) return null;
         if (!validateCEP(value)) return 'CEP deve ter o formato 00000-000 e conter apenas números e hífen';
@@ -634,7 +634,7 @@ export const driverFormConfig = {
       maxLength: 14,
       required: true,
       size: 'lg',
-      formatter: formatCPF,
+      formatter: (value) => formatCPF((value || '').toString()),
       additionalProps: { 
         autoComplete: 'new-password',
         'data-form-type': 'other',
@@ -724,7 +724,7 @@ export const driverFormConfig = {
       placeholder: '(00) 00000-0000',
       maxLength: 15,
       size: 'lg',
-      formatter: formatPhoneNumber,
+      formatter: (value) => formatPhoneNumber((value || '').toString()),
       validator: (value) => {
         if (value && !validatePhoneNumber(value)) return 'Formato: (00) 00000-0000';
         return null;
@@ -815,7 +815,7 @@ export const vehicleFormConfig = {
       maxLength: 7,
       required: true,
       size: 'lg',
-      formatter: (value) => formatPlate(value),
+      formatter: (value) => formatPlate((value || '').toString()),
       validator: (value) => {
         if (!value.trim()) return 'Placa é obrigatória';
         const cleanValue = value.replace(/[-\s]/g, '').toUpperCase();
@@ -882,7 +882,7 @@ export const vehicleFormConfig = {
       maxLength: 4,
       additionalProps: { max: new Date().getFullYear() + 1, min: 1950 },
       size: 'lg',
-      formatter: (value) => value.replace(/\D/g, ''), // Remove tudo que não for dígito
+      formatter: (value) => (value || '').toString().replace(/\D/g, ''), // Remove tudo que não for dígito
       validator: (value) => {
         if (value === '') return null;
         const currentYear = new Date().getFullYear();
@@ -905,7 +905,7 @@ export const vehicleFormConfig = {
       additionalProps: { max: 200, min: 1 },
       required: true,
       size: 'lg',
-      formatter: (value) => value.replace(/\D/g, ''), // Remove tudo que não for dígito
+      formatter: (value) => (value || '').toString().replace(/\D/g, ''), // Remove tudo que não for dígito
       validator: (value) => {
         if (value === '') return 'Capacidade é obrigatória';
         const capacidade = parseInt(value);
@@ -924,10 +924,14 @@ export const vehicleFormConfig = {
       placeholder: 'Quilometragem atual',
       maxLength: 10,
       size: 'lg',
-      formatter: (value) => value.replace(/\D/g, ''), // Remove tudo que não for dígito
+      formatter: (value) => {
+        const formatted = (value || '').toString().replace(/[^\d.]/g, '');
+        const [intPart, ...decParts] = formatted.split('.');
+        return decParts.length ? `${intPart}.${decParts.join('').substring(0, 2)}` : intPart;
+      },
       validator: (value) => {
         if (value === '') return null;
-        const quilometragem = parseInt(value);
+        const quilometragem = parseFloat(value);
         if (isNaN(quilometragem)) return 'Quilometragem deve ser um número';
         if (quilometragem < 0) return 'Quilometragem não pode ser negativa';
         if (quilometragem > 9999999) return 'Quilometragem muito alta';

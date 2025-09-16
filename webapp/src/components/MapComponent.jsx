@@ -196,8 +196,8 @@ const MapComponent = forwardRef(({
         <PopupController onPopupClose={onPopupClose} />
         {/* Map ref component */}
         <MapRef onMapReady={setMapInstance} />
-  {/* Center change handler */}
-  <CenterChangeHandler center={center} zoom={zoom} />
+        {/* Center change handler */}
+        <CenterChangeHandler center={center} zoom={zoom} />
 
         {/* Adicione mais marcadores ou polylines para rotas conforme necessário */}
       </MapContainer>

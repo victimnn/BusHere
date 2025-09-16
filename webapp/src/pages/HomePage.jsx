@@ -6,6 +6,7 @@ import BottomSheet from "../components/BottomSheet";
 import SideBar from "../components/SideBar";
 import MapTest from "../components/MapTest";
 import { FloatingButton } from "../components/common";
+import BottomSheetContent from "../components/features/homepage/BottomSheetContent";
 
 import api from "./../api/api"
 
@@ -79,7 +80,7 @@ const HomePage = ({ isDark, setIsDark }) => {
 					setGeoError(null);
 					if (firstLocation) {
 						//alert("Posição inicial obtida. Centralizando mapa.");
-						setMapState({ lat: latitude, lng: longitude });
+						setMapState({ lat: latitude, lng: longitude, zoom: 10 });
 						firstLocation = false;
 					}
 				},
@@ -158,7 +159,7 @@ const HomePage = ({ isDark, setIsDark }) => {
 
 	// Configurações do bottom sheet otimizado para mobile
 	const bottomSheetConfig = {
-		anchorPoints: [15, 40, 70], // Pontos de ancoragem ajustados para mobile
+		anchorPoints: [15, 50, 80], // Pontos de ancoragem ajustados para mobile
 		content: (
 			<div className="p-3">
 				<h6 className="mb-2">Informações</h6>
@@ -195,9 +196,6 @@ const HomePage = ({ isDark, setIsDark }) => {
 		handleSidebarClose();
 	};
 	
-
-
-	console.log("marcadores:", mapMarkers);
 	return (
 		<>
 		<div className="home-page" style={{ height: '100vh', width: '100vw', position: 'relative' }}>
@@ -226,12 +224,7 @@ const HomePage = ({ isDark, setIsDark }) => {
 				anchorPoints={bottomSheetConfig.anchorPoints}
 				setAnchorPoint={setAnchors}
 			>
-				{bottomSheetConfig.content}
-				<button
-					onClick={() => setMapState({ lat: -22.7065182, lng: -46.7651778, zoom: 15 })}
-				>
-					mover o mapa
-				</button>
+				<BottomSheetContent anchor={anchor} />
 			</BottomSheet>
 
 			{/* Sidebar lateral */}

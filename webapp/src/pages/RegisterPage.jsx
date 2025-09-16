@@ -43,6 +43,7 @@ function RegisterPage() {
       );
     }
     return (
+
       <>Quase lá! Complete seu <span className="text-success">endereço</span></>
     );
   };
@@ -66,7 +67,6 @@ function RegisterPage() {
             onPrevStep={handlePrevStep}
             loading={loading}
           />
-
           {/* Alert de erro mobile-friendly */}
           <AuthErrorAlert 
             error={error} 

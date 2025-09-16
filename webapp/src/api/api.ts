@@ -70,7 +70,6 @@ function getBearerToken(): string | null {
   return token ? `Bearer ${token}` : null;
 }
 
-
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/passenger';
 
 // Timeout padrão para requisições (10 segundos)
@@ -236,6 +235,7 @@ const api = {
         "logradouro", "numero_endereco", "bairro", "cidade", "uf", "cep"
       ];
 
+
       // Verifica se todos os campos obrigatórios estão presentes
       const missingFields = requiredFields.filter(field => {
         const value = userData[field];
@@ -256,7 +256,43 @@ const api = {
         throw error; // Propaga o erro para ser tratado onde for chamado
       }
     },
-  }
+  },
+
+  stops: {
+    getAll: async () => {
+      try {
+        const response = await api.get('/stops');
+        return response; // Retorna a lista de pontos
+      } catch (error) {
+        console.error("Erro ao buscar pontos:", error);
+        throw error; // Propaga o erro para ser tratado onde for chamado
+      }
+    },
+
+    
+
+    get: async (id: string) => {
+      try {
+        const response = await api.get(`/stops/${id}`);
+        return response; // Retorna os dados do ponto
+      } catch (error) {
+        console.error(`Erro ao buscar ponto com ID ${id}:`, error);
+        throw error; // Propaga o erro para ser tratado onde for chamado
+      }
+    },
+  },
+
+  routes: {
+    get: async () => {
+      try {
+        const response = await api.get('/routes');
+        return response; // Retorna a lista de rotas
+      } catch (error) {
+        console.error("Erro ao buscar rotas:", error);
+        throw error; // Propaga o erro para ser tratado onde for chamado
+      }
+    }
+  },
 };
 
 export default api;

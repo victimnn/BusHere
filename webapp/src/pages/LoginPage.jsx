@@ -59,6 +59,7 @@ function LoginPage() {
 
           {/* Footer mobile-friendly */}
           <AuthFooter />
+              
         </div>
       </div>
     </div>

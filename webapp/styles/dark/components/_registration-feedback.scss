@@ -1,0 +1,127 @@
+// =============================================================================
+// REGISTRATION FEEDBACK - ESTILOS PARA FEEDBACK DE REGISTRO - MODO ESCURO
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// CONTAINER PRINCIPAL
+// -----------------------------------------------------------------------------
+.registration-feedback {
+  position: relative;
+  z-index: 10;
+}
+
+// -----------------------------------------------------------------------------
+// ALERTAS E ANIMAÇÕES
+// -----------------------------------------------------------------------------
+.alert {
+  animation: slideInDown 0.3s ease-out;
+  
+  // Estilos para sucesso - adaptado para tema escuro
+  &.alert-success {
+    border-left: 4px solid $success;
+    background: linear-gradient(135deg, #1a3e2e 0%, #155724 100%);
+    color: #b8dcc6;
+  }
+  
+  // Estilos para loading/info - adaptado para tema escuro
+  &.alert-info {
+    border-left: 4px solid $info;
+    background: linear-gradient(135deg, #1c3a47 0%, #117a8b 100%);
+    color: #bee5eb;
+  }
+  
+  // Estilos para erro - adaptado para tema escuro
+  &.alert-danger {
+    border-left: 4px solid $danger;
+    background: linear-gradient(135deg, #3a1e22 0%, #721c24 100%);
+    color: #f5b7b1;
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// STATUS DE LOADING
+// -----------------------------------------------------------------------------
+.registration-loading {
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// PROGRESS BAR
+// -----------------------------------------------------------------------------
+.progress {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  
+  .progress-bar {
+    background: linear-gradient(45deg, $success, #20c997);
+    transition: width 0.3s ease;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// SPINNER
+// -----------------------------------------------------------------------------
+.spinner-border-sm {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// RESPONSIVIDADE
+// -----------------------------------------------------------------------------
+@include mobile-only {
+  .alert {
+    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    
+    .btn-close {
+      font-size: 0.7rem;
+    }
+  }
+}

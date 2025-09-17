@@ -6,8 +6,8 @@
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#ffffff",
-  "theme_color": "#21d401ff",
+  "background_color": "#12BE4D",
+  "theme_color": "#12BE4D",
   "categories": ["navigation", "travel", "utilities"],
   "lang": "pt-BR",
   "icons": [

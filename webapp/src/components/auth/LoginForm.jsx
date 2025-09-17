@@ -99,7 +99,7 @@ const LoginForm = memo(({
       {/* Botão de submit mobile-friendly */}
       <ActionButton
         type="submit"
-        variant="success"
+        variant="primary"
         size="lg"
         fullWidth
         className="mb-4 fw-semibold"

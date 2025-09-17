@@ -45,7 +45,7 @@ const RegisterNavigation = memo(({
           
           <ActionButton
             type="submit"
-            variant="success"
+            variant="primary"
             size="lg"
             className="flex-fill fw-semibold"
             disabled={!isStep2Valid}
@@ -60,7 +60,7 @@ const RegisterNavigation = memo(({
       {currentStep === 1 && (
         <ActionButton
           type="submit"
-          variant="success"
+          variant="primary"
           size="lg"
           className="w-100 fw-semibold"
           disabled={!isStep1Valid}

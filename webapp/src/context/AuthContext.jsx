@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import api from '../api/api';
 
 const AuthContext = createContext();
 
@@ -13,49 +14,72 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Simular verificação de usuário logado
-    // Em uma aplicação real, isso viria de uma API ou localStorage
-    const checkAuth = () => {
-      const savedUser = localStorage.getItem('user');
-      if (savedUser) {
-        setUser(JSON.parse(savedUser));
+    const checkAuth = async () => {
+      const token = localStorage.getItem('token');
+      
+      if (token) {
+        try {
+          // Verificar se o token é válido buscando dados do usuário
+          const userData = await api.auth.me();
+          if (userData && userData.user) {
+            setUser(userData.user);
+            setIsAuthenticated(true);
+          } else {
+            // Token inválido, remover
+            localStorage.removeItem('token');
+            setUser(null);
+            setIsAuthenticated(false);
+          }
+        } catch (error) {
+          console.error('Erro ao verificar autenticação:', error);
+          // Token inválido ou erro na API, remover
+          localStorage.removeItem('token');
+          setUser(null);
+          setIsAuthenticated(false);
+        }
       } else {
-        // Usuário de exemplo para demonstração
-        const demoUser = {
-          id: 1,
-          name: 'Fernando B.',
-          email: 'fernando@exemplo.com',
-          avatar: null
-        };
-        setUser(demoUser);
-        localStorage.setItem('user', JSON.stringify(demoUser));
+        setUser(null);
+        setIsAuthenticated(false);
       }
+      
       setLoading(false);
     };
 
     checkAuth();
   }, []);
 
-  const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+  const login = async (userData) => {
+    if (userData && userData.user) {
+      setUser(userData.user);
+      setIsAuthenticated(true);
+      // O token já foi salvo no localStorage pela API
+    }
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
+  const logout = async () => {
+    try {
+      await api.auth.logout();
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
+      localStorage.removeItem('token');
+    }
   };
 
   const updateUser = (userData) => {
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+    // Não precisa salvar no localStorage pois os dados vêm da API
   };
 
   const value = {
     user,
     loading,
+    isAuthenticated,
     login,
     logout,
     updateUser

@@ -11,7 +11,6 @@ import SettingsPage from "./pages/SettingsPage";
 import HelpPage from "./pages/HelpPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import ProfilePage from "./pages/ProfilePage";
 
 function App({ isDark, setIsDark }) {
   return (
@@ -27,7 +26,6 @@ function App({ isDark, setIsDark }) {
             <Route path="/ajuda" element={<HelpPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
             {/* Adicione outras rotas conforme necessário */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

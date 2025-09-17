@@ -23,9 +23,9 @@ function LoginPage() {
   } = useLogin();
 
   return (
-    <div className="login-container min-vh-100">
-      <div className="login-card w-100">
-        <div className="px-3 py-4 px-md-4 py-md-5">
+    <div className="login-container min-vh-100 d-flex align-items-start justify-content-center">
+      <div className="login-card h-100 w-100 d-flex">
+        <div className="px-3 pt-3 pb-2 px-md-4 pt-md-4 pb-md-3 w-100">
           {/* Header Mobile-First */}
           <AuthHeader
             title={

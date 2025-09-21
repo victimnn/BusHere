@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import InstallButton from './InstallButton';
+import { useAuth } from '../../../context/AuthContext';
+import { InstallButton } from '../../features/pwa';
 
 const SideBarContent = ({ isDark, setIsDark, onNavigate }) => {
     const { user, logout } = useAuth();

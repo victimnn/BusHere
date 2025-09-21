@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import SideBar from './SideBar';
-import { FloatingButton } from './common';
+import FloatingButton from './FloatingButton';
 
 /**
  * Layout global que envolve todas as páginas que precisam de sidebar
@@ -47,7 +47,7 @@ const Layout = ({ children, isDark, setIsDark }) => {
         width: '100%', 
         overflow: 'auto'
       }}>
-        {children}
+        {React.cloneElement(children, { isDark, setIsDark })}
       </div>
       
       {/* Sidebar lateral - disponível globalmente */}

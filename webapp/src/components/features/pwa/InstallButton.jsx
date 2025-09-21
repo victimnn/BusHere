@@ -1,5 +1,5 @@
 import React from 'react';
-import { useInstallPrompt } from '../hooks/useInstallPrompt';
+import { useInstallPrompt } from '../../../hooks';
 
 export default function InstallButton({ className = '', variant = 'primary', size = 'sm' }) {
   const { showInstallButton, installApp, isInstalled } = useInstallPrompt();

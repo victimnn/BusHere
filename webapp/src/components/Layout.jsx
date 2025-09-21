@@ -38,6 +38,7 @@ const Layout = ({ children, isDark, setIsDark }) => {
       <FloatingButton 
         onClick={handleSidebarOpen}
         isOpen={sideBarIsOpen}
+        isDark={isDark}
       />
       
       {/* Conteúdo das páginas */}

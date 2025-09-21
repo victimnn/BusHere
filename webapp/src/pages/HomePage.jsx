@@ -2,21 +2,19 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import MapComponent from "../components/MapComponent";
 import BottomSheet from "../components/BottomSheet";
-import SideBar from "../components/SideBar";
 import MapTest from "../components/MapTest";
-import { FloatingButton } from "../components/common";
 import InstallButton from "../components/InstallButton";
 
 import api from "./../api/api"
 
 /**
  * Página principal da aplicação
- * Contém o mapa, bottom sheet, sidebar e botão flutuante
+ * Contém o mapa e bottom sheet
+ * Sidebar e FloatingButton agora são gerenciados pelo Layout global
  * Otimizada para dispositivos móveis
  */
-const HomePage = ({ isDark, setIsDark }) => {
+const HomePage = () => {
 	const [anchor, setAnchors] = useState(0);
-	const [sideBarIsOpen, setSideBarIsOpen] = useState(false);
 	const [showMap, setShowMap] = useState(true); // Toggle para testar mapa vs teste
 	
 	const [stops, setStops] = useState([]);
@@ -24,8 +22,8 @@ const HomePage = ({ isDark, setIsDark }) => {
 	const [markers, setMarkers] = useState([]);
 	// Debug: log do estado
 	useEffect(() => {
-		console.log('HomePage renderizada, estado atual:', { anchor, sideBarIsOpen, showMap });
-	}, [anchor, sideBarIsOpen, showMap]);
+		console.log('HomePage renderizada, estado atual:', { anchor, showMap });
+	}, [anchor, showMap]);
 	
 	useEffect(() => {
 		// Função para buscar os pontos de parada da API
@@ -95,38 +93,8 @@ const HomePage = ({ isDark, setIsDark }) => {
 		)
 	};
 	
-	/**
-	 * Abre a sidebar
-	 */
-	const handleSidebarOpen = () => {
-		setSideBarIsOpen(true);
-	};
-	
-	/**
-	 * Fecha a sidebar
-	 */
-	const handleSidebarClose = () => {
-		setSideBarIsOpen(false);
-	};
-	
-	/**
-	 * Fecha a sidebar após navegação (otimização para mobile)
-	 */
-	const handleSidebarNavigate = () => {
-		handleSidebarClose();
-	};
-	
-
-
-
 	return (
 		<div className="home-page" style={{ height: '100vh', width: '100vw', position: 'relative' }}>
-			{/* FloatingButton para abrir sidebar */}
-			<FloatingButton 
-				onClick={handleSidebarOpen}
-				isOpen={sideBarIsOpen}
-			/>
-			
 			{/* Componente principal do mapa ou teste */}
 			<div style={{ height: '100%', width: '100%' }}>
 				{showMap ? (
@@ -148,15 +116,6 @@ const HomePage = ({ isDark, setIsDark }) => {
 			>
 				{bottomSheetConfig.content}
 			</BottomSheet>
-			
-			{/* Sidebar lateral */}
-			<SideBar
-				isOpen={sideBarIsOpen}
-				onClickOutside={handleSidebarClose}
-				isDark={isDark}
-				setIsDark={setIsDark}
-				onNavigate={handleSidebarNavigate}
-			/>
 		</div>
 	);
 };

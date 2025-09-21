@@ -3,23 +3,22 @@ import PropTypes from 'prop-types';
 
 /**
  * Botão flutuante para abrir/fechar a sidebar
- * Posicionado no canto superior esquerdo da tela
+ * Posicionado no canto superior esquerdo
  * Otimizado para dispositivos móveis
  */
 const FloatingButton = ({ className = '', style = {}, onClick, isOpen }) => {
   return (
     <button 
-      className={`btn btn-light rounded-circle m-0 d-flex align-items-center justify-content-center shadow ${className}`}
+      className={`btn btn-light rounded-circle d-flex align-items-center justify-content-center shadow ${className}`}
       style={{ 
         position: "fixed", 
         top: "15px", 
         left: "15px", 
         zIndex: 1050, 
-        aspectRatio: '1 / 1',
         width: '48px',
         height: '48px',
-        transition: 'all 0.2s ease-in-out',
         border: 'none',
+        transition: 'all 0.2s ease-in-out',
         ...style
       }}
       onClick={onClick}

@@ -1,0 +1,251 @@
+// =============================================================================
+// ACCOUNT PAGE STYLES - MODERN MOBILE-FIRST DESIGN
+// =============================================================================
+
+.account-page {
+  
+  // Header gradiente personalizado - Light Mode
+  .account-header {
+    position: relative;
+    background: linear-gradient(135deg, var(--bs-primary) 0%, #0E8F3A 100%);
+    border-radius: 0 0 1.5rem 1.5rem;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+    }
+  }
+
+  // Avatar com animações
+  .account-avatar {
+    position: relative;
+    transition: transform 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.05);
+    }
+    
+    .avatar-circle {
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      }
+    }
+    
+    .status-indicator {
+      animation: pulse 2s infinite;
+    }
+  }
+
+  // Cards modernos - Light Mode
+  .modern-card {
+    border-radius: 1rem !important;
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+    border: none !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(0);
+    
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-body {
+      color: var(--bs-dark);
+      transition: all 0.3s ease;
+    }
+    
+    h6 {
+      color: var(--bs-dark) !important;
+    }
+  }
+
+  // Campos de informação - Light Mode
+  .info-field {
+    background-color: var(--bs-light);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+    transform: translateX(0);
+    
+    &:hover {
+      background-color: #f1f3f4;
+      transform: translateX(2px);
+      border-color: rgba(var(--bs-primary-rgb), 0.2);
+    }
+    
+    .field-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--bs-secondary);
+      margin-bottom: 0.25rem;
+    }
+    
+    .field-value {
+      font-weight: 600;
+      color: var(--bs-dark);
+      word-break: break-word;
+    }
+  }
+
+  // Cartões de estatísticas
+  .stat-card {
+    border-radius: 1rem !important;
+    border: none !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    transform: translateY(0);
+    
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+    }
+    
+    .stat-icon {
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    &:hover .stat-icon {
+      transform: scale(1.15);
+    }
+  }
+
+  // Botões de ação modernos
+  .action-button {
+    border-radius: 0.75rem !important;
+    border: none !important;
+    padding: 1rem !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    transform: translateY(0);
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    &:hover::before {
+      left: 100%;
+    }
+    
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+    }
+    
+    &:active {
+      transform: translateY(0);
+      transition: all 0.1s ease;
+    }
+    
+    .action-icon {
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    &:hover .action-icon {
+      transform: rotate(5deg);
+    }
+  }
+
+  // Animações
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(var(--bs-success-rgb), 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(var(--bs-success-rgb), 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(var(--bs-success-rgb), 0);
+    }
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  // Animação de entrada
+  .card {
+    animation: slideInUp 0.6s ease-out;
+    
+    &:nth-child(1) { animation-delay: 0.1s; }
+    &:nth-child(2) { animation-delay: 0.2s; }
+    &:nth-child(3) { animation-delay: 0.3s; }
+  }
+}
+
+// Responsividade específica para mobile
+@media (max-width: 576px) {
+  .account-page {
+    .account-header {
+      padding-top: 2rem !important;
+      padding-bottom: 3rem !important;
+    }
+    
+    .account-avatar .avatar-circle {
+      width: 80px !important;
+      height: 80px !important;
+      
+      span {
+        font-size: 1.5rem !important;
+      }
+    }
+    
+    .stat-card .card-body {
+      padding: 0.75rem !important;
+    }
+    
+    .action-button {
+      padding: 0.875rem !important;
+    }
+    
+    .modern-card .card-body {
+      padding: 1.25rem !important;
+    }
+  }
+}
+
+// Estados de loading e interação
+.loading {
+  .account-avatar {
+    .avatar-circle {
+      animation: pulse 1.5s infinite;
+    }
+  }
+}
+
+// Melhorias de acessibilidade
+@media (prefers-reduced-motion: reduce) {
+  .account-page {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

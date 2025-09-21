@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import InstallButton from './InstallButton';
 
 const SideBarContent = ({ isDark, setIsDark, onNavigate }) => {
     const { user, logout } = useAuth();
@@ -72,6 +73,11 @@ const SideBarContent = ({ isDark, setIsDark, onNavigate }) => {
 
             {/* Footer da sidebar */}
             <div className="sidebar-footer">
+                {/* Botão de instalação PWA */}
+                <div className="sidebar-install">
+                    <InstallButton variant="outline-primary" size="sm" className="w-100 mb-2" />
+                </div>
+                
                 <div className="sidebar-brand">
                     <small>
                         <i className="bi bi-bus-front-fill"></i>

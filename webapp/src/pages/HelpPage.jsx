@@ -40,7 +40,7 @@ const HelpPage = () => {
   ];
 
   return (
-    <div className="container-fluid p-3">
+    <div className="container-fluid p-3 page-content-with-floating-button" style={{ paddingTop: '1rem' }}>
       <div className="row">
         <div className="col-12">
           <PageHeader 

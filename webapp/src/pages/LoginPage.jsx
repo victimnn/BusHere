@@ -4,7 +4,7 @@ import {
   LoginForm, 
   AuthErrorAlert, 
   AuthFooter 
-} from '../components/common';
+} from '../components';
 import { useLogin } from '../hooks';
 
 function LoginPage() {

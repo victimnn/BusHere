@@ -5,11 +5,11 @@ import {
   RegisterStep2,
   RegisterNavigation,
   RegisterFooter,
-  AuthErrorAlert
-} from '../components/common';
-import AuthSuccessAlert from '../components/auth/AuthSuccessAlert';
-import RegistrationStatusAlert from '../components/auth/RegistrationStatusAlert';
-import RegistrationSuccessModal from '../components/auth/RegistrationSuccessModal';
+  AuthErrorAlert,
+  AuthSuccessAlert,
+  RegistrationStatusAlert,
+  RegistrationSuccessModal
+} from '../components';
 import { useRegister } from '../hooks';
 
 function RegisterPage() {

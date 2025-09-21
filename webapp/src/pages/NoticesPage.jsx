@@ -1,5 +1,5 @@
 import React from 'react';
-import { PageHeader, InfoCard, ActionButton, StatusBadge } from '../components/common';
+import { PageHeader, InfoCard, ActionButton, StatusBadge } from '../components';
 
 const NoticesPage = () => {
   // Dados de exemplo para avisos

@@ -5,6 +5,7 @@ import BottomSheet from "../components/BottomSheet";
 import SideBar from "../components/SideBar";
 import MapTest from "../components/MapTest";
 import { FloatingButton } from "../components/common";
+import InstallButton from "../components/InstallButton";
 
 import api from "./../api/api"
 

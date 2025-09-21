@@ -8,20 +8,56 @@ export default defineConfig({
     port: 5174,
     host: '0.0.0.0'
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          bootstrap: ['bootstrap'],
+          leaflet: ['leaflet', 'react-leaflet'],
+          utils: ['prop-types']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000
+  },
   plugins: [
     react(),
     VitePWA({
       registerType: 'autoUpdate',
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/api\./,
+            urlPattern: /^http:\/\/localhost:3000\/api\//,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'api-cache',
               cacheableResponse: {
                 statuses: [0, 200]
+              },
+              networkTimeoutSeconds: 10
+            }
+          },
+          {
+            urlPattern: /^https:\/\/api\./,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'api-cache-prod',
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'images-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
               }
             }
           }
@@ -29,7 +65,7 @@ export default defineConfig({
       },
       includeAssets: ['logoFundo.svg', 'logo.png', 'logo.svg', 'icon-*-bg.png'],
       manifest: {
-        name: 'BusHere! - Rastreamento de Ônibus',
+        name: 'BusHere',
         short_name: 'BusHere!',
         description: 'Aplicativo para rastreamento em tempo real de ônibus e transporte público',
         theme_color: '#21d401ff',

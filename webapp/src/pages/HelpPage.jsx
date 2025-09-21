@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PageHeader, InfoCard, ActionButton, ContactInfo } from '../components/common';
+import { PageHeader, InfoCard, ActionButton, ContactInfo } from '../components';
 
 const HelpPage = () => {
   const [activeAccordion, setActiveAccordion] = useState('1');

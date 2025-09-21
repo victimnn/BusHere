@@ -1,99 +1,95 @@
-import React from 'react';
-import { useAuth } from '../context/AuthContext';
-import { PageHeader, InfoCard, ActionButton } from '../components/common';
-import api from "../api/api";
+﻿import React from 'react';
+import PropTypes from 'prop-types';
+import { useAccountPage } from '../hooks';
+import { AccountHeader, UserInfoCard, StatCard, AccountActionButton } from '../components';
 
-const AccountPage = () => {
-  const { user, logout } = useAuth();
+const AccountPage = ({ isDark, setIsDark }) => {
+  const {
+    user,
+    getInitials,
+    formatDate,
+    getUserStatus,
+    handleEditProfile,
+    handleLogout
+  } = useAccountPage(isDark);
 
   return (
-    <div className="container-fluid p-3 page-content-with-floating-button" style={{ paddingTop: '1rem' }}>
-      <div className="row">
-        <div className="col-12">
-          <PageHeader 
-            icon="bi-person" 
-            title="Minha Conta" 
-          />
-          
-          <div className="card border-0 shadow-sm">
-            <div className="card-body p-4">
-              <div className="d-flex align-items-center mb-4">
-                <div className="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" 
-                     style={{ width: '60px', height: '60px' }}>
-                  <i className="bi bi-person text-white" style={{ fontSize: '24px' }}></i>
-                </div>
-                <div className="flex-grow-1">
-                  <h5 className="mb-1 fw-bold">{user?.nome_completo || 'Usuário'}</h5>
-                  <p className="text-muted mb-0 small">{user?.email}</p>
-                </div>
-              </div>
+    <div className="account-page p-0">
+      <AccountHeader user={user} getInitials={getInitials} />
+
+      <div className="container-fluid px-3">
+        <div className="row g-3 mb-4">
+          <UserInfoCard user={user} />
+
+          <div className="col-12">
+            <div className="row g-3">
+              <StatCard
+                icon="bi-calendar-check"
+                iconColor="text-info"
+                bgColor="bg-info"
+                label="Membro desde"
+                value={formatDate(user?.data_criacao)}
+                colClass="col-6"
+              />
               
-              <div className="row g-3">
-                <div className="col-12">
-                  <InfoCard
-                    header={{ icon: 'bi-info-circle', title: 'Informações Pessoais' }}
-                    variant="light"
-                  >
-                    <div className="row g-2">
-                      <div className="col-6">
-                        <small className="text-muted d-block">Nome</small>
-                        <span className="fw-medium">{user?.nome_completo || 'Não informado'}</span>
-                      </div>
-                      <div className="col-6">
-                        <small className="text-muted d-block">Email</small>
-                        <span className="fw-medium">{user?.email || 'Não informado'}</span>
-                      </div>
-                      <div className="col-6">
-                        <small className="text-muted d-block">CPF</small>
-                        <span className="fw-medium">{user?.cpf || 'Não informado'}</span>
-                      </div>
-                      <div className="col-6">
-                        <small className="text-muted d-block">Telefone</small>
-                        <span className="fw-medium">{user?.telefone || 'Não informado'}</span>
-                      </div>
-                      <div className="col-6">
-                        <small className="text-muted d-block">Cidade</small>
-                        <span className="fw-medium">{user?.cidade || 'Não informado'}</span>
-                      </div>
-                      <div className="col-6">
-                        <small className="text-muted d-block">UF</small>
-                        <span className="fw-medium">{user?.uf || 'Não informado'}</span>
-                      </div>
-                    </div>
-                  </InfoCard>
-                </div>
+              <StatCard
+                icon="bi-shield-check"
+                iconColor="text-success"
+                bgColor="bg-success"
+                label="Status"
+                value={getUserStatus(user).text}
+                valueColor={getUserStatus(user).color}
+                colClass="col-6"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="row g-3 mb-4">
+          <div className="col-12">
+            <div className="modern-card card border-0 shadow-sm">
+              <div className="card-body p-4">
+                <h6 className="mb-3 fw-bold">
+                  <i className="bi bi-lightning text-warning me-2"></i>
+                  Ações Rápidas
+                </h6>
                 
-                <div className="col-12">
-                  <InfoCard
-                    header={{ icon: 'bi-gear', title: 'Ações' }}
-                    variant="light"
-                  >
-                    <div className="d-grid gap-2">
-                      <ActionButton 
-                        icon="bi-pencil"
-                        variant="outline-primary"
-                        fullWidth
-                      >
-                        Editar Perfil
-                      </ActionButton>
-                      <ActionButton 
-                        icon="bi-box-arrow-right"
-                        variant="outline-danger"
-                        fullWidth
-                        onClick={logout}
-                      >
-                        Sair da Conta
-                      </ActionButton>
-                    </div>
-                  </InfoCard>
+                <div className="d-grid gap-3">
+                  <AccountActionButton
+                    gradient="linear-gradient(135deg, #12BE4D 0%, #0E8F3A 100%)"
+                    icon="bi-pencil"
+                    title="Editar Perfil"
+                    subtitle="Atualizar informações pessoais"
+                    onClick={handleEditProfile}
+                  />
+                  
+                  <AccountActionButton
+                    gradient="linear-gradient(135deg, #ff4757 0%, #c44569 100%)"
+                    icon="bi-box-arrow-right"
+                    title="Sair da Conta"
+                    subtitle="Encerrar sessão atual"
+                    onClick={handleLogout}
+                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        <div className="text-center text-muted py-3">
+          <small>
+            <i className="bi bi-shield-lock me-1"></i>
+            Suas informações estão protegidas e seguras.
+          </small>
+        </div>
       </div>
     </div>
   );
+};
+
+AccountPage.propTypes = {
+  isDark: PropTypes.bool.isRequired,
+  setIsDark: PropTypes.func.isRequired
 };
 
 export default AccountPage;

@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import MapComponent from "../components/MapComponent";
-import BottomSheet from "../components/BottomSheet";
-import MapTest from "../components/MapTest";
-import InstallButton from "../components/InstallButton";
+import { MapComponent, BottomSheet, MapTest, InstallButton } from "../components";
 
 import api from "./../api/api"
 

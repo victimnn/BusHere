@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PageHeader, InfoCard, ActionButton } from '../components/common';
+import { PageHeader, InfoCard, ActionButton } from '../components';
 import api from "../api/api";
 
 function gerarCpf() {

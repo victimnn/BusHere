@@ -3,15 +3,17 @@ import { useState } from 'react';
 import { AuthProvider } from "./context/AuthContext";
 
 // Importe os componentes necessários
-import Layout from "./components/Layout";
-import HomePage from "./pages/HomePage";
-import AccountPage from "./pages/AccountPage";
-import NoticesPage from "./pages/NoticesPage";
-import BillsPage from "./pages/BillsPage";
-import SettingsPage from "./pages/SettingsPage";
-import HelpPage from "./pages/HelpPage";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
+import { Layout } from "./components";
+import { 
+  HomePage, 
+  AccountPage, 
+  NoticesPage, 
+  BillsPage, 
+  SettingsPage, 
+  HelpPage, 
+  LoginPage, 
+  RegisterPage 
+} from "./pages";
 
 function App({ isDark, setIsDark }) {
   return (

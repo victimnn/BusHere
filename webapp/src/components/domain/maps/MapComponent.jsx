@@ -99,15 +99,13 @@ function MapRef({ onMapReady }) {
 }
 
 // Component to handle center changes
-function CenterChangeHandler({ center }) {
+function CenterChangeHandler({ center, zoom }) {
   const map = useMap();
-  
   useEffect(() => {
-    if (center && Array.isArray(center) && center.length === 2) {
-      map.setView(center, map.getZoom());
+    if (center && Array.isArray(center) && center.length >= 2 && typeof zoom === 'number') {
+      map.setView([center[0], center[1]], zoom);
     }
-  }, [map, center]);
-
+  }, [map, center, zoom]);
   return null;
 }
 
@@ -199,7 +197,7 @@ const MapComponent = forwardRef(({
         {/* Map ref component */}
         <MapRef onMapReady={setMapInstance} />
         {/* Center change handler */}
-        {/* TIREI PQ TAVA DANDO ERRO: SE TIVER PROBLEMA COM CENTROS COLOQUE NOVAMENTE <CenterChangeHandler center={center} /> */}
+        <CenterChangeHandler center={center} zoom={zoom} />
 
         {/* Adicione mais marcadores ou polylines para rotas conforme necessário */}
       </MapContainer>

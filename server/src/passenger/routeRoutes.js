@@ -25,14 +25,25 @@ module.exports = (pool) => {
             return res.status(404).json({ error: "Rota não encontrada para o passageiro" });
         }
 
+        const [routeStops] = await pool.query("SELECT * FROM Pontos WHERE ponto_id IN (SELECT ponto_id FROM PontosRota WHERE rota_id = ?)", [routeId]);
+        if (routeStops.length === 0) {
+            return res.status(404).json({ error: "Pontos de rota não encontrados" });
+        }
+
+        const rota = {
+            ...routeRows[0],
+            pontos: routeStops
+        };
+
         return res.status(200).json({
-            data: routeRows[0]
+            data: rota
         });
       } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "Erro ao buscar rota do passageiro no banco de dados" });
       }
   });
+
 
   return router; 
 };

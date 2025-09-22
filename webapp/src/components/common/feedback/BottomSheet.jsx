@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 
 const BottomSheet = ({ isOpen, onClose, children, minHeight = 20, maxHeight = 80, anchorPoints=[], setAnchorPoint = () => {} }) => {
+    const [anchorIndex, setAnchorIndex] = useState(0);
     
     const sheetRef = React.useRef(null);
     const getMinHeightPx = () => Math.round(window.innerHeight * (minHeight / 100));
@@ -56,6 +57,7 @@ const BottomSheet = ({ isOpen, onClose, children, minHeight = 20, maxHeight = 80
             setHeight(prevHeight => {
                 const [snappedHeight, index] = getClosestAnchor(prevHeight, true);
                 setAnchorPoint(index);
+                setAnchorIndex(index);
                 return snappedHeight;
             });
         }
@@ -82,7 +84,8 @@ const BottomSheet = ({ isOpen, onClose, children, minHeight = 20, maxHeight = 80
     useEffect(() => {
         if (anchorPoints.length) {
             setHeight(prevHeight => {
-                const snappedHeight = getClosestAnchor(prevHeight);
+                const [snappedHeight, index] = getClosestAnchor(prevHeight, true);
+                setAnchorIndex(index);
                 return snappedHeight;
             });
         }
@@ -140,7 +143,11 @@ const BottomSheet = ({ isOpen, onClose, children, minHeight = 20, maxHeight = 80
                     />
                 </div>
                 <div className="overflow-auto" style={{ maxHeight: 'calc(100vh - 80px)' }}>
-                    {children}
+                    {React.Children.map(children, child =>
+                        React.isValidElement(child)
+                            ? React.cloneElement(child, { anchor: anchorIndex })
+                            : child
+                    )}
                 </div>
                 <button
                     type="button"

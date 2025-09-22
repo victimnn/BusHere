@@ -2,8 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 // ...existing code...
 import PropTypes from "prop-types";
 import { MapComponent, BottomSheet, MapTest, InstallButton } from "../components";
+import BottomSheetContent from "../components/features/homepage/BottomSheetContent";
 
 import api from "./../api/api"
+import { useRoutes } from "../hooks/data/useRoutes";
+import { useStops } from "../hooks/data/useStops";
 
 /**
  * Página principal da aplicação
@@ -14,9 +17,13 @@ import api from "./../api/api"
 const HomePage = () => {
 	const [anchor, setAnchors] = useState(0);
 	const [showMap, setShowMap] = useState(true); // Toggle para testar mapa vs teste
+	
+	const { stops } = useStops();
+	const { routes } = useRoutes();
 
-	const [stops, setStops] = useState([]);
-	const [route, setRoute] = useState(null);
+	console.log("Stops data:", stops);
+	console.log("Route data:", routes);
+
 	const [markers, setMarkers] = useState([]);
 	const [currentPosition, setCurrentPosition] = useState(null); // { latitude, longitude, altitude }
 	const [geoError, setGeoError] = useState(null);
@@ -41,24 +48,7 @@ const HomePage = () => {
 		console.log('HomePage renderizada, estado atual:', { anchor, showMap });
 	}, [anchor, showMap]);
 	
-	useEffect(() => {
-		// Função para buscar os pontos de parada da API
-		const fetchThings = async () => {
-			try {
-				const stopsResponse = await api.stops.getAll();
-				setStops(stopsResponse);
-				console.log("Pontos de parada carregados:", stopsResponse);
-
-				const routeResponse = await api.routes.get();
-				setRoute(routeResponse);
-				console.log("Rota carregada:", routeResponse);
-			} catch (error) {
-				console.error("Erro ao carregar pontos de parada:", error);
-			}
-		};
-		
-		fetchThings();
-	}, []);
+// Os dados de stops e route agora vêm dos hooks useStops e useRoutes
 
 	// Atualiza a posição atual do usuário e move o mapa na primeira localização
 	useEffect(() => {
@@ -109,7 +99,7 @@ const HomePage = () => {
 	// 	}
 	// ];
 
-	const mapMarkers = stops.map(stop => ({
+	const mapMarkers = (routes?.stops || []).map(stop => ({
 		id: stop.ponto_id,
 		position: [stop.latitude, stop.longitude, 0],
 		color: 'blue',

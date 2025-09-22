@@ -32,7 +32,7 @@ module.exports = (pool) => {
 
         const rota = {
             ...routeRows[0],
-            pontos: routeStops
+            stops: routeStops
         };
 
         return res.status(200).json({

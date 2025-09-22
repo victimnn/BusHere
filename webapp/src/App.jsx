@@ -3,14 +3,17 @@ import { useState } from 'react';
 import { AuthProvider } from "./context/AuthContext";
 
 // Importe os componentes necessários
-import HomePage from "./pages/HomePage";
-import AccountPage from "./pages/AccountPage";
-import NoticesPage from "./pages/NoticesPage";
-import BillsPage from "./pages/BillsPage";
-import SettingsPage from "./pages/SettingsPage";
-import HelpPage from "./pages/HelpPage";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
+import { Layout } from "./components";
+import { 
+  HomePage, 
+  AccountPage, 
+  NoticesPage, 
+  BillsPage, 
+  SettingsPage, 
+  HelpPage, 
+  LoginPage, 
+  RegisterPage 
+} from "./pages";
 
 function App({ isDark, setIsDark }) {
   return (
@@ -18,14 +21,42 @@ function App({ isDark, setIsDark }) {
       <Router>
         <main className="d-flex w-100 h-100 flex-column">
           <Routes>
-            <Route path="/" index element={<HomePage isDark={isDark} setIsDark={setIsDark} />} />
-            <Route path="/conta" element={<AccountPage />} />
-            <Route path="/avisos" element={<NoticesPage />} />
-            <Route path="/boletos" element={<BillsPage />} />
-            <Route path="/ajustes" element={<SettingsPage />} />
-            <Route path="/ajuda" element={<HelpPage />} />
+            {/* Páginas com Layout (sidebar + floating button) */}
+            <Route path="/" index element={
+              <Layout isDark={isDark} setIsDark={setIsDark}>
+                <HomePage />
+              </Layout>
+            } />
+            <Route path="/conta" element={
+              <Layout isDark={isDark} setIsDark={setIsDark}>
+                <AccountPage />
+              </Layout>
+            } />
+            <Route path="/avisos" element={
+              <Layout isDark={isDark} setIsDark={setIsDark}>
+                <NoticesPage />
+              </Layout>
+            } />
+            <Route path="/boletos" element={
+              <Layout isDark={isDark} setIsDark={setIsDark}>
+                <BillsPage />
+              </Layout>
+            } />
+            <Route path="/ajustes" element={
+              <Layout isDark={isDark} setIsDark={setIsDark}>
+                <SettingsPage />
+              </Layout>
+            } />
+            <Route path="/ajuda" element={
+              <Layout isDark={isDark} setIsDark={setIsDark}>
+                <HelpPage />
+              </Layout>
+            } />
+            
+            {/* Páginas sem Layout (login/register não precisam de sidebar) */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            
             {/* Adicione outras rotas conforme necessário */}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

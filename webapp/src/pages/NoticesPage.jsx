@@ -1,5 +1,5 @@
 import React from 'react';
-import { PageHeader, InfoCard, ActionButton, StatusBadge } from '../components/common';
+import { PageHeader, InfoCard, ActionButton, StatusBadge } from '../components';
 
 const NoticesPage = () => {
   // Dados de exemplo para avisos
@@ -48,7 +48,7 @@ const NoticesPage = () => {
   };
 
   return (
-    <div className="container-fluid p-3">
+    <div className="container-fluid p-3 page-content-with-floating-button" style={{ paddingTop: '1rem' }}>
       <div className="row">
         <div className="col-12">
           <PageHeader 

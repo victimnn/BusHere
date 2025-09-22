@@ -1,21 +1,75 @@
 {
-  "name": "WebApp TCC",
-  "short_name": "TCC",
+  "name": "BusHere!",
+  "short_name": "BusHere!",
+  "description": "Aplicativo para visualização de ônibus e rotas em tempo real",
   "scope": "/",
   "start_url": "/",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#ffffff",
-  "theme_color": "#1976d2",
+  "theme_color": "#12BE4D",
+  "categories": ["navigation", "travel", "utilities"],
+  "lang": "pt-BR",
   "icons": [
     {
-      "src": "logo.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "icon-72-bg.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "logo.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
+      "src": "icon-96-bg.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-128-bg.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-144-bg.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-152-bg.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192-bg.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192-bg.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-384-bg.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512-bg.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512-bg.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

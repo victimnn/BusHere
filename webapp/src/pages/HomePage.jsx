@@ -1,24 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 // ...existing code...
 import PropTypes from "prop-types";
-import MapComponent from "../components/MapComponent";
-import BottomSheet from "../components/BottomSheet";
-import SideBar from "../components/SideBar";
-import MapTest from "../components/MapTest";
-import { FloatingButton } from "../components/common";
-import BottomSheetContent from "../components/features/homepage/BottomSheetContent";
+import { MapComponent, BottomSheet, MapTest, InstallButton } from "../components";
 
 import api from "./../api/api"
 
 /**
  * Página principal da aplicação
- * Contém o mapa, bottom sheet, sidebar e botão flutuante
+ * Contém o mapa e bottom sheet
+ * Sidebar e FloatingButton agora são gerenciados pelo Layout global
  * Otimizada para dispositivos móveis
  */
-const HomePage = ({ isDark, setIsDark }) => {
-	// ...existing code...
+const HomePage = () => {
 	const [anchor, setAnchors] = useState(0);
-	const [sideBarIsOpen, setSideBarIsOpen] = useState(false);
 	const [showMap, setShowMap] = useState(true); // Toggle para testar mapa vs teste
 
 	const [stops, setStops] = useState([]);
@@ -44,12 +38,9 @@ const HomePage = ({ isDark, setIsDark }) => {
 
 	// Debug: log do estado
 	useEffect(() => {
-		console.log('HomePage renderizada, estado atual:', { anchor, sideBarIsOpen, showMap });
-	}, [anchor, sideBarIsOpen, showMap]);
-
-	// ...existing code...
+		console.log('HomePage renderizada, estado atual:', { anchor, showMap });
+	}, [anchor, showMap]);
 	
-	// Carrega os pontos de parada da API ao montar o componente
 	useEffect(() => {
 		// Função para buscar os pontos de parada da API
 		const fetchThings = async () => {
@@ -171,6 +162,14 @@ const HomePage = ({ isDark, setIsDark }) => {
 				>
 					{showMap ? 'Mostrar Teste' : 'Mostrar Mapa'}
 				</button>
+
+				<button className="btn btn-secondary btn-sm w-100" onClick={() => { window.location.href = '/login'; }}>
+					Ir para Login
+				</button>
+
+				<button className="btn btn-secondary btn-sm w-100" onClick={() => { window.location.href = '/register'; }}>
+					Ir para Registro
+				</button>
 			</div>
 		)
 	};
@@ -196,15 +195,10 @@ const HomePage = ({ isDark, setIsDark }) => {
 		handleSidebarClose();
 	};
 	
+	
 	return (
 		<>
 		<div className="home-page" style={{ height: '100vh', width: '100vw', position: 'relative' }}>
-			{/* FloatingButton para abrir sidebar */}
-			<FloatingButton 
-				onClick={handleSidebarOpen}
-				isOpen={sideBarIsOpen}
-			/>
-
 			{/* Componente principal do mapa ou teste */}
 			<div style={{ height: '100%', width: '100%' }}>
 				{showMap ? (
@@ -226,15 +220,6 @@ const HomePage = ({ isDark, setIsDark }) => {
 			>
 				<BottomSheetContent anchor={anchor} />
 			</BottomSheet>
-
-			{/* Sidebar lateral */}
-			<SideBar
-				isOpen={sideBarIsOpen}
-				onClickOutside={handleSidebarClose}
-				isDark={isDark}
-				setIsDark={setIsDark}
-				onNavigate={handleSidebarNavigate}
-			/>
 		</div>
 	{/* Localização é solicitada automaticamente pela API do navegador ao carregar a página. Nenhum pop-up extra é exibido. */}
 		</>

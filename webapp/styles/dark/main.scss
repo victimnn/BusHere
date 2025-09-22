@@ -27,10 +27,12 @@
 @import './components/drag-drop';
 @import './components/sidebar';
 @import './components/map';
+@import './components/registration-feedback';
 
 // -----------------------------------------------------------------------------
 // 4. PAGES - Estilos específicos de páginas
 // -----------------------------------------------------------------------------    
+@import './pages/account';
 
 // -----------------------------------------------------------------------------
 // 5. UTILS - Utilitários e helpers

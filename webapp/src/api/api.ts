@@ -1,17 +1,88 @@
-import { get } from "http";
+// Interfaces TypeScript
+interface LoginData {
+  email: string;
+  password: string;
+}
 
-function getBearerToken() {
+interface RegisterData {
+  nome_completo: string;
+  cpf: string;
+  email: string;
+  password: string;
+  telefone?: string;
+  data_nascimento?: string;
+  pcd?: boolean;
+  logradouro: string;
+  numero_endereco: string;
+  complemento_endereco?: string;
+  bairro: string;
+  cidade: string;
+  uf: string;
+  cep: string;
+  tipo_passageiro_id?: number;
+  rota_id?: number;
+  ponto_id?: number;
+  notificacoes_json?: string;
+  configuracoes_json?: string;
+  ativo?: boolean;
+}
+
+interface UserData {
+  passageiro_id: number;
+  nome_completo: string;
+  email: string;
+  cpf?: string;
+  telefone?: string;
+  data_nascimento?: string;
+  pcd?: boolean;
+  logradouro?: string;
+  numero_endereco?: string;
+  complemento_endereco?: string;
+  bairro?: string;
+  cidade?: string;
+  uf?: string;
+  cep?: string;
+  tipo_passageiro_id?: number;
+  rota_id?: number;
+  ponto_id?: number;
+  ativo?: boolean;
+  data_criacao?: string;
+  data_atualizacao?: string;
+}
+
+interface ApiResponse<T = any> {
+  success?: boolean;
+  message?: string;
+  token?: string;
+  data?: T;
+  user?: T;
+  userId?: number;
+  error?: string;
+}
+
+interface ApiError extends Error {
+  status: number;
+  data: any;
+}
+
+function getBearerToken(): string | null {
   const token = localStorage.getItem('token');
   return token ? `Bearer ${token}` : null;
 }
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/passenger';
 
-const API_BASE_URL = 'http://localhost:3000/api/passenger';
+// Timeout padrão para requisições (10 segundos)
+const REQUEST_TIMEOUT = 10000;
 
 const api = {
-  _request: async (method: string, url: string, data: any = null, options: RequestInit = {}) => {
+  _request: async <T = any>(
+    method: string, 
+    url: string, 
+    data: any = null, 
+    options: RequestInit = {}
+  ): Promise<T> => {
     const token = getBearerToken(); // Obtém o token a cada requisição
-    
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       ...(options.headers as Record<string, string> || {}) // Mantém quaisquer headers passados explicitamente
@@ -21,9 +92,14 @@ const api = {
       headers['Authorization'] = token;
     }
 
-    const config = {
+    // Configuração com timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+
+    const config: RequestInit = {
       method,
       headers,
+      signal: controller.signal,
       ...options, // Permite sobrescrever outras opções (mode, cache, etc.)
     };
 
@@ -33,16 +109,27 @@ const api = {
 
     try {
       const response = await fetch(`${API_BASE_URL}${url}`, config);
-      console.log(`Fazendo ${method} ${url}`, data, config, response);
+      clearTimeout(timeoutId);
+      
+      // Log apenas em desenvolvimento
+      if (import.meta.env.DEV) {
+        console.log(`Fazendo ${method} ${url}`, { data, config, status: response.status });
+      }
+      
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ message: response.statusText }));
-        const error = new Error(errorData.error || errorData.message || 'Ocorreu um erro na requisição') as Error & { status: number; data: any };
+        const error = new Error(errorData.error || errorData.message || 'Ocorreu um erro na requisição') as ApiError;
         error.status = response.status;
         error.data = errorData;
         
-        // Exemplo: se for 401 Unauthorized, você pode redirecionar para a página de login
+        // Exemplo: se for 401 Unauthorized, redireciona para a página de login
         if (response.status === 401) {
-          console.error('Unauthorized: Redirecionando para login...');
+          if (import.meta.env.DEV) {
+            console.error('Unauthorized: Redirecionando para login...');
+          }
+          localStorage.removeItem('token');
+          // Redirecionamento será tratado pelo AuthContext
+          window.dispatchEvent(new CustomEvent('auth:unauthorized'));
         }
         throw error;
       }
@@ -52,40 +139,53 @@ const api = {
       if (contentType && contentType.indexOf("application/json") !== -1) {
         return response.json();
       } else {
-        return response.text(); 
+        return response.text() as T; 
       }
 
     } catch (error) {
-      console.error("Erro na requisição:", error);
+      clearTimeout(timeoutId);
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Timeout: A requisição demorou muito para responder');
+      }
+      if (import.meta.env.DEV) {
+        console.error("Erro na requisição:", error);
+      }
       throw error; // da erro denovo para poder ser tratado fora daqui
     }
   },
-
-  get: (url: string, options?: RequestInit) => api._request('GET', url, null, options),
-  post: (url: string, data?: any, options?: RequestInit) => api._request('POST', url, data, options),
-  put: (url: string, data?: any, options?: RequestInit) => api._request('PUT', url, data, options),
-  patch: (url: string, data?: any, options?: RequestInit) => api._request('PATCH', url, data, options),
-  delete: (url: string, options?: RequestInit) => api._request('DELETE', url, null, options),
+  
+  get: <T = any>(url: string, options?: RequestInit): Promise<T> => 
+    api._request<T>('GET', url, null, options),
+  post: <T = any>(url: string, data?: any, options?: RequestInit): Promise<T> => 
+    api._request<T>('POST', url, data, options),
+  put: <T = any>(url: string, data: any, options?: RequestInit): Promise<T> => 
+    api._request<T>('PUT', url, data, options),
+  patch: <T = any>(url: string, data: any, options?: RequestInit): Promise<T> => 
+    api._request<T>('PATCH', url, data, options),
+  delete: <T = any>(url: string, options?: RequestInit): Promise<T> => 
+    api._request<T>('DELETE', url, null, options),
 
   auth: {
-    me: async () => {
+    me: async (): Promise<UserData> => {
       const token = getBearerToken();
       if (!token) {
         throw new Error('Usuário não autenticado. Token ausente.');
       }
 
       try {
-        const response = await api.get('/auth/me', {headers: { 'Authorization': token }});
+        const response = await api.get<UserData>('/auth/me', {headers: { 'Authorization': token }});
         return response; // Retorna os dados do usuário autenticado
       } catch (error) {
-        console.error("Erro ao obter informações do usuário:", error);
+        if (import.meta.env.DEV) {
+          console.error("Erro ao obter informações do usuário:", error);
+        }
         throw error; // Propaga o erro para ser tratado onde for chamado
       }
     },
 
-    login: async ({ email, password }: { email: string; password: string }) => {
+    login: async ({ email, password }: LoginData): Promise<ApiResponse<UserData>> => {
       try {
-        const response = await api.post('/auth/login', { email, password });
+        const response = await api.post<ApiResponse<UserData>>('/auth/login', { email, password });
         if (response && response.token) {
           localStorage.setItem('token', response.token); // Armazena o token no localStorage
           return response; // Retorna os dados do usuário logado
@@ -93,52 +193,66 @@ const api = {
           throw new Error('Login falhou: resposta inválida do servidor');
         }
       } catch (error) {
-        console.error("Erro ao fazer login:", error);
+        if (import.meta.env.DEV) {
+          console.error("Erro ao fazer login:", error);
+        }
         throw error; // Propaga o erro para ser tratado onde for chamado
       }
     },
 
     logout: async (): Promise<void> => {
       try {
-        await api.post('/auth/logout'); // Chama a API para logout
+        await api.post<void>('/auth/logout'); // Chama a API para logout
         localStorage.removeItem('token'); // Remove o token do localStorage
       } catch (error) {
-        console.error("Erro ao fazer logout:", error);
+        if (import.meta.env.DEV) {
+          console.error("Erro ao fazer logout:", error);
+        }
         throw error; // Propaga o erro para ser tratado onde for chamado
       }
     },
 
-    changePassword: async (currentPassword: string, newPassword: string) => {
+    changePassword: async (currentPassword: string, newPassword: string): Promise<ApiResponse> => {
       try {
-        const response = await api.post('/auth/change-password', 
+        const response = await api.post<ApiResponse>('/auth/change-password', 
           {
             old_password: currentPassword,
             new_password: newPassword
           })
         return response; // Retorna a resposta da API
       } catch (error) {
-        console.error("Erro ao alterar senha:", error);
+        if (import.meta.env.DEV) {
+          console.error("Erro ao alterar senha:", error);
+        }
         throw error; // Propaga o erro para ser tratado onde for chamado
       }
     },
 
-    register: async (userData: { [key: string]: any }) => {
-      const requiredFields = ["name","cpf","email","password","address"];
-      const addressRequiredFields = ["street","number","complement","neighborhood","city","state","zip"];
+    register: async (userData: RegisterData): Promise<ApiResponse<UserData>> => {
+      // Validação usando as interfaces TypeScript
+      const requiredFields: (keyof RegisterData)[] = [
+        "nome_completo", "cpf", "email", "password", 
+        "logradouro", "numero_endereco", "bairro", "cidade", "uf", "cep"
+      ];
+
 
       // Verifica se todos os campos obrigatórios estão presentes
-      const missingFields = requiredFields.filter(field => !userData[field]);
-      const missingAddressFields = addressRequiredFields.filter(field => !userData.address || !userData.address[field]);
+      const missingFields = requiredFields.filter(field => {
+        const value = userData[field];
+        return !value || (typeof value === 'string' && value.trim() === '');
+      });
 
-      if (missingFields.length > 0 || missingAddressFields.length > 0) {
-        throw new Error("Campos obrigatórios ausentes");
+      if (missingFields.length > 0) {
+        throw new Error(`Campos obrigatórios ausentes: ${missingFields.map(f => String(f)).join(', ')}`);
       }
 
       try {
-        const response = await api.post('/auth/register', userData);
+        const response = await api.post<ApiResponse<UserData>>('/auth/register', userData);
         return response; // Retorna a resposta da API
       } catch (error) {
-        console.error("Erro ao registrar usuário:", error);
+        if (import.meta.env.DEV) {
+          console.error("Erro ao registrar usuário:", error);
+        }
         throw error; // Propaga o erro para ser tratado onde for chamado
       }
     },

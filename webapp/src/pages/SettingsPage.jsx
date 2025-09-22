@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PageHeader, InfoCard, ActionButton } from '../components/common';
+import { PageHeader, InfoCard, ActionButton } from '../components';
 import api from "../api/api";
 
 function gerarCpf() {
@@ -113,7 +113,7 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="container-fluid p-3">
+    <div className="container-fluid p-3 page-content-with-floating-button" style={{ paddingTop: '1rem' }}>
       <div className="row">
         <div className="col-12">
           <PageHeader 

@@ -1,9 +1,10 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../../context/AuthContext';
+import { InstallButton } from '../../features/pwa';
 
 const SideBarContent = ({ isDark, setIsDark, onNavigate }) => {
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -37,7 +38,7 @@ const SideBarContent = ({ isDark, setIsDark, onNavigate }) => {
                         <i className="bi bi-person"></i>
                     </div>
                     <div className="sidebar-user-details">
-                        <h6 className="sidebar-username">{user?.name || 'Usuário'}</h6>
+                        <h6 className="sidebar-username">{user?.nome_completo || 'Usuário'}</h6>
                         <small className="sidebar-welcome">Bem-vindo!</small>
                     </div>
                     
@@ -72,6 +73,11 @@ const SideBarContent = ({ isDark, setIsDark, onNavigate }) => {
 
             {/* Footer da sidebar */}
             <div className="sidebar-footer">
+                {/* Botão de instalação PWA */}
+                <div className="sidebar-install">
+                    <InstallButton variant="outline-primary" size="sm" className="w-100 mb-2" />
+                </div>
+                
                 <div className="sidebar-brand">
                     <small>
                         <i className="bi bi-bus-front-fill"></i>

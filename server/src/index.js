@@ -68,7 +68,7 @@ const E_NotificationRoutes = require("./enterprise/notificationRoutes.js")(pool)
 const P_authRoutes = require("./passenger/authRoutes.js")(pool);
 const P_stopRoutes = require("./passenger/stopRoutes.js")(pool);
 const P_routeRoutes = require("./passenger/routeRoutes.js")(pool);
-
+const P_NotificationRoutes = require("./passenger/notificationRoutes.js")(pool)
 
 // Usando as rotas
 app.use("/api/enterprise/auth", E_authRoutes);
@@ -88,6 +88,7 @@ app.use("/api/enterprise/notifications", E_NotificationRoutes);
 app.use("/api/passenger/auth", P_authRoutes);
 app.use("/api/passenger/stops", P_stopRoutes);
 app.use("/api/passenger/routes", P_routeRoutes);
+app.use("/api/passenger/notifications", P_NotificationRoutes);
 
 
 //app.use("/api/XXXX", XXXXRoutes);

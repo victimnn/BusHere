@@ -149,14 +149,6 @@ const BottomSheet = ({ isOpen, onClose, children, minHeight = 20, maxHeight = 80
                             : child
                     )}
                 </div>
-                <button
-                    type="button"
-                    className="btn btn-light position-absolute top-0 end-0"
-                    style={{ fontSize: '1.5rem', color: '#888', border: 'none' }}
-                    onClick={onClose}
-                >
-                    &times;
-                </button>
             </div>
         </div>
     );

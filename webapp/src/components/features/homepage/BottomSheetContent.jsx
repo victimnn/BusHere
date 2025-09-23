@@ -1,15 +1,17 @@
-
-
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 const BottomSheetMini = () => {
+    const navigate = useNavigate();
+
     return (
         <div className="p-3">
             <h6 className="mb-2">Informações</h6>
             <div className="mb-2">Seu conteúdo aqui</div>
             <button
                 className="btn btn-primary btn-sm w-100"
-                onClick={() => alert('Botão clicado!')}
+                onClick={() => navigate('/login')}
             >
-                Ação
+                Ir para /login
             </button>
         </div>
     )

@@ -529,7 +529,7 @@ const api = {
       }
 
       try {
-        const response = await api.post('/enterpriseUsers/register', userData);
+        const response = await api.post('/auth/register', userData);
         return response; // Retorna a resposta da API
       } catch (error) {
         console.error("Erro ao registrar usuário:", error);
@@ -567,6 +567,50 @@ const api = {
         throw error; // Propaga o erro para ser tratado onde for chamado
       }
     },
+  },
+
+  notifications: {
+
+    // Lista todos os avisos
+    list: async () => {
+      try {
+        const response = await api.get('/avisos');
+        return response;
+      } catch (error) {
+        console.error("Erro ao listar avisos:", error);
+        throw error;
+      }
+    },
+
+    create: async (notificationData) => {
+      try {
+        const response = await api.post('/avisos', notificationData);
+        return response;
+      } catch (error) {
+        console.error("Erro ao criar aviso:", error);
+        throw error;
+      }
+    },
+
+    getScopes: async () => {
+      try {
+        const response = await api.get('/avisos/scopes');
+        return response;
+      } catch (error) {
+        console.error("Erro ao buscar escopos de aviso:", error);
+        throw error;
+      }
+    },
+
+    getById: async (id) => {
+      try {
+        const response = await api.get(`/avisos/${id}`);
+        return response;
+      } catch (error) {
+        console.error("Erro ao buscar aviso por ID:", error);
+        throw error;
+      }
+    }
   }
 };
 

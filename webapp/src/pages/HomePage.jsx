@@ -6,7 +6,7 @@ import BottomSheetContent from "../components/features/homepage/BottomSheetConte
 
 import api from "./../api/api"
 import { useRoutes } from "../hooks/data/useRoutes";
-import { useStops } from "../hooks/data/useStops";
+//import { useStops } from "../hooks/data/useStops";
 
 /**
  * Página principal da aplicação
@@ -18,10 +18,8 @@ const HomePage = () => {
 	const [anchor, setAnchors] = useState(0);
 	const [showMap, setShowMap] = useState(true); // Toggle para testar mapa vs teste
 	
-	const { stops } = useStops();
 	const { routes } = useRoutes();
 
-	console.log("Stops data:", stops);
 	console.log("Route data:", routes);
 
 	const [markers, setMarkers] = useState([]);
@@ -98,11 +96,12 @@ const HomePage = () => {
 	// 		)
 	// 	}
 	// ];
+	const userStopId = routes?.userStop || null;
 
 	const mapMarkers = (routes?.stops || []).map(stop => ({
 		id: stop.ponto_id,
 		position: [stop.latitude, stop.longitude, 0],
-		color: 'blue',
+		color: stop.ponto_id == userStopId ? 'red' : 'blue',
 		size: 32,
 		popupContent: (
 			<div className="m-3 gap-0 d-flex flex-column">
@@ -140,7 +139,7 @@ const HomePage = () => {
 
 	// Configurações do bottom sheet otimizado para mobile
 	const bottomSheetConfig = {
-		anchorPoints: [15, 50, 80], // Pontos de ancoragem ajustados para mobile
+		anchorPoints: [15, 50, 95], // Pontos de ancoragem ajustados para mobile
 		content: (
 			<div className="p-3">
 				<h6 className="mb-2">Informações</h6>
@@ -207,6 +206,7 @@ const HomePage = () => {
 				onClose={() => {}}
 				anchorPoints={bottomSheetConfig.anchorPoints}
 				setAnchorPoint={setAnchors}
+				maxHeight={90}
 			>
 				<BottomSheetContent anchor={anchor} />
 			</BottomSheet>

@@ -1,5 +1,15 @@
 
 /**
+ * Extrai apenas o primeiro nome de um nome completo
+ * @param {string | null | undefined} fullName - Nome completo
+ * @returns {string} - Primeiro nome ou 'Usuário' se inválido
+ */
+export function getFirstName(fullName: string | null | undefined): string {
+  if (!fullName || typeof fullName !== 'string') return 'Usuário';
+  return fullName.trim().split(' ')[0];
+}
+
+/**
  * Formata um número de telefone no padrão (XX) XXXXX-XXXX
  * @param {string} phone  - Número de telefone
  * @returns {string} - Número de telefone formatado

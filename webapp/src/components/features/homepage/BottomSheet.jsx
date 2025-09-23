@@ -126,10 +126,10 @@ const BottomSheet = ({ isOpen, onClose, children, minHeight = 20, maxHeight = 80
 
 
                 {/* Saudação personalizada */}
-                <p className="text-center mb-0 fw-semibold text-primary">
+                <h4 className="text-center mb-0 fw-semibold text-primary">
                     Olá, {getFirstName(user?.nome_completo)}!
-                </p>
-                
+                </h4>
+
                 <div
                     style={{
                         width: '100%',

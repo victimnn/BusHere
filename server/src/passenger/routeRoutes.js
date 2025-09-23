@@ -19,6 +19,7 @@ module.exports = (pool) => {
         const [userRows] = await pool.query("SELECT * FROM Passageiros WHERE passageiro_id = ?", [userId]);
         const user = userRows[0];
         const routeId = user.rota_id;
+        const userStop = user.ponto_id;
 
         const [routeRows] = await pool.query("SELECT * FROM Rotas WHERE rota_id = ?", [routeId]);
         if (routeRows.length === 0) {
@@ -32,7 +33,8 @@ module.exports = (pool) => {
 
         const rota = {
             ...routeRows[0],
-            pontos: routeStops
+            userStop: userStop,
+            stops: routeStops
         };
 
         return res.status(200).json({

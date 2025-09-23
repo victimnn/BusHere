@@ -62,7 +62,7 @@ module.exports = (pool) => {
         return res.status(500).json({ error: 'Informações não encontradas após criação' });
       }
       const createdUser = userFetchResults[0];
-
+      const token = req.token
       res.json({
         message: "Usuario registrado com sucesso",
         token: token,

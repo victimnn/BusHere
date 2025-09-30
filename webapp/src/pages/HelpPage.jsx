@@ -50,7 +50,7 @@ const HelpPage = () => {
       }}
     >
       <div className="row">
-        <div className="col-12">
+        <div className="col-12 ">
           <PageHeader
             icon="bi-question-circle"
             title="Central de Ajuda"

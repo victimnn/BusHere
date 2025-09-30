@@ -4,6 +4,7 @@ import { formatCPF, formatPhoneNumber, removeFormatting } from '../../../../shar
 import { validateEmail, validateCPF, validadeRawCPF, validatePhoneNumber, validateCEP } from '../../../../shared/validators.ts';
 import { BRAZILIAN_STATES } from '../../../../shared/brazilianStates.ts';
 import api from '../../api/api';
+import { useAuth } from '../../context/AuthContext';
 
 /**
  * Hook personalizado para gerenciar lógica de registro
@@ -18,6 +19,7 @@ export const useRegister = () => {
   const [registrationStatus, setRegistrationStatus] = useState(null); // 'loading', 'success', 'error'
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   // Estados do formulário
   const [formData, setFormData] = useState({
@@ -405,25 +407,42 @@ export const useRegister = () => {
 
       // Chamar API de registro
       const response = await api.auth.register(registrationData);
-      
       if (response && (response.success || response.message)) {
-        // Limpar erro se houver
         setError('');
-        
-        // Mostrar sucesso e modal de celebração
         setRegistrationStatus('success');
-        setSuccess('Conta criada com sucesso! Redirecionando para o login...');
+        setSuccess('Conta criada com sucesso! Redirecionando...');
         setShowSuccessModal(true);
-        
+        // Login automático após registro
+        let loginResponse = null;
+        try {
+          loginResponse = await api.auth.login({
+            email: formData.email.trim().toLowerCase(),
+            password: formData.password
+          });
+          if (loginResponse && loginResponse.token) {
+            localStorage.setItem('token', loginResponse.token);
+            await login(loginResponse);
+          }
+        } catch (loginErr) {
+          // Se falhar, apenas segue o fluxo normal
+          console.error('Erro ao logar após registro:', loginErr);
+        }
         setTimeout(() => {
-          navigate('/login', { 
-            state: { 
-              message: 'Conta criada com sucesso! Faça login para continuar.',
+          let redirectPath = '/'; // Default agora é home
+          if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            const redirectParam = params.get('redirect');
+            if (redirectParam) {
+              redirectPath = redirectParam;
+            }
+          }
+          navigate(redirectPath, {
+            state: {
+              message: 'Conta criada com sucesso! Você já está logado.',
               type: 'success'
             }
           });
-        }, 3500); // Aumentei para 3.5s para mostrar o modal
-        
+        }, 3500);
         return true;
       }
       
@@ -436,7 +455,7 @@ export const useRegister = () => {
     } finally {
       setLoading(false);
     }
-  }, [formData, fieldErrors, touchedFields, navigate, handleRegistrationError]);
+  }, [formData, fieldErrors, touchedFields, navigate, handleRegistrationError, login]);
 
   // Função para voltar
   const goBack = useCallback(() => {

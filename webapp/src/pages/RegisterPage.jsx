@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { 
   RegisterHeader,
   RegisterStep1,
@@ -13,6 +14,9 @@ import {
 import { useRegister } from '../hooks';
 
 function RegisterPage() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams.get('redirect');
   const {
     currentStep,
     loading,
@@ -29,12 +33,36 @@ function RegisterPage() {
     fetchAddressByCEP,
     handleNextStep,
     handlePrevStep,
-    handleSubmit,
+    handleSubmit: originalHandleSubmit,
     goBack,
     clearError,
     clearFeedback,
     BRAZILIAN_STATES
   } = useRegister();
+
+  // handleSubmit modificado para usar redirect
+  const handleSubmit = async () => {
+  await originalHandleSubmit();
+  // O redirecionamento para login já ocorre no hook após registro
+  };
+
+  // goBack modificado para manter redirect
+  const handleGoBack = () => {
+    if (redirect) {
+      navigate(`/login?redirect=${encodeURIComponent(redirect)}`, { replace: true });
+    } else {
+      goBack();
+    }
+  };
+
+  // goToLogin modificado para manter redirect
+  const goToLogin = () => {
+    if (redirect) {
+      navigate(`/login?redirect=${encodeURIComponent(redirect)}`, { replace: true });
+    } else {
+      navigate('/login', { replace: true });
+    }
+  };
 
   const getStepTitle = () => {
     if (currentStep === 1) {
@@ -63,7 +91,7 @@ function RegisterPage() {
             currentStep={currentStep}
             title={getStepTitle()}
             subtitle={getStepSubtitle()}
-            onBack={goBack}
+            onBack={handleGoBack}
             onPrevStep={handlePrevStep}
             loading={loading}
           />
@@ -117,10 +145,11 @@ function RegisterPage() {
             onNextStep={handleNextStep}
             onPrevStep={handlePrevStep}
             onSubmit={handleSubmit}
+            onGoToLogin={goToLogin}
           />
 
           {/* Footer mobile-friendly */}
-          <RegisterFooter currentStep={currentStep} />
+          <RegisterFooter currentStep={currentStep} redirect={redirect} />
         </div>
       </div>
 

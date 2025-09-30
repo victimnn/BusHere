@@ -1,0 +1,387 @@
+// Estilos para o popup de pontos no mapa - Design refatorado e mais agradável
+
+.map-popup-container {
+    min-width: 360px;
+    max-width: 400px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+    border: none;
+    backdrop-filter: blur(16px);
+    position: relative;
+    
+    // Efeito de brilho sutil
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.1) 0%, 
+            rgba(255, 255, 255, 0.05) 50%,
+            rgba(255, 255, 255, 0.02) 100%);
+        pointer-events: none;
+        z-index: 1;
+    }
+    
+    > * {
+        position: relative;
+        z-index: 2;
+    }
+}
+
+// Header - Design elegante e limpo
+.popup-header {
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    padding: 24px;
+    position: relative;
+    
+    // Linha decorativa sutil
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 24px;
+        right: 24px;
+        height: 1px;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba(59, 130, 246, 0.15) 20%, 
+            rgba(59, 130, 246, 0.3) 50%, 
+            rgba(59, 130, 246, 0.15) 80%, 
+            transparent 100%);
+    }
+}
+
+.popup-header-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.popup-icon-wrapper {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.popup-icon {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3b82f6;
+    font-size: 24px;
+    background: linear-gradient(135deg, 
+        rgba(59, 130, 246, 0.12) 0%, 
+        rgba(59, 130, 246, 0.08) 100%);
+    border-radius: 16px;
+    box-shadow: 
+        0 4px 12px rgba(59, 130, 246, 0.15),
+        0 0 0 1px rgba(59, 130, 246, 0.1);
+    transition: all 0.2s ease;
+    
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow: 
+            0 6px 16px rgba(59, 130, 246, 0.2),
+            0 0 0 1px rgba(59, 130, 246, 0.15);
+    }
+}
+
+.popup-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    border: 2px solid white;
+}
+
+.popup-title-section {
+    flex: 1;
+    min-width: 0;
+}
+
+.popup-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 6px 0;
+    letter-spacing: -0.025em;
+    line-height: 1.3;
+}
+
+.popup-subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 0.01em;
+}
+
+// Seção do horário - Destaque principal elegante
+.popup-time-section {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    padding: 24px;
+    color: white;
+    position: relative;
+    
+    // Overlay brilhante
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.15) 0%, 
+            rgba(255, 255, 255, 0.08) 50%,
+            rgba(255, 255, 255, 0.05) 100%);
+        pointer-events: none;
+    }
+    
+    // Linha decorativa inferior
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 24px;
+        right: 24px;
+        height: 1px;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba(255, 255, 255, 0.3) 20%, 
+            rgba(255, 255, 255, 0.5) 50%, 
+            rgba(255, 255, 255, 0.3) 80%, 
+            transparent 100%);
+    }
+}
+
+.popup-time-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.popup-time-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.popup-time-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.popup-time-label {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 6px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.popup-time-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: white;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+// Seção do endereço - Design limpo e organizado
+.popup-address-section {
+    background: #ffffff;
+    padding: 24px;
+    border-top: 1px solid rgba(229, 231, 235, 0.3);
+    border-bottom: 1px solid rgba(229, 231, 235, 0.3);
+    position: relative;
+    
+    // Linha lateral decorativa
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        border-radius: 0 2px 2px 0;
+    }
+    
+    // Linha decorativa inferior
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 24px;
+        right: 24px;
+        height: 1px;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba(59, 130, 246, 0.1) 20%, 
+            rgba(59, 130, 246, 0.2) 50%, 
+            rgba(59, 130, 246, 0.1) 80%, 
+            transparent 100%);
+    }
+}
+
+.popup-address-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.popup-address-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    font-size: 18px;
+    background: rgba(107, 114, 128, 0.08);
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+.popup-address-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.popup-address-main {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 6px;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+}
+
+.popup-address-secondary {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+}
+
+// Seção da referência - Design elegante
+.popup-reference-section {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    padding: 24px;
+    color: white;
+    position: relative;
+    
+    // Overlay brilhante
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.15) 0%, 
+            rgba(255, 255, 255, 0.08) 50%,
+            rgba(255, 255, 255, 0.05) 100%);
+        pointer-events: none;
+    }
+}
+
+.popup-reference-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.popup-reference-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    flex-shrink: 0;
+}
+
+.popup-reference-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.popup-reference-label {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 6px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.popup-reference-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    letter-spacing: -0.01em;
+    line-height: 1.4;
+}
+
+// Footer - Design minimalista
+.popup-footer {
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    padding: 16px 24px;
+    border-top: 1px solid rgba(229, 231, 235, 0.3);
+}
+
+.popup-id {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #9ca3af;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    
+    i {
+        font-size: 11px;
+    }
+}

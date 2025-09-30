@@ -5,6 +5,8 @@ import { MapComponent, BottomSheet, MapTest, InstallButton, BottomSheetContent }
 
 import api from "./../api/api"
 import { useRoutes } from "../hooks/data/useRoutes";
+import { useMapMarkers } from "../hooks";
+import { MAP_CONSTANTS } from "../utils/mapConstants";
 //import { useStops } from "../hooks/data/useStops";
 
 /**
@@ -17,14 +19,6 @@ const HomePage = () => {
 	const [anchor, setAnchors] = useState(0);
 	const [showMap, setShowMap] = useState(true); // Toggle para testar mapa vs teste
 	
-	const { routes } = useRoutes();
-
-	console.log("Route data:", routes);
-
-	const [markers, setMarkers] = useState([]);
-	const [currentPosition, setCurrentPosition] = useState(null); // { latitude, longitude, altitude }
-	const [geoError, setGeoError] = useState(null);
-
 	// Estado para centro e zoom do mapa
 	const defaultCenter = [-22.7065182, -46.7651778, 21.2];
 	const [mapState, setMapStateInternal] = useState({
@@ -33,18 +27,33 @@ const HomePage = () => {
 	});
 
 	// Função pública para alterar centro/zoom do mapa
-	const setMapState = ({ lat, lng, zoom }) => {
-		setMapStateInternal(prev => ({
-			center: [lat, lng, prev.center[2] || 0],
-			zoom: zoom !== undefined ? zoom : prev.zoom
-		}));
+	const setMapState = (lat, lng, zoom = 15) => {
+		console.log('setMapState chamado com:', { lat, lng, zoom });
+		
+		// Converter strings para números se necessário
+		const numLat = typeof lat === 'string' ? parseFloat(lat) : lat;
+		const numLng = typeof lng === 'string' ? parseFloat(lng) : lng;
+		
+           if (typeof numLat === 'number' && typeof numLng === 'number' && !isNaN(numLat) && !isNaN(numLng)) {
+               // Ajustar posição para mostrar o popup corretamente
+               // Centralizar horizontalmente e deslocar bem mais para baixo na vertical
+               const offsetLat = numLat + 0.010; // Deslocar bem mais para baixo (sul)
+               const offsetLng = numLng; // Manter centralizado horizontalmente
+			
+			setMapStateInternal(prev => ({
+				center: [offsetLat, offsetLng, prev.center[2] || 0],
+				zoom: zoom !== undefined ? zoom : prev.zoom
+			}));
+		} else {
+			console.error('Coordenadas inválidas em setMapState:', { lat, lng, zoom, numLat, numLng });
+		}
 	};
 
-	// Debug: log do estado
-	useEffect(() => {
-		console.log('HomePage renderizada, estado atual:', { anchor, showMap });
-	}, [anchor, showMap]);
-	
+	const { routes } = useRoutes();
+	const { markers: routeMarkers, polylines: routePolylines, routingLoading, cacheStats } = useMapMarkers(routes, true, setMapState);
+	const [currentPosition, setCurrentPosition] = useState(null); // { latitude, longitude, altitude }
+	const [geoError, setGeoError] = useState(null);
+
 // Os dados de stops e route agora vêm dos hooks useStops e useRoutes
 
 	// Atualiza a posição atual do usuário e move o mapa na primeira localização
@@ -58,7 +67,7 @@ const HomePage = () => {
 					setGeoError(null);
 					if (firstLocation) {
 						//alert("Posição inicial obtida. Centralizando mapa.");
-						setMapState({ lat: latitude, lng: longitude, zoom: 10 });
+						setMapState(latitude, longitude, 10);
 						firstLocation = false;
 					}
 				},
@@ -80,35 +89,9 @@ const HomePage = () => {
 		}
 	}, []);
 
-	// Dados de exemplo para os marcadores do mapa
-	// const mapMarkers = [
-	// 	{
-	// 		id: 1,
-	// 		position: [-22.7065182,-46.7651778,21.2],
-	// 		color: 'red',
-	// 		size: 32,
-	// 		popupContent: (
-	// 			<div className="m-3">
-	// 				<h6>Localização</h6>
-	// 				<p className="mb-0">Informações sobre este ponto</p>
-	// 			</div>
-	// 		)
-	// 	}
-	// ];
-	const userStopId = routes?.userStop || null;
-
-	const mapMarkers = (routes?.stops || []).map(stop => ({
-		id: stop.ponto_id,
-		position: [stop.latitude, stop.longitude, 0],
-		color: stop.ponto_id == userStopId ? 'red' : 'blue',
-		size: 32,
-		popupContent: (
-			<div className="m-3 gap-0 d-flex flex-column">
-				<h6>{stop.nome}</h6>
-				<p className="mb-0"><b>ID: </b>{stop.ponto_id}</p>
-			</div>
-		)
-	}));
+	// Usar marcadores e polylines do hook useMapMarkers
+	let mapMarkers = routeMarkers;
+	let mapPolylines = [...routePolylines];
 
 
 
@@ -117,8 +100,8 @@ const HomePage = () => {
 		mapMarkers.push({
 			id: 'current-position',
 			position: [currentPosition.latitude, currentPosition.longitude, currentPosition.altitude || 0],
-			color: 'red',
-			size: 32,
+			color: MAP_CONSTANTS.MARKER_COLORS.CURRENT_POSITION,
+			size: MAP_CONSTANTS.MARKER_SIZES.DEFAULT,
 			popupContent: (
 				<div className="m-3">
 					<h6>Você está aqui</h6>
@@ -143,6 +126,23 @@ const HomePage = () => {
 			<div className="p-3">
 				<h6 className="mb-2">Informações</h6>
 				<p className="mb-2 small">Ponto de ancoragem atual: {anchor}</p>
+				
+				{/* Indicador de carregamento do roteamento */}
+				{routingLoading && (
+					<div className="alert alert-info d-flex align-items-center mb-3" role="alert">
+						<div className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></div>
+						<span className="small">Calculando rota real...</span>
+					</div>
+				)}
+				
+				{/* Estatísticas do cache */}
+				{cacheStats && (
+					<div className="mb-2 small text-muted">
+						<i className="bi bi-info-circle me-1"></i>
+						Cache: {cacheStats.hitRate}% hits ({cacheStats.hits}/{cacheStats.hits + cacheStats.apiCalls})
+					</div>
+				)}
+				
 				<div className="mb-2">Seu conteúdo aqui</div>
 				<button 
 					className="btn btn-primary btn-sm w-100"
@@ -193,6 +193,13 @@ const HomePage = () => {
 					<MapComponent 
 						{...mapConfig}
 						markers={mapMarkers}
+						polylines={mapPolylines}
+						onMarkerClick={(marker) => {
+							// Centralizar automaticamente ao clicar no marcador
+							if (marker.onClick) {
+								marker.onClick();
+							}
+						}}
 					/>
 				) : (
 					<MapTest />

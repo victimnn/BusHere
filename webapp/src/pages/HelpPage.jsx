@@ -44,8 +44,8 @@ const HelpPage = () => {
       className="container-fluid page-content-with-floating-button"
       style={{
         padding: '2rem',
-        background: 'linear-gradient(135deg, #141e30, #3d4e62ff)',
         minHeight: '100vh',
+        backgroundColor: '#252b33ff',
         color: '#fff'
       }}
     >

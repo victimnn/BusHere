@@ -113,6 +113,18 @@ function extractToken(req, res, next) {
     next();
 }
 
+function generateInviteCode(){
+    return (
+        generateToken64() 
+        + 
+        generateToken64()
+    ) 
+    .
+    substring(
+        0,
+    100 
+    );
+}
 
 module.exports = {
     exampleFunction,
@@ -120,6 +132,7 @@ module.exports = {
     generateToken64,
     formatCPF,
     extractToken,
+    generateInviteCode,
     // Add other helper functions here
 };
 

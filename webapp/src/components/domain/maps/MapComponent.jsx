@@ -23,12 +23,10 @@ function getColoredIcon(color = 'blue', size = 32, zoom = 13) {
 
   const cacheKey = `${color}-${newSize}`;
   if (iconCache.has(cacheKey)) {
-    console.log("icone com cache", color, size, zoom, newSize);
     return iconCache.get(cacheKey);
   } 
 
   // Se o icone não estiver no cache, cria um novo
-  console.log("icone sem cache", color, size, zoom, newSize);
   const icon = L.divIcon({
     className: '',
     html: `
@@ -103,7 +101,12 @@ function CenterChangeHandler({ center, zoom }) {
   const map = useMap();
   useEffect(() => {
     if (center && Array.isArray(center) && center.length >= 2 && typeof zoom === 'number') {
-      map.setView([center[0], center[1]], zoom);
+      const [lat, lng] = center;
+      if (typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng)) {
+        map.setView([lat, lng], zoom);
+      } else {
+        console.error('Coordenadas inválidas para setView:', { lat, lng, zoom });
+      }
     }
   }, [map, center, zoom]);
   return null;
@@ -185,7 +188,14 @@ const MapComponent = forwardRef(({
 
         {/* For each das polylines */}
         {polylines.map((polyline, index) => ( 
-          <Polyline key={index} positions={polyline.positions} color={polyline.color} />
+          <Polyline 
+            key={index} 
+            positions={polyline.positions} 
+            color={polyline.color}
+            weight={polyline.weight || 3}
+            opacity={polyline.opacity || 0.7}
+            dashArray={polyline.dashArray}
+          />
         ))}
 
         {/* Se onMapClick for fornecido, adiciona o handler de clique no mapa */}

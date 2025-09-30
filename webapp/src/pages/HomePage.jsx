@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 // ...existing code...
 import PropTypes from "prop-types";
-import { MapComponent, BottomSheet, MapTest, InstallButton } from "../components";
-import BottomSheetContent from "../components/features/homepage/BottomSheetContent";
+import { MapComponent, BottomSheet, MapTest, InstallButton, BottomSheetContent } from "../components";
 
 import api from "./../api/api"
 import { useRoutes } from "../hooks/data/useRoutes";

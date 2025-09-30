@@ -304,6 +304,20 @@ const api = {
     }
   },
 
+  vehicles: {
+    list: (page = 1, limit = 10, search = '') => {
+      const queryParams = new URLSearchParams({ 
+        page: String(page), 
+        limit: String(limit), 
+        search: String(search) 
+      });
+      return api.get(`/vehicles?${queryParams.toString()}`);
+    },
+    getById: (id) => api.get(`/vehicles/${id}`),
+    delete: (id) => api.delete(`/vehicles/${id}`),
+    getStatus: () => api.get('/vehicles/status'),
+    getTypes: () => api.get('/vehicles/types'),
+  },
   notifications: {
 
     // Lista todos os avisos

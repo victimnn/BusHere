@@ -1,8 +1,11 @@
 import React, { useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
+import { useAuth } from '../../../context/AuthContext';
+import { getFirstName } from '../../../../../shared/formatters';
 
 
 const BottomSheet = ({ isOpen, onClose, children, minHeight = 20, maxHeight = 80, anchorPoints=[], setAnchorPoint = () => {} }) => {
+    const { user } = useAuth();
     const [anchorIndex, setAnchorIndex] = useState(0);
     
     const sheetRef = React.useRef(null);
@@ -120,6 +123,13 @@ const BottomSheet = ({ isOpen, onClose, children, minHeight = 20, maxHeight = 80
                     transition: dragging ? 'none' : 'height 0.2s',
                 }}
             >
+
+
+                {/* Saudação personalizada */}
+                <h4 className="text-center mb-0 fw-semibold text-primary">
+                    Olá, {getFirstName(user?.nome_completo)}!
+                </h4>
+
                 <div
                     style={{
                         width: '100%',

@@ -41,18 +41,16 @@ const HelpPage = () => {
 
   return (
     <div
-      className="container-fluid page-content-with-floating-button"
+      className="container-fluid page-content-with-floating-button bg-theme text-primary"
       style={{
         padding: '2rem',
         minHeight: '100vh',
-        backgroundColor: '#252b33ff',
-        color: '#fff'
       }}
     >
       <div className="row">
         <div className="col-12 ">
           <PageHeader
-            icon="bi-question-circle"
+            icon="bi bi-question-circle-fill"
             title="Central de Ajuda"
           />
 

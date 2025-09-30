@@ -162,7 +162,3 @@ const BottomSheetContent = ({ anchor }) => {
 };
 
 export default BottomSheetContent;
-
-
-
-

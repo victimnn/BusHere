@@ -62,12 +62,15 @@ const E_lastChangeRoutes = require("./enterprise/lastChangeRoutes.js")(pool);
 const E_enterpriseUserRoutes = require("./enterprise/enterpriseUserRoutes.js")(pool);
 const E_debugRoutes = require("./enterprise/debugRoutes.js")(pool);
 const E_databaseRoutes = require("./enterprise/databaseRoutes.js")(pool)
+const E_NotificationRoutes = require("./enterprise/notificationRoutes.js")(pool)
 
 // Passageiros
 const P_authRoutes = require("./passenger/authRoutes.js")(pool);
 const P_stopRoutes = require("./passenger/stopRoutes.js")(pool);
 const P_routeRoutes = require("./passenger/routeRoutes.js")(pool);
 const P_vehicleRoutes = require("./passenger/vehicleRoutes.js")(pool);
+const P_NotificationRoutes = require("./passenger/notificationRoutes.js")(pool)
+
 
 // Usando as rotas
 app.use("/api/enterprise/auth", E_authRoutes);
@@ -82,11 +85,14 @@ app.use("/api/enterprise/lastChanges", E_lastChangeRoutes);
 app.use("/api/enterprise/enterpriseUsers", E_enterpriseUserRoutes);
 app.use("/api/enterprise/debug", E_debugRoutes);
 app.use("/api/enterprise/database", E_databaseRoutes);
+app.use("/api/enterprise/notifications", E_NotificationRoutes);
 
 app.use("/api/passenger/auth", P_authRoutes);
 app.use("/api/passenger/stops", P_stopRoutes);
 app.use("/api/passenger/routes", P_routeRoutes);
 app.use("/api/passenger/vehicles", P_vehicleRoutes);
+app.use("/api/passenger/notifications", P_NotificationRoutes);
+
 
 
 //app.use("/api/XXXX", XXXXRoutes);

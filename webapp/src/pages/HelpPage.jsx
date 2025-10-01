@@ -42,7 +42,7 @@ const HelpPage = () => {
   );
 
   return (
-    <div className="container py-5">
+    <div className="container py-4">
       <PageHeader
           icon="bi bi-info-circle-fill"
           title="Central de Ajuda"
@@ -151,4 +151,3 @@ const HelpPage = () => {
 };
 
 export default HelpPage;
-

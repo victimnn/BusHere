@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 // ...existing code...
 import PropTypes from "prop-types";
-import { MapComponent, BottomSheet, MapTest, InstallButton, BottomSheetContent } from "../components";
+import { MapComponent, BottomSheet, MapTest, InstallButton, BottomSheetContent, UserLocationPopup } from "../components";
 
 import api from "./../api/api"
 import { useRoutes } from "../hooks/data/useRoutes";
@@ -99,15 +99,14 @@ const HomePage = () => {
 	if (currentPosition && typeof currentPosition.latitude === 'number' && typeof currentPosition.longitude === 'number') {
 		mapMarkers.push({
 			id: 'current-position',
-			position: [currentPosition.latitude, currentPosition.longitude, currentPosition.altitude || 0],
+			position: [currentPosition.latitude, currentPosition.longitude],
 			color: MAP_CONSTANTS.MARKER_COLORS.CURRENT_POSITION,
 			size: MAP_CONSTANTS.MARKER_SIZES.DEFAULT,
 			popupContent: (
-				<div className="m-3">
-					<h6>Você está aqui</h6>
-					<p className="mb-0">Lat: {currentPosition.latitude.toFixed(6)}<br/>Lng: {currentPosition.longitude.toFixed(6)}</p>
-					{geoError && <p className="text-danger small">{geoError}</p>}
-				</div>
+				<UserLocationPopup 
+					position={currentPosition} 
+					geoError={geoError} 
+				/>
 			)
 		});
 	}

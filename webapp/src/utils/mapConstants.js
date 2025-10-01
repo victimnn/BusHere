@@ -8,7 +8,7 @@ export const MAP_CONSTANTS = {
     MARKER_COLORS: {
         USER_STOP: 'green',        // Ponto do usuário
         ROUTE_STOP: 'purple',       // Pontos da rota
-        CURRENT_POSITION: 'green'   // Posição atual
+        CURRENT_POSITION: 'blue'   // Posição atual
     },
     
     MARKER_SIZES: {
@@ -20,16 +20,14 @@ export const MAP_CONSTANTS = {
     // Configurações de polylines
     POLYLINE_CONFIG: {
         ROUTE_ACTIVE: {
-            color: '#07a27d',     // Verde para rota ativa
-            weight: 4,
-            opacity: 0.8
-            // Removido dashArray para linha contínua
+            color: '#800080',     // Purple para rota ativa
+            weight: 6,
+            opacity: 0.7
         },
         ROUTE_INACTIVE: {
             color: '#6c757d',     // Cinza para rota inativa
             weight: 3,
             opacity: 0.6
-            // Removido dashArray para linha contínua
         },
         LOADING: {
             color: '#ffc107',     // Amarelo para carregamento

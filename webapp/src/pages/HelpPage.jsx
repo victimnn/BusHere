@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
-import { PageHeader, InfoCard, ActionButton, ContactInfo } from '../components';
+import React, { useState } from "react";
+import { PageHeader, InfoCard } from "../components";
 
 const HelpPage = () => {
-  const [activeAccordion, setActiveAccordion] = useState('');
+  const [activeQuestion, setActiveQuestion] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const faqs = [
+  const toggleQuestion = (index) => {
+    setActiveQuestion(activeQuestion === index ? null : index);
+  };
+
+  const faq = [
     {
       id: '1',
       question: 'Como usar o aplicativo?',
@@ -32,157 +37,113 @@ const HelpPage = () => {
     }
   ];
 
-  const contactInfo = [
-    { type: 'email', value: 'suporte@bushere.com.br' },
-    { type: 'phone', value: '(11) 99999-9999' },
-    { type: 'whatsapp', value: '(11) 99999-9999' },
-    { type: 'schedule', value: 'Segunda a Sexta, 8h às 18h', label: 'Horário' }
-  ];
+  const filteredFaq = faq.filter((item) =>
+    item.question.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div
-      className="container-fluid page-content-with-floating-button bg-theme text-primary"
-      style={{
-        padding: '2rem',
-        minHeight: '100vh',
-      }}
-    >
-      <div className="row">
-        <div className="col-12 ">
-          <PageHeader
-            icon="bi bi-question-circle-fill"
-            title="Central de Ajuda"
+    <div className="container py-5">
+      <PageHeader
+          icon="bi bi-info-circle-fill"
+          title="Central de Ajuda"
+      />
+
+      <div className="row justify-content-center">
+        <div className="col-md-8">
+          {/* FAQ */}
+          <InfoCard
+            header={{ icon: 'bi-chat-quote', title: 'Perguntas Frequentes' }}
+              variant="dark"
+          >
+            
+          <input
+            type="text"
+            className="form-control mb-3"
+            placeholder="Pesquisar dúvida..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
 
-          <div className="row g-4 mt-2">
-            {/* Perguntas Frequentes */}
-            <div className="col-12">
-              <InfoCard
-                header={{ icon: 'bi-chat-quote', title: 'Perguntas Frequentes' }}
-                variant="dark"
-              >
-                <div className="row g-3">
-                  {faqs.map(faq => (
-                    <div key={faq.id} className="col-12">
-                      <div
-                        onClick={() =>
-                          setActiveAccordion(activeAccordion === faq.id ? '' : faq.id)
-                        }
-                        style={{
-                          backgroundColor: '#303131ff',
-                          borderRadius: '10px',
-                          padding: '1rem',
-                          cursor: 'pointer',
-                          transition: 'all 0.3s ease'
-                        }}
-                      >
-                        <div className="d-flex justify-content-between align-items-center">
-                          <span style={{ fontWeight: 600 }}>{faq.question}</span>
-                          <i
-                            className={`bi ${
-                              activeAccordion === faq.id ? 'bi-chevron-up' : 'bi-chevron-down'
-                            }`}
-                          />
-                        </div>
-                        {activeAccordion === faq.id && (
-                          <p
-                            className="mt-2 mb-0"
-                            style={{ fontSize: '0.9rem', color: '#d1d1d1' }}
-                          >
-                            {faq.answer}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </InfoCard>
-            </div>
-
-            {/* Contato */}
-            <div className="col-12">
-              <InfoCard
-                header={{ icon: 'bi-telephone', title: 'Contato' }}
-                variant="dark"
-              >
-                <ContactInfo contacts={contactInfo} layout="grid" />
-              </InfoCard>
-            </div>
-
-            {/* Formulário de Contato */}
-            <div className="col-12">
-              <InfoCard
-                header={{ icon: 'bi-chat-dots', title: 'Envie uma Mensagem' }}
-                variant="dark"
-              >
-                <form>
-                  <div className="mb-3">
-                    <label className="form-label small fw-medium">Nome</label>
-                    <input
-                      type="text"
-                      className="form-control form-control-sm"
-                      placeholder="Seu nome completo"
-                      style={{
-                        backgroundColor: '#303131ff',
-                        color: '#fff'
-                      }}
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label small fw-medium">Email</label>
-                    <input
-                      type="email"
-                      className="form-control form-control-sm"
-                      placeholder="seu@email.com"
-                      style={{
-                        backgroundColor: '#303131ff',
-                        color: '#fff'
-                      }}
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label small fw-medium">Assunto</label>
-                    <select
-                      className="form-select form-select-sm"
-                      style={{
-                        backgroundColor: '#303131ff',
-                        color: '#fff'
-                      }}
+          <div className="accordion" id="faqAccordion">
+            {filteredFaq.length > 0 ? (
+              filteredFaq.map((item, index) => (
+                <div className="accordion-item" key={index}>
+                  <h2 className="accordion-header">
+                    <button
+                      className={`accordion-button ${
+                        activeQuestion === index ? "" : "collapsed"
+                      }`}
+                      type="button"
+                      onClick={() => toggleQuestion(index)}
                     >
-                      <option>Dúvida Geral</option>
-                      <option>Problema Técnico</option>
-                      <option>Sugestão</option>
-                      <option>Reclamação</option>
-                    </select>
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label small fw-medium">Mensagem</label>
-                    <textarea
-                      className="form-control form-control-sm"
-                      rows="3"
-                      placeholder="Descreva sua dúvida ou problema..."
-                      style={{
-                        backgroundColor: '#303131ff',
-                        color: '#fff'
-                      }}
-                    ></textarea>
-                  </div>
-
-                  <ActionButton
-                    icon="bi-send"
-                    variant="success"
-                    fullWidth
-                    type="submit"
+                      {item.question}
+                    </button>
+                  </h2>
+                  <div
+                    className={`accordion-collapse collapse ${
+                      activeQuestion === index ? "show" : ""
+                    }`}
                   >
-                    Enviar Mensagem
-                  </ActionButton>
-                </form>
-              </InfoCard>
+                    <div className="accordion-body">{item.answer}</div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-muted">Nenhuma dúvida encontrada.</p>
+            )}
+          </div>
+          </InfoCard>
+
+          <div className="card shadow-sm mt-4">
+            <div className="card-body">
+              <h5 className="card-title">Precisa de ajuda?</h5>
+              <p className="card-text">
+                Aqui você encontra respostas para dúvidas frequentes e informações para entrar em contato.
+              </p>
+              <a href="mailto:suporte@bushere.com" className="btn btn-primary">
+                Falar com o suporte
+              </a>
             </div>
           </div>
+
+          {/* Formulário de envio de e-mail */}
+          <div className="card shadow-sm mt-4">
+            <div className="card-body">
+              <h5 className="card-title">Envie uma mensagem</h5>
+              <form>
+
+                <div className="mb-3">
+                  <label className="form-label">Seu nome</label>
+                  <input type="text" className="form-control" placeholder="Digite seu nome" />
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label">Seu e-mail</label>
+                  <input type="email" className="form-control" placeholder="Digite seu e-mail" />
+                </div>
+
+                  <select className="form-select form-select-sm mb-2 ">
+                    <option>Dúvida Geral</option>
+                    <option>Problema Técnico</option>
+                    <option>Sugestão</option>
+                    <option>Reclamação</option>
+                  </select>
+
+                <div className="mb-3">
+                  <label className="form-label">Mensagem</label>
+                  <textarea
+                    className="form-control"
+                    rows="4"
+                    placeholder="Digite sua mensagem"
+                  ></textarea>
+                </div>
+                <button type="button" className="btn btn-success">
+                  Enviar
+                </button>
+              </form>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -190,3 +151,4 @@ const HelpPage = () => {
 };
 
 export default HelpPage;
+

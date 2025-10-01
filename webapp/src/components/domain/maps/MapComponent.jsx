@@ -178,7 +178,8 @@ const MapComponent = forwardRef(({
                 className="custom-popup"
                 closeButton={true}
                 autoPan={true}
-                maxWidth={300}
+                maxWidth={420}
+                minWidth={300}
               >
                 {marker.popupContent}
               </Popup>

@@ -1,0 +1,538 @@
+// =============================================================================
+// MAP POINT POPUP - TEMA ESCURO - REFATORADO SEGUINDO DESIGN SYSTEM DO WEBAPP
+// =============================================================================
+
+@import '../base/variables';
+@import '../base/mixins';
+@import '../base/fonts';
+
+// Container principal - Mobile-first com altura otimizada (tema escuro)
+.map-popup-container {
+    // Mobile-first: largura responsiva com altura ajustada
+    width: calc(100vw - 2rem); // Margem aumentada para evitar overflow
+    max-width: 380px; // Largura máxima reduzida
+    min-width: 280px; // Largura mínima reduzida
+    min-height: 280px; // Altura mínima reduzida
+    
+    // Desktop: largura fixa otimizada
+    @include tablet-up {
+        width: 360px; // Largura reduzida
+        min-width: 360px;
+        min-height: 320px; // Altura reduzida no desktop
+    }
+    
+    // Design system aplicado (tema escuro)
+    background: $body-bg;
+    border-radius: $border-radius-lg;
+    box-shadow: $box-shadow-sm;
+    overflow: hidden;
+    border: 1px solid $border-color;
+    border-left: 4px solid $success; // Linha verde de margem
+    position: relative;
+    transition: $transition-all;
+    
+    // Efeito glass sutil usando mixin do sistema (adaptado para dark)
+    @include glass-effect(0.1);
+    
+    // Hover effect usando mixin do sistema
+    @include hover-lift(-2px, 0 8px 25px rgba(0,0,0,.4));
+    
+    // Efeito de brilho sutil (adaptado para dark)
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.03) 0%, 
+            rgba(255, 255, 255, 0.02) 50%,
+            rgba(255, 255, 255, 0.01) 100%);
+        pointer-events: none;
+        z-index: 1;
+    }
+    
+    > * {
+        position: relative;
+        z-index: 2;
+    }
+}
+
+// Header - Design system aplicado com fundo e elementos centralizados (tema escuro)
+.popup-header {
+    background: linear-gradient(135deg, $bg-light 0%, $body-bg 100%); // Fundo gradiente
+    padding: $spacing-lg $spacing-md $spacing-md $spacing-md; // Padding reduzido
+    position: relative;
+    text-align: center; // Centralização geral
+    
+    // Mobile: padding otimizado
+    @include mobile-only {
+        padding: $spacing-md $spacing-sm $spacing-sm $spacing-sm;
+    }
+    
+    // Linha decorativa usando cores do sistema (tema escuro)
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: $spacing-lg;
+        right: $spacing-lg;
+        height: 2px;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba($primary, 0.2) 20%, 
+            rgba($primary, 0.4) 50%, 
+            rgba($primary, 0.2) 80%, 
+            transparent 100%);
+            
+        @include mobile-only {
+            left: $spacing-md;
+            right: $spacing-md;
+        }
+    }
+}
+
+.popup-header-content {
+    @include flex-center; // Centralização completa
+    flex-direction: column; // Layout vertical
+    gap: $spacing-md; // Gap reduzido para centralização
+    
+    @include mobile-only {
+        gap: $spacing-sm;
+    }
+}
+
+.popup-icon-wrapper {
+    position: relative;
+    flex-shrink: 0;
+    margin-bottom: $spacing-sm; // Espaçamento do ícone
+}
+
+.popup-icon {
+    width: 56px; // Tamanho reduzido
+    height: 56px;
+    @include flex-center;
+    color: $primary;
+    font-size: 24px; // Fonte reduzida
+    background: $primary-light-opacity;
+    border-radius: $border-radius-lg;
+    border: 2px solid rgba($primary, 0.3);
+    transition: $transition-all;
+    margin: 0 auto; // Centralização adicional
+    
+    // Mobile: tamanho otimizado
+    @include mobile-only {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+    
+    // Hover effect usando mixin do sistema
+    @include hover-lift(-2px, 0 6px 16px rgba($primary, 0.3));
+}
+
+.popup-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 24px;
+    height: 24px;
+    @include gradient-success;
+    border-radius: 50%;
+    @include flex-center;
+    color: $white;
+    font-size: 12px;
+    box-shadow: 0 3px 8px rgba($success, 0.4);
+    border: 3px solid $body-bg;
+    
+    @include mobile-only {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+        top: -4px;
+        right: -4px;
+    }
+}
+
+.popup-title-section {
+    flex: 1;
+    min-width: 0;
+    text-align: center; // Centralização do texto
+}
+
+.popup-title {
+    font-size: 1.5rem; // Fonte padronizada
+    font-weight: 700;
+    color: $text-primary;
+    margin: 0 0 $spacing-sm 0;
+    line-height: 1.3;
+    font-family: $font-sora; // Fonte principal do sistema
+    
+    // Mobile: tamanho otimizado
+    @include mobile-only {
+        font-size: 1.25rem;
+    }
+}
+
+.popup-subtitle {
+    font-size: 1rem; // Fonte padronizada
+    color: $text-secondary;
+    font-weight: 500;
+    @include gradient-text;
+    letter-spacing: 0.01em;
+    font-family: $font-sawarabi; // Fonte secundária do sistema
+    
+    @include mobile-only {
+        font-size: 0.9rem;
+    }
+}
+
+// ID no header - Centralizado e padronizado
+.popup-id-header {
+    @include flex-center;
+    gap: $spacing-xs;
+    font-size: 0.875rem;
+    color: $text-muted;
+    font-weight: 500;
+    margin-top: $spacing-md;
+    padding-top: $spacing-sm;
+    border-top: 1px solid rgba($text-muted, 0.2);
+    font-family: $font-sawarabi; // Fonte secundária padronizada
+    
+    @include mobile-only {
+        font-size: 0.8rem;
+        margin-top: $spacing-sm;
+    }
+    
+    i {
+        font-size: 0.8rem;
+        
+        @include mobile-only {
+            font-size: 0.75rem;
+        }
+    }
+}
+
+// Seção principal de conteúdo - Container para melhor organização
+.popup-main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0; // Sem gap para harmonia visual
+}
+
+// Seção do horário - Sem fundo, centralizada e padronizada (tema escuro)
+.popup-time-section {
+    background: $body-bg; // Fundo neutro
+    padding: $spacing-lg $spacing-md; // Padding reduzido
+    color: $text-primary; // Cor padrão do texto
+    position: relative;
+    text-align: center; // Centralização
+    
+    // Mobile: padding otimizado
+    @include mobile-only {
+        padding: $spacing-md $spacing-sm;
+    }
+    
+    // Linha decorativa superior
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: $spacing-lg;
+        right: $spacing-lg;
+        height: 2px;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba($primary, 0.2) 20%, 
+            rgba($primary, 0.4) 50%, 
+            rgba($primary, 0.2) 80%, 
+            transparent 100%);
+            
+        @include mobile-only {
+            left: $spacing-md;
+            right: $spacing-md;
+        }
+    }
+    
+    // Linha decorativa inferior
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: $spacing-lg;
+        right: $spacing-lg;
+        height: 1px;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba($primary, 0.15) 20%, 
+            rgba($primary, 0.3) 50%, 
+            rgba($primary, 0.15) 80%, 
+            transparent 100%);
+            
+        @include mobile-only {
+            left: $spacing-md;
+            right: $spacing-md;
+        }
+    }
+}
+
+.popup-time-content {
+    @include flex-center; // Centralização completa
+    flex-direction: column; // Layout vertical
+    gap: $spacing-md; // Gap reduzido para centralização
+    
+    @include mobile-only {
+        gap: $spacing-sm;
+    }
+}
+
+.popup-time-icon {
+    width: 48px; // Tamanho reduzido
+    height: 48px;
+    @include flex-center;
+    color: $primary; // Cor primária em vez de branco
+    font-size: 20px; // Fonte reduzida
+    background: $primary-light-opacity; // Fundo primário
+    border-radius: $border-radius-lg;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 6px 16px rgba($primary, 0.2); // Sombra primária
+    flex-shrink: 0;
+    border: 1px solid rgba($primary, 0.3); // Borda primária
+    margin: 0 auto; // Centralização adicional
+    
+    @include mobile-only {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+}
+
+.popup-time-text {
+    flex: 1;
+    min-width: 0;
+    text-align: center; // Centralização do texto
+}
+
+.popup-time-label {
+    font-size: 0.875rem;
+    color: $text-secondary; // Cor secundária
+    margin-bottom: $spacing-sm;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: $font-sawarabi; // Fonte secundária padronizada
+    
+    @include mobile-only {
+        font-size: 0.8rem;
+    }
+}
+
+.popup-time-value {
+    font-size: 1.875rem; // Fonte reduzida
+    font-weight: 800;
+    color: $primary; // Cor primária para destaque
+    line-height: 1;
+    text-shadow: 0 3px 12px rgba($primary, 0.3); // Sombra primária
+    font-family: $font-sora; // Fonte principal padronizada
+    
+    @include mobile-only {
+        font-size: 1.5rem; // Fonte mobile reduzida
+    }
+}
+
+// Seção do endereço - Design system aplicado com elementos otimizados (tema escuro)
+.popup-address-section {
+    background: $body-bg;
+    padding: $spacing-lg $spacing-md; // Padding reduzido
+    border-top: 1px solid $border-color;
+    border-bottom: 1px solid $border-color;
+    position: relative;
+    
+    // Mobile: padding otimizado
+    @include mobile-only {
+        padding: $spacing-md $spacing-sm;
+    }
+    
+    // Linha lateral decorativa usando cores do sistema
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 6px; // Linha mais espessa
+        @include gradient-primary;
+        border-radius: 0 $border-radius-sm $border-radius-sm 0;
+    }
+    
+    // Linha decorativa inferior
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: $spacing-lg;
+        right: $spacing-lg;
+        height: 1px;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba($primary, 0.15) 20%, 
+            rgba($primary, 0.3) 50%, 
+            rgba($primary, 0.15) 80%, 
+            transparent 100%);
+            
+        @include mobile-only {
+            left: $spacing-md;
+            right: $spacing-md;
+        }
+    }
+}
+
+.popup-address-content {
+    @include flex-center; // Centralização completa
+    flex-direction: column; // Layout vertical
+    gap: $spacing-md; // Gap reduzido para centralização
+    
+    @include mobile-only {
+        gap: $spacing-sm;
+    }
+}
+
+.popup-address-icon {
+    width: 48px;
+    height: 48px;
+    @include flex-center;
+    color: $text-secondary;
+    font-size: 20px;
+    background: rgba($text-secondary, 0.15);
+    border-radius: $border-radius-lg;
+    flex-shrink: 0;
+    border: 1px solid rgba($text-secondary, 0.2);
+    margin: 0 auto; // Centralização adicional
+    
+    @include mobile-only {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+}
+
+.popup-address-text {
+    flex: 1;
+    min-width: 0;
+    text-align: center; // Centralização do texto
+}
+
+.popup-address-main {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: $text-primary;
+    margin-bottom: $spacing-sm;
+    line-height: 1.4;
+    font-family: $font-sora; // Fonte principal padronizada
+    
+    @include mobile-only {
+        font-size: 1rem;
+    }
+}
+
+.popup-address-secondary {
+    font-size: 1rem;
+    color: $text-secondary;
+    font-weight: 500;
+    font-family: $font-sawarabi; // Fonte secundária padronizada
+    
+    @include mobile-only {
+        font-size: 0.9rem;
+    }
+}
+
+// Seção da referência - Design system aplicado com elementos otimizados (tema escuro)
+.popup-reference-section {
+    @include gradient-info;
+    padding: $spacing-lg $spacing-md; // Padding reduzido
+    color: $white;
+    position: relative;
+    
+    // Mobile: padding otimizado
+    @include mobile-only {
+        padding: $spacing-md $spacing-sm;
+    }
+    
+    // Overlay brilhante (adaptado para dark)
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.1) 0%, 
+            rgba(255, 255, 255, 0.05) 50%,
+            rgba(255, 255, 255, 0.03) 100%);
+        pointer-events: none;
+    }
+}
+
+.popup-reference-content {
+    @include flex-center; // Centralização completa
+    flex-direction: column; // Layout vertical
+    gap: $spacing-md; // Gap reduzido para centralização
+    
+    @include mobile-only {
+        gap: $spacing-sm;
+    }
+}
+
+.popup-reference-icon {
+    width: 48px;
+    height: 48px;
+    @include flex-center;
+    color: $white;
+    font-size: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: $border-radius-lg;
+    backdrop-filter: blur(10px);
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin: 0 auto; // Centralização adicional
+    
+    @include mobile-only {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+}
+
+.popup-reference-text {
+    flex: 1;
+    min-width: 0;
+    text-align: center; // Centralização do texto
+}
+
+.popup-reference-label {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: $spacing-sm;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: $font-sawarabi; // Fonte secundária padronizada
+    
+    @include mobile-only {
+        font-size: 0.8rem;
+    }
+}
+
+.popup-reference-value {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: $white;
+    line-height: 1.4;
+    font-family: $font-sora; // Fonte principal padronizada
+    
+    @include mobile-only {
+        font-size: 1rem;
+    }
+}

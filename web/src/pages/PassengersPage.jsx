@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useCallback } from "react";
 import PopUpComponent from "@web/components/core/feedback/PopUpComponent";
 import PassengerForm from "@web/components/domain/passengers/PassengerForm";
+import InviteForm from "@web/components/domain/passengers/InviteForm";
 import PassengerDetails from "@web/components/domain/passengers/PassengerDetails";
 import PassengerStatsCards from "@web/components/domain/passengers/PassengerStatsCards";
 import Table from "@web/components/common/data-display/Table";
@@ -56,6 +57,13 @@ function Passengers({ pageFunctions }) {
   useEffect(() => {
     pageFunctions.set("Passageiros", true, true);
   }, [pageFunctions]);
+
+  const handleCreateInvite = useCallback( () => {
+    popUpRef.current.show({
+      title: "Novo Convite",
+      content: InviteForm,
+    });
+  });
 
   const handleCreatePassenger = useCallback(() => {
     popUpRef.current.show({
@@ -172,6 +180,16 @@ function Passengers({ pageFunctions }) {
                 size="lg"
                 disabled={isLoading}
               />
+
+              <ActionButton
+                onClick={handleCreateInvite}
+                icon="bi bi-plus-circle"
+                text="Novo Convite"
+                variant="primary"
+                size="lg"
+                disabled={isLoading}
+              />
+              
             </div>
           </div>
           

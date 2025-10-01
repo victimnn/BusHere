@@ -19,6 +19,7 @@ module.exports = (pool) => {
 
 	// POST / - Criar convite
 	router.post('/', async (req, res) => {
+		console.log("requisição recebida:", req.body);
 		const { email } = req.body;
 		if (!email) {
 			return res.status(400).json({ error: "Campo 'email' é obrigatório" });
@@ -26,7 +27,7 @@ module.exports = (pool) => {
 		try {
 			const codigo_convite = generateInviteCode();
 			const metodo_envio = "Indefinido";
-			const usuario_emissor_id = req.body.usuario_emissor_id ?? null; // Ajuste conforme autenticação
+			const usuario_emissor_id = req.body.usuario_emissor_id ?? 1; // Ajuste conforme autenticação
 			const data_expiracao = req.body.data_expiracao ?? new Date(Date.now() + 7*24*60*60*1000); // 7 dias padrão
 			const status_convite_id = req.body.status_convite_id ?? 1; // Ajuste conforme status padrão
 
@@ -43,6 +44,18 @@ module.exports = (pool) => {
 			res.json({ data: { convite_passageiro_id: insertResult.insertId, ...convite } });
 		} catch (error) {
 			console.error("Erro ao criar convite:", error);
+			res.status(500).json({ error: "Erro interno do servidor" });
+		}
+	});
+
+	// GET /:id - Ver convite
+	router.get('/:id', async (req, res) => {
+		const passageiroId = req.params.id;
+		try {
+			const [invites] = await pool.query("SELECT * FROM ConvitesPassageiro WHERE passageiro_id = ?", [passageiroId]);
+			res.json({ data: invites[0] });
+		} catch (error) {
+			console.error("Erro ao buscar convites:", error);
 			res.status(500).json({ error: "Erro interno do servidor" });
 		}
 	});

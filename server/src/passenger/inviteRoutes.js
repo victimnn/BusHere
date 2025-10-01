@@ -40,5 +40,18 @@ module.exports = (pool) => {
 		}
 	});
 
+		// GET / - Ver convites do passageiro (simples, retorna todos)
+	router.get('/:id', async (req, res) => {
+		const passageiroId = req.params.id;
+		try {
+			const [invites] = await pool.query("SELECT * FROM ConvitesPassageiro WHERE passageiro_id = ?", [passageiroId]);
+			res.json({ data: invites[0] });
+		} catch (error) {
+			console.error("Erro ao buscar convites:", error);
+			res.status(500).json({ error: "Erro interno do servidor" });
+		}
+	});
+
+
 	return router;
 }

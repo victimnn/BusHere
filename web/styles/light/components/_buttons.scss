@@ -99,23 +99,74 @@
   background: transparent !important;
   color: $primary !important;
   border: 1px solid $primary;
+  transition: all 0.3s ease;
   
-  &:hover {
+  &:hover:not(:disabled) {
     background: $primary !important;
     color: $primary-contrast !important;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba($primary, 0.3);
+    outline: 2px solid rgba($primary, 0.3);
+    outline-offset: 0;
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba($primary, 0.3);
+    outline: 2px solid rgba($primary, 0.5);
+    outline-offset: 0;
+  }
+  
+  &:focus:not(:disabled) {
+    outline: 2px solid rgba($primary, 0.5);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 0.25rem rgba($primary, 0.25);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+    outline: none !important;
   }
 }
 
 .btn-outline-secondary {
   background: transparent !important;
-  color: $text-dark !important;
-  border: 1px solid $border-color;
+  color: $secondary !important;
+  border: 1px solid $secondary;
+  transition: all 0.3s ease;
   
-  &:hover {
-    background: $bg-light !important;
-    color: $primary !important;
-    border-color: $primary;
+  &:hover:not(:disabled) {
+    background: $secondary !important;
+    color: $white !important;
+    border-color: $secondary;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba($secondary, 0.3);
+    outline: 2px solid rgba($secondary, 0.3);
+    outline-offset: 0;
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba($secondary, 0.3);
+    outline: 2px solid rgba($secondary, 0.5);
+    outline-offset: 0;
+  }
+  
+  &:focus:not(:disabled) {
+    outline: 2px solid rgba($secondary, 0.5);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 0.25rem rgba($secondary, 0.25);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+    outline: none !important;
   }
 }
 
@@ -141,25 +192,37 @@
   background: transparent !important;
   color: $danger !important;
   border: 1px solid $danger;
-  box-shadow: 0 2px 8px rgba($danger, 0.1);
+  transition: all 0.3s ease;
   
-  &:hover {
+  &:hover:not(:disabled) {
     background: $danger !important;
     color: $white !important;
     border-color: $danger;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba($danger, 0.3);
+    outline: 2px solid rgba($danger, 0.3);
+    outline-offset: 0;
   }
   
-  &:focus-visible {
-    outline-color: $danger;
-    box-shadow: 0 0 0 4px rgba($danger, 0.2);
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba($danger, 0.3);
+    outline: 2px solid rgba($danger, 0.5);
+    outline-offset: 0;
   }
   
-  &:active {
-    background: darken($danger, 10%) !important;
-    border-color: darken($danger, 10%);
-    box-shadow: 0 2px 6px rgba($danger, 0.2);
+  &:focus:not(:disabled) {
+    outline: 2px solid rgba($danger, 0.5);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 0.25rem rgba($danger, 0.25);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+    outline: none !important;
   }
 }
 

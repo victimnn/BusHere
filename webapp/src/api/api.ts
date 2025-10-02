@@ -362,6 +362,28 @@ const api = {
         throw error;
       }
     }
+  },
+  invites: {
+    getByCode: async (code: string) => {
+      try {
+        const response = await api.get(`/invites/${code}`);
+        return response.data; // Retorna os dados do convite
+      } catch (error) {
+        console.error(`Erro ao buscar convite com código ${code}:`, error);
+        throw error; // Propaga o erro para ser tratado onde for chamado
+      }
+    },
+
+    accept: async (code: string) => {
+      try {
+        const response = await api.post(`/invites/accept/${code}`);
+        return response; // Retorna a resposta da API
+      } catch (error) {
+        console.error(`Erro ao aceitar convite com código ${code}:`, error);
+        throw error; // Propaga o erro para ser tratado onde for chamado
+      }
+    },
+    
   }
 };
 

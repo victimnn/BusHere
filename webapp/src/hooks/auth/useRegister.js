@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { formatCPF, formatPhoneNumber, removeFormatting } from '../../../../shared/formatters.ts';
 import { validateEmail, validateCPF, validadeRawCPF, validatePhoneNumber, validateCEP } from '../../../../shared/validators.ts';
 import { BRAZILIAN_STATES } from '../../../../shared/brazilianStates.ts';
@@ -464,8 +464,9 @@ export const useRegister = () => {
 
   // Função para ir para login
   const goToLogin = useCallback(() => {
-    navigate('/login');
-  }, [navigate]);
+    const path = redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login';
+    navigate(path);
+  }, [navigate, redirect]);
 
   // Função para limpar estados de feedback
   const clearFeedback = useCallback(() => {

@@ -12,6 +12,7 @@ import {
   RegistrationSuccessModal
 } from '../components';
 import { useRegister } from '../hooks';
+import { useLocation } from 'react-router-dom';
 
 function RegisterPage() {
   const navigate = useNavigate();

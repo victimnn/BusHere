@@ -9,13 +9,15 @@ import { Link } from 'react-router-dom';
 const RegisterFooter = memo(({ currentStep, redirect }) => {
   if (currentStep !== 1) return null;
 
-  const loginUrl = redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login';
+
+  const loginPath = redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login';
+
 
   return (
     <div className="text-center">
       <p className="mb-3">
         <Link 
-          to={loginUrl}
+          to={loginPath}
           className="text-decoration-none fw-semibold d-inline-block text-success fs-6"
           style={{ padding: "8px 0" }}
         >

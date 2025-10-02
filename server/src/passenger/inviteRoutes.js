@@ -1,0 +1,57 @@
+const express = require('express');
+const { extractToken } = require("../helpers");
+
+module.exports = (pool) => {
+	const router = express.Router();
+
+	// GET / - Ver convites do passageiro (simples, retorna todos)
+	router.get('/', async (req, res) => {
+		try {
+			const [invites] = await pool.query("SELECT * FROM ConvitesPassageiro");
+			res.json({ data: invites });
+		} catch (error) {
+			console.error("Erro ao buscar convites:", error);
+			res.status(500).json({ error: "Erro interno do servidor" });
+		}
+	});
+
+	// POST /accept/:code - Aceitar convite
+	router.post('/accept/:code', extractToken, async (req, res) => {
+		const conviteCode = req.params.code;
+		const token = req.token;
+		try {
+			// Buscar o id do passageiro pelo token
+			const [tokenResult] = await pool.query("SELECT passageiro_id FROM TokensPassageiro WHERE token = ?", [token]);
+			const passageiroId = tokenResult[0]?.passageiro_id;
+			if (!passageiroId) {
+				return res.status(401).json({ error: "Token inválido ou passageiro não encontrado" });
+			}
+			const [updateResult] = await pool.query(
+				"UPDATE ConvitesPassageiro SET passageiro_cadastrado_id = ?, data_aceite = NOW(), status_convite_id = 2 WHERE codigo_convite = ?",
+				[passageiroId, conviteCode]
+			);
+			if (updateResult.affectedRows === 0) {
+				return res.status(404).json({ error: "Convite não encontrado" });
+			}
+			res.json({ message: "Convite aceito com sucesso" });
+		} catch (error) {
+			console.error("Erro ao aceitar convite:", error);
+			res.status(500).json({ error: "Erro interno do servidor" });
+		}
+	});
+
+		// GET / - Ver convites do passageiro (simples, retorna todos)
+	router.get('/:code', async (req, res) => {
+		const conviteCode = req.params.code;
+		try {
+			const [invites] = await pool.query("SELECT * FROM ConvitesPassageiro WHERE codigo_convite = ?", [conviteCode]);
+			res.json({ data: invites[0] });
+		} catch (error) {
+			console.error("Erro ao buscar convites:", error);
+			res.status(500).json({ error: "Erro interno do servidor" });
+		}
+	});
+
+
+	return router;
+}

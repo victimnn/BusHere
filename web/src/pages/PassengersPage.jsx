@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useCallback } from "react";
 import PopUpComponent from "@web/components/core/feedback/PopUpComponent";
 import PassengerForm from "@web/components/domain/passengers/PassengerForm";
-import InviteForm from "@web/components/domain/passengers/InviteForm";
+import InvitePopupComponent from "@web/components/domain/passengers/InvitePopupComponent";
+import InvitePopup from "@web/components/domain/passengers/InvitePopup";
 import PassengerDetails from "@web/components/domain/passengers/PassengerDetails";
 import PassengerStatsCards from "@web/components/domain/passengers/PassengerStatsCards";
 import Table from "@web/components/common/data-display/Table";
@@ -38,7 +39,8 @@ const TABLE_HEADERS = [
 
 function Passengers({ pageFunctions }) {
   const popUpRef = useRef(null);
-      const dialogRef = useRef(null);
+  const invitePopupRef = useRef(null);
+  const dialogRef = useRef(null);
   
   // Usar hook customizado para gerenciar dados dos passageiros
   const {
@@ -58,12 +60,15 @@ function Passengers({ pageFunctions }) {
     pageFunctions.set("Passageiros", true, true);
   }, [pageFunctions]);
 
-  const handleCreateInvite = useCallback( () => {
-    popUpRef.current.show({
-      title: "Novo Convite",
-      content: InviteForm,
-    });
-  });
+  const handleCreateInvite = useCallback(() => {
+    if (invitePopupRef.current) {
+      invitePopupRef.current.show({
+        content: ({ close }) => <InvitePopup close={close} />,
+        props: {},
+        title: ""
+      });
+    }
+  }, []);
 
   const handleCreatePassenger = useCallback(() => {
     popUpRef.current.show({
@@ -172,20 +177,20 @@ function Passengers({ pageFunctions }) {
                 <h1 className="h3 mb-0 fw-semibold">Passageiros</h1>
               </div>
               
-              <ActionButton
+              {/* <ActionButton
                 onClick={handleCreatePassenger}
                 icon="bi bi-plus-circle"
                 text="Novo Passageiro"
                 variant="primary"
                 size="lg"
                 disabled={isLoading}
-              />
+              /> */}
 
               <ActionButton
                 onClick={handleCreateInvite}
                 icon="bi bi-plus-circle"
-                text="Novo Convite"
-                variant="primary"
+                text="Gerenciar Convites"
+                variant="success"
                 size="lg"
                 disabled={isLoading}
               />
@@ -229,7 +234,8 @@ function Passengers({ pageFunctions }) {
             <i className="bi bi-info-circle-fill text-primary me-3 fs-4"></i>
             <p className="mb-0 text-muted">
               <strong>Dica:</strong> Clique em uma linha da tabela para ver os detalhes completos do passageiro.
-              Para adicionar um novo passageiro, clique no botão "Novo Passageiro".
+              Para adicionar um novo passageiro, clique no botão "Novo Passageiro". 
+              Para gerenciar convites, clique no botão "Gerenciar Convites".
             </p>
           </div>
         </div>
@@ -237,6 +243,11 @@ function Passengers({ pageFunctions }) {
 
         <PopUpComponent 
           ref={popUpRef}
+        />
+
+        {/* Popup customizado para convites */}
+        <InvitePopupComponent 
+          ref={invitePopupRef}
         />
 
         {/* Dialog unificado para confirmações */}

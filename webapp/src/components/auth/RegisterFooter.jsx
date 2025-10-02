@@ -6,14 +6,16 @@ import { Link } from 'react-router-dom';
  * Componente de footer para páginas de registro
  * Inclui links para login e termos de uso
  */
-const RegisterFooter = memo(({ currentStep }) => {
+const RegisterFooter = memo(({ currentStep, redirect }) => {
   if (currentStep !== 1) return null;
+
+  const loginPath = redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login';
 
   return (
     <div className="text-center">
       <p className="mb-3">
         <Link 
-          to="/login" 
+          to={loginPath}
           className="text-decoration-none fw-semibold d-inline-block text-success fs-6"
           style={{ padding: "8px 0" }}
         >
@@ -41,7 +43,8 @@ const RegisterFooter = memo(({ currentStep }) => {
 RegisterFooter.displayName = 'RegisterFooter';
 
 RegisterFooter.propTypes = {
-  currentStep: PropTypes.number.isRequired
+  currentStep: PropTypes.number.isRequired,
+  redirect: PropTypes.string
 };
 
 export default RegisterFooter;

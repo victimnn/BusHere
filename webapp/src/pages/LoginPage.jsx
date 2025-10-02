@@ -6,8 +6,13 @@ import {
   AuthFooter 
 } from '../components';
 import { useLogin } from '../hooks';
+import { useLocation } from 'react-router-dom';
 
 function LoginPage() {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const redirect = searchParams.get('redirect');
+
   const {
     formData,
     validation,
@@ -54,7 +59,7 @@ function LoginPage() {
             onPasswordChange={(e) => setPassword(e.target.value)}
             onRememberMeChange={(e) => setRememberMe(e.target.checked)}
             onSubmit={handleLogin}
-            onGoToRegister={goToRegister}
+            onGoToRegister={() => goToRegister(redirect)}
           />
 
           {/* Footer mobile-friendly */}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { formatCPF, formatPhoneNumber, removeFormatting } from '../../../../shared/formatters.ts';
 import { validateEmail, validateCPF, validadeRawCPF, validatePhoneNumber, validateCEP } from '../../../../shared/validators.ts';
 import { BRAZILIAN_STATES } from '../../../../shared/brazilianStates.ts';
@@ -20,6 +20,9 @@ export const useRegister = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const redirect = searchParams.get('redirect');
 
   // Estados do formulário
   const [formData, setFormData] = useState({
@@ -426,9 +429,13 @@ export const useRegister = () => {
               });
               if (loginResponse && loginResponse.token) {
                 await login(loginResponse);
-                navigate('/', { replace: true });
+                if (redirect) {
+                  navigate(redirect, { replace: true });
+                } else {
+                  navigate('/', { replace: true });
+                }
               } else {
-                navigate('/login', {
+                navigate(redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login', {
                   state: {
                     message: 'Conta criada com sucesso! Faça login para continuar.',
                     type: 'success'
@@ -437,7 +444,7 @@ export const useRegister = () => {
               }
             } catch (e) {
               // Se falhar o login, redireciona para login
-              navigate('/login', {
+              navigate(redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login', {
                 state: {
                   message: 'Conta criada com sucesso! Faça login para continuar.',
                   type: 'success'
@@ -458,7 +465,7 @@ export const useRegister = () => {
     } finally {
       setLoading(false);
     }
-  }, [formData, fieldErrors, touchedFields, navigate, handleRegistrationError, login]);
+  }, [formData, fieldErrors, touchedFields, navigate, handleRegistrationError, login, redirect]);
 
   // Função para voltar
   const goBack = useCallback(() => {
@@ -467,8 +474,9 @@ export const useRegister = () => {
 
   // Função para ir para login
   const goToLogin = useCallback(() => {
-    navigate('/login');
-  }, [navigate]);
+    const path = redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login';
+    navigate(path);
+  }, [navigate, redirect]);
 
   // Função para limpar estados de feedback
   const clearFeedback = useCallback(() => {

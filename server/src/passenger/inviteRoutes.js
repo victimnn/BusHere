@@ -21,7 +21,7 @@ module.exports = (pool) => {
 		const token = req.token;
 		try {
 			// Buscar o id do passageiro pelo token
-			const [tokenResult] = await pool.query("SELECT passageiro_id FROM TokensPassageiroLogin WHERE token = ?", [token]);
+			const [tokenResult] = await pool.query("SELECT passageiro_id FROM TokensPassageiro WHERE token = ?", [token]);
 			const passageiroId = tokenResult[0]?.passageiro_id;
 			if (!passageiroId) {
 				return res.status(401).json({ error: "Token inválido ou passageiro não encontrado" });

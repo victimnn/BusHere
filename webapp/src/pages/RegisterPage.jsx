@@ -11,8 +11,13 @@ import {
   RegistrationSuccessModal
 } from '../components';
 import { useRegister } from '../hooks';
+import { useLocation } from 'react-router-dom';
 
 function RegisterPage() {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const redirect = searchParams.get('redirect');
+
   const {
     currentStep,
     loading,
@@ -120,7 +125,7 @@ function RegisterPage() {
           />
 
           {/* Footer mobile-friendly */}
-          <RegisterFooter currentStep={currentStep} />
+          <RegisterFooter currentStep={currentStep} redirect={redirect} />
         </div>
       </div>
 

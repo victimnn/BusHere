@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/api';
 
@@ -23,7 +23,11 @@ export const useLogin = () => {
   
   // Dependências
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
+
+  const searchParams = new URLSearchParams(location.search);
+  const redirect = searchParams.get('redirect');
 
   // Validação em tempo real do email
   useEffect(() => {
@@ -83,8 +87,12 @@ export const useLogin = () => {
         // Login no contexto (que já tem os dados do usuário da resposta)
         await login(response);
         
-        // Redirecionamento para home
-        navigate('/', { replace: true });
+        // Redirecionamento para redirect ou home
+        if (redirect) {
+          navigate(redirect, { replace: true });
+        } else {
+          navigate('/', { replace: true });
+        }
         return true;
       }
       
@@ -96,7 +104,7 @@ export const useLogin = () => {
     } finally {
       setLoading(false);
     }
-  }, [email, password, rememberMe, isFormValid, navigate, login, handleLoginError]);
+  }, [email, password, rememberMe, isFormValid, navigate, login, handleLoginError, redirect]);
 
   // Função para limpar formulário
   const resetForm = useCallback(() => {
@@ -114,8 +122,9 @@ export const useLogin = () => {
   }, [navigate]);
 
   // Função para navegar para registro
-  const goToRegister = useCallback(() => {
-    navigate('/register');
+  const goToRegister = useCallback((redirectParam) => {
+    const path = redirectParam ? `/register?redirect=${encodeURIComponent(redirectParam)}` : '/register';
+    navigate(path);
   }, [navigate]);
 
   return {

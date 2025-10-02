@@ -1,84 +1,42 @@
-import {useState, useEffect} from "react";
-import ActionButton from "@web/components/common/buttons/ActionButton"
-import api from "@web/api/api";
-
-const STATUS_CONVITE = [
-    "Pendente",
-    "Aceito",
-    "Expirado",
-    "Recusado",
-]
-
-
-function InvitesTable({ invites }) {
-    return (
-        <table className="table table-group-divider table-striped table-border">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {invites.map((invite) => (
-                    <tr key={invite.convite_passageiro_id} onClick={() => {navigator.clipboard.writeText("localhost:5174/convite/" + invite.codigo_convite); alert("Código copiado para a área de transferência!")}}>
-                        <td>{invite.codigo_convite.substring(0, 8)}...</td>
-                        <td>{invite.email_convidado}</td>
-                        <td>{STATUS_CONVITE[invite.status_convite_id]}</td>
-                    </tr>
-                ))}
-            </tbody>
-        </table>
-    )
-}
+import React from "react";
+import InvitePopupModal from "./InvitePopupModal";
 
 function InviteForm() {
-    const [invites, setInvites] = useState([]);
-    const [email, setEmail] = useState("");
-    const fetchInvites = async () => {
-        try {
-            const response = await api.invites.list();
-            setInvites(response.data);
-            console.log("convites",response.data);
-        } catch (error) {
-            console.error("Erro ao buscar convites:", error);
-        }
-    };
-
-    useEffect(() => {
-        fetchInvites();
-    }, []);
-
-
-    const handleInvite = async () => {
-        const newInvite = { id: Date.now(), email: email, status_convite_id: 0 };
-        console.log("newInvite", newInvite);
-        setEmail("");
-
-        const response = await api.invites.create(newInvite);
-        fetchInvites();
-    };
-
     return (
-        <div>
-            <h4> Convites pendentes </h4>
-
-            <InvitesTable invites={invites} />
-
-            <div className="border p-3">
-                <h4>Criar Novo Convite</h4>
-                <input
-                    type="email"
-                    placeholder="Email do convidado"
-                    className="form-control mb-2"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <ActionButton text="Enviar Convite" onClick={handleInvite} />
+        <div className="container-fluid">
+            <div className="row">
+                <div className="col-12">
+                    <div className="d-flex align-items-center justify-content-between mb-4">
+                        <div className="d-flex align-items-center">
+                            <i className="bi bi-person-plus-fill fs-2 text-primary me-3"></i>
+                            <div>
+                                <h2 className="mb-1">Gerenciar Convites</h2>
+                                <p className="text-muted mb-0">Envie convites para novos passageiros</p>
+                            </div>
+                        </div>
+                        <InvitePopupModal />
+                    </div>
+                </div>
+            </div>
+            
+            <div className="row">
+                <div className="col-12">
+                    <div className="card">
+                        <div className="card-body text-center py-5">
+                            <i className="bi bi-person-plus-fill fs-1 text-muted mb-3"></i>
+                            <h4 className="text-muted mb-3">Gerenciamento de Convites</h4>
+                            <p className="text-muted mb-4">
+                                Clique no botão "Gerenciar Convites" acima para abrir o painel completo de convites.
+                            </p>
+                            <p className="text-muted small">
+                                No painel você poderá visualizar todos os convites enviados e criar novos convites para passageiros.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    )
+    );
 }
 
 export default InviteForm;

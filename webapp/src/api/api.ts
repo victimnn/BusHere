@@ -365,7 +365,7 @@ const api = {
     getByCode: async (code: string) => {
       try {
         const response = await api.get(`/invites/${code}`);
-        return response; // Retorna os dados do convite
+        return response.data; // Retorna os dados do convite
       } catch (error) {
         console.error(`Erro ao buscar convite com código ${code}:`, error);
         throw error; // Propaga o erro para ser tratado onde for chamado

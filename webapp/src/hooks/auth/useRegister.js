@@ -20,9 +20,6 @@ export const useRegister = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const redirect = searchParams.get('redirect');
 
   // Estados do formulário
   const [formData, setFormData] = useState({
@@ -410,49 +407,42 @@ export const useRegister = () => {
 
       // Chamar API de registro
       const response = await api.auth.register(registrationData);
-      
       if (response && (response.success || response.message)) {
-        // Limpar erro se houver
         setError('');
-        
-        // Mostrar sucesso e modal de celebração
         setRegistrationStatus('success');
-        setSuccess('Conta criada com sucesso! Redirecionando para o login...');
+        setSuccess('Conta criada com sucesso! Redirecionando...');
         setShowSuccessModal(true);
-        
-          // Login automático após registro
-          setTimeout(async () => {
-            try {
-              const loginResponse = await api.auth.login({
-                email: formData.email.trim().toLowerCase(),
-                password: formData.password
-              });
-              if (loginResponse && loginResponse.token) {
-                await login(loginResponse);
-                if (redirect) {
-                  navigate(redirect, { replace: true });
-                } else {
-                  navigate('/', { replace: true });
-                }
-              } else {
-                navigate(redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login', {
-                  state: {
-                    message: 'Conta criada com sucesso! Faça login para continuar.',
-                    type: 'success'
-                  }
-                });
-              }
-            } catch (e) {
-              // Se falhar o login, redireciona para login
-              navigate(redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login', {
-                state: {
-                  message: 'Conta criada com sucesso! Faça login para continuar.',
-                  type: 'success'
-                }
-              });
+        // Login automático após registro
+        let loginResponse = null;
+        try {
+          loginResponse = await api.auth.login({
+            email: formData.email.trim().toLowerCase(),
+            password: formData.password
+          });
+          if (loginResponse && loginResponse.token) {
+            localStorage.setItem('token', loginResponse.token);
+            await login(loginResponse);
+          }
+        } catch (loginErr) {
+          // Se falhar, apenas segue o fluxo normal
+          console.error('Erro ao logar após registro:', loginErr);
+        }
+        setTimeout(() => {
+          let redirectPath = '/'; // Default agora é home
+          if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            const redirectParam = params.get('redirect');
+            if (redirectParam) {
+              redirectPath = redirectParam;
             }
-          }, 3500); // 3.5s para mostrar o modal
-        
+          }
+          navigate(redirectPath, {
+            state: {
+              message: 'Conta criada com sucesso! Você já está logado.',
+              type: 'success'
+            }
+          });
+        }, 3500);
         return true;
       }
       
@@ -465,7 +455,7 @@ export const useRegister = () => {
     } finally {
       setLoading(false);
     }
-  }, [formData, fieldErrors, touchedFields, navigate, handleRegistrationError, login, redirect]);
+  }, [formData, fieldErrors, touchedFields, navigate, handleRegistrationError, login]);
 
   // Função para voltar
   const goBack = useCallback(() => {

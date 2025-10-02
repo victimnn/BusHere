@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { 
   AuthHeader, 
   LoginForm, 
@@ -9,10 +10,9 @@ import { useLogin } from '../hooks';
 import { useLocation } from 'react-router-dom';
 
 function LoginPage() {
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const redirect = searchParams.get('redirect');
-
   const {
     formData,
     validation,
@@ -21,11 +21,38 @@ function LoginPage() {
     setEmail,
     setPassword,
     setRememberMe,
-    handleLogin,
+    handleLogin: originalHandleLogin,
     goBack,
-    goToRegister,
+    goToRegister: originalGoToRegister,
     clearError
   } = useLogin();
+
+  // handleLogin modificado para usar redirect
+  const handleLogin = async () => {
+    const result = await originalHandleLogin();
+    if (result && redirect) {
+      navigate(redirect, { replace: true });
+    }
+    // Se não houver redirect, navegação padrão já ocorre no hook
+  };
+
+  // goBack modificado para manter redirect
+  const handleGoBack = () => {
+    if (redirect) {
+      navigate(`/register?redirect=${encodeURIComponent(redirect)}`, { replace: true });
+    } else {
+      goBack();
+    }
+  };
+
+  // goToRegister modificado para manter redirect
+  const goToRegister = () => {
+    if (redirect) {
+      navigate(`/register?redirect=${encodeURIComponent(redirect)}`, { replace: true });
+    } else {
+      originalGoToRegister();
+    }
+  };
 
   return (
     <div className="login-container min-vh-100 d-flex align-items-start justify-content-center">
@@ -40,7 +67,7 @@ function LoginPage() {
               </>
             }
             subtitle="Faça login para acessar sua conta"
-            onClose={goBack}
+            onClose={handleGoBack}
             loading={loading}
           />
 

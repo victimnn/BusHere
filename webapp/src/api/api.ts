@@ -260,6 +260,7 @@ const api = {
         const response = await api.post<ApiResponse<UserData>>('/auth/register', userData);
         return response; // Retorna a resposta da API
       } catch (error) {
+        ///@ts-ignore
         if (import.meta.env.DEV) {
           console.error("Erro ao registrar usuário:", error);
         }
@@ -314,6 +315,7 @@ const api = {
       return api.get(`/vehicles?${queryParams.toString()}`);
     },
     getById: (id) => api.get(`/vehicles/${id}`),
+    getByRoute: (rotaId) => api.get(`/vehicles/by-route/${rotaId}`),
     delete: (id) => api.delete(`/vehicles/${id}`),
     getStatus: () => api.get('/vehicles/status'),
     getTypes: () => api.get('/vehicles/types'),

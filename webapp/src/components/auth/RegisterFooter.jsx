@@ -9,7 +9,9 @@ import { Link } from 'react-router-dom';
 const RegisterFooter = memo(({ currentStep, redirect }) => {
   if (currentStep !== 1) return null;
 
+
   const loginPath = redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login';
+
 
   return (
     <div className="text-center">

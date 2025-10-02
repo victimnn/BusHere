@@ -3,6 +3,61 @@ const express = require('express');
 module.exports = (pool) => {
   const router = express.Router();
 
+  // Rota para obter veículos com motoristas associados a uma rota específica
+  router.get('/by-route/:rotaId', async (req, res) => {
+    try {
+      const { rotaId } = req.params;
+      
+      const [rows] = await pool.execute(`
+        SELECT 
+          V.veiculo_id,
+          V.nome AS veiculo_nome,
+          V.placa,
+          V.modelo,
+          V.marca,
+          V.ano_fabricacao,
+          V.capacidade,
+          V.quilometragem,
+          V.data_ultima_manutencao,
+          V.data_proxima_manutencao,
+          V.tipo_veiculo_id,
+          V.status_veiculo_id,
+          TV.nome AS tipo_nome,
+          SV.nome AS status_nome,
+          V.ativo,
+          M.motorista_id,
+          M.nome AS motorista_nome,
+          M.cpf AS motorista_cpf,
+          M.cnh_numero,
+          M.cnh_categoria,
+          M.cnh_validade,
+          M.telefone AS motorista_telefone,
+          M.email AS motorista_email,
+          M.data_admissao,
+          SM.nome AS status_motorista_nome,
+          VR.veiculo_rota_id,
+          VR.observacoes,
+          VR.ativo AS veiculo_rota_ativo
+        FROM VeiculoRota VR
+        INNER JOIN Veiculos V ON VR.veiculo_id = V.veiculo_id
+        INNER JOIN Motoristas M ON VR.motorista_id = M.motorista_id
+        LEFT JOIN TipoVeiculo TV ON V.tipo_veiculo_id = TV.tipo_veiculo_id
+        LEFT JOIN StatusVeiculo SV ON V.status_veiculo_id = SV.status_veiculo_id
+        LEFT JOIN StatusMotorista SM ON M.status_motorista_id = SM.status_motorista_id
+        WHERE VR.rota_id = ? AND VR.ativo = TRUE
+        ORDER BY VR.criacao DESC
+      `, [rotaId]);
+
+      res.json({
+        data: rows,
+        total: rows.length
+      });
+    } catch (error) {
+      console.error('Erro ao buscar veículos com motoristas da rota:', error);
+      res.status(500).json({ error: 'Erro ao buscar veículos com motoristas da rota', details: error.message });
+    }
+  });
+
   // Rota para obter uma lista de veículos com paginação e filtros opcionais
   router.get('/', async (req, res) => {
     try {

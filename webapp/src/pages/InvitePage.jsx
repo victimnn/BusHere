@@ -1,22 +1,31 @@
 
 
 import React from "react";
+import { useState, useEffect } from "react";
 import ActionButton from "../components/common/buttons/ActionButton";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/api";   
 
 function InvitePage() {
 	const params = useParams(); // Extrai o código do convite da URL de forma idiomática
+    const navigate = useNavigate();
     const inviteCode = params.code; // Acessa o código do convite
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+            const meObject = await api.auth.me();
+            setIsLoggedIn(!!meObject); //se retornar objeto então logged in é true
+        }
+        checkLoginStatus();
+    }, []);
 
 
 
 	const handleAccept = async () => {
-        // Verificar se esta com login
-        const meObject = await api.auth.me();
-        if (!meObject) {
+        if (!isLoggedIn) {
             alert("Você precisa estar logado para aceitar um convite.");
+            navigate("/login?redirect=/convite/" + inviteCode);
             return;
         }
 
@@ -32,6 +41,7 @@ function InvitePage() {
         console.log(result);
         if (result) {
             alert("Convite aceito com sucesso!");
+            navigate("/");
         } else {
             alert("Erro ao aceitar o convite.");
         }
@@ -54,7 +64,7 @@ function InvitePage() {
 				style={{ minWidth: "80%", borderRadius: 15, marginTop: "auto", marginBottom: 160 }}
 				onClick={handleAccept}
 			>
-				Aceitar
+				{isLoggedIn ? "Aceitar" : "Fazer login para aceitar"}
 			</ActionButton>
 		</div>
 	);

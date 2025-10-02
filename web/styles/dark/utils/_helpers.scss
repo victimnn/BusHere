@@ -157,3 +157,36 @@
 .bg-medium {
   background-color: $bg-medium !important;
 }
+
+// -----------------------------------------------------------------------------
+// BOOTSTRAP ICONS FIX - Remover fundo branco dos ícones
+// -----------------------------------------------------------------------------
+.bi,
+[class^="bi-"],
+[class*=" bi-"] {
+  background-color: transparent !important;
+  background: none !important;
+  
+  &::before,
+  &::after {
+    background-color: transparent !important;
+    background: none !important;
+  }
+}
+
+// Fix específico para input-group-text
+.input-group-text {
+  i,
+  i.bi,
+  [class^="bi-"],
+  [class*=" bi-"] {
+    background-color: transparent !important;
+    background: none !important;
+    
+    &::before,
+    &::after {
+      background-color: transparent !important;
+      background: none !important;
+    }
+  }
+}

@@ -29,7 +29,8 @@ module.exports = (pool) => {
 			const metodo_envio = "Indefinido";
 			const usuario_emissor_id = req.body.usuario_emissor_id ?? 1; // Ajuste conforme autenticação
 			const data_expiracao = req.body.data_expiracao ?? new Date(Date.now() + 7*24*60*60*1000); // 7 dias padrão
-			const status_convite_id = req.body.status_convite_id ?? 1; // Ajuste conforme status padrão
+			let status_convite_id = req.body.status_convite_id ?? 1; // Ajuste conforme status padrão
+			if(status_convite_id == 0){status_convite_id = 1} // Garantir que o status inicial não seja inválido
 
 			const convite = {
 				codigo_convite,

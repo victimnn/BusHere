@@ -15,9 +15,9 @@ module.exports = (pool) => {
 		}
 	});
 
-	// POST /accept/:id - Aceitar convite
-	router.post('/accept/:id', extractToken, async (req, res) => {
-		const conviteId = req.params.id;
+	// POST /accept/:code - Aceitar convite
+	router.post('/accept/:code', extractToken, async (req, res) => {
+		const conviteCode = req.params.code;
 		const token = req.token;
 		try {
 			// Buscar o id do passageiro pelo token
@@ -27,8 +27,8 @@ module.exports = (pool) => {
 				return res.status(401).json({ error: "Token inválido ou passageiro não encontrado" });
 			}
 			const [updateResult] = await pool.query(
-				"UPDATE ConvitesPassageiro SET passageiro_cadastrado_id = ?, data_aceite = NOW(), status_convite_id = 2 WHERE convite_passageiro_id = ?",
-				[passageiroId, conviteId]
+				"UPDATE ConvitesPassageiro SET passageiro_cadastrado_id = ?, data_aceite = NOW(), status_convite_id = 2 WHERE codigo_convite = ?",
+				[passageiroId, conviteCode]
 			);
 			if (updateResult.affectedRows === 0) {
 				return res.status(404).json({ error: "Convite não encontrado" });
@@ -41,10 +41,10 @@ module.exports = (pool) => {
 	});
 
 		// GET / - Ver convites do passageiro (simples, retorna todos)
-	router.get('/:id', async (req, res) => {
-		const passageiroId = req.params.id;
+	router.get('/:code', async (req, res) => {
+		const conviteCode = req.params.code;
 		try {
-			const [invites] = await pool.query("SELECT * FROM ConvitesPassageiro WHERE passageiro_id = ?", [passageiroId]);
+			const [invites] = await pool.query("SELECT * FROM ConvitesPassageiro WHERE codigo_convite = ?", [conviteCode]);
 			res.json({ data: invites[0] });
 		} catch (error) {
 			console.error("Erro ao buscar convites:", error);

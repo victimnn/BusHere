@@ -13,3 +13,4 @@ export { default as NoticesPage } from './NoticesPage';
 export { default as BillsPage } from './BillsPage';
 export { default as SettingsPage } from './SettingsPage';
 export { default as HelpPage } from './HelpPage';
+export { default as InvitePage } from './InvitePage';

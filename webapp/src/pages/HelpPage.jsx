@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
-import { PageHeader, InfoCard, ActionButton, ContactInfo } from '../components';
+import React, { useState } from "react";
+import { PageHeader, InfoCard } from "../components";
 
 const HelpPage = () => {
-  const [activeAccordion, setActiveAccordion] = useState('1');
+  const [activeQuestion, setActiveQuestion] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const faqs = [
+  const toggleQuestion = (index) => {
+    setActiveQuestion(activeQuestion === index ? null : index);
+  };
+
+  const faq = [
     {
       id: '1',
       question: 'Como usar o aplicativo?',
@@ -32,113 +37,113 @@ const HelpPage = () => {
     }
   ];
 
-  const contactInfo = [
-    { type: 'email', value: 'suporte@bushere.com.br' },
-    { type: 'phone', value: '(11) 99999-9999' },
-    { type: 'whatsapp', value: '(11) 99999-9999' },
-    { type: 'schedule', value: 'Segunda a Sexta, 8h às 18h', label: 'Horário' }
-  ];
+  const filteredFaq = faq.filter((item) =>
+    item.question.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div className="container-fluid p-3 page-content-with-floating-button" style={{ paddingTop: '1rem' }}>
-      <div className="row">
-        <div className="col-12">
-          <PageHeader 
-            icon="bi-question-circle" 
-            title="Central de Ajuda" 
+    <div className="container py-4">
+      <PageHeader
+          icon="bi bi-info-circle-fill"
+          title="Central de Ajuda"
+      />
+
+      <div className="row justify-content-center">
+        <div className="col-md-8">
+          {/* FAQ */}
+          <InfoCard
+            header={{ icon: 'bi-chat-quote', title: 'Perguntas Frequentes' }}
+              variant="dark"
+          >
+            
+          <input
+            type="text"
+            className="form-control mb-3"
+            placeholder="Pesquisar dúvida..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
-          
-          <div className="row g-3">
-            {/* Perguntas Frequentes */}
-            <div className="col-12">
-              <InfoCard
-                header={{ icon: 'bi-chat-quote', title: 'Perguntas Frequentes' }}
-                variant="light"
-              >
-                <div className="accordion" id="faqAccordion">
-                  {faqs.map(faq => (
-                    <div key={faq.id} className="accordion-item border-0">
-                      <h2 className="accordion-header">
-                        <button
-                          className={`accordion-button ${activeAccordion === faq.id ? '' : 'collapsed'} border-0 bg-light`}
-                          type="button"
-                          onClick={() => setActiveAccordion(activeAccordion === faq.id ? '' : faq.id)}
-                        >
-                          <span className="small fw-medium">{faq.question}</span>
-                        </button>
-                      </h2>
-                      <div
-                        className={`accordion-collapse collapse ${activeAccordion === faq.id ? 'show' : ''}`}
-                        data-bs-parent="#faqAccordion"
-                      >
-                        <div className="accordion-body bg-white">
-                          <p className="small mb-0">{faq.answer}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </InfoCard>
-            </div>
-            
-            {/* Contato */}
-            <div className="col-12">
-              <InfoCard
-                header={{ icon: 'bi-telephone', title: 'Contato' }}
-                variant="light"
-              >
-                <ContactInfo 
-                  contacts={contactInfo}
-                  layout="grid"
-                />
-              </InfoCard>
-            </div>
-            
-            {/* Formulário de Contato */}
-            <div className="col-12">
-              <InfoCard
-                header={{ icon: 'bi-chat-dots', title: 'Envie uma Mensagem' }}
-                variant="light"
-              >
-                <form>
-                  <div className="mb-3">
-                    <label className="form-label small fw-medium">Nome</label>
-                    <input type="text" className="form-control form-control-sm" placeholder="Seu nome completo" />
-                  </div>
-                  
-                  <div className="mb-3">
-                    <label className="form-label small fw-medium">Email</label>
-                    <input type="email" className="form-control form-control-sm" placeholder="seu@email.com" />
-                  </div>
-                  
-                  <div className="mb-3">
-                    <label className="form-label small fw-medium">Assunto</label>
-                    <select className="form-select form-select-sm">
-                      <option>Dúvida Geral</option>
-                      <option>Problema Técnico</option>
-                      <option>Sugestão</option>
-                      <option>Reclamação</option>
-                    </select>
-                  </div>
-                  
-                  <div className="mb-3">
-                    <label className="form-label small fw-medium">Mensagem</label>
-                    <textarea className="form-control form-control-sm" rows="3" 
-                              placeholder="Descreva sua dúvida ou problema..."></textarea>
-                  </div>
-                  
-                  <ActionButton 
-                    icon="bi-send"
-                    variant="primary"
-                    fullWidth
-                    type="submit"
+
+          <div className="accordion" id="faqAccordion">
+            {filteredFaq.length > 0 ? (
+              filteredFaq.map((item, index) => (
+                <div className="accordion-item" key={index}>
+                  <h2 className="accordion-header">
+                    <button
+                      className={`accordion-button ${
+                        activeQuestion === index ? "" : "collapsed"
+                      }`}
+                      type="button"
+                      onClick={() => toggleQuestion(index)}
+                    >
+                      {item.question}
+                    </button>
+                  </h2>
+                  <div
+                    className={`accordion-collapse collapse ${
+                      activeQuestion === index ? "show" : ""
+                    }`}
                   >
-                    Enviar Mensagem
-                  </ActionButton>
-                </form>
-              </InfoCard>
+                    <div className="accordion-body">{item.answer}</div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-muted">Nenhuma dúvida encontrada.</p>
+            )}
+          </div>
+          </InfoCard>
+
+          <div className="card shadow-sm mt-4">
+            <div className="card-body">
+              <h5 className="card-title">Precisa de ajuda?</h5>
+              <p className="card-text">
+                Aqui você encontra respostas para dúvidas frequentes e informações para entrar em contato.
+              </p>
+              <a href="mailto:suporte@bushere.com" className="btn btn-primary">
+                Falar com o suporte
+              </a>
             </div>
           </div>
+
+          {/* Formulário de envio de e-mail */}
+          <div className="card shadow-sm mt-4">
+            <div className="card-body">
+              <h5 className="card-title">Envie uma mensagem</h5>
+              <form>
+
+                <div className="mb-3">
+                  <label className="form-label">Seu nome</label>
+                  <input type="text" className="form-control" placeholder="Digite seu nome" />
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label">Seu e-mail</label>
+                  <input type="email" className="form-control" placeholder="Digite seu e-mail" />
+                </div>
+
+                  <select className="form-select form-select-sm mb-2 ">
+                    <option>Dúvida Geral</option>
+                    <option>Problema Técnico</option>
+                    <option>Sugestão</option>
+                    <option>Reclamação</option>
+                  </select>
+
+                <div className="mb-3">
+                  <label className="form-label">Mensagem</label>
+                  <textarea
+                    className="form-control"
+                    rows="4"
+                    placeholder="Digite sua mensagem"
+                  ></textarea>
+                </div>
+                <button type="button" className="btn btn-success">
+                  Enviar
+                </button>
+              </form>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

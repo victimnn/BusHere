@@ -120,7 +120,7 @@ const HomePage = ({ isDark, setIsDark }) => {
 
 	// Configurações do bottom sheet otimizado para mobile
 	const bottomSheetConfig = {
-		anchorPoints: [15, 50, 95], // Pontos de ancoragem ajustados para mobile
+		anchorPoints: [15, 65, 95], // Aumentado MEDIUM de 50% para 65% para acomodar VehicleDetails
 		content: (
 			<div className="p-3">
 				<h6 className="mb-2">Informações</h6>

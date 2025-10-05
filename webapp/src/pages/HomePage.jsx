@@ -15,7 +15,7 @@ import { MAP_CONSTANTS } from "../utils/mapConstants";
  * Sidebar e FloatingButton agora são gerenciados pelo Layout global
  * Otimizada para dispositivos móveis
  */
-const HomePage = () => {
+const HomePage = ({ isDark, setIsDark }) => {
 	const [anchor, setAnchors] = useState(0);
 	const [showMap, setShowMap] = useState(true); // Toggle para testar mapa vs teste
 	
@@ -213,7 +213,7 @@ const HomePage = () => {
 				setAnchorPoint={setAnchors}
 				maxHeight={90}
 			>
-				<BottomSheetContent anchor={anchor} />
+				<BottomSheetContent anchor={anchor} isDark={isDark} />
 			</BottomSheet>
 		</div>
 	{/* Localização é solicitada automaticamente pela API do navegador ao carregar a página. Nenhum pop-up extra é exibido. */}

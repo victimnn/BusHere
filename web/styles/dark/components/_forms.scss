@@ -96,6 +96,21 @@
 }
 
 // -----------------------------------------------------------------------------
+// INPUT GROUP TEXT - DARK MODE FIX
+// -----------------------------------------------------------------------------
+.input-group-text {
+  background-color: $bg-medium !important;
+  border-color: $border-color !important;
+  color: $text-primary !important;
+  
+  i {
+    color: $primary !important;
+    background-color: transparent !important;
+    background: none !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
 // INPUTS COM ERRO DE VALIDAÇÃO
 // -----------------------------------------------------------------------------
 .time-input-invalid {

@@ -611,7 +611,39 @@ const api = {
         throw error;
       }
     }
-  }
+  },
+
+  invites: {
+    list: async () => {
+      try {
+        const response = await api.get('/invites');
+        return response;
+      } catch (error) {
+        console.error("Erro ao listar convites:", error);
+        throw error;
+      }
+    },
+
+    create: async (inviteData) => {
+      try {
+        const response = await api.post('/invites', inviteData);
+        return response;
+      } catch (error) {
+        console.error("Erro ao criar convite:", error);
+        throw error;
+      }
+    },
+
+    getById: async (id) => {
+      try {
+        const response = await api.get(`/invites/${id}`);
+        return response;
+      } catch (error) {
+        console.error("Erro ao buscar convite por ID:", error);
+        throw error;
+      }
+    }
+  },
 };
 
 export default api;

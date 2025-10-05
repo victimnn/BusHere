@@ -12,6 +12,7 @@ import {
   RegistrationSuccessModal
 } from '../components';
 import { useRegister } from '../hooks';
+import { useLocation } from 'react-router-dom';
 
 function RegisterPage() {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ function RegisterPage() {
     clearError,
     clearFeedback,
     BRAZILIAN_STATES
-  } = useRegister();
+  } = useRegister(redirect);
 
   // handleSubmit modificado para usar redirect
   const handleSubmit = async () => {

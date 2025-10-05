@@ -12,7 +12,8 @@ import {
   SettingsPage, 
   HelpPage, 
   LoginPage, 
-  RegisterPage 
+  RegisterPage,
+  InvitePage,
 } from "./pages";
 
 function App({ isDark, setIsDark }) {
@@ -50,6 +51,12 @@ function App({ isDark, setIsDark }) {
             <Route path="/ajuda" element={
               <Layout isDark={isDark} setIsDark={setIsDark}>
                 <HelpPage />
+              </Layout>
+            } />
+            
+            <Route path="/convite/:code" element={
+              <Layout isDark={isDark} setIsDark={setIsDark}>
+                <InvitePage />
               </Layout>
             } />
             

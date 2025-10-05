@@ -1,7 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BusCard } from '../../domain';
+import { BusCard, RouteInfoPopup } from '../../domain';
 import ActionButton from '../../common/buttons/ActionButton';
+import PopUpComponent from '../../PopUpComponent';
 import { useVehiclesWithDrivers } from '../../../hooks/data/useVehiclesWithDrivers';
 import { useMapMarkers } from '../../../hooks/map/useMapMarkers.jsx';
 import { useRoutes } from '../../../hooks/data/useRoutes';
@@ -137,13 +138,18 @@ const useBottomSheetData = () => {
 };
 
 // Componente BottomSheet na versão Mini - mostra apenas próximos ônibus
-const BottomSheetMini = () => {
-    const { routingLoading, cacheStats, busCardRoutes } = useBottomSheetData();
+const BottomSheetMini = ({ isDark }) => {
+    const { routes: fullRouteData, routingLoading, cacheStats, busCardRoutes } = useBottomSheetData();
+    const popupRef = useRef();
     
     const handleBusClick = useCallback((route) => {
         console.log('Bus clicked:', route);
-        // TODO: Implementar navegação para detalhes do ônibus
-    }, []);
+        popupRef.current?.show({
+            content: (props) => <RouteInfoPopup route={route} fullRouteData={fullRouteData} {...props} />,
+            title: '',
+            props: { route, fullRouteData }
+        });
+    }, [fullRouteData]);
     
     return (
         <div className="mt-3">
@@ -169,19 +175,51 @@ const BottomSheetMini = () => {
                     onClick={handleBusClick}
                 />
             ))}
+            
+            {/* Popup para informações da rota */}
+            <PopUpComponent 
+                ref={popupRef}
+                variant="card"
+                size="lg"
+                theme={isDark ? "dark" : "light"}
+                borderRadius={20}
+                overlayOpacity={0.6}
+                animation="zoom"
+                showCloseButton={true}
+                closeOnOverlayClick={true}
+                closeOnEscape={true}
+                customStyles={{
+                    content: {
+                        height: '100%'
+                    },
+                    dialog: {
+                        margin: '1rem',
+                        maxHeight: '90vh'
+                    },
+                    body: {
+                        padding: 0,
+                        overflow: 'visible'
+                    }
+                }}
+            />
         </div>
     );
 };
 
 // Componente BottomSheet na versão Média - inclui debug e sugestões
-const BottomSheetMedium = () => {
+const BottomSheetMedium = ({ isDark }) => {
     const navigate = useNavigate();
-    const { routes, routingLoading, cacheStats, busCardRoutes } = useBottomSheetData();
+    const { routes: fullRouteData, routingLoading, cacheStats, busCardRoutes } = useBottomSheetData();
+    const popupRef = useRef();
     
     const handleBusClick = useCallback((route) => {
         console.log('Bus clicked:', route);
-        // TODO: Implementar navegação para detalhes do ônibus
-    }, []);
+        popupRef.current?.show({
+            content: (props) => <RouteInfoPopup route={route} fullRouteData={fullRouteData} {...props} />,
+            title: '',
+            props: { route, fullRouteData }
+        });
+    }, [fullRouteData]);
     
     return (
         <div className="overflow-y-auto overflow-x-hidden">
@@ -189,9 +227,9 @@ const BottomSheetMedium = () => {
             <div className="mt-3 bg-light text-dark">
                 <div className="mb-3">
                     <h5 className="mb-2 fw-bold text-dark">Sugestões</h5>
-                    {routes?.stops && routes.userStop ? (
+                    {fullRouteData?.stops && fullRouteData.userStop ? (
                         (() => {
-                            const userStop = routes.stops.find(stop => stop.ponto_id === routes.userStop);
+                            const userStop = fullRouteData.stops.find(stop => stop.ponto_id === fullRouteData.userStop);
                             const horarioRaw = userStop?.horario_previsto_passagem || userStop?.horario || '5h45';
                             const horario = formatTime(horarioRaw);
                             const pontoNome = userStop?.nome || 'A. Zeus';
@@ -218,6 +256,33 @@ const BottomSheetMedium = () => {
                     ))}
                 </div>
             </div>
+            
+            {/* Popup para informações da rota */}
+            <PopUpComponent 
+                ref={popupRef}
+                variant="card"
+                size="lg"
+                theme={isDark ? "dark" : "light"}
+                borderRadius={20}
+                overlayOpacity={0.6}
+                animation="zoom"
+                showCloseButton={true}
+                closeOnOverlayClick={true}
+                closeOnEscape={true}
+                customStyles={{
+                    content: {
+                        height: '100%'
+                    },
+                    dialog: {
+                        margin: '1rem',
+                        maxHeight: '90vh'
+                    },
+                    body: {
+                        padding: 0,
+                        overflow: 'visible'
+                    }
+                }}
+            />
         </div>
     );
 };
@@ -322,7 +387,7 @@ const BOTTOM_SHEET_STATES = {
  * @param {Object} props - Propriedades do componente
  * @param {number} props.anchor - Estado atual do bottom sheet (0, 1, ou 2)
  */
-const BottomSheetContent = ({ anchor }) => {
+const BottomSheetContent = ({ anchor, isDark }) => {
     const contentMap = {
         [BOTTOM_SHEET_STATES.MINI]: BottomSheetMini,
         [BOTTOM_SHEET_STATES.MEDIUM]: BottomSheetMedium,
@@ -331,7 +396,7 @@ const BottomSheetContent = ({ anchor }) => {
     
     const Content = contentMap[anchor] || BottomSheetMini;
 
-    return <Content anchor={anchor} />;
+    return <Content anchor={anchor} isDark={isDark} />;
 };
 
 export default BottomSheetContent;

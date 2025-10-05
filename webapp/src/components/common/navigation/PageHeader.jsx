@@ -7,11 +7,12 @@ import PropTypes from 'prop-types';
  */
 const PageHeader = ({ icon, title, subtitle, className = '' }) => {
   return (
-    <div className={`mb-3 ${className}`}>
+    <div className={`mb-3 text-center ${className}`}>
       <h4 className="mb-2">
         {icon && (
-          <i className={`${icon} me-2 text-primary`}></i>
+          <i className={`${icon} text-primary fs-1`}></i>
         )}
+        <br />
         {title}
       </h4>
       {subtitle && (

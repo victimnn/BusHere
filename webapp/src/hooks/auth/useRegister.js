@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { formatCPF, formatPhoneNumber, removeFormatting } from '../../../../shared/formatters.ts';
 import { validateEmail, validateCPF, validadeRawCPF, validatePhoneNumber, validateCEP } from '../../../../shared/validators.ts';
 import { BRAZILIAN_STATES } from '../../../../shared/brazilianStates.ts';
@@ -10,7 +10,7 @@ import { useAuth } from '../../context/AuthContext';
  * Hook personalizado para gerenciar lógica de registro
  * Segue padrões identificados na estrutura web do projeto
  */
-export const useRegister = () => {
+export const useRegister = (redirect = null) => {
   // Estado da aplicação
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -464,8 +464,9 @@ export const useRegister = () => {
 
   // Função para ir para login
   const goToLogin = useCallback(() => {
-    navigate('/login');
-  }, [navigate]);
+    const path = redirect ? `/login?redirect=${encodeURIComponent(redirect)}` : '/login';
+    navigate(path);
+  }, [navigate, redirect]);
 
   // Função para limpar estados de feedback
   const clearFeedback = useCallback(() => {

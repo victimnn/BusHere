@@ -1,6 +1,6 @@
 import React, { useState, forwardRef, useImperativeHandle, useCallback, memo } from 'react';
 import PropTypes from 'prop-types';
-import ActionButton from '../ActionButton';
+import ActionButton from '../buttons/ActionButton';
 
 /**
  * Componente Dialog unificado que substitui ConfirmDialog e AlertDialog

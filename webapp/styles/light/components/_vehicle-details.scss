@@ -1,0 +1,123 @@
+// =============================================================================
+// VEHICLE DETAILS COMPONENT STYLES - LIGHT MODE
+// =============================================================================
+
+.vehicle-details-card {
+    .card {
+        border-radius: 1rem !important;
+        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+        border: none !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateY(0);
+        
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+    }
+
+    .info-field {
+        background-color: var(--bs-light);
+        border-radius: 0.75rem;
+        padding: 0.75rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid transparent;
+        transform: translateX(0);
+        
+        &:hover {
+            background-color: #f1f3f4;
+            transform: translateX(2px);
+            border-color: rgba(var(--bs-primary-rgb), 0.2);
+        }
+        
+        .field-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--bs-secondary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .field-value {
+            font-weight: 600;
+            color: var(--bs-dark);
+            word-break: break-word;
+        }
+    }
+
+    .driver-avatar {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--bs-light);
+        border-radius: 50%;
+        border: 2px solid var(--bs-primary);
+    }
+
+    .empty-state {
+        padding: 2rem 1rem;
+        
+        i {
+            opacity: 0.5;
+        }
+        
+        p {
+            font-size: 0.875rem;
+        }
+    }
+}
+
+// Responsividade
+@media (max-width: 576px) {
+    .vehicle-details-card {
+        .card-body {
+            padding: 0.75rem !important;
+        }
+        
+        .info-field {
+            padding: 0.5rem;
+            
+            .field-label {
+                font-size: 0.65rem;
+                margin-bottom: 0.125rem;
+            }
+            
+            .field-value {
+                font-size: 0.8rem;
+            }
+        }
+        
+        .driver-avatar {
+            width: 30px;
+            height: 30px;
+        }
+        
+        h6 {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem !important;
+        }
+    }
+}
+
+@media (min-width: 768px) {
+    .vehicle-details-card {
+        .info-field {
+            padding: 1rem;
+            
+            .field-label {
+                font-size: 0.8rem;
+            }
+            
+            .field-value {
+                font-size: 1rem;
+            }
+        }
+        
+        .driver-avatar {
+            width: 45px;
+            height: 45px;
+        }
+    }
+}

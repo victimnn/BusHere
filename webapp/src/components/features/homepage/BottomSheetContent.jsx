@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BusCard, RouteInfoPopup } from '../../domain';
+import { BusCard, RouteInfoPopup, VehicleDetails } from '../../domain';
 import ActionButton from '../../common/buttons/ActionButton';
 import PopUpComponent from '../../PopUpComponent';
 import { useVehiclesWithDrivers } from '../../../hooks/data/useVehiclesWithDrivers';
@@ -209,7 +209,7 @@ const BottomSheetMini = ({ isDark }) => {
 // Componente BottomSheet na versão Média - inclui debug e sugestões
 const BottomSheetMedium = ({ isDark }) => {
     const navigate = useNavigate();
-    const { routes: fullRouteData, routingLoading, cacheStats, busCardRoutes } = useBottomSheetData();
+    const { routes: fullRouteData, routingLoading, cacheStats, busCardRoutes, vehiclesWithDrivers } = useBottomSheetData();
     const popupRef = useRef();
     
     const handleBusClick = useCallback((route) => {
@@ -255,6 +255,14 @@ const BottomSheetMedium = ({ isDark }) => {
                         />
                     ))}
                 </div>
+            </div>
+
+            {/* Seção de Detalhes do Veículo */}
+            <div className="mt-2">
+                <VehicleDetails 
+                    vehicle={vehiclesWithDrivers?.[0]} 
+                    driver={vehiclesWithDrivers?.[0]} 
+                />
             </div>
             
             {/* Popup para informações da rota */}

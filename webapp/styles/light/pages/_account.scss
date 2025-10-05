@@ -230,6 +230,149 @@
   }
 }
 
+// Responsividade para telas grandes (desktop)
+@media (min-width: 1200px) {
+  .account-page {
+    .container-fluid {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+    
+    .account-header {
+      border-radius: 0 0 2rem 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .account-avatar .avatar-circle {
+      width: 120px !important;
+      height: 120px !important;
+      
+      span {
+        font-size: 2.5rem !important;
+      }
+    }
+    
+    .status-indicator {
+      width: 32px !important;
+      height: 32px !important;
+      bottom: 8px !important;
+      right: 8px !important;
+    }
+    
+    .row.g-3 {
+      margin-bottom: 2rem;
+    }
+    
+    .modern-card {
+      margin-bottom: 1.5rem;
+      
+      .card-body {
+        padding: 2rem !important;
+      }
+    }
+    
+    .stat-card {
+      .card-body {
+        padding: 1.5rem !important;
+      }
+    }
+    
+    .action-button {
+      padding: 1.25rem !important;
+      font-size: 1.1rem;
+    }
+    
+    .info-field {
+      padding: 1.25rem;
+      
+      .field-label {
+        font-size: 0.875rem;
+      }
+      
+      .field-value {
+        font-size: 1.1rem;
+      }
+    }
+    
+    // Layout de duas colunas para telas grandes
+    .col-lg-8 {
+      .modern-card {
+        height: 100%;
+      }
+    }
+    
+    .col-lg-4 {
+      .modern-card {
+        height: 100%;
+        
+        .card-body {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+      }
+    }
+    
+    // Melhor espaçamento para estatísticas
+    .col-lg-3 {
+      .stat-card {
+        height: 100%;
+        
+        .card-body {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          text-align: center;
+        }
+      }
+    }
+  }
+}
+
+// Responsividade para telas médias-grandes (tablet landscape)
+@media (min-width: 768px) and (max-width: 1199px) {
+  .account-page {
+    .container-fluid {
+      max-width: 900px;
+      margin: 0 auto;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+    
+    .account-header {
+      border-radius: 0 0 1.5rem 1.5rem;
+    }
+    
+    .account-avatar .avatar-circle {
+      width: 100px !important;
+      height: 100px !important;
+      
+      span {
+        font-size: 2rem !important;
+      }
+    }
+    
+    .status-indicator {
+      width: 28px !important;
+      height: 28px !important;
+    }
+    
+    .modern-card .card-body {
+      padding: 1.75rem !important;
+    }
+    
+    .stat-card .card-body {
+      padding: 1.25rem !important;
+    }
+    
+    .action-button {
+      padding: 1.125rem !important;
+    }
+  }
+}
+
 // Estados de loading e interação
 .loading {
   .account-avatar {

@@ -9,104 +9,104 @@ import { formatters } from '../detail/detailConfigs';
 
 export const passengerFormConfig = {
   fields: [
-    {
-      name: 'nome',
-      type: 'text',
-      label: 'Nome',
-      labelIcon: 'bi bi-person-fill',
-      inputIcon: 'bi bi-person',
-      placeholder: 'Nome completo',
-      maxLength: 255,
-      required: true,
-      size: 'lg',
-      validator: (value) => {
-        return !value.trim() ? 'Nome é obrigatório' : null;
-      }
-    },
-    {
-      name: 'email',
-      type: 'email',
-      label: 'E-mail',
-      labelIcon: 'bi bi-envelope-fill',
-      inputIcon: 'bi bi-envelope',
-      placeholder: 'email@exemplo.com',
-      maxLength: 255,
-      required: true,
-      size: 'lg',
-      validator: (value) => {
-        if (!value.trim()) return 'E-mail é obrigatório';
-        if (!validateEmail(value)) return 'E-mail inválido';
-        return null;
-      }
-    },
-    {
-      name: 'cpf',
-      type: 'text',
-      label: 'CPF',
-      labelIcon: 'bi bi-card-text',
-      inputIcon: 'bi bi-123',
-      placeholder: '000.000.000-00',
-      maxLength: 14,
-      required: true,
-      size: 'lg',
-      formatter: (value) => formatCPF((value || '').toString()),
-      additionalProps: { 
-        autoComplete: 'new-password',
-        'data-form-type': 'other',
-        'data-lpignore': 'true',
-        'data-1p-ignore': 'true'
-      },
-      validator: (value) => {
-        if (!value.trim()) return 'CPF é obrigatório';
-        if (!validateCPF(value)) return 'CPF inválido';
-        return null;
-      }
-    },
-    {
-      name: 'telefone',
-      type: 'tel',
-      label: 'Telefone',
-      labelIcon: 'bi bi-telephone-fill',
-      inputIcon: 'bi bi-telephone',
-      placeholder: '(00) 00000-0000',
-      maxLength: 15,
-      size: 'lg',
-      formatter: (value) => formatPhoneNumber((value || '').toString()),
-      validator: (value) => {
-        if (value && !validatePhoneNumber(value)) return 'Formato: (00) 00000-0000';
-        return null;
-      }
-    },
-    {
-      name: 'data_nascimento',
-      type: 'date',
-      label: 'Data de Nascimento',
-      labelIcon: 'bi bi-calendar-plus-fill',
-      inputIcon: 'bi bi-calendar-plus',
-      placeholder: 'Data de nascimento',
-      size: 'lg',
-      additionalProps: { 
-        max: new Date().toISOString().split('T')[0],
-        autoComplete: 'new-password',
-        'data-form-type': 'other',
-        'data-lpignore': 'true',
-        'data-1p-ignore': 'true'
-      },
-      reverseTransform: reverseTransformDate,
-      validator: validateBirthDate
-    },
-    {
-      name: 'pcd',
-      type: 'checkbox',
-      label: 'Pessoa com Deficiência (PCD)',
-      labelIcon: 'bi bi-universal-access',
-      inputIcon: 'bi bi-universal-access',
-      size: 'lg',
-      className: 'pcd-checkbox',
-      additionalProps: { 
-        'data-form-type': 'other'
-      }
-    },
+    // {
+    //   name: 'nome',
+    //   type: 'text',
+    //   label: 'Nome',
+    //   labelIcon: 'bi bi-person-fill',
+    //   inputIcon: 'bi bi-person',
+    //   placeholder: 'Nome completo',
+    //   maxLength: 255,
+    //   required: true,
+    //   size: 'lg',
+    //   validator: (value) => {
+    //     return !value.trim() ? 'Nome é obrigatório' : null;
+    //   }
+    // },
+    // {
+    //   name: 'email',
+    //   type: 'email',
+    //   label: 'E-mail',
+    //   labelIcon: 'bi bi-envelope-fill',
+    //   inputIcon: 'bi bi-envelope',
+    //   placeholder: 'email@exemplo.com',
+    //   maxLength: 255,
+    //   required: true,
+    //   size: 'lg',
+    //   validator: (value) => {
+    //     if (!value.trim()) return 'E-mail é obrigatório';
+    //     if (!validateEmail(value)) return 'E-mail inválido';
+    //     return null;
+    //   }
+    // },
+    // {
+    //   name: 'cpf',
+    //   type: 'text',
+    //   label: 'CPF',
+    //   labelIcon: 'bi bi-card-text',
+    //   inputIcon: 'bi bi-123',
+    //   placeholder: '000.000.000-00',
+    //   maxLength: 14,
+    //   required: true,
+    //   size: 'lg',
+    //   formatter: (value) => formatCPF((value || '').toString()),
+    //   additionalProps: { 
+    //     autoComplete: 'new-password',
+    //     'data-form-type': 'other',
+    //     'data-lpignore': 'true',
+    //     'data-1p-ignore': 'true'
+    //   },
+    //   validator: (value) => {
+    //     if (!value.trim()) return 'CPF é obrigatório';
+    //     if (!validateCPF(value)) return 'CPF inválido';
+    //     return null;
+    //   }
+    // },
+    // {
+    //   name: 'telefone',
+    //   type: 'tel',
+    //   label: 'Telefone',
+    //   labelIcon: 'bi bi-telephone-fill',
+    //   inputIcon: 'bi bi-telephone',
+    //   placeholder: '(00) 00000-0000',
+    //   maxLength: 15,
+    //   size: 'lg',
+    //   formatter: (value) => formatPhoneNumber((value || '').toString()),
+    //   validator: (value) => {
+    //     if (value && !validatePhoneNumber(value)) return 'Formato: (00) 00000-0000';
+    //     return null;
+    //   }
+    // },
+    // {
+    //   name: 'data_nascimento',
+    //   type: 'date',
+    //   label: 'Data de Nascimento',
+    //   labelIcon: 'bi bi-calendar-plus-fill',
+    //   inputIcon: 'bi bi-calendar-plus',
+    //   placeholder: 'Data de nascimento',
+    //   size: 'lg',
+    //   additionalProps: { 
+    //     max: new Date().toISOString().split('T')[0],
+    //     autoComplete: 'new-password',
+    //     'data-form-type': 'other',
+    //     'data-lpignore': 'true',
+    //     'data-1p-ignore': 'true'
+    //   },
+    //   reverseTransform: reverseTransformDate,
+    //   validator: validateBirthDate
+    // },
+    // {
+    //   name: 'pcd',
+    //   type: 'checkbox',
+    //   label: 'Pessoa com Deficiência (PCD)',
+    //   labelIcon: 'bi bi-universal-access',
+    //   inputIcon: 'bi bi-universal-access',
+    //   size: 'lg',
+    //   className: 'pcd-checkbox',
+    //   additionalProps: { 
+    //     'data-form-type': 'other'
+    //   }
+    // },
     {
       name: 'tipo_passageiro',
       alternativeKey: 'tipo_passageiro_id',
@@ -130,113 +130,113 @@ export const passengerFormConfig = {
       }
     },
     // Seção de Endereço - CEP primeiro para preenchimento automático
-    {
-      name: 'cep',
-      type: 'text',
-      label: 'CEP',
-      labelIcon: 'bi bi-mailbox',
-      inputIcon: 'bi bi-envelope',
-      placeholder: '00000-000',
-      maxLength: 9,
-      required: true,
-      size: 'lg',
-      formatter: (value) => formatCEP((value || '').toString()),
-      validator: (value) => {
-        if (!value.trim()) return 'CEP é obrigatório';
-        if (!validateCEP(value)) return 'CEP deve ter o formato 00000-000';
-        return null;
-      },
-      onBlur: 'handleCepBlur', // Evento para buscar dados do CEP
-      helpText: 'Digite o CEP para preenchimento automático do endereço'
-    },
-    {
-      name: 'logradouro',
-      type: 'text',
-      label: 'Logradouro',
-      labelIcon: 'bi bi-house-fill',
-      inputIcon: 'bi bi-geo',
-      placeholder: 'Nome da rua/avenida',
-      maxLength: 255,
-      required: true,
-      size: 'lg',
-      validator: (value) => {
-        if (!value.trim()) return 'Logradouro é obrigatório';
-        return null;
-      }
-    },
-    {
-      name: 'numero_endereco',
-      type: 'text',
-      label: 'Número',
-      labelIcon: 'bi bi-123',
-      inputIcon: 'bi bi-hash',
-      placeholder: 'Número do endereço',
-      maxLength: 20,
-      required: true,
-      size: 'lg',
-      validator: (value) => {
-        if (!value.trim()) return 'Número é obrigatório';
-        return null;
-      }
-    },
-    {
-      name: 'complemento_endereco',
-      type: 'text',
-      label: 'Complemento',
-      labelIcon: 'bi bi-house-door',
-      inputIcon: 'bi bi-plus-circle',
-      placeholder: 'Apartamento, bloco, etc.',
-      maxLength: 100,
-      size: 'lg'
-    },
-    {
-      name: 'bairro',
-      type: 'text',
-      label: 'Bairro',
-      labelIcon: 'bi bi-building',
-      inputIcon: 'bi bi-buildings',
-      placeholder: 'Nome do bairro',
-      maxLength: 100,
-      required: true,
-      size: 'lg',
-      validator: (value) => {
-        if (!value.trim()) return 'Bairro é obrigatório';
-        return null;
-      }
-    },
-    {
-      name: 'cidade',
-      type: 'text',
-      label: 'Cidade',
-      labelIcon: 'bi bi-geo-alt',
-      inputIcon: 'bi bi-building',
-      placeholder: 'Nome da cidade',
-      maxLength: 100,
-      required: true,
-      size: 'lg',
-      validator: (value) => {
-        if (!value.trim()) return 'Cidade é obrigatória';
-        return null;
-      }
-    },
-    {
-      name: 'uf',
-      type: 'select',
-      label: 'UF',
-      labelIcon: 'bi bi-flag',
-      inputIcon: 'bi bi-flag',
-      placeholder: 'Selecione o estado',
-      required: true,
-      size: 'lg',
-      defaultOptions: BRAZILIAN_STATES,
-      optionValue: 'value',
-      optionLabel: 'label',
-      validator: (value) => {
-        if (!value) return 'Estado é obrigatório';
-        if (!isValidUF(value)) return 'Estado inválido';
-        return null;
-      }
-    },
+    // {
+    //   name: 'cep',
+    //   type: 'text',
+    //   label: 'CEP',
+    //   labelIcon: 'bi bi-mailbox',
+    //   inputIcon: 'bi bi-envelope',
+    //   placeholder: '00000-000',
+    //   maxLength: 9,
+    //   required: true,
+    //   size: 'lg',
+    //   formatter: (value) => formatCEP((value || '').toString()),
+    //   validator: (value) => {
+    //     if (!value.trim()) return 'CEP é obrigatório';
+    //     if (!validateCEP(value)) return 'CEP deve ter o formato 00000-000';
+    //     return null;
+    //   },
+    //   onBlur: 'handleCepBlur', // Evento para buscar dados do CEP
+    //   helpText: 'Digite o CEP para preenchimento automático do endereço'
+    // },
+    // {
+    //   name: 'logradouro',
+    //   type: 'text',
+    //   label: 'Logradouro',
+    //   labelIcon: 'bi bi-house-fill',
+    //   inputIcon: 'bi bi-geo',
+    //   placeholder: 'Nome da rua/avenida',
+    //   maxLength: 255,
+    //   required: true,
+    //   size: 'lg',
+    //   validator: (value) => {
+    //     if (!value.trim()) return 'Logradouro é obrigatório';
+    //     return null;
+    //   }
+    // },
+    // {
+    //   name: 'numero_endereco',
+    //   type: 'text',
+    //   label: 'Número',
+    //   labelIcon: 'bi bi-123',
+    //   inputIcon: 'bi bi-hash',
+    //   placeholder: 'Número do endereço',
+    //   maxLength: 20,
+    //   required: true,
+    //   size: 'lg',
+    //   validator: (value) => {
+    //     if (!value.trim()) return 'Número é obrigatório';
+    //     return null;
+    //   }
+    // },
+    // {
+    //   name: 'complemento_endereco',
+    //   type: 'text',
+    //   label: 'Complemento',
+    //   labelIcon: 'bi bi-house-door',
+    //   inputIcon: 'bi bi-plus-circle',
+    //   placeholder: 'Apartamento, bloco, etc.',
+    //   maxLength: 100,
+    //   size: 'lg'
+    // },
+    // {
+    //   name: 'bairro',
+    //   type: 'text',
+    //   label: 'Bairro',
+    //   labelIcon: 'bi bi-building',
+    //   inputIcon: 'bi bi-buildings',
+    //   placeholder: 'Nome do bairro',
+    //   maxLength: 100,
+    //   required: true,
+    //   size: 'lg',
+    //   validator: (value) => {
+    //     if (!value.trim()) return 'Bairro é obrigatório';
+    //     return null;
+    //   }
+    // },
+    // {
+    //   name: 'cidade',
+    //   type: 'text',
+    //   label: 'Cidade',
+    //   labelIcon: 'bi bi-geo-alt',
+    //   inputIcon: 'bi bi-building',
+    //   placeholder: 'Nome da cidade',
+    //   maxLength: 100,
+    //   required: true,
+    //   size: 'lg',
+    //   validator: (value) => {
+    //     if (!value.trim()) return 'Cidade é obrigatória';
+    //     return null;
+    //   }
+    // },
+    // {
+    //   name: 'uf',
+    //   type: 'select',
+    //   label: 'UF',
+    //   labelIcon: 'bi bi-flag',
+    //   inputIcon: 'bi bi-flag',
+    //   placeholder: 'Selecione o estado',
+    //   required: true,
+    //   size: 'lg',
+    //   defaultOptions: BRAZILIAN_STATES,
+    //   optionValue: 'value',
+    //   optionLabel: 'label',
+    //   validator: (value) => {
+    //     if (!value) return 'Estado é obrigatório';
+    //     if (!isValidUF(value)) return 'Estado inválido';
+    //     return null;
+    //   }
+    // },
     // Relacionamentos
     {
       name: 'rota_id',

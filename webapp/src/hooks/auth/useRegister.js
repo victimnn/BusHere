@@ -10,7 +10,7 @@ import { useAuth } from '../../context/AuthContext';
  * Hook personalizado para gerenciar lógica de registro
  * Segue padrões identificados na estrutura web do projeto
  */
-export const useRegister = () => {
+export const useRegister = (redirect = null) => {
   // Estado da aplicação
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);

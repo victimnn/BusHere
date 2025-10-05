@@ -39,7 +39,7 @@ function RegisterPage() {
     clearError,
     clearFeedback,
     BRAZILIAN_STATES
-  } = useRegister();
+  } = useRegister(redirect);
 
   // handleSubmit modificado para usar redirect
   const handleSubmit = async () => {

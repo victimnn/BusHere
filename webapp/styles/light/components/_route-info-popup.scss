@@ -1,0 +1,635 @@
+// =============================================================================
+// ROUTE INFO POPUP - REFATORADO SEGUINDO DESIGN SYSTEM DO WEBAPP
+// =============================================================================
+
+@import '../base/variables';
+@import '../base/mixins';
+@import '../base/fonts';
+
+// Container principal - Mobile-first com altura responsiva
+.route-popup-container {
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: $body-bg;
+    border-radius: 20px;
+    padding: 0;
+    
+    // Permitir um pouco de overflow para elementos com hover
+    @media (min-width: 800px) {
+        overflow-x: visible;
+        overflow-y: auto;
+    }
+}
+
+// Container do conteúdo principal - ocupa espaço disponível
+.route-popup-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    
+    @media (min-width: 800px) {
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+}
+
+// Classe específica para scrollbar em telas grandes
+.route-popup-scrollable {
+    // Desktop: scrollbar para telas maiores que 800px
+    @media (min-width: 800px) {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        max-height: 85vh !important;
+        
+        // Scrollbar customizada
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        &::-webkit-scrollbar-track {
+            background: rgba($text-muted, 0.1);
+            border-radius: 3px;
+        }
+        
+        &::-webkit-scrollbar-thumb {
+            background: rgba($primary, 0.3);
+            border-radius: 3px;
+            
+            &:hover {
+                background: rgba($primary, 0.5);
+            }
+        }
+    }
+}
+
+// Sobrescrever estilos do modal-body do Bootstrap
+.modal-body .route-popup-scrollable {
+    @media (min-width: 800px) {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        max-height: 85vh !important;
+    }
+}
+
+// Centralizar popup em telas grandes
+.modal-dialog {
+    @media (min-width: 800px) {
+        margin: 2rem auto !important;
+        max-width: 600px !important;
+    }
+}
+
+// Garantir que o modal-body não tenha overflow
+.modal-body {
+    overflow: visible !important;
+    padding: 0 !important;
+}
+
+// Estado vazio
+.empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: $text-muted;
+    
+    i {
+        font-size: 3rem;
+        margin-bottom: $spacing-md;
+        opacity: 0.5;
+    }
+    
+    p {
+        font-size: 1.1rem;
+        margin: 0;
+        font-family: $font-sawarabi;
+    }
+}
+
+// Cabeçalho da rota
+.route-header {
+    background: linear-gradient(135deg, $bg-light 0%, $body-bg 100%);
+    padding: $spacing-lg $spacing-md;
+    border-bottom: 1px solid $border-light;
+    
+    @include mobile-only {
+        padding: $spacing-md $spacing-sm;
+    }
+}
+
+.vehicle-info-card {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    
+    @include mobile-only {
+        gap: $spacing-sm;
+    }
+}
+
+.vehicle-avatar {
+    width: 60px;
+    height: 60px;
+    @include flex-center;
+    background: $primary-light-opacity;
+    border-radius: 20px;
+    color: $primary;
+    font-size: 24px;
+    flex-shrink: 0;
+    border: 2px solid rgba($primary, 0.2);
+    
+    @include mobile-only {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+}
+
+.vehicle-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.vehicle-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: $text-primary;
+    margin: 0 0 $spacing-xs 0;
+    line-height: 1.3;
+    font-family: $font-sora;
+    
+    @include mobile-only {
+        font-size: 1.25rem;
+    }
+}
+
+.route-code {
+    font-size: 0.875rem;
+    color: $text-secondary;
+    font-weight: 500;
+    margin-bottom: $spacing-xs;
+    font-family: $font-sawarabi;
+}
+
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-sm;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    
+    &.ativo {
+        background: rgba($success, 0.1);
+        color: $success;
+        border: 1px solid rgba($success, 0.2);
+    }
+    
+    &.inativo {
+        background: rgba($danger, 0.1);
+        color: $danger;
+        border: 1px solid rgba($danger, 0.2);
+    }
+    
+    i {
+        font-size: 0.6rem;
+    }
+}
+
+// Seção principal
+.route-main-section {
+    padding: $spacing-lg $spacing-md;
+    
+    @include mobile-only {
+        padding: $spacing-md $spacing-sm;
+    }
+}
+
+.route-path-card {
+    background: $bg-light;
+    border-radius: $border-radius;
+    padding: $spacing-md;
+    margin-bottom: $spacing-md;
+    border: 1px solid $border-light;
+}
+
+.path-header {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-sm;
+    
+    i {
+        font-size: 1.2rem;
+    }
+    
+    h6 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: $text-primary;
+        font-family: $font-sora;
+    }
+}
+
+.route-description {
+    margin: 0;
+    font-size: 0.95rem;
+    color: $text-secondary;
+    line-height: 1.5;
+    font-family: $font-sawarabi;
+}
+
+.route-timing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-sm;
+    
+    @include mobile-only {
+        grid-template-columns: 1fr;
+        gap: $spacing-xs;
+    }
+}
+
+.timing-card {
+    background: $white;
+    border-radius: $border-radius;
+    padding: $spacing-md;
+    border: 1px solid $border-light;
+    box-shadow: $box-shadow-sm;
+    transition: $transition-all;
+    
+    &:hover {
+        box-shadow: $box-shadow-soft;
+        transform: translateY(-1px);
+    }
+    
+    &.primary {
+        border-left: 4px solid $primary;
+    }
+    
+    &.secondary {
+        border-left: 4px solid $info;
+    }
+}
+
+.timing-icon {
+    width: 40px;
+    height: 40px;
+    @include flex-center;
+    border-radius: $border-radius-sm;
+    margin-bottom: $spacing-sm;
+    
+    .primary & {
+        background: rgba($primary, 0.1);
+        color: $primary;
+    }
+    
+    .secondary & {
+        background: rgba($info, 0.1);
+        color: $info;
+    }
+    
+    i {
+        font-size: 1.1rem;
+    }
+}
+
+.timing-content {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+}
+
+.timing-label {
+    font-size: 0.8rem;
+    color: $text-muted;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: $font-sawarabi;
+}
+
+.timing-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $text-primary;
+    font-family: $font-sora;
+}
+
+// Seção de pontos da rota
+.route-stops-section {
+    padding: $spacing-lg $spacing-md;
+    border-top: 1px solid $border-light;
+    
+    @include mobile-only {
+        padding: $spacing-md $spacing-sm;
+    }
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $spacing-md;
+    
+    .left-content {
+        display: flex;
+        align-items: center;
+        gap: $spacing-sm;
+        
+        i {
+            font-size: 1.2rem;
+        }
+        
+        h6 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: $text-primary;
+            font-family: $font-sora;
+        }
+    }
+    
+    .stops-count {
+        font-size: 0.8rem;
+        color: $text-muted;
+        background: rgba($text-muted, 0.1);
+        padding: $spacing-xs $spacing-sm;
+        border-radius: $border-radius-sm;
+        font-weight: 500;
+        font-family: $font-sawarabi;
+    }
+}
+
+.stops-timeline {
+    position: relative;
+    padding-left: calc($spacing-lg + 24px);
+    
+    &::before {
+        content: '';
+        position: absolute;
+        left: 12px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(to bottom, 
+            rgba($success, 0.3) 0%, 
+            rgba($primary, 0.3) 50%, 
+            rgba($danger, 0.3) 100%);
+        border-radius: 1px;
+    }
+}
+
+.stop-item {
+    position: relative;
+    margin-bottom: $spacing-lg;
+    
+    &:last-child {
+        margin-bottom: 0;
+    }
+    
+    &.user-stop {
+        .stop-content {
+            background: rgba($primary, 0.05);
+            border: 1px solid rgba($primary, 0.2);
+        }
+    }
+}
+
+.stop-marker {
+    position: absolute;
+    left: -24px;
+    top: 8px;
+    width: 24px;
+    height: 24px;
+    @include flex-center;
+    background: $white;
+    border-radius: 50%;
+    box-shadow: $box-shadow-sm;
+    z-index: 2;
+    
+    i {
+        font-size: 1rem;
+    }
+    
+    .stop-dot {
+        width: 8px;
+        height: 8px;
+        background: $primary;
+        border-radius: 50%;
+    }
+}
+
+.stop-content {
+    background: $white;
+    border-radius: $border-radius;
+    padding: $spacing-md;
+    border: 1px solid $border-light;
+    box-shadow: $box-shadow-sm;
+    transition: $transition-all;
+    
+    &:hover {
+        box-shadow: $box-shadow-soft;
+        transform: translateX(2px);
+    }
+}
+
+.stop-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: $text-primary;
+    margin-bottom: $spacing-xs;
+    font-family: $font-sora;
+    
+    .user-badge {
+        display: inline-block;
+        background: $primary;
+        color: $white;
+        font-size: 0.7rem;
+        padding: 2px $spacing-xs;
+        border-radius: $border-radius-sm;
+        margin-left: $spacing-sm;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+}
+
+.stop-time {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-size: 0.9rem;
+    color: $text-secondary;
+    font-family: $font-sawarabi;
+    
+    i {
+        font-size: 0.8rem;
+    }
+}
+
+// Seção de informações técnicas
+.technical-info-section {
+    padding: $spacing-lg $spacing-md;
+    border-top: 1px solid $border-light;
+    
+    @include mobile-only {
+        padding: $spacing-md $spacing-sm;
+    }
+}
+
+.technical-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-sm;
+    
+    @include mobile-only {
+        grid-template-columns: 1fr;
+        gap: $spacing-xs;
+    }
+}
+
+.tech-card {
+    background: $white;
+    border-radius: $border-radius;
+    padding: $spacing-md;
+    border: 1px solid $border-light;
+    box-shadow: $box-shadow-sm;
+    transition: $transition-all;
+    
+    &:hover {
+        box-shadow: $box-shadow-soft;
+        transform: translateY(-1px);
+    }
+    
+    &.distance {
+        border-left: 4px solid $info;
+    }
+    
+    &.duration {
+        border-left: 4px solid $warning;
+    }
+}
+
+.tech-icon {
+    width: 40px;
+    height: 40px;
+    @include flex-center;
+    border-radius: $border-radius-sm;
+    margin-bottom: $spacing-sm;
+    
+    .distance & {
+        background: rgba($info, 0.1);
+        color: $info;
+    }
+    
+    .duration & {
+        background: rgba($warning, 0.1);
+        color: $warning;
+    }
+    
+    i {
+        font-size: 1.1rem;
+    }
+}
+
+.tech-content {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    margin-bottom: $spacing-sm;
+}
+
+.tech-label {
+    font-size: 0.8rem;
+    color: $text-muted;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: $font-sawarabi;
+}
+
+.tech-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: $text-primary;
+    font-family: $font-sora;
+}
+
+.tech-unit {
+    font-size: 0.8rem;
+    color: $text-secondary;
+    font-weight: 500;
+    font-family: $font-sawarabi;
+}
+
+.tech-visual {
+    .progress-bar {
+        height: 6px;
+        background: rgba($text-muted, 0.1);
+        border-radius: 3px;
+        overflow: hidden;
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+            
+            .distance & {
+                background: linear-gradient(90deg, $info 0%, lighten($info, 20%) 100%);
+            }
+            
+            .duration & {
+                background: linear-gradient(90deg, $warning 0%, lighten($warning, 20%) 100%);
+            }
+        }
+    }
+}
+
+// Seção de ação
+.action-section {
+    padding: $spacing-lg $spacing-md;
+    border-top: 1px solid $border-light;
+    background: $bg-light;
+    
+    @include mobile-only {
+        padding: $spacing-md $spacing-sm;
+    }
+}
+
+.action-button {
+    width: 100%;
+    background: $danger;
+    color: $white;
+    border: none;
+    border-radius: $border-radius;
+    padding: $spacing-md;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: $font-sora;
+    cursor: pointer;
+    transition: $transition-all;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-sm;
+    
+    &:hover {
+        background: darken($danger, 10%);
+        transform: translateY(-1px);
+        box-shadow: $box-shadow-soft;
+    }
+    
+    &:active {
+        transform: translateY(0);
+    }
+    
+    i {
+        font-size: 1.1rem;
+    }
+}

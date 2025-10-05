@@ -17,10 +17,6 @@ import { formatTime } from '../../../../../shared/timeUtils';
 const transformRouteApiToBusCard = (route, vehiclesWithDrivers) => {
     if (!route?.stops?.length) return [];
     
-    // Debug: verificar estrutura dos dados
-    console.log('Route data structure:', route);
-    console.log('Vehicles with drivers data structure:', vehiclesWithDrivers);
-    
     const veiculoComMotorista = vehiclesWithDrivers?.[0] || {};
     const origem = route.stops.find(s => s.ponto_id === route.userStop) || route.stops[0];
     const destino = route.stops[route.stops.length - 1];
@@ -35,11 +31,11 @@ const transformRouteApiToBusCard = (route, vehiclesWithDrivers) => {
     const createRouteData = (from, to, isReturn = false) => ({
         id: `${route.rota_id}${isReturn ? '_volta' : ''}`,
         name: veiculoComMotorista.veiculo_nome || veiculoComMotorista.nome || 'Veículo',
-        route: `${origem.nome || route.origem_descricao} para ${destino.nome || route.destino_descricao}`,
-        time: isReturn ? '--/--' : formatTime(origem.horario_previsto_passagem || origem.horario || ''),
+        route: `${from.nome || route.origem_descricao} para ${to.nome || route.destino_descricao}`,
+        time: isReturn ? '--/--' : formatTime(from.horario_previsto_passagem || from.horario || ''),
         status: route.ativo === 1 ? 'ATIVA' : 'INATIVA',
         codigo_rota: route.codigo_rota,
-        ponto_embarque: origem.nome,
+        ponto_embarque: from.nome,
         distancia_km: route.distancia_km,
         tempo_estimado: route.tempo_viagem_estimado_minutos,
         motorista: getMotoristaName(),
@@ -117,7 +113,16 @@ const RouteStatus = ({ routes, showDetails = false }) => {
  * Hook customizado para dados compartilhados entre componentes
  */
 const useBottomSheetData = () => {
-    const { routes } = useRoutes();
+    const { routes: routesData } = useRoutes();
+    
+    // Determina se routesData é um array ou um objeto único
+    let routes;
+    if (Array.isArray(routesData)) {
+        routes = routesData.length > 0 ? routesData[0] : null;
+    } else {
+        routes = routesData;
+    }
+    
     const { vehiclesWithDrivers } = useVehiclesWithDrivers(routes?.rota_id);
     const { routingLoading, cacheStats } = useMapMarkers(routes, true);
     
@@ -231,13 +236,13 @@ const BottomSheetMedium = ({ isDark }) => {
                             
                             return (
                                 <p className="mb-3 text-dark small">
-                                    Seu ônibus escolar sai de {pontoNome} às {horario}.
+                                    Seu transporte escolar sai do {pontoNome} às {horario}.
                                 </p>
                             );
                         })()
                     ) : (
                         <p className="mb-3 text-dark small">
-                            Seu ônibus escolar sai de A. Zeus às 05:45.
+                            Seu transporte escolar sai de A. Zeus às 05:45.
                         </p>
                     )}
                 </div>

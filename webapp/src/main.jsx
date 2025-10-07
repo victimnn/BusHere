@@ -9,6 +9,14 @@ import './Light.scss';
 import './Dark.scss';
 
 function Main() {
+  // Adiciona overscroll-behavior via CSS para bloquear pull-to-refresh
+  useEffect(() => {
+    document.body.style.overscrollBehavior = 'contain';
+    return () => {
+      document.body.style.overscrollBehavior = '';
+    };
+  }, []);
+
   // Estado do tema escuro sincronizado com localStorage
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem('theme');
@@ -16,6 +24,19 @@ function Main() {
     if (saved === 'light') return false;
     return false; // padrão: claro quando não houver preferência
   });
+
+  // Bloqueia o gesto de pull-to-refresh em mobile
+  useEffect(() => {
+    let maybePreventPullToRefresh = (e) => {
+      if (window.scrollY === 0 && e.touches && e.touches[0].clientY > 0) {
+        e.preventDefault();
+      }
+    };
+    document.addEventListener('touchmove', maybePreventPullToRefresh, { passive: false });
+    return () => {
+      document.removeEventListener('touchmove', maybePreventPullToRefresh);
+    };
+  }, []);
 
   useEffect(() => {
     // Ativa/desativa os estilos dos temas via manipulação de <style> injetados pelo Vite

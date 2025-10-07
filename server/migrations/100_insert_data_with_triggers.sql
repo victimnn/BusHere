@@ -7,14 +7,21 @@ DELETE FROM Pontos WHERE nome IN ('Terminal Central', 'Ponto Barão Geraldo', 'P
 -- Inserts para tabelas que possuem triggers de search index
 -- Mantendo a ordem: primeiro Pontos (migration 007), depois Passageiros (migration 019)
 
+-- 3 exemplos de inserção na tabela Veiculos
+INSERT INTO Veiculos (nome, placa, modelo, marca, ano_fabricacao, capacidade, quilometragem, data_ultima_manutencao, data_proxima_manutencao, tipo_veiculo_id, status_veiculo_id)
+VALUES
+    ('Micro-ônibus 722', 'OVD6954', 'Sprinter', 'Volkswagen', 2018, 26, 324430.64, '2025-05-11', '2026-01-25', 2, 1),
+    ('Van 472', 'FVI1M30', 'Sprinter', 'Ford', 2010, 13, 329220.91, '2025-06-13', '2026-01-22', 3, 2),
+    ('Micro-ônibus 430', 'CWZ4362', 'CityClass', 'Mercedes-Benz', 2016, 22, 391450.11, '2024-12-24', '2025-10-22', 2, 3);
+
 -- 5 exemplos de inserção na tabela Pontos
 INSERT INTO Pontos (nome, latitude, longitude, logradouro, numero_endereco, bairro, cidade, uf, cep, referencia)
 VALUES
-    ('Terminal Central', -22.9068, -47.0626, 'Av. Andrade Neves', '200', 'Centro', 'Campinas', 'SP', '13013-161', 'Terminal de ônibus central da cidade'),
-    ('Ponto Barão Geraldo', -22.8286, -47.1067, 'Av. Santa Isabel', '1000', 'Barão Geraldo', 'Campinas', 'SP', '13084-012', 'Próximo à Unicamp'),
-    ('Ponto Taquaral', -22.8672, -47.0545, 'Av. Heitor Penteado', '1500', 'Taquaral', 'Campinas', 'SP', '13076-000', 'Em frente à Lagoa do Taquaral'),
-    ('Ponto Shopping Dom Pedro', -22.8526, -47.0646, 'Av. Guilherme Campos', '500', 'Jardim Santa Genebra', 'Campinas', 'SP', '13087-901', 'Entrada principal do shopping'),
-    ('Ponto Vila Industrial', -22.9001, -47.0562, 'Rua Dr. Salles Oliveira', '300', 'Vila Industrial', 'Campinas', 'SP', '13035-270', 'Próximo ao Hospital Mário Gatti');
+    ('UPA', -22.68914562, -46.98844598, 'Rua Antônio Pinto Catão', '1222', 'Jardim Planalto', 'Jaguariúna', 'SP', '13820-000', 'Ao lado do UPA'),
+    ('Ponto Roseira', -22.69764820, -47.01604455, 'Rua Jaboticabeira', NULL, 'Roseira de cima', 'Jaguariúna', 'SP', '13917-480', 'Ponto de ônibus da roseira de cima'),
+    ('Ponto Kleber Lanches', -22.67832020, -46.97441025, 'Rua Maranhão', '3009', 'Imperial', 'Jaguariúna', 'SP', '13911-292', 'Em frente ao mercado karina'),
+    ('Ponto Ki-Delicia', -22.68361624, -46.98219595, 'Rua Alexandre Marion', '346', '12', 'Jaguariúna', 'SP', NULL, 'Em frente a Creche ao lado da padaria ki-delicia'),
+    ('ETEC João Belarmino', -22.70600582, -46.76519494, 'Rua Arthur Alves de Godoy', '299', 'Jardim Silvana', 'Amparo', 'SP', '13903-125', 'Escola ETEC João Belarmino');
 
 INSERT INTO Passageiros (nome_completo, cpf, email, senha_hash, telefone, data_nascimento, logradouro, numero_endereco, bairro, cidade, uf, cep, tipo_passageiro_id) 
 VALUES

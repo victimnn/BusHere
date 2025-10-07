@@ -19,6 +19,33 @@ const styles = {
     overflowY: 'auto', // Permite scroll vertical se necessário
     outline: 0,
   },
+  modalContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: 'auto',
+    maxHeight: '90vh', // Limita altura máxima para não ocupar toda a tela
+    width: '100%', // Garante que o modal use toda largura disponível
+  },
+  modalBody: {
+    flex: 1,
+    overflow: 'auto',
+    padding: '1rem',
+    minHeight: '200px', // Altura mínima para garantir espaço útil
+    width: '100%', // Força o conteúdo a usar toda largura
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  contentWrapper: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    // Força todos os elementos filhos a ocuparem todo o espaço
+    '& > *': {
+      width: '100%',
+      flex: 1,
+    },
+  },
 };
 
 /**
@@ -125,7 +152,10 @@ const PopUpComponent = memo(forwardRef((props, ref) => {
     >
       {/* Container do modal - previne o fechamento ao clicar dentro */}
       <div className="modal-dialog modal-dialog-centered d-flex justify-content-center" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-content w-auto">
+        <div 
+          className="modal-content" 
+          style={styles.modalContent}
+        >
           {/* Cabeçalho do modal */}
           <div className="modal-header">
             {/* Título opcional */}
@@ -134,8 +164,22 @@ const PopUpComponent = memo(forwardRef((props, ref) => {
             <button type="button" className="btn-close" aria-label="Close" onClick={hide}></button>
           </div>
           {/* Corpo do modal onde o conteúdo é renderizado */}
-          <div className="modal-body">
-            {ContentComponent && <ContentComponent {...componentProps} />}
+          <div className="modal-body" style={styles.modalBody}>
+            <div 
+              style={{
+                ...styles.contentWrapper,
+                // Estilos adicionais para garantir ocupação total do espaço
+                minHeight: '100%',
+                justifyContent: 'stretch',
+                alignItems: 'stretch',
+              }}
+            >
+              {ContentComponent && (
+                <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                  <ContentComponent {...componentProps} />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

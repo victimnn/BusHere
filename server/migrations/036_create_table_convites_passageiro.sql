@@ -17,7 +17,7 @@ CREATE TABLE ConvitesPassageiro (
     criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     ativo BOOLEAN DEFAULT TRUE,
-    FOREIGN KEY (passageiro_cadastrado_id) REFERENCES Passageiros(passageiro_id),
+    FOREIGN KEY (passageiro_cadastrado_id) REFERENCES Passageiros(passageiro_id) ON DELETE CASCADE,
     FOREIGN KEY (usuario_emissor_id) REFERENCES UsuariosEmpresa(usuario_empresa_id),
     FOREIGN KEY (status_convite_id) REFERENCES StatusConvite(status_convite_id),
 

@@ -10,7 +10,7 @@ import {
   SuccessModal,
   AlertMessage,
   FormActionButtons,
-  PasswordInputGroup
+  PasswordField
 } from '../components';
 
 function EditProfilePage() {
@@ -131,28 +131,34 @@ function EditProfilePage() {
             iconGradient="linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"
             description="Deixe em branco para manter a senha atual"
           >
-            <PasswordInputGroup
+            <PasswordField
               id="password"
               label="Nova Senha"
               value={formData.password}
-              onChange={(e) => handleInputChange('password', e.target.value)}
-              onBlur={() => handleBlur('password')}
+              onChange={(e) => {
+                handleInputChange('password', e.target.value);
+                handleBlur('password');
+              }}
               placeholder="Mínimo 8 caracteres"
               disabled={loading}
               error={fieldErrors.password}
               helpText="Mínimo 8 caracteres com letras maiúsculas, minúsculas e números"
+              autoComplete="new-password"
             />
 
             {formData.password && (
-              <PasswordInputGroup
+              <PasswordField
                 id="confirmPassword"
                 label="Confirmar Nova Senha"
                 value={formData.confirmPassword}
-                onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                onBlur={() => handleBlur('confirmPassword')}
+                onChange={(e) => {
+                  handleInputChange('confirmPassword', e.target.value);
+                  handleBlur('confirmPassword');
+                }}
                 placeholder="Confirme a nova senha"
                 disabled={loading}
                 error={fieldErrors.confirmPassword}
+                autoComplete="new-password"
               />
             )}
           </FormSection>

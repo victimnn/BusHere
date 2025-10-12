@@ -5,4 +5,3 @@ export { default as FormInputGroup } from './FormInputGroup';
 export { default as FormSection } from './FormSection';
 export { default as FormSelectGroup } from './FormSelectGroup';
 export { default as ToggleSwitch } from './ToggleSwitch';
-export { default as PasswordInputGroup } from './PasswordInputGroup';

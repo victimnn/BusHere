@@ -267,6 +267,19 @@ const api = {
         throw error; // Propaga o erro para ser tratado onde for chamado
       }
     },
+
+    updateProfile: async (userData: Partial<RegisterData>): Promise<ApiResponse<UserData>> => {
+      try {
+        const response = await api.put<ApiResponse<UserData>>('/auth/profile', userData);
+        return response; // Retorna a resposta da API
+      } catch (error) {
+        ///@ts-ignore
+        if (import.meta.env.DEV) {
+          console.error("Erro ao atualizar perfil:", error);
+        }
+        throw error; // Propaga o erro para ser tratado onde for chamado
+      }
+    },
   },
 
   stops: {
@@ -314,9 +327,9 @@ const api = {
       });
       return api.get(`/vehicles?${queryParams.toString()}`);
     },
-    getById: (id) => api.get(`/vehicles/${id}`),
-    getByRoute: (rotaId) => api.get(`/vehicles/by-route/${rotaId}`),
-    delete: (id) => api.delete(`/vehicles/${id}`),
+    getById: (id: number | string) => api.get(`/vehicles/${id}`),
+    getByRoute: (rotaId: number | string) => api.get(`/vehicles/by-route/${rotaId}`),
+    delete: (id: number | string) => api.delete(`/vehicles/${id}`),
     getStatus: () => api.get('/vehicles/status'),
     getTypes: () => api.get('/vehicles/types'),
   },
@@ -333,7 +346,7 @@ const api = {
       }
     },
 
-    create: async (notificationData) => {
+    create: async (notificationData: any) => {
       try {
         const response = await api.post('/avisos', notificationData);
         return response;
@@ -353,7 +366,7 @@ const api = {
       }
     },
 
-    getById: async (id) => {
+    getById: async (id: number | string) => {
       try {
         const response = await api.get(`/avisos/${id}`);
         return response;

@@ -240,6 +240,99 @@ module.exports = (pool) => {
     }
   });
 
+  router.put("/profile", extractToken, async (req, res) => {
+    const token = req.token;
+
+    try {
+      // Busca o usuário atual
+      const [users] = await pool.query("SELECT * FROM Passageiros WHERE passageiro_id = (SELECT passageiro_id FROM TokensPassageiro WHERE token = ?)", [token]);
+      if (users.length === 0) {
+        return res.status(401).json({ 
+          success: false,
+          error: "Usuário não encontrado" 
+        });
+      }
+
+      const currentUser = users[0];
+      const body = req.body;
+
+      // Campos que podem ser atualizados
+      const updateFields = {};
+      const allowedFields = [
+        'nome_completo', 'telefone', 'email', 'pcd',
+        'logradouro', 'numero_endereco', 'complemento_endereco', 
+        'bairro', 'cidade', 'uf', 'cep'
+      ];
+
+      // Coleta apenas os campos enviados e permitidos
+      allowedFields.forEach(field => {
+        if (body[field] !== undefined) {
+          updateFields[field] = body[field];
+        }
+      });
+
+      // Se está alterando email, verifica se não está em uso por outro usuário
+      if (updateFields.email && updateFields.email !== currentUser.email) {
+        const [existingEmail] = await pool.query(
+          "SELECT passageiro_id FROM Passageiros WHERE email = ? AND passageiro_id != ?", 
+          [updateFields.email.toLowerCase(), currentUser.passageiro_id]
+        );
+        if (existingEmail.length > 0) {
+          return res.status(400).json({ 
+            success: false,
+            error: "Email já cadastrado para outro usuário" 
+          });
+        }
+        updateFields.email = updateFields.email.toLowerCase();
+      }
+
+      // Se está alterando a senha
+      if (body.password && body.password.trim().length > 0) {
+        if (body.password.length < 8) {
+          return res.status(400).json({ 
+            success: false,
+            error: "Senha deve ter pelo menos 8 caracteres" 
+          });
+        }
+        updateFields.senha_hash = bcrypt.hashSync(body.password, bcryptSalt);
+      }
+
+      // Se não houver nada para atualizar
+      if (Object.keys(updateFields).length === 0) {
+        return res.status(400).json({ 
+          success: false,
+          error: "Nenhum campo válido para atualizar" 
+        });
+      }
+
+      // Monta a query de atualização dinamicamente
+      const setClause = Object.keys(updateFields).map(field => `${field} = ?`).join(', ');
+      const values = [...Object.values(updateFields), currentUser.passageiro_id];
+
+      await pool.query(
+        `UPDATE Passageiros SET ${setClause}, data_atualizacao = CURRENT_TIMESTAMP WHERE passageiro_id = ?`,
+        values
+      );
+
+      // Busca o usuário atualizado
+      const [updatedUsers] = await pool.query("SELECT * FROM Passageiros WHERE passageiro_id = ?", [currentUser.passageiro_id]);
+      const updatedUser = updatedUsers[0];
+      delete updatedUser.senha_hash;
+
+      res.status(200).json({ 
+        success: true,
+        message: "Perfil atualizado com sucesso",
+        user: updatedUser
+      });
+    } catch (error) {
+      console.error("Erro ao atualizar perfil:", error);
+      res.status(500).json({ 
+        success: false,
+        error: "Erro ao atualizar perfil: " + error.message 
+      });
+    }
+  });
+
   router.post("/change-password", extractToken, async (req, res) => {
     const token = req.token;
     const requiredFields = ["old_password","new_password"];

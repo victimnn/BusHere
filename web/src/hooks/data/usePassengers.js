@@ -40,29 +40,91 @@ const transformPassengerData = (passenger, getTipoPassageiroNome) => ({
 
 // Função para preparar dados para o backend
 const prepareBackendData = (formData, isCreate = false) => {
-  // Campos obrigatórios para backend
-  const backendData = {
-    nome_completo: formData.nome,
-    cpf: removeFormatting(formData.cpf),
-    telefone: removeFormatting(formData.telefone),
-    email: formData.email || '',
-    tipo_passageiro_id: formData.tipo_passageiro ? Number(formData.tipo_passageiro) : null,
-    data_nascimento: formData.data_nascimento || null,
-    senha_hash: isCreate ? ('temp_hash_' + Date.now()) : (formData.senha_hash || 'temp_hash'),
-    logradouro: formData.logradouro || 'Endereço não informado',
-    numero_endereco: formData.numero_endereco ? Number(formData.numero_endereco) : 1,
-    bairro: formData.bairro || 'Não informado',
-    cidade: formData.cidade || 'Amparo',
-    uf: formData.uf || 'XX',
-    cep: formData.cep || '00000000',
-    complemento_endereco: formData.complemento_endereco || null,
-    pcd: !!formData.pcd,
-    rota_id: formData.rota_id ? Number(formData.rota_id) : null,
-    ponto_id: formData.ponto_id ? Number(formData.ponto_id) : null,
-    notificacoes_json: formData.notificacoes_json || '{}',
-    configuracoes_json: formData.configuracoes_json || '{}',
-    ativo: formData.ativo !== undefined ? formData.ativo : true
-  };
+  const backendData = {};
+  
+  if (isCreate) {
+    // Para criação, inclui todos os campos com valores padrão
+    backendData.nome_completo = formData.nome;
+    backendData.cpf = removeFormatting(formData.cpf);
+    backendData.telefone = removeFormatting(formData.telefone);
+    backendData.email = formData.email || '';
+    backendData.tipo_passageiro_id = formData.tipo_passageiro ? Number(formData.tipo_passageiro) : null;
+    backendData.data_nascimento = formData.data_nascimento || null;
+    backendData.senha_hash = 'temp_hash_' + Date.now();
+    backendData.logradouro = formData.logradouro || 'Endereço não informado';
+    backendData.numero_endereco = formData.numero_endereco ? Number(formData.numero_endereco) : 1;
+    backendData.bairro = formData.bairro || 'Não informado';
+    backendData.cidade = formData.cidade || 'Amparo';
+    backendData.uf = formData.uf || 'XX';
+    backendData.cep = formData.cep || '00000000';
+    backendData.complemento_endereco = formData.complemento_endereco || null;
+    backendData.pcd = !!formData.pcd;
+    backendData.rota_id = formData.rota_id ? Number(formData.rota_id) : null;
+    backendData.ponto_id = formData.ponto_id ? Number(formData.ponto_id) : null;
+    backendData.notificacoes_json = formData.notificacoes_json || '{}';
+    backendData.configuracoes_json = formData.configuracoes_json || '{}';
+    backendData.ativo = formData.ativo !== undefined ? formData.ativo : true;
+  } else {
+    // Para atualização, só inclui os campos que estão presentes no formData
+    if (formData.nome !== undefined) {
+      backendData.nome_completo = formData.nome;
+    }
+    if (formData.cpf !== undefined) {
+      backendData.cpf = removeFormatting(formData.cpf);
+    }
+    if (formData.telefone !== undefined) {
+      backendData.telefone = removeFormatting(formData.telefone);
+    }
+    if (formData.email !== undefined) {
+      backendData.email = formData.email;
+    }
+    if (formData.tipo_passageiro !== undefined) {
+      backendData.tipo_passageiro_id = formData.tipo_passageiro ? Number(formData.tipo_passageiro) : null;
+    }
+    if (formData.data_nascimento !== undefined) {
+      backendData.data_nascimento = formData.data_nascimento;
+    }
+    if (formData.logradouro !== undefined) {
+      backendData.logradouro = formData.logradouro;
+    }
+    if (formData.numero_endereco !== undefined) {
+      backendData.numero_endereco = formData.numero_endereco ? Number(formData.numero_endereco) : null;
+    }
+    if (formData.bairro !== undefined) {
+      backendData.bairro = formData.bairro;
+    }
+    if (formData.cidade !== undefined) {
+      backendData.cidade = formData.cidade;
+    }
+    if (formData.uf !== undefined) {
+      backendData.uf = formData.uf;
+    }
+    if (formData.cep !== undefined) {
+      backendData.cep = formData.cep;
+    }
+    if (formData.complemento_endereco !== undefined) {
+      backendData.complemento_endereco = formData.complemento_endereco;
+    }
+    if (formData.pcd !== undefined) {
+      backendData.pcd = !!formData.pcd;
+    }
+    if (formData.rota_id !== undefined) {
+      backendData.rota_id = formData.rota_id ? Number(formData.rota_id) : null;
+    }
+    if (formData.ponto_id !== undefined) {
+      backendData.ponto_id = formData.ponto_id ? Number(formData.ponto_id) : null;
+    }
+    if (formData.notificacoes_json !== undefined) {
+      backendData.notificacoes_json = formData.notificacoes_json;
+    }
+    if (formData.configuracoes_json !== undefined) {
+      backendData.configuracoes_json = formData.configuracoes_json;
+    }
+    if (formData.ativo !== undefined) {
+      backendData.ativo = formData.ativo;
+    }
+  }
+  
   // Remove campos nulos ou undefined
   Object.keys(backendData).forEach(key => {
     if (backendData[key] === null || backendData[key] === undefined) {

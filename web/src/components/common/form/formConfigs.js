@@ -3,7 +3,7 @@ import api from '../../../api/api';
 import { validateCPF, validateEmail, validatePhoneNumber, validateCEP, validateDate } from '@shared/validators';
 import { formatCPF, formatPhoneNumber, formatCEP, formatDate, formatDateFromDatabase, formatPlate } from '@shared/formatters';
 import { reverseTransformDate, validateBirthDate, validateAdmissionDate, validateCNHValidity, validateLastMaintenanceDate, validateNextMaintenanceDate } from '@shared/dateUtils';
-import { createFakePassengerData, createFakeBusData, createFakeRouteData, createFakeStopData, createFakeDriverData, createFakeVehicleData } from '../../../utils/fakers';
+import { createFakeBusData, createFakeRouteData, createFakeStopData, createFakeDriverData, createFakeVehicleData } from '../../../utils/fakers';
 import { BRAZILIAN_STATES, isValidUF } from '@shared/brazilianStates';
 import { formatters } from '../detail/detailConfigs';
 
@@ -301,11 +301,80 @@ export const passengerFormConfig = {
         'ponto_id'
       ]
     }
-  ],
-  fakeDataGenerator: createFakePassengerData
+  ]
 };
 
-
+// Configuração específica para edição de passageiros - apenas campos editáveis
+export const passengerEditFormConfig = {
+  fields: [
+    {
+      name: 'tipo_passageiro',
+      alternativeKey: 'tipo_passageiro_id',
+      type: 'select',
+      label: 'Tipo de Passageiro',
+      labelIcon: 'bi bi-person-badge-fill',
+      inputIcon: 'bi bi-tag',
+      placeholder: 'Selecione o tipo de passageiro',
+      required: true,
+      size: 'lg',
+      loadOptions: () => api.passengers.getTypes(),
+      defaultOptions: [
+        { tipo_passageiro_id: 1, nome: 'Estudante', descricao: 'Passageiro estudante' },
+        { tipo_passageiro_id: 2, nome: 'Corporativo', descricao: 'Passageiro corporativo' }
+      ],
+      optionValue: 'tipo_passageiro_id',
+      optionLabel: 'nome',
+      validator: (value) => {
+        if (!value) return 'Tipo de passageiro é obrigatório';
+        return null;
+      }
+    },
+    {
+      name: 'rota_id',
+      type: 'select',
+      label: 'Rota',
+      labelIcon: 'bi bi-signpost-split-fill',
+      inputIcon: 'bi bi-signpost-split',
+      placeholder: 'Selecione uma rota (opcional)',
+      size: 'lg',
+      loadOptions: () => api.passengers.getRoutes(),
+      defaultOptions: [],
+      optionValue: 'rota_id',
+      optionLabel: (option) => `${option.nome} (${option.codigo_rota})`,
+      validator: (value) => {
+        return null; // Opcional
+      }
+    },
+    {
+      name: 'ponto_id',
+      type: 'select',
+      label: 'Ponto de Embarque',
+      labelIcon: 'bi bi-geo-alt-fill',
+      inputIcon: 'bi bi-pin-map',
+      placeholder: 'Selecione uma rota primeiro',
+      size: 'lg',
+      dependsOn: 'rota_id',
+      loadOptions: (rotaId) => api.routes.getStops(rotaId),
+      defaultOptions: [],
+      optionValue: 'ponto_id',
+      optionLabel: (option) => `${option.nome} - ${option.cidade}/${option.uf}`,
+      validator: (value) => {
+        return null; // Opcional
+      }
+    }
+  ],
+  steps: [
+    {
+      title: 'Editar Informações do Passageiro',
+      icon: 'bi bi-pencil-square',
+      fields: [
+        'tipo_passageiro',
+        'rota_id',
+        'ponto_id'
+      ]
+    }
+  ]
+};
 
 export const routeFormConfig = {
   fields: [

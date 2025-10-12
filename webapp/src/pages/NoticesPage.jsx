@@ -1,8 +1,6 @@
 import React from 'react';
-import { PageHeader, InfoCard, ActionButton, StatusBadge } from '../components';
 
 const NoticesPage = () => {
-  // Dados de exemplo para avisos
   const notices = [
     {
       id: 1,
@@ -43,61 +41,45 @@ const NoticesPage = () => {
     }
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('pt-BR');
-  };
+  const formatDate = (dateString) => new Date(dateString).toLocaleDateString('pt-BR');
 
   return (
-    <div className="container-fluid p-3 page-content-with-floating-button" style={{ paddingTop: '1rem' }}>
-      <div className="row">
-        <div className="col-12">
-          <PageHeader 
-            icon="bi-bell" 
-            title="Avisos" 
-          />
-          
-          <div className="row g-3">
-            {notices.map(notice => (
-              <div key={notice.id} className="col-12">
-                <div className={`card ${!notice.read ? 'border-primary border-2' : 'border-0'} shadow-sm`}>
-                  <div className="card-body p-3">
-                    <div className="d-flex align-items-start">
-                      <div className="flex-grow-1 me-2">
-                        <div className="d-flex align-items-center mb-2">
-                          <i className={`bi ${getTypeIcon(notice.type)} me-2`} style={{ fontSize: '18px' }}></i>
-                          <h6 className="mb-0 fw-bold">{notice.title}</h6>
-                          {!notice.read && (
-                            <span className="badge bg-primary ms-2">Novo</span>
-                          )}
-                        </div>
-                        <p className="text-muted mb-2 small">{notice.message}</p>
-                        <div className="d-flex align-items-center flex-wrap gap-2">
-                          <StatusBadge 
-                            status={notice.type} 
-                            text={notice.type.charAt(0).toUpperCase() + notice.type.slice(1)}
-                          />
-                          <small className="text-muted">
-                            <i className="bi bi-calendar me-1"></i>
-                            {formatDate(notice.date)}
-                          </small>
-                        </div>
-                      </div>
-                      <div className="ms-auto">
-                        <ActionButton 
-                          icon="bi-eye"
-                          variant="outline-primary"
-                          size="sm"
-                          className="rounded-circle"
-                          style={{ width: '36px', height: '36px' }}
-                        />
-                      </div>
-                    </div>
+    <div className="container py-3">
+      <div className="text-center mb-4">
+        <i className="bi bi-bell-fill text-primary fs-3 d-block mb-2"></i>
+        <h5 className="fw-semibold">Notificações</h5>
+      </div>
+
+      <div className="d-flex flex-column gap-3">
+        {notices.map(notice => (
+          <div
+            key={notice.id}
+           className={`card border-0 ${!notice.read ? 'border-start border-4 border-primary' : ''}`}
+           style={{ boxShadow: '4px 4px 8px rgba(0, 0, 0, 0.25)' }}
+          >
+            <div className="card-body p-3">
+              <div className="d-flex justify-content-between align-items-start">
+                <div className="flex-grow-1">
+                  <div className="d-flex align-items-center mb-2">
+                    <i className={`bi ${getTypeIcon(notice.type)} me-2 fs-5`}></i>
+                    <h6 className="mb-0 fw-semibold">{notice.title}</h6>
+                    {!notice.read && (
+                      <span className="badge bg-primary-subtle text-primary border ms-2">Novo</span>
+                    )}
                   </div>
+                  <p className="text-secondary small mb-2">{notice.message}</p>
+                  <small className="text-muted">
+                    <i className="bi bi-calendar me-1"></i>
+                    {formatDate(notice.date)}
+                  </small>
                 </div>
+                <button className="btn btn-light btn-sm rounded-circle border">
+                  <i className="bi bi-eye text-primary"></i>
+                </button>
               </div>
-            ))}
+            </div>
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );

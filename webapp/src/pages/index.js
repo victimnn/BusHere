@@ -7,6 +7,7 @@ export { default as RegisterPage } from './RegisterPage';
 // Main application pages
 export { default as HomePage } from './HomePage';
 export { default as AccountPage } from './AccountPage';
+export { default as EditProfilePage } from './EditProfilePage';
 
 // Feature pages
 export { default as NoticesPage } from './NoticesPage';

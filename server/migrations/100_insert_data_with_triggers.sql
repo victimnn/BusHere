@@ -18,18 +18,10 @@ VALUES
 INSERT INTO Pontos (nome, latitude, longitude, logradouro, numero_endereco, bairro, cidade, uf, cep, referencia)
 VALUES
     ('UPA', -22.68914562, -46.98844598, 'Rua Antônio Pinto Catão', '1222', 'Jardim Planalto', 'Jaguariúna', 'SP', '13820-000', 'Ao lado do UPA'),
-    ('Ponto Roseira', -22.69764820, -47.01604455, 'Rua Jaboticabeira', NULL, 'Roseira de cima', 'Jaguariúna', 'SP', '13917-480', 'Ponto de ônibus da roseira de cima'),
+    ('Ponto Roseira', -22.69764820, -47.01604455, 'Rua Jaboticabeira', '123', 'Roseira de cima', 'Jaguariúna', 'SP', '13917-480', 'Ponto de ônibus da roseira de cima'),
     ('Ponto Kleber Lanches', -22.67832020, -46.97441025, 'Rua Maranhão', '3009', 'Imperial', 'Jaguariúna', 'SP', '13911-292', 'Em frente ao mercado karina'),
-    ('Ponto Ki-Delicia', -22.68361624, -46.98219595, 'Rua Alexandre Marion', '346', '12', 'Jaguariúna', 'SP', NULL, 'Em frente a Creche ao lado da padaria ki-delicia'),
-    ('ETEC João Belarmino', -22.70600582, -46.76519494, 'Rua Arthur Alves de Godoy', '299', 'Jardim Silvana', 'Amparo', 'SP', '13903-125', 'Escola ETEC João Belarmino');
-
-INSERT INTO Passageiros (nome_completo, cpf, email, senha_hash, telefone, data_nascimento, logradouro, numero_endereco, bairro, cidade, uf, cep, tipo_passageiro_id) 
-VALUES
-    ('Rubens Castaldelli Carlos', '12345678901', 'joao.silva@email.com', 'hash123', '11987654321', '1990-05-15', 'Rua das Flores', '123', 'Centro', 'Serra Negra', 'SP', '13010001', 1),
-    ('Giuliano Catelli', '23456789012', 'maria.oliveira@email.com', 'hash456', '11976543210', '1985-08-22', 'Av. Brasil', '456', 'Jardins', 'Amparo', 'SP', '13020002', 1),
-    ('Emerson Baião', '34567890123', 'pedro.costa@empresa.com', 'hash789', '11965432109', '1992-12-10', 'Rua do Comércio', '789', 'Centro', 'Amparo', 'SP', '13030003', 2),
-    ('Laine Zanin', '45678901234', 'ana.ferreira@email.com', 'hash101', '11954321098', '1988-03-18', 'Rua das Palmeiras', '321', 'Taquaral', 'Amparo', 'SP', '13040004', 1),
-    ('Sergião', '56789012345', 'carlos.alves@empresa.com', 'hash202', '11943210987', '1995-07-25', 'Av. das Nações', '654', 'Barão Geraldo', 'Campinas', 'SP', '13050005', 2);
+    ('Ponto Ki-Delicia', -22.68361624, -46.98219595, 'Rua Alexandre Marion', '346', 'Doze de Setembro', 'Jaguariúna', 'SP', NULL, 'Em frente a Creche ao lado da padaria ki-delicia'),
+    ('ETEC João Belarmino', -22.70600582, -46.76519494, 'Rua Sete de Setembro', '299', 'Centro', 'Amparo', 'SP', '13903-125', 'Escola ETEC João Belarmino');
 
 -- Inserir dados de exemplo para motoristas
 INSERT INTO Motoristas (nome, cpf, cnh_numero, cnh_categoria, cnh_validade, telefone, email, data_admissao, status_motorista_id) 

@@ -45,6 +45,33 @@
     .status-indicator {
       animation: pulse 2s infinite;
     }
+    
+    // Botão voltar flutuante - Dark Mode
+    .back-button {
+      top: 0;
+      left: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      border: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      &:hover:not(.disabled) {
+        transform: scale(1.1);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+      }
+      
+      &.disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
   }
 
   // Cards modernos - Dark Mode
@@ -304,6 +331,28 @@
     &:nth-child(2) { animation-delay: 0.2s; }
     &:nth-child(3) { animation-delay: 0.3s; }
   }
+
+  // Estilos específicos da EditProfilePage - Dark Mode
+  &.edit-profile-page {
+    .container-fluid {
+      margin-top: -2rem;
+    }
+    
+    // Texto de segurança no footer
+    .security-footer {
+      text-align: center;
+      color: var(--bs-secondary);
+      padding: 1rem 0 1rem;
+      margin-bottom: 1rem;
+      
+      small {
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+    }
+  }
 }
 
 // Responsividade específica para mobile
@@ -452,12 +501,21 @@
       border-radius: 0 0 1.5rem 1.5rem;
     }
     
-    .account-avatar .avatar-circle {
-      width: 100px !important;
-      height: 100px !important;
+    .account-avatar {
+      .avatar-circle {
+        width: 100px !important;
+        height: 100px !important;
+        
+        span {
+          font-size: 2rem !important;
+        }
+      }
       
-      span {
-        font-size: 2rem !important;
+      .back-button {
+        width: 40px;
+        height: 40px;
+        top: 5px;
+        left: 5px;
       }
     }
     
@@ -476,6 +534,153 @@
     
     .action-button {
       padding: 1.125rem !important;
+    }
+
+    // EditProfilePage específico - Dark Mode
+    &.edit-profile-page {
+      .account-header {
+        padding: 2.5rem 0;
+        
+        h4 {
+          font-size: 1.75rem;
+        }
+        
+        p {
+          font-size: 1rem;
+        }
+        
+        .badge {
+          font-size: 0.95rem;
+          padding: 0.5rem 1.5rem !important;
+        }
+      }
+    }
+  }
+}
+
+// Responsividade para telas grandes (notebooks e desktops) - Dark Mode
+@media (min-width: 1200px) {
+  .account-page {
+    .container-fluid {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+    
+    .account-header {
+      border-radius: 0 0 2rem 2rem;
+      padding: 3rem 0;
+    }
+    
+    .account-avatar {
+      .avatar-circle {
+        width: 120px !important;
+        height: 120px !important;
+        
+        i {
+          font-size: 3.5rem !important;
+        }
+      }
+      
+      .back-button {
+        width: 44px;
+        height: 44px;
+        top: 8px;
+        left: 8px;
+        
+        i {
+          font-size: 1.25rem !important;
+        }
+      }
+    }
+    
+    .status-indicator {
+      width: 32px !important;
+      height: 32px !important;
+    }
+
+    // EditProfilePage específico para desktops - Dark Mode
+    &.edit-profile-page {
+      .account-header {
+        padding: 3.5rem 0;
+        
+        h4 {
+          font-size: 2rem;
+        }
+        
+        p {
+          font-size: 1.1rem;
+        }
+        
+        .badge {
+          font-size: 1rem;
+          padding: 0.6rem 2rem !important;
+        }
+      }
+      
+      .container-fluid {
+        max-width: 900px; // Limita largura do formulário
+      }
+    }
+  }
+}
+
+// Responsividade para telas extra grandes (desktops widescreen) - Dark Mode
+@media (min-width: 1600px) {
+  .account-page {
+    .container-fluid {
+      max-width: 1400px;
+    }
+    
+    .account-header {
+      padding: 4rem 0;
+    }
+    
+    .account-avatar {
+      .avatar-circle {
+        width: 140px !important;
+        height: 140px !important;
+        
+        i {
+          font-size: 4rem !important;
+        }
+      }
+      
+      .back-button {
+        width: 48px;
+        height: 48px;
+        top: 10px;
+        left: 10px;
+        
+        i {
+          font-size: 1.35rem !important;
+        }
+      }
+    }
+
+    // EditProfilePage para telas muito grandes - Dark Mode
+    &.edit-profile-page {
+      .account-header {
+        padding: 4.5rem 0;
+        
+        h4 {
+          font-size: 2.25rem;
+        }
+        
+        p {
+          font-size: 1.15rem;
+        }
+        
+        .badge {
+          font-size: 1.05rem;
+          padding: 0.7rem 2.5rem !important;
+        }
+      }
+      
+      .container-fluid {
+        max-width: 1000px;
+      }
     }
   }
 }

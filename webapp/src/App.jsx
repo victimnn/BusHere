@@ -6,7 +6,8 @@ import { AuthProvider } from "./context/AuthContext";
 import { Layout } from "./components";
 import { 
   HomePage, 
-  AccountPage, 
+  AccountPage,
+  EditProfilePage,
   NoticesPage, 
   BillsPage, 
   SettingsPage, 
@@ -31,6 +32,11 @@ function App({ isDark, setIsDark }) {
             <Route path="/conta" element={
               <Layout isDark={isDark} setIsDark={setIsDark}>
                 <AccountPage />
+              </Layout>
+            } />
+            <Route path="/conta/editar" element={
+              <Layout isDark={isDark} setIsDark={setIsDark}>
+                <EditProfilePage />
               </Layout>
             } />
             <Route path="/avisos" element={

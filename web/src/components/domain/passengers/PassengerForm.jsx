@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import GenericForm from '../../common/forms/GenericForm';
-import { passengerFormConfig } from '../../common/form/formConfigs';
+import { passengerFormConfig, passengerEditFormConfig } from '../../common/form/formConfigs';
 
 /**
  * Componente de formulário para criação e edição de passageiros
@@ -13,14 +13,20 @@ import { passengerFormConfig } from '../../common/form/formConfigs';
  * @returns {JSX.Element}
  */
 function PassengerForm({ initialData, onSubmit, onCancel, isCreateForm = null }) {
+  // Determina se é um formulário de edição baseado na presença de initialData
+  const isEditMode = initialData && Object.keys(initialData).length > 0;
+  
+  // Usa configuração específica para edição se estiver em modo de edição
+  const config = isEditMode ? passengerEditFormConfig : passengerFormConfig;
+  
   return (
     <GenericForm
-      config={passengerFormConfig}
+      config={config}
       initialData={initialData}
       onSubmit={onSubmit}
       onCancel={onCancel}
       isCreateForm={isCreateForm}
-      steps={passengerFormConfig.steps}
+      steps={config.steps}
     />
   );
 }

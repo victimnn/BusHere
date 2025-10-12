@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import PropTypes from 'prop-types';
 import { useAccountPage } from '../hooks';
-import { AccountHeader, UserInfoCard, StatCard, AccountActionButton } from '../components';
+import { AccountHeader, UserInfoCard, StatCard, FormActionButtons } from '../components';
 
 const AccountPage = ({ isDark, setIsDark }) => {
   const {
@@ -55,54 +55,21 @@ const AccountPage = ({ isDark, setIsDark }) => {
                 </h6>
                 
                 <div className="d-grid gap-3">
-                  <AccountActionButton
-                    gradient="linear-gradient(135deg, #12BE4D 0%, #0E8F3A 100%)"
-                    icon="bi-pencil"
-                    title="Editar Perfil"
-                    subtitle="Atualizar informações pessoais"
+                  <FormActionButtons
                     onClick={handleEditProfile}
+                    label="Editar Perfil"
+                    icon="bi-pencil"
+                    variant="success"
+                    type="button"
                   />
                   
-                  <AccountActionButton
-                    gradient="linear-gradient(135deg, #ff4757 0%, #c44569 100%)"
-                    icon="bi-box-arrow-right"
-                    title="Sair da Conta"
-                    subtitle="Encerrar sessão atual"
+                  <FormActionButtons
                     onClick={handleLogout}
+                    label="Sair da Conta"
+                    icon="bi-box-arrow-right"
+                    variant="danger"
+                    type="button"
                   />
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="col-12 col-lg-4">
-            <div className="modern-card card border-0 shadow-sm">
-              <div className="card-body p-4">
-                <h6 className="mb-3 fw-bold">
-                  <i className="bi bi-info-circle text-info me-2"></i>
-                  Informações da Conta
-                </h6>
-                
-                <div className="d-flex flex-column gap-3">
-                  <div className="d-flex justify-content-between align-items-center">
-                    <span className="text-muted small">Último acesso</span>
-                    <span className="fw-semibold small">{formatDate(user?.ultimo_acesso)}</span>
-                  </div>
-                  
-                  <div className="d-flex justify-content-between align-items-center">
-                    <span className="text-muted small">Tipo de conta</span>
-                    <span className="badge bg-primary bg-opacity-10 text-primary small">
-                      {user?.tipo_usuario || 'Padrão'}
-                    </span>
-                  </div>
-                  
-                  <div className="d-flex justify-content-between align-items-center">
-                    <span className="text-muted small">Verificação</span>
-                    <span className="badge bg-success bg-opacity-10 text-success small">
-                      <i className="bi bi-check-circle me-1"></i>
-                      Verificada
-                    </span>
-                  </div>
                 </div>
               </div>
             </div>

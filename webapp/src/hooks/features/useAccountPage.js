@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 export const useAccountPage = (isDark) => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
 
   // Função para obter iniciais do nome
@@ -41,8 +43,7 @@ export const useAccountPage = (isDark) => {
 
   // Função para lidar com edição de perfil
   const handleEditProfile = () => {
-    setIsEditing(!isEditing);
-    console.log('Editar perfil - funcionalidade em desenvolvimento');
+    navigate('/conta/editar');
   };
 
   // Função para lidar com logout

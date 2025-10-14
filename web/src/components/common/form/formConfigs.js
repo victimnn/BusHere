@@ -1230,7 +1230,7 @@ export const notificationFormConfig = {
       },
       defaultOptions: [],
       optionValue: 'passageiro_id',
-      optionLabel: (option) => `${option.nome} - ${option.cpf}`,
+      optionLabel: (option) => `${option.nome_completo} - ${option.cpf}`,
       dependsOn: 'escopo_aviso_id',
       disabled: (formData) => {
         // Habilita apenas quando escopo = "Passageiro Específico" (ID 4)

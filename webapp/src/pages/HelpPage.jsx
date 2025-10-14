@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { PageHeader, InfoCard } from "../components";
 
 const HelpPage = () => {
+  const params = new URLSearchParams(window.location.search);
+
   const [activeQuestion, setActiveQuestion] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(params.get('q') || "");
 
   const toggleQuestion = (index) => {
     setActiveQuestion(activeQuestion === index ? null : index);
@@ -33,13 +35,31 @@ const HelpPage = () => {
     {
       id: '5',
       question: 'Como entrar em contato com o suporte?',
-      answer: 'Para suporte técnico, envie um email para suporte@bushere.com.br ou use o formulário de contato disponível nesta página.'
+      answer: <>Para suporte técnico, envie um email para <b><a href="mailto:suporte@bushere.com.br">suporte@bushere.com.br</a></b> ou use o formulário de contato disponível nesta página.</>
+    },
+    {
+      id: '6',
+      question: "Por que minha rota não aparece?",
+      answer: <>
+        Para que sua rota apareça no aplicativo, um <b>administrador</b> precisa definir sua rota no sistema.
+        Caso não esteja visível, entre em contato com o responsável ou suporte para solicitar a definição da rota.
+      </>
     }
   ];
 
   const filteredFaq = faq.filter((item) =>
     item.question.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Abre automaticamente se houver apenas uma pergunta filtrada
+  // E fecha quando digita algo
+  React.useEffect(() => {
+    if (filteredFaq.length === 1) {
+      setActiveQuestion(0);
+    } else {
+      setActiveQuestion(null);
+    }
+  }, [searchTerm, filteredFaq.length]);
 
   return (
     <div className="container py-4">

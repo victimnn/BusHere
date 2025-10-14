@@ -8,25 +8,56 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './Light.scss';
 import './Dark.scss';
 // Registro do Service Worker e permissão de notificações
-if ('serviceWorker' in navigator) {
+
+// VAPID public key (must match server and be base64, not URL-safe)
+const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY || 'BBxDYc-ifzPZj4x3NJSrVZsyQ2bSFOkUirNM2ZN5rXrooblIV9otm_eA7xh46gh--pVySeDZPrGCJ8S7K5IQILE';
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/-/g, '+')
+    .replace(/_/g, '/');
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
+async function subscribeUserToPush(registration) {
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      console.log('Permissão de notificação negada');
+      return;
+    }
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+    });
+  const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+  await fetch(`${apiBaseUrl}/api/passenger/push-subscribe`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(subscription),
+    });
+    console.log('Push subscription enviada ao servidor:', subscription);
+  } catch (err) {
+    console.error('Erro ao subscrever push:', err);
+  }
+}
+
+if ('serviceWorker' in navigator && 'PushManager' in window) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
+  navigator.serviceWorker.register('/sw.js')
       .then(reg => {
         console.log('Service Worker registrado:', reg);
+        subscribeUserToPush(reg);
       })
       .catch(err => {
         console.error('Erro ao registrar Service Worker:', err);
       });
-  });
-}
-
-if ('Notification' in window) {
-  Notification.requestPermission().then(permission => {
-    if (permission === 'granted') {
-      console.log('Permissão de notificação concedida');
-    } else {
-      console.log('Permissão de notificação negada');
-    }
   });
 }
 

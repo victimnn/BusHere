@@ -72,6 +72,19 @@ const P_NotificationRoutes = require("./passenger/notificationRoutes.js")(pool)
 const P_inviteRoutes = require("./passenger/inviteRoutes.js")(pool);
 
 
+//#region Configuração do web-push para notificações push
+    const webpush = require('web-push');
+    const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY;
+    const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
+    webpush.setVapidDetails(
+        'mailto:noreply@bushere.com',
+        VAPID_PUBLIC_KEY,
+        VAPID_PRIVATE_KEY
+    );
+    let subscriptions = [];
+    const P_pushNotificationRoutes = require("./passenger/pushNotificationRoutes.js")(pool, subscriptions);
+//#endregion
+
 // Usando as rotas
 app.use("/api/enterprise/auth", E_authRoutes);
 app.use("/api/enterprise", E_searchRoutes); // Rota raiz da API
@@ -94,6 +107,8 @@ app.use("/api/passenger/stops", P_stopRoutes);
 app.use("/api/passenger/routes", P_routeRoutes);
 app.use("/api/passenger/vehicles", P_vehicleRoutes);
 app.use("/api/passenger/notifications", P_NotificationRoutes);
+
+app.use("/api/passenger/push-subscribe", P_pushNotificationRoutes);
 
 
 

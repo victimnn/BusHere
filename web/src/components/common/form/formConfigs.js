@@ -1057,3 +1057,263 @@ export const vehicleFormConfig = {
   ],
   fakeDataGenerator: createFakeVehicleData
 };
+
+// Configuração do formulário de avisos/notificações
+export const notificationFormConfig = {
+  fields: [
+    {
+      name: 'titulo',
+      type: 'text',
+      label: 'Título',
+      labelIcon: 'bi bi-card-heading',
+      inputIcon: 'bi bi-text-left',
+      placeholder: 'Título do aviso',
+      maxLength: 100,
+      required: true,
+      size: 'lg',
+      validator: (value) => {
+        if (!value.trim()) return 'Título é obrigatório';
+        if (value.length < 3) return 'Título deve ter no mínimo 3 caracteres';
+        return null;
+      }
+    },
+    {
+      name: 'conteudo',
+      type: 'textarea',
+      label: 'Conteúdo',
+      labelIcon: 'bi bi-card-text',
+      inputIcon: 'bi bi-textarea-t',
+      placeholder: 'Descreva o conteúdo do aviso...',
+      required: true,
+      size: 'lg',
+      rows: 5,
+      validator: (value) => {
+        if (!value.trim()) return 'Conteúdo é obrigatório';
+        if (value.length < 10) return 'Conteúdo deve ter no mínimo 10 caracteres';
+        return null;
+      }
+    },
+    {
+      name: 'prioridade',
+      type: 'select',
+      label: 'Prioridade',
+      labelIcon: 'bi bi-exclamation-triangle-fill',
+      inputIcon: 'bi bi-flag',
+      placeholder: 'Selecione a prioridade',
+      required: true,
+      size: 'lg',
+      defaultOptions: [
+        { value: 'BAIXA', label: 'Baixa' },
+        { value: 'MEDIA', label: 'Média' },
+        { value: 'ALTA', label: 'Alta' }
+      ],
+      optionValue: 'value',
+      optionLabel: 'label',
+      validator: (value) => {
+        if (!value) return 'Prioridade é obrigatória';
+        return null;
+      }
+    },
+    {
+      name: 'data_expiracao',
+      type: 'date',
+      label: 'Data de Expiração (opcional)',
+      labelIcon: 'bi bi-calendar-x',
+      inputIcon: 'bi bi-calendar-event',
+      placeholder: 'Data de expiração',
+      size: 'lg',
+      additionalProps: { 
+        min: new Date().toISOString().split('T')[0]
+      },
+      reverseTransform: reverseTransformDate,
+      validator: (value) => {
+        if (!value) return null;
+        const date = new Date(value);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (date < today) return 'Data de expiração não pode ser no passado';
+        return null;
+      }
+    },
+    {
+      name: 'escopo_aviso_id',
+      type: 'select',
+      label: 'Escopo do Aviso',
+      labelIcon: 'bi bi-diagram-3-fill',
+      inputIcon: 'bi bi-diagram-3',
+      placeholder: 'Selecione o escopo',
+      required: true,
+      size: 'lg',
+      loadOptions: () => api.notifications.getScopes(),
+      defaultOptions: [],
+      optionValue: 'escopo_aviso_id',
+      optionLabel: 'nome_escopo',
+      validator: (value) => {
+        if (!value) return 'Escopo é obrigatório';
+        return null;
+      }
+    },
+    {
+      name: 'rota_alvo_id',
+      type: 'select',
+      label: 'Rota Alvo',
+      labelIcon: 'bi bi-signpost-split-fill',
+      inputIcon: 'bi bi-signpost-split',
+      placeholder: 'Selecione uma rota',
+      size: 'lg',
+      loadOptions: () => api.passengers.getRoutes(),
+      defaultOptions: [],
+      optionValue: 'rota_id',
+      optionLabel: (option) => `${option.nome} (${option.codigo_rota})`,
+      dependsOn: 'escopo_aviso_id',
+      disabled: (formData) => {
+        // Habilita apenas quando escopo = "Por Rota" (ID 2)
+        return formData.escopo_aviso_id !== 2 && formData.escopo_aviso_id !== '2';
+      },
+      helpText: 'Disponível apenas para escopo "Por Rota"',
+      validator: (value, formData) => {
+        // Só valida se o campo estiver habilitado
+        const isEnabled = formData.escopo_aviso_id === 2 || formData.escopo_aviso_id === '2';
+        if (isEnabled && !value) {
+          return 'Rota é obrigatória para o escopo selecionado';
+        }
+        return null;
+      },
+      shouldValidate: (formData) => {
+        // Só deve validar se estiver habilitado
+        return formData.escopo_aviso_id === 2 || formData.escopo_aviso_id === '2';
+      }
+    },
+    {
+      name: 'tipo_passageiro_alvo_id',
+      type: 'select',
+      label: 'Tipo de Passageiro Alvo',
+      labelIcon: 'bi bi-person-badge-fill',
+      inputIcon: 'bi bi-tag',
+      placeholder: 'Selecione um tipo',
+      size: 'lg',
+      loadOptions: () => api.passengers.getTypes(),
+      defaultOptions: [],
+      optionValue: 'tipo_passageiro_id',
+      optionLabel: 'nome',
+      dependsOn: 'escopo_aviso_id',
+      disabled: (formData) => {
+        // Habilita apenas quando escopo = "Por Tipo de Passageiro" (ID 3)
+        return formData.escopo_aviso_id !== 3 && formData.escopo_aviso_id !== '3';
+      },
+      helpText: 'Disponível apenas para escopo "Por Tipo de Passageiro"',
+      validator: (value, formData) => {
+        // Só valida se o campo estiver habilitado
+        const isEnabled = formData.escopo_aviso_id === 3 || formData.escopo_aviso_id === '3';
+        if (isEnabled && !value) {
+          return 'Tipo de passageiro é obrigatório para o escopo selecionado';
+        }
+        return null;
+      },
+      shouldValidate: (formData) => {
+        // Só deve validar se estiver habilitado
+        return formData.escopo_aviso_id === 3 || formData.escopo_aviso_id === '3';
+      }
+    },
+    {
+      name: 'passageiro_alvo_id',
+      type: 'select',
+      label: 'Passageiro Alvo',
+      labelIcon: 'bi bi-person-fill',
+      inputIcon: 'bi bi-person',
+      placeholder: 'Selecione um passageiro',
+      size: 'lg',
+      loadOptions: async () => {
+        const response = await api.passengers.list(1, 1000, '');
+        return response;
+      },
+      defaultOptions: [],
+      optionValue: 'passageiro_id',
+      optionLabel: (option) => `${option.nome} - ${option.cpf}`,
+      dependsOn: 'escopo_aviso_id',
+      disabled: (formData) => {
+        // Habilita apenas quando escopo = "Passageiro Específico" (ID 4)
+        return formData.escopo_aviso_id !== 4 && formData.escopo_aviso_id !== '4';
+      },
+      helpText: 'Disponível apenas para escopo "Passageiro Específico"',
+      validator: (value, formData) => {
+        // Só valida se o campo estiver habilitado
+        const isEnabled = formData.escopo_aviso_id === 4 || formData.escopo_aviso_id === '4';
+        if (isEnabled && !value) {
+          return 'Passageiro é obrigatório para o escopo selecionado';
+        }
+        return null;
+      },
+      shouldValidate: (formData) => {
+        // Só deve validar se estiver habilitado
+        return formData.escopo_aviso_id === 4 || formData.escopo_aviso_id === '4';
+      }
+    },
+    {
+      name: 'enviar_push',
+      type: 'switch',
+      label: 'Enviar Notificação Push',
+      labelIcon: 'bi bi-bell-fill',
+      inputIcon: 'bi bi-bell',
+      size: 'lg',
+      defaultValue: true,
+      helpText: 'Enviar notificação push para o aplicativo móvel'
+    },
+    {
+      name: 'enviar_email',
+      type: 'switch',
+      label: 'Enviar Email',
+      labelIcon: 'bi bi-envelope-fill',
+      inputIcon: 'bi bi-envelope',
+      size: 'lg',
+      defaultValue: false,
+      helpText: 'Enviar aviso por email'
+    },
+    {
+      name: 'enviar_sms',
+      type: 'switch',
+      label: 'Enviar SMS',
+      labelIcon: 'bi bi-phone-fill',
+      inputIcon: 'bi bi-phone',
+      size: 'lg',
+      defaultValue: false,
+      helpText: 'Enviar aviso por SMS'
+    },
+    {
+      name: 'ativo',
+      type: 'switch',
+      label: 'Aviso Ativo',
+      labelIcon: 'bi bi-toggle-on',
+      inputIcon: 'bi bi-toggle-on',
+      size: 'lg',
+      defaultValue: true,
+      helpText: 'Define se o aviso está ativo ou inativo'
+    }
+  ],
+  steps: [
+    {
+      title: 'Informações Básicas',
+      icon: 'bi bi-card-text',
+      fields: [
+        'titulo',
+        'conteudo',
+        'prioridade',
+        'data_expiracao'
+      ]
+    },
+    {
+      title: 'Destino e Canais',
+      icon: 'bi bi-send-fill',
+      fields: [
+        'escopo_aviso_id',
+        'rota_alvo_id',
+        'tipo_passageiro_alvo_id',
+        'passageiro_alvo_id',
+        'enviar_push',
+        'enviar_email',
+        'enviar_sms',
+        'ativo'
+      ]
+    }
+  ]
+};

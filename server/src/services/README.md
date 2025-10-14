@@ -1,58 +1,114 @@
-# 📧 Serviço de Email - BusHere!
+# 📧 Services - BusHere!# 📧 Serviço de Email - BusHere!
 
-Este documento explica como configurar o envio de emails no sistema BusHere!, incluindo convites para passageiros.
 
-## 📋 Visão Geral
 
-O sistema utiliza **Nodemailer** para envio de emails via SMTP. Quando um convite é gerado, um email automático é enviado para o endereço do convidado contendo:
-- Código único do convite
-- Link direto para aceitar o convite
+Este diretório contém os serviços do sistema BusHere!Este documento explica como configurar o envio de emails no sistema BusHere!, incluindo convites para passageiros.
+
+
+
+## 📁 Arquivos## 📋 Visão Geral
+
+
+
+- **`emailService.js`** - Serviço modular de envio de emailsO sistema utiliza **Nodemailer** para envio de emails via SMTP. Quando um convite é gerado, um email automático é enviado para o endereço do convidado contendo:
+
+- **`testEmail.js`** - Script de teste para o serviço de email- Código único do convite
+
+- **`EMAIL_SERVICE_DOCS.md`** - 📚 **Documentação completa do serviço de email**- Link direto para aceitar o convite
+
 - Instruções de uso
-- Data de expiração (7 dias)
 
-## ⚙️ Configuração
+## 📖 Documentação- Data de expiração (7 dias)
 
-### 1. Variáveis de Ambiente
 
-Adicione as seguintes variáveis no arquivo `.env` do servidor:
+
+Para informações completas sobre o serviço de email, incluindo:## ⚙️ Configuração
+
+- Configuração
+
+- Uso e exemplos### 1. Variáveis de Ambiente
+
+- Integração com avisos
+
+- Templates disponíveisAdicione as seguintes variáveis no arquivo `.env` do servidor:
+
+- Troubleshooting
 
 ```env
-# Configurações de Email (SMTP)
+
+**Leia:** [`EMAIL_SERVICE_DOCS.md`](./EMAIL_SERVICE_DOCS.md)# Configurações de Email (SMTP)
+
 EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
+
+## 🚀 Início RápidoEMAIL_PORT=587
+
 EMAIL_SECURE=false
-EMAIL_USER=seu_email@gmail.com
+
+### Enviar Email de ConviteEMAIL_USER=seu_email@gmail.com
+
 EMAIL_PASS=sua_senha_de_app
-EMAIL_FROM=noreply@bushere.com
-EMAIL_TLS_REJECT_UNAUTHORIZED=false
+
+```javascriptEMAIL_FROM=noreply@bushere.com
+
+const { sendInviteEmail } = require('./services/emailService');EMAIL_TLS_REJECT_UNAUTHORIZED=false
+
 WEBAPP_URL=http://localhost:5174
+
+await sendInviteEmail('usuario@example.com', 'ABC123');```
+
 ```
 
 ### 2. Configuração por Provedor
 
+### Enviar Email de Notificação
+
 #### 📮 Gmail
 
-1. Acesse [Senhas de App do Google](https://myaccount.google.com/apppasswords)
+```javascript
+
+const { sendNotificationEmail } = require('./services/emailService');1. Acesse [Senhas de App do Google](https://myaccount.google.com/apppasswords)
+
 2. Crie uma nova senha de aplicativo
-3. Configure no `.env`:
 
-```env
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_SECURE=false
-EMAIL_USER=seu_email@gmail.com
-EMAIL_PASS=senha_de_app_gerada
-```
+await sendNotificationEmail(3. Configure no `.env`:
 
-#### 📮 Outlook/Office365
+  ['email1@example.com', 'email2@example.com'],
 
-```env
-EMAIL_HOST=smtp-mail.outlook.com
-EMAIL_PORT=587
-EMAIL_SECURE=false
+  {```env
+
+    titulo: 'Título do Aviso',EMAIL_HOST=smtp.gmail.com
+
+    conteudo: 'Conteúdo da notificação',EMAIL_PORT=587
+
+    prioridade: 'ALTA'EMAIL_SECURE=false
+
+  }EMAIL_USER=seu_email@gmail.com
+
+);EMAIL_PASS=senha_de_app_gerada
+
+``````
+
+
+
+### Testar Serviço#### 📮 Outlook/Office365
+
+
+
+```bash```env
+
+cd serverEMAIL_HOST=smtp-mail.outlook.com
+
+node src/services/testEmail.jsEMAIL_PORT=587
+
+```EMAIL_SECURE=false
+
 EMAIL_USER=seu_email@outlook.com
-EMAIL_PASS=sua_senha
+
+---EMAIL_PASS=sua_senha
+
 ```
+
+**Para documentação completa, veja:** [`EMAIL_SERVICE_DOCS.md`](./EMAIL_SERVICE_DOCS.md)
 
 #### 📮 Yahoo
 

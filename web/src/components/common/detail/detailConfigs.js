@@ -393,3 +393,81 @@ export const vehicleConfig = {
     }
   ]
 };
+
+// Configuração para avisos/notificações
+export const notificationConfig = {
+  title: "Detalhes do Aviso",
+  headerIcon: "bi bi-bell-fill",
+  emptyIcon: "bi bi-bell-slash",
+  emptyMessage: "Nenhum aviso selecionado",
+  idField: "aviso_id",
+  fields: [
+    {
+      key: "titulo",
+      label: "Título",
+      icon: "bi bi-card-heading",
+      formatter: formatters.defaultValue
+    },
+    {
+      key: "conteudo",
+      label: "Conteúdo",
+      icon: "bi bi-card-text",
+      formatter: formatters.defaultValue
+    },
+    {
+      key: "escopo_nome",
+      label: "Escopo",
+      icon: "bi bi-diagram-3",
+      formatter: formatters.defaultValue
+    },
+    {
+      key: "prioridade",
+      label: "Prioridade",
+      icon: "bi bi-flag",
+      formatter: (value) => {
+        const priorities = {
+          'BAIXA': 'Baixa',
+          'MEDIA': 'Média',
+          'ALTA': 'Alta'
+        };
+        return priorities[value] || value || "Não informado";
+      }
+    },
+    {
+      key: "data_publicacao",
+      label: "Data de Publicação",
+      icon: "bi bi-calendar-check",
+      formatter: formatters.date
+    },
+    {
+      key: "data_expiracao",
+      label: "Data de Expiração",
+      icon: "bi bi-calendar-x",
+      formatter: (value) => value ? formatters.date(value) : "Sem expiração"
+    },
+    {
+      key: "enviar_push",
+      label: "Enviar Push",
+      icon: "bi bi-bell",
+      formatter: (value) => value ? "Sim" : "Não"
+    },
+    {
+      key: "enviar_email",
+      label: "Enviar Email",
+      icon: "bi bi-envelope",
+      formatter: (value) => value ? "Sim" : "Não"
+    },
+    {
+      key: "enviar_sms",
+      label: "Enviar SMS",
+      icon: "bi bi-phone",
+      formatter: (value) => value ? "Sim" : "Não"
+    },
+    {
+      key: "ativo",
+      label: "Status",
+      icon: "bi bi-toggle-on",
+      formatter: (value) => value ? "Ativo" : "Inativo"
+    }
+  ]
+};

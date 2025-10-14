@@ -38,7 +38,7 @@ const api = {
     };
 
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+      headers['Authorization'] = token; // Token já vem com "Bearer " do getBearerToken()
     }
 
     const config = {
@@ -574,7 +574,7 @@ const api = {
     // Lista todos os avisos
     list: async () => {
       try {
-        const response = await api.get('/avisos');
+        const response = await api.get('/notifications');
         return response;
       } catch (error) {
         console.error("Erro ao listar avisos:", error);
@@ -584,7 +584,7 @@ const api = {
 
     create: async (notificationData) => {
       try {
-        const response = await api.post('/avisos', notificationData);
+        const response = await api.post('/notifications', notificationData);
         return response;
       } catch (error) {
         console.error("Erro ao criar aviso:", error);
@@ -592,9 +592,29 @@ const api = {
       }
     },
 
+    update: async (id, notificationData) => {
+      try {
+        const response = await api.put(`/notifications/${id}`, notificationData);
+        return response;
+      } catch (error) {
+        console.error("Erro ao atualizar aviso:", error);
+        throw error;
+      }
+    },
+
+    delete: async (id) => {
+      try {
+        const response = await api.delete(`/notifications/${id}`);
+        return response;
+      } catch (error) {
+        console.error("Erro ao excluir aviso:", error);
+        throw error;
+      }
+    },
+
     getScopes: async () => {
       try {
-        const response = await api.get('/avisos/scopes');
+        const response = await api.get('/notifications/scopes');
         return response;
       } catch (error) {
         console.error("Erro ao buscar escopos de aviso:", error);
@@ -604,7 +624,7 @@ const api = {
 
     getById: async (id) => {
       try {
-        const response = await api.get(`/avisos/${id}`);
+        const response = await api.get(`/notifications/${id}`);
         return response;
       } catch (error) {
         console.error("Erro ao buscar aviso por ID:", error);

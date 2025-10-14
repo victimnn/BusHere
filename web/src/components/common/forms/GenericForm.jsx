@@ -33,81 +33,19 @@ function GenericForm({
   // Memoize field configurations for better performance
   const fieldsConfig = useMemo(() => config.fields, [config.fields]);
 
-  // Funções para controlar as etapas
-  const nextStep = useCallback((e) => {
-    // Previne o comportamento padrão do formulário
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
+  // Função helper para calcular se um campo está desabilitado
+  const isFieldDisabled = useCallback((field) => {
+    if (isLoading) return true;
+    if (field.name === 'cep' && isLoadingCep) return true;
+    if (field.dependsOn && !formData[field.dependsOn]) return true;
+    
+    // Suporta disabled como função
+    if (typeof field.disabled === 'function') {
+      return field.disabled(formData);
     }
     
-    if (steps && currentStep < steps.length - 1) {
-      // Valida campos obrigatórios da etapa atual
-      const currentStepFields = steps[currentStep]?.fields || [];
-      const stepErrors = {};
-      let hasErrors = false;
-      
-      currentStepFields.forEach(fieldName => {
-        const field = fieldsConfig.find(f => f.name === fieldName);
-        if (field && field.required) {
-          const value = formData[field.name] || '';
-          // Validação inline para evitar dependência circular
-          let error = null;
-          
-          // Validação de campo obrigatório
-          if (!value || value.toString().trim() === '') {
-            error = `${field.label} é obrigatório`;
-          }
-          
-          // Validação customizada
-          if (!error && field.validator) {
-            error = field.validator(value, formData);
-          }
-          
-          if (error) {
-            stepErrors[fieldName] = error;
-            hasErrors = true;
-          }
-        }
-      });
-      
-      if (hasErrors) {
-        // Atualiza erros e marca campos como tocados
-        setErrors(prev => ({ ...prev, ...stepErrors }));
-        setTouchedFields(prev => {
-          const newTouched = { ...prev };
-          currentStepFields.forEach(fieldName => {
-            if (stepErrors[fieldName]) {
-              newTouched[fieldName] = true;
-            }
-          });
-          return newTouched;
-        });
-        
-        // Mostra mensagem de erro
-        console.warn('Preencha todos os campos obrigatórios da etapa atual');
-        return;
-      }
-      
-      // Se não há erros, avança para próxima etapa
-      setCurrentStep(currentStep + 1);
-    }
-  }, [steps, currentStep, fieldsConfig, formData]);
-
-  const prevStep = useCallback((e) => {
-    // Previne o comportamento padrão do formulário
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
-  }, [currentStep]);
-
-  const isLastStep = steps ? currentStep === steps.length - 1 : true;
-  const isFirstStep = currentStep === 0;
+    return field.disabled || false;
+  }, [isLoading, isLoadingCep, formData]);
 
   // Carrega os dados iniciais se disponíveis (para edição)
   useEffect(() => {
@@ -230,6 +168,11 @@ function GenericForm({
     const fieldConfig = getFieldConfig(name);
     if (!fieldConfig) return null;
 
+    // Verifica se o campo deve ser validado (usado para campos condicionais)
+    if (fieldConfig.shouldValidate && !fieldConfig.shouldValidate(currentFormData)) {
+      return null; // Não valida campos condicionalmente desabilitados
+    }
+
     // Validação de campo obrigatório
     if (fieldConfig.required && (!value || value.toString().trim() === '')) {
       return `${fieldConfig.label} é obrigatório`;
@@ -242,6 +185,73 @@ function GenericForm({
 
     return null;
   }, [getFieldConfig, formData]);
+
+  // Funções para controlar as etapas
+  const nextStep = useCallback((e) => {
+    // Previne o comportamento padrão do formulário
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    if (steps && currentStep < steps.length - 1) {
+      // Valida campos obrigatórios da etapa atual
+      const currentStepFields = steps[currentStep]?.fields || [];
+      const stepErrors = {};
+      let hasErrors = false;
+      
+      currentStepFields.forEach(fieldName => {
+        const field = fieldsConfig.find(f => f.name === fieldName);
+        if (field && field.required) {
+          const value = formData[field.name] || '';
+          
+          // Usa validateField que já respeita shouldValidate
+          const error = validateField(fieldName, value, formData);
+          
+          if (error) {
+            stepErrors[fieldName] = error;
+            hasErrors = true;
+          }
+        }
+      });
+      
+      if (hasErrors) {
+        // Atualiza erros e marca campos como tocados
+        setErrors(prev => ({ ...prev, ...stepErrors }));
+        setTouchedFields(prev => {
+          const newTouched = { ...prev };
+          currentStepFields.forEach(fieldName => {
+            if (stepErrors[fieldName]) {
+              newTouched[fieldName] = true;
+            }
+          });
+          return newTouched;
+        });
+        
+        // Mostra mensagem de erro
+        console.warn('Preencha todos os campos obrigatórios da etapa atual');
+        return;
+      }
+      
+      // Se não há erros, avança para próxima etapa
+      setCurrentStep(currentStep + 1);
+    }
+  }, [steps, currentStep, fieldsConfig, formData, validateField]);
+
+  const prevStep = useCallback((e) => {
+    // Previne o comportamento padrão do formulário
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  }, [currentStep]);
+
+  const isLastStep = steps ? currentStep === steps.length - 1 : true;
+  const isFirstStep = currentStep === 0;
 
   // Verifica se a etapa atual está válida
   const isCurrentStepValid = useMemo(() => {
@@ -358,6 +368,11 @@ function GenericForm({
         setSelectOptions(prev => ({
           ...prev,
           [field.name]: field.defaultOptions || []
+        }));
+        // Limpa erros do campo dependente
+        setErrors(prev => ({
+          ...prev,
+          [field.name]: null
         }));
       }
     });
@@ -542,7 +557,7 @@ function GenericForm({
                 step={field.step}
                 pattern={field.pattern}
                 autoComplete={field.autoComplete}
-                disabled={field.disabled || isLoading || (field.name === 'cep' && isLoadingCep) || (field.dependsOn && !formData[field.dependsOn])}
+                disabled={isFieldDisabled(field)}
                 data-dependent={field.dependsOn ? 'true' : undefined}
                 {...(field.additionalProps || {})}
               />
@@ -582,7 +597,7 @@ function GenericForm({
                 checked={value}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                disabled={field.disabled || isLoading || (field.dependsOn && !formData[field.dependsOn])}
+                disabled={isFieldDisabled(field)}
                 data-dependent={field.dependsOn ? 'true' : undefined}
                 {...(field.additionalProps || {})}
               />
@@ -600,6 +615,44 @@ function GenericForm({
               {showError && <div className="invalid-feedback d-block">{error}</div>}
             </div>
             {helpText}
+          </div>
+        );
+
+      case 'switch':
+        return (
+          <div key={field.name} className="mb-4">
+            <div className="d-flex align-items-center justify-content-between p-3 border rounded bg-light">
+              <div className="flex-grow-1">
+                <label htmlFor={field.name} className="form-label fw-semibold mb-0">
+                  <i className={`${field.labelIcon} me-2 text-primary`}></i>
+                  {field.label}
+                  {field.required && <span className="text-danger ms-1">*</span>}
+                </label>
+                {field.helpText && (
+                  <div className="form-text text-muted small mt-1">
+                    <i className="bi bi-info-circle me-1"></i>
+                    {field.helpText}
+                  </div>
+                )}
+              </div>
+              <div className="form-check form-switch ms-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  role="switch"
+                  id={field.name}
+                  name={field.name}
+                  checked={value}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  disabled={isFieldDisabled(field)}
+                  style={{ width: '3rem', height: '1.5rem', cursor: 'pointer' }}
+                  data-dependent={field.dependsOn ? 'true' : undefined}
+                  {...(field.additionalProps || {})}
+                />
+              </div>
+            </div>
+            {showError && <div className="invalid-feedback d-block">{error}</div>}
           </div>
         );
 
@@ -622,7 +675,7 @@ function GenericForm({
                 value={value}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                disabled={field.disabled || isLoading || (field.dependsOn && !formData[field.dependsOn])}
+                disabled={isFieldDisabled(field)}
                 data-dependent={field.dependsOn ? 'true' : undefined}
                 {...(field.additionalProps || {})}
               >
@@ -666,7 +719,7 @@ function GenericForm({
                 placeholder={field.placeholder}
                 rows={field.rows || 3}
                 maxLength={field.maxLength}
-                disabled={field.disabled || isLoading || (field.dependsOn && !formData[field.dependsOn])}
+                disabled={isFieldDisabled(field)}
                 data-dependent={field.dependsOn ? 'true' : undefined}
                 {...(field.additionalProps || {})}
               />
@@ -697,7 +750,7 @@ function GenericForm({
                 onBlur={handleBlur}
                 accept={field.accept}
                 multiple={field.multiple}
-                disabled={field.disabled || isLoading || (field.dependsOn && !formData[field.dependsOn])}
+                disabled={isFieldDisabled(field)}
                 data-dependent={field.dependsOn ? 'true' : undefined}
                 {...(field.additionalProps || {})}
               />

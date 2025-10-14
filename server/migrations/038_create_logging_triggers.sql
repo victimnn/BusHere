@@ -18,6 +18,9 @@ DROP TRIGGER IF EXISTS after_usuarios_empresa_delete_log;
 DROP TRIGGER IF EXISTS after_passageiros_insert_log;
 DROP TRIGGER IF EXISTS after_passageiros_update_log;
 DROP TRIGGER IF EXISTS after_passageiros_delete_log;
+DROP TRIGGER IF EXISTS after_avisos_insert_log;
+DROP TRIGGER IF EXISTS after_avisos_update_log;
+DROP TRIGGER IF EXISTS after_avisos_delete_log;
 
 -- Up
 -- triggers para logging de alterações em tabelas
@@ -649,6 +652,124 @@ BEGIN
             'ativo', OLD.ativo        ),
         NULL,
         1
+    );
+END;
+
+-- Avisos
+CREATE TRIGGER after_avisos_insert_log
+AFTER INSERT ON Avisos
+FOR EACH ROW
+BEGIN
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
+    VALUES (
+        'Avisos', 
+        NEW.aviso_id,
+        'INSERT', 
+        NULL, 
+        JSON_OBJECT(
+            'aviso_id', NEW.aviso_id,
+            'titulo', NEW.titulo,
+            'conteudo', NEW.conteudo,
+            'data_publicacao', NEW.data_publicacao,
+            'data_expiracao', NEW.data_expiracao,
+            'usuario_criador_id', NEW.usuario_criador_id,
+            'escopo_aviso_id', NEW.escopo_aviso_id,
+            'rota_alvo_id', NEW.rota_alvo_id,
+            'tipo_passageiro_alvo_id', NEW.tipo_passageiro_alvo_id,
+            'passageiro_alvo_id', NEW.passageiro_alvo_id,
+            'prioridade', NEW.prioridade,
+            'enviar_push', NEW.enviar_push,
+            'enviar_email', NEW.enviar_email,
+            'enviar_sms', NEW.enviar_sms,
+            'criacao', NEW.criacao,
+            'atualizacao', NEW.atualizacao,
+            'ativo', NEW.ativo
+        ), 
+        COALESCE(NEW.usuario_criador_id, 1)
+    );
+END;
+
+CREATE TRIGGER after_avisos_update_log
+AFTER UPDATE ON Avisos
+FOR EACH ROW
+BEGIN
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
+    VALUES (
+        'Avisos', 
+        NEW.aviso_id,
+        'UPDATE', 
+        JSON_OBJECT(
+            'aviso_id', OLD.aviso_id,
+            'titulo', OLD.titulo,
+            'conteudo', OLD.conteudo,
+            'data_publicacao', OLD.data_publicacao,
+            'data_expiracao', OLD.data_expiracao,
+            'usuario_criador_id', OLD.usuario_criador_id,
+            'escopo_aviso_id', OLD.escopo_aviso_id,
+            'rota_alvo_id', OLD.rota_alvo_id,
+            'tipo_passageiro_alvo_id', OLD.tipo_passageiro_alvo_id,
+            'passageiro_alvo_id', OLD.passageiro_alvo_id,
+            'prioridade', OLD.prioridade,
+            'enviar_push', OLD.enviar_push,
+            'enviar_email', OLD.enviar_email,
+            'enviar_sms', OLD.enviar_sms,
+            'criacao', OLD.criacao,
+            'atualizacao', OLD.atualizacao,
+            'ativo', OLD.ativo
+        ),
+        JSON_OBJECT(
+            'aviso_id', NEW.aviso_id,
+            'titulo', NEW.titulo,
+            'conteudo', NEW.conteudo,
+            'data_publicacao', NEW.data_publicacao,
+            'data_expiracao', NEW.data_expiracao,
+            'usuario_criador_id', NEW.usuario_criador_id,
+            'escopo_aviso_id', NEW.escopo_aviso_id,
+            'rota_alvo_id', NEW.rota_alvo_id,
+            'tipo_passageiro_alvo_id', NEW.tipo_passageiro_alvo_id,
+            'passageiro_alvo_id', NEW.passageiro_alvo_id,
+            'prioridade', NEW.prioridade,
+            'enviar_push', NEW.enviar_push,
+            'enviar_email', NEW.enviar_email,
+            'enviar_sms', NEW.enviar_sms,
+            'criacao', NEW.criacao,
+            'atualizacao', NEW.atualizacao,
+            'ativo', NEW.ativo
+        ),
+        COALESCE(NEW.usuario_criador_id, 1)
+    );
+END;
+
+CREATE TRIGGER after_avisos_delete_log
+AFTER DELETE ON Avisos
+FOR EACH ROW
+BEGIN
+    INSERT INTO LogMudancas (tabela, registro_id, operacao, dados_antigos, dados_novos, usuario_id)
+    VALUES (
+        'Avisos', 
+        OLD.aviso_id,
+        'DELETE', 
+        JSON_OBJECT(
+            'aviso_id', OLD.aviso_id,
+            'titulo', OLD.titulo,
+            'conteudo', OLD.conteudo,
+            'data_publicacao', OLD.data_publicacao,
+            'data_expiracao', OLD.data_expiracao,
+            'usuario_criador_id', OLD.usuario_criador_id,
+            'escopo_aviso_id', OLD.escopo_aviso_id,
+            'rota_alvo_id', OLD.rota_alvo_id,
+            'tipo_passageiro_alvo_id', OLD.tipo_passageiro_alvo_id,
+            'passageiro_alvo_id', OLD.passageiro_alvo_id,
+            'prioridade', OLD.prioridade,
+            'enviar_push', OLD.enviar_push,
+            'enviar_email', OLD.enviar_email,
+            'enviar_sms', OLD.enviar_sms,
+            'criacao', OLD.criacao,
+            'atualizacao', OLD.atualizacao,
+            'ativo', OLD.ativo
+        ),
+        NULL,
+        COALESCE(OLD.usuario_criador_id, 1)
     );
 END;
 

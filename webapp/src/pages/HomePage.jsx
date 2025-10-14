@@ -212,8 +212,12 @@ const HomePage = ({ isDark, setIsDark }) => {
 				anchorPoints={bottomSheetConfig.anchorPoints}
 				setAnchorPoint={setAnchors}
 				maxHeight={90}
-			>
-				<BottomSheetContent anchor={anchor} isDark={isDark} />
+			>   
+				<div className="d-flex justify-content-center w-100">
+					<div style={{ maxWidth: 600 }} className="w-100">
+						<BottomSheetContent anchor={anchor} isDark={isDark}/>
+					</div>
+				</div>
 			</BottomSheet>
 		</div>
 	{/* Localização é solicitada automaticamente pela API do navegador ao carregar a página. Nenhum pop-up extra é exibido. */}

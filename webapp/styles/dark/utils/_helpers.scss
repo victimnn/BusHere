@@ -157,3 +157,13 @@
 .bg-medium {
   background-color: $bg-medium !important;
 }
+
+// -----------------------------------------------------------------------------
+// MODAL HELPERS - Bloquear scroll do body quando modal está aberto
+// -----------------------------------------------------------------------------
+body.modal-open {
+  overflow: hidden !important;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}

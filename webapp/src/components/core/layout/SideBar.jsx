@@ -12,7 +12,7 @@ const SideBarContent = ({ isDark, setIsDark, onNavigate }) => {
         { path: '/', icon: 'bi-house', label: 'Início', active: location.pathname === '/' },
         { path: '/conta', icon: 'bi-person', label: 'Conta', active: location.pathname === '/conta' },
         { path: '/avisos', icon: 'bi-bell', label: 'Avisos', active: location.pathname === '/avisos' },
-        { path: '/boletos', icon: 'bi-credit-card', label: 'Boletos', active: location.pathname === '/boletos' },
+        // { path: '/boletos', icon: 'bi-credit-card', label: 'Boletos', active: location.pathname === '/boletos' },
         { path: '/ajustes', icon: 'bi-gear', label: 'Ajustes', active: location.pathname === '/ajustes' },
         { path: '/ajuda', icon: 'bi-question-circle', label: 'Ajuda', active: location.pathname === '/ajuda' }
     ];

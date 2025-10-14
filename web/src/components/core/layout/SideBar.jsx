@@ -64,6 +64,18 @@ function SideBar() {
     const [isHovered, setIsHovered] = useState(false);
     const sidebarWidth = isHovered ? "240px" : "70px"; // Largura do sidebar
 
+    const menuItems = [
+        { path: '/', icon: 'house-fill', label: 'Início' },
+        { path: '/passengers', icon: 'people-fill', label: 'Passageiros' },
+        { path: '/drivers', icon: 'person-fill-gear', label: 'Motoristas' },
+        { path: '/vehicles', icon: 'car-front-fill', label: 'Veículos' },
+        { path: '/routes', icon: 'signpost-split-fill', label: 'Rotas' },
+        { path: '/stops', icon: 'geo-alt-fill', label: 'Pontos' },
+        { path: '/notifications', icon: 'bell-fill', label: 'Avisos' },
+        { path: '/reports', icon: 'graph-up', label: 'Relatórios' },
+        { path: '/settings', icon: 'gear-fill', label: 'Configurações' }
+    ];
+
     return (
       <aside
         id="sidebar"
@@ -97,62 +109,23 @@ function SideBar() {
 
         {/* Navigation */}
         <nav className="sidebar-nav flex-grow-1 p-2">
-          <SideButton
-            name="Início"
-            icon="house-fill"
-            href="/"
-            isOpen={isHovered}
-          />
-          <SideButton
-            name="Passageiros"
-            icon="people-fill"
-            href="passengers"
-            isOpen={isHovered}
-          />
-          <SideButton
-            name="Motoristas"
-            icon="person-fill-gear"
-            href="drivers"
-            isOpen={isHovered}
-          />
-          <SideButton
-            name="Veículos"
-            icon="car-front-fill"
-            href="vehicles"
-            isOpen={isHovered}
-          />
-          <SideButton
-            name="Rotas"
-            icon="signpost-split-fill"
-            href="routes"
-            isOpen={isHovered}
-          />
-          <SideButton
-            name="Pontos"
-            icon="geo-alt-fill"
-            href="stops"
-            isOpen={isHovered}
-          />
-          <SideButton
-            name="Avisos"
-            icon="bell-fill"
-            href="notifications"
-            isOpen={isHovered}
-          />
-          <SideButton
-            name="Relatórios"
-            icon="graph-up"
-            href="reports"
-            isOpen={isHovered}
-          />
+          {menuItems.slice(0, -1).map((item) => (
+            <SideButton
+              key={item.path}
+              name={item.label}
+              icon={item.icon}
+              href={item.path}
+              isOpen={isHovered}
+            />
+          ))}
         </nav>
 
         {/* Footer */}
         <div className="sidebar-footer p-2 border-top">
           <SideButton
-            name="Configurações"
-            icon="gear-fill"
-            href="settings"
+            name={menuItems[menuItems.length - 1].label}
+            icon={menuItems[menuItems.length - 1].icon}
+            href={menuItems[menuItems.length - 1].path}
             isOpen={isHovered}
           />
         </div>

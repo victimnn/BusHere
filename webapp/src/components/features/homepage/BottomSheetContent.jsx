@@ -151,6 +151,24 @@ const BottomSheetMini = ({ isDark }) => {
         });
     }, [fullRouteData]);
     
+
+    if (!fullRouteData) {
+        return (
+            <>
+            <div className="mt-3 d-flex justify-content-center">
+                <div className="card border-0 shadow w-100">
+                    <div className="card-body py-2 px-3 text-center">
+                        <h6 className="mb-0 fw-bold text-secondary">Rota não definida</h6>
+                        <p className="text-muted small mb-0 mt-2">Um Administrador deve definir sua rota</p>
+                    </div>
+                </div>
+            </div>
+
+            
+            </>
+        );
+    }
+
     return (
         <div className="mt-3">
             <div className="d-flex align-items-center justify-content-between mb-3">
@@ -221,6 +239,33 @@ const BottomSheetMedium = ({ isDark }) => {
         });
     }, [fullRouteData]);
     
+    if (!fullRouteData) {
+        return (
+            <>
+            <div className="mt-3 d-flex justify-content-center">
+                <div className="card border-0 shadow w-100">
+                    <div className="card-body py-2 px-3 text-center">
+                        <h6 className="mb-0 fw-bold text-secondary">Rota não definida</h6>
+                        <p className="text-muted small mb-0 mt-2">Um Administrador deve definir sua rota</p>
+                    </div>
+                </div>
+            </div>
+            {/*botão para ir para o faq (deixar sem href por enquanto)*/}
+            <div className="mt-3 d-flex justify-content-center">
+                <ActionButton
+                    onClick={() => navigate('/ajuda?q=Por que minha rota não aparece?')}
+                    className='w-100'
+                    variant='primary'
+                >
+                    Ver Ajuda
+                </ActionButton>
+            </div>
+            </>
+        )
+    }
+
+
+
     return (
         <div className="overflow-y-auto overflow-x-hidden">
             {/* Seção de Sugestões */}

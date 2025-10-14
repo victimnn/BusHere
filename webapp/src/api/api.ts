@@ -338,7 +338,7 @@ const api = {
     // Lista todos os avisos
     list: async () => {
       try {
-        const response = await api.get('/avisos');
+        const response = await api.get('/notifications');
         return response;
       } catch (error) {
         console.error("Erro ao listar avisos:", error);
@@ -348,7 +348,7 @@ const api = {
 
     create: async (notificationData: any) => {
       try {
-        const response = await api.post('/avisos', notificationData);
+        const response = await api.post('/notifications', notificationData);
         return response;
       } catch (error) {
         console.error("Erro ao criar aviso:", error);
@@ -358,7 +358,7 @@ const api = {
 
     getScopes: async () => {
       try {
-        const response = await api.get('/avisos/scopes');
+        const response = await api.get('/notifications/scopes');
         return response;
       } catch (error) {
         console.error("Erro ao buscar escopos de aviso:", error);
@@ -368,7 +368,7 @@ const api = {
 
     getById: async (id: number | string) => {
       try {
-        const response = await api.get(`/avisos/${id}`);
+        const response = await api.get(`/notifications/${id}`);
         return response;
       } catch (error) {
         console.error("Erro ao buscar aviso por ID:", error);

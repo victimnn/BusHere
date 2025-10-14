@@ -1132,6 +1132,7 @@ export const notificationFormConfig = {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         if (date < today) return 'Data de expiração não pode ser no passado';
+        if (date.getFullYear() > today.getFullYear() + 1) return 'Data de expiração deve ser dentro de um ano a partir de hoje';
         return null;
       }
     },

@@ -1,6 +1,7 @@
 const express = require('express');
 
 const { generateInviteCode } = require("./../helpers.js");
+const { sendInviteEmail } = require("./../services/emailService.js");
 
 module.exports = (pool) => {
 	const router = express.Router();
@@ -26,7 +27,7 @@ module.exports = (pool) => {
 		}
 		try {
 			const codigo_convite = generateInviteCode();
-			const metodo_envio = "Indefinido";
+			const metodo_envio = "Email";
 			const usuario_emissor_id = req.body.usuario_emissor_id ?? 1; // Ajuste conforme autenticação
 			const data_expiracao = req.body.data_expiracao ?? new Date(Date.now() + 7*24*60*60*1000); // 7 dias padrão
 			let status_convite_id = req.body.status_convite_id ?? 1; // Ajuste conforme status padrão
@@ -41,8 +42,29 @@ module.exports = (pool) => {
 				status_convite_id
 			};
 
+			// Inserir convite no banco de dados
 			const [insertResult] = await pool.query("INSERT INTO ConvitesPassageiro SET ?", [convite]);
-			res.json({ data: { convite_passageiro_id: insertResult.insertId, ...convite } });
+			const conviteCompleto = { convite_passageiro_id: insertResult.insertId, ...convite };
+
+			// Enviar email com o convite
+			try {
+				const emailResult = await sendInviteEmail(email, codigo_convite);
+				
+				if (emailResult.success) {
+					console.log(`Email enviado com sucesso para: ${email}`);
+				} else {
+					console.warn(`Convite criado mas email não foi enviado para: ${email}`);
+					console.warn(`Motivo: ${emailResult.message}`);
+				}
+			} catch (emailError) {
+				console.error(`Erro ao enviar email para ${email}:`, emailError.message);
+				// Não retornar erro - convite foi criado com sucesso mesmo sem email
+			}
+
+			res.json({ 
+				data: conviteCompleto,
+				message: 'Convite criado com sucesso'
+			});
 		} catch (error) {
 			console.error("Erro ao criar convite:", error);
 			res.status(500).json({ error: "Erro interno do servidor" });

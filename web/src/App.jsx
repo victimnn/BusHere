@@ -11,6 +11,7 @@ import PassengersPage from "./pages/PassengersPage";
 import DriversPage from "./pages/DriversPage";
 import VehiclesPage from "./pages/VehiclesPage";
 import RoutesPage from "./pages/RoutesPage";
+import NotificationsPage from "./pages/NotificationsPage";
 import ReportsPage from "./pages/ReportsPage";
 import SettingsPage from "./pages/SettingsPage";
 import SearchPage from "./pages/SearchPage";
@@ -105,6 +106,7 @@ function App({ isDark, setIsDark }) {
                   <Route path="/vehicles" element={<VehiclesPage pageFunctions={pageFunctions}/>} />
                   <Route path="/routes" element={<RoutesPage pageFunctions={pageFunctions}/>} />
                   <Route path="/stops" element={<StopsPage pageFunctions={pageFunctions} isDark={isDark}/>} />
+                  <Route path="/notifications" element={<NotificationsPage pageFunctions={pageFunctions}/>} />
                   <Route path="/reports" element={<ReportsPage pageFunctions={pageFunctions}/>} />
                   <Route path="/settings" element={<SettingsPage pageFunctions={pageFunctions} isDark={isDark} setIsDark={setIsDark}/>} />
 

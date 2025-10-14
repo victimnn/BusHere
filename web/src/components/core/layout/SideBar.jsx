@@ -134,6 +134,12 @@ function SideBar() {
             isOpen={isHovered}
           />
           <SideButton
+            name="Avisos"
+            icon="bell-fill"
+            href="notifications"
+            isOpen={isHovered}
+          />
+          <SideButton
             name="Relatórios"
             icon="graph-up"
             href="reports"

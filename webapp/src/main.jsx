@@ -7,6 +7,28 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 // Importa ambos os temas como arquivos CSS
 import './Light.scss';
 import './Dark.scss';
+// Registro do Service Worker e permissão de notificações
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(reg => {
+        console.log('Service Worker registrado:', reg);
+      })
+      .catch(err => {
+        console.error('Erro ao registrar Service Worker:', err);
+      });
+  });
+}
+
+if ('Notification' in window) {
+  Notification.requestPermission().then(permission => {
+    if (permission === 'granted') {
+      console.log('Permissão de notificação concedida');
+    } else {
+      console.log('Permissão de notificação negada');
+    }
+  });
+}
 
 function Main() {
   // Adiciona overscroll-behavior via CSS para bloquear pull-to-refresh

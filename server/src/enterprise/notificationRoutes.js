@@ -1,6 +1,7 @@
 const express = require('express');
 const { extractToken } = require("../helpers");
 const { sendNotificationEmail } = require('../services/emailService');
+const webpush = require('web-push');
 
 module.exports = (pool) => {
   const router = express.Router();
@@ -58,9 +59,59 @@ module.exports = (pool) => {
 
       console.log(`📋 [notificationRoutes] Aviso criado com ID: ${insertResult.insertId}`);
 
-      // Enviar email se solicitado
+      // Enviar push notification se solicitado
+      let pushStatus = { enviado: false, mensagem: 'Push não configurado para envio' };
       let emailStatus = { enviado: false, mensagem: 'Email não configurado para envio' };
-      
+
+      // Buscar passageiros afetados conforme escopo
+      let passageirosAfetados = [];
+      if (notification.escopo_aviso_id === 1) {
+        const [passengers] = await pool.query("SELECT passageiro_id FROM Passageiros");
+        passageirosAfetados = passengers.map(p => p.passageiro_id);
+      } else if (notification.escopo_aviso_id === 2 && notification.rota_alvo_id) {
+        const [passengers] = await pool.query("SELECT passageiro_id FROM Passageiros WHERE rota_id = ?", [notification.rota_alvo_id]);
+        passageirosAfetados = passengers.map(p => p.passageiro_id);
+      } else if (notification.escopo_aviso_id === 3 && notification.tipo_passageiro_alvo_id) {
+        const [passengers] = await pool.query("SELECT passageiro_id FROM Passageiros WHERE tipo_passageiro_id = ?", [notification.tipo_passageiro_alvo_id]);
+        passageirosAfetados = passengers.map(p => p.passageiro_id);
+      } else if (notification.escopo_aviso_id === 4 && notification.passageiro_alvo_id) {
+        passageirosAfetados = [notification.passageiro_alvo_id];
+      }
+
+      // Buscar subscriptions desses passageiros
+      let subscriptions = [];
+      if (notification.enviar_push && passageirosAfetados.length > 0) {
+        const [subs] = await pool.query(
+          `SELECT endpoint, expirationTime, p256dh, auth FROM inscricoes_notificacao_push WHERE id_passageiro IN (?)`,
+          [passageirosAfetados]
+        );
+        subscriptions = subs.map(s => ({
+          endpoint: s.endpoint,
+          expirationTime: s.expirationTime,
+          keys: { p256dh: s.p256dh, auth: s.auth }
+        }));
+        // Enviar push notification para cada subscription
+        let successCount = 0;
+        for (const sub of subscriptions) {
+          try {
+            await webpush.sendNotification(sub, JSON.stringify({
+              title: notification.titulo,
+              body: notification.conteudo,
+              prioridade: notification.prioridade,
+              data_expiracao: notification.data_expiracao
+            }));
+            successCount++;
+          } catch (err) {
+            console.error('Erro ao enviar push:', err);
+          }
+        }
+        pushStatus = {
+          enviado: true,
+          mensagem: `Push enviado para ${successCount} de ${subscriptions.length} inscrição(ões)`
+        };
+      }
+
+      // Enviar email se solicitado
       if (notification.enviar_email) {
         console.log(`📧 [notificationRoutes] Flag enviar_email ativada, buscando destinatários...`);
         
@@ -161,7 +212,8 @@ module.exports = (pool) => {
           aviso_id: insertResult.insertId,
           ...notification
         },
-        emailStatus
+        emailStatus,
+        pushStatus
       });
     } catch (error) { 
       console.error("Erro ao processar a requisição:", error);

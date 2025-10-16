@@ -420,6 +420,25 @@ const BottomSheetFull = () => {
                     >
                         Log Route Data
                     </ActionButton>
+
+                    <ActionButton
+                        icon="bi-bell"
+                        variant="outline-warning"
+                        onClick={() => {
+                            if ('serviceWorker' in navigator) {
+                                navigator.serviceWorker.ready.then(registration => {
+                                    registration.showNotification('Título da Notificação', {
+                                        body: 'Conteúdo da notificação',
+                                        icon: '/icon-192-bg.png'
+                                    });
+                                });
+                            } else {
+                                alert('Service Worker não suportado');
+                            }
+                        }}
+                    >
+                        Mandar Notificação teste
+                    </ActionButton>
                 </div>
             </div>
         </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { AuthProvider } from './context/AuthContext';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
@@ -25,7 +26,8 @@ function urlBase64ToUint8Array(base64String) {
   return outputArray;
 }
 
-async function subscribeUserToPush(registration) {
+
+async function subscribeUserToPush(registration, user) {
   try {
     const permission = await Notification.requestPermission();
     if (permission !== 'granted') {
@@ -36,29 +38,38 @@ async function subscribeUserToPush(registration) {
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
     });
-  const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-  await fetch(`${apiBaseUrl}/api/passenger/push-subscribe`, {
+    // Adiciona o id_passageiro à subscription
+    const subscriptionWithId = {
+      ...subscription,
+      id_passageiro: user?.passageiro_id
+    };
+    const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    await fetch(`${apiBaseUrl}/api/passenger/push-subscribe`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(subscription),
+      body: JSON.stringify(subscriptionWithId),
     });
-    console.log('Push subscription enviada ao servidor:', subscription);
+    console.log('Push subscription enviada ao servidor:', subscriptionWithId);
   } catch (err) {
     console.error('Erro ao subscrever push:', err);
   }
 }
 
-if ('serviceWorker' in navigator && 'PushManager' in window) {
-  window.addEventListener('load', () => {
-  navigator.serviceWorker.register('/sw.js')
-      .then(reg => {
-        console.log('Service Worker registrado:', reg);
-        subscribeUserToPush(reg);
-      })
-      .catch(err => {
-        console.error('Erro ao registrar Service Worker:', err);
-      });
-  });
+
+function usePushSubscription(user, isAuthenticated) {
+  useEffect(() => {
+    if (!isAuthenticated || !user) return;
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => {
+          console.log('Service Worker registrado:', reg);
+          subscribeUserToPush(reg, user);
+        })
+        .catch(err => {
+          console.error('Erro ao registrar Service Worker:', err);
+        });
+    }
+  }, [user, isAuthenticated]);
 }
 
 function Main() {
@@ -113,7 +124,9 @@ function Main() {
 
   return (
     <StrictMode>
-      <App isDark={isDark} setIsDark={setIsDark} />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </StrictMode>
   );
 }

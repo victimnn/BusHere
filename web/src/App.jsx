@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { useState, useEffect, useRef} from 'react'
 
 import { AuthProvider } from "./context/authContext";
+import { KeybindProvider } from "./context/KeybindContext";
 import PopUpComponent from "./components/core/feedback/PopUpComponent";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -29,7 +30,7 @@ import SideBar from "./components/core/layout/SideBar";
 import Header from "./components/core/layout/Header";
 
 
-// Função para forçar o tema escuro nas páginas de login e registro
+// Funçãoa para forçar o tema escuro nas páginas de login e registro
 function ThemeEnforcer({ isDark, setIsDark }) {
   const location = useLocation();
   const previousThemeRef = useRef(null);
@@ -86,18 +87,12 @@ function App({ isDark, setIsDark }) {
   return (
     <Router>
       <AuthProvider>
-        <div>
+        <KeybindProvider>
           <ThemeEnforcer isDark={isDark} setIsDark={setIsDark} />
-          <div className="d-flex w-100" style={{overflow: "hidden", height:"100vh"}}> {/* Usando flex com height fixo */}
-
-            {/* Sidebar */}
+          <div className="d-flex w-100" style={{overflow: "hidden", height:"100vh"}}>
             {showSideBar && <SideBar/>}
-
-
-            <main className="flex-grow-1 d-flex flex-column" style={{overflow: "auto", height: "100vh"}}> {/* A main ocupará o espaço restante */}
-              {/* Header */}
+            <main className="flex-grow-1 d-flex flex-column" style={{overflow: "auto", height: "100vh"}}>
               {showHeader && <Header pageName={pageName}/>}
-
               <div className="py-0 w-100 flex-grow-1" style={{minHeight: "0"}}>
                 <Routes>
                   <Route path="/" index element={<HomePage pageFunctions={pageFunctions} />} />
@@ -109,7 +104,6 @@ function App({ isDark, setIsDark }) {
                   <Route path="/notifications" element={<NotificationsPage pageFunctions={pageFunctions}/>} />
                   <Route path="/reports" element={<ReportsPage pageFunctions={pageFunctions}/>} />
                   <Route path="/settings" element={<SettingsPage pageFunctions={pageFunctions} isDark={isDark} setIsDark={setIsDark}/>} />
-
                   <Route path="/vehicles/:vehicleId" element={<VehicleDetail pageFunctions={pageFunctions}/>} />
                   <Route path="/passengers/:passengerId" element={<PassengerDetail pageFunctions={pageFunctions}/>} />
                   <Route path="/drivers/:driverId" element={<DriverDetail pageFunctions={pageFunctions}/>} />
@@ -117,19 +111,16 @@ function App({ isDark, setIsDark }) {
                   <Route path="/stops/:stopId" element={<StopDetail pageFunctions={pageFunctions}/>} />
                   <Route path="/routes/new" element={<RouteStopsPage pageFunctions={pageFunctions} isDark={isDark}/>} />
                   <Route path="/routes/:routeId/edit" element={<RouteStopsPage pageFunctions={pageFunctions} isDark={isDark}/>} />
-
                   <Route path="/search/:searchTerm" element={<SearchPage pageFunctions={pageFunctions}  />} />
-
                   <Route path="/login" element={<LoginPage pageFunctions={pageFunctions}/>} />
                   <Route path="/register" element={<RegisterPage pageFunctions={pageFunctions}/>} />
-
                   <Route path="/error" element={<ErrorPage />} />
                   <Route path="*" element={<Navigate to="/error" />} />
                 </Routes>
               </div>
             </main>
           </div>
-        </div>
+        </KeybindProvider>
       </AuthProvider>
     </Router>
   );

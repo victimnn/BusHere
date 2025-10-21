@@ -88,7 +88,10 @@ function App({ isDark, setIsDark }) {
     <Router>
       <main className="d-flex w-100 h-100 flex-column">
         <Routes>
-          {/* Páginas com Layout (sidebar + floating button) */}
+          {/* Páginas sem Layout (login/register não precisam de sidebar) */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          {/* Rotas públicas */}
           <Route path="/" index element={
             <Layout isDark={isDark} setIsDark={setIsDark}>
               <HomePage />
@@ -124,17 +127,11 @@ function App({ isDark, setIsDark }) {
               <HelpPage />
             </Layout>
           } />
-          
           <Route path="/convite/:code" element={
             <Layout isDark={isDark} setIsDark={setIsDark}>
               <InvitePage />
             </Layout>
           } />
-          
-          {/* Páginas sem Layout (login/register não precisam de sidebar) */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          
           {/* Adicione outras rotas conforme necessário */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

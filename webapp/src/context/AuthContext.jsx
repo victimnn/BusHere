@@ -49,6 +49,18 @@ export const AuthProvider = ({ children }) => {
     };
 
     checkAuth();
+    // Listener para erro de autorização global
+    const handleUnauthorized = () => {
+      localStorage.removeItem('token');
+      setUser(null);
+      setIsAuthenticated(false);
+      setLoading(false);
+      window.location.href = '/login';
+    };
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+    return () => {
+      window.removeEventListener('auth:unauthorized', handleUnauthorized);
+    };
   }, []);
 
   const login = async (userData) => {

@@ -50,9 +50,10 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         setIsAuthenticated(false);
         localStorage.removeItem('token');
+        navigate('/login'); // Redireciona para a página de login se houver erro
       }
     } catch (error) {
-      //navigate('/login'); // Redireciona para a página de login se houver erro
+      navigate('/login'); // Redireciona para a página de login se houver erro
       console.error('Erro ao verificar autenticação:', error);
       setUser(null);
       setIsAuthenticated(false);

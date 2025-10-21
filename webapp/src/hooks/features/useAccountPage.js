@@ -49,6 +49,7 @@ export const useAccountPage = (isDark) => {
   // Função para lidar com logout
   const handleLogout = () => {
     logout();
+    navigate("/login");
   };
 
   return {

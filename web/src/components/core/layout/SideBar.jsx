@@ -4,24 +4,25 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { useLocation } from "react-router-dom";
 
 
-function SideButton({name, icon, href = "#", isOpen = false, style = {}}){
+function SideButton({name, icon, href = "#", isOpen = false, style = {}, keybindId}){
     const location = useLocation();
     const isActive = location.pathname === (href.startsWith('/') ? href : `/${href}`);
     const [isButtonHovered, setIsButtonHovered] = useState(false);
     
     return (
-    <Link
-        to={href} 
-        className={`sidebar-button d-flex align-items-center rounded-3 text-decoration-none w-100 mb-1 position-relative overflow-hidden ${isActive ? 'active' : ''}`}
-        style={{
-            transition: "all 0.3s ease",
-            padding: "12px",
-            minHeight: "44px",
-            ...style
-        }}
-        onMouseEnter={() => setIsButtonHovered(true)}
-        onMouseLeave={() => setIsButtonHovered(false)}
-    >
+  <Link
+    to={href}
+    className={`sidebar-button d-flex align-items-center rounded-3 text-decoration-none w-100 mb-1 position-relative overflow-hidden ${isActive ? 'active' : ''}`}
+    style={{
+      transition: "all 0.3s ease",
+      padding: "12px",
+      minHeight: "44px",
+      ...style
+    }}
+    onMouseEnter={() => setIsButtonHovered(true)}
+    onMouseLeave={() => setIsButtonHovered(false)}
+    data-keybind-id={keybindId}
+  >
         <div className="d-flex align-items-center w-100">
           <i className={`bi bi-${icon}`} 
              style={{ 
@@ -64,17 +65,17 @@ function SideBar() {
     const [isHovered, setIsHovered] = useState(false);
     const sidebarWidth = isHovered ? "240px" : "70px"; // Largura do sidebar
 
-    const menuItems = [
-        { path: '/', icon: 'house-fill', label: 'Início' },
-        { path: '/passengers', icon: 'people-fill', label: 'Passageiros' },
-        { path: '/drivers', icon: 'person-fill-gear', label: 'Motoristas' },
-        { path: '/vehicles', icon: 'car-front-fill', label: 'Veículos' },
-        { path: '/routes', icon: 'signpost-split-fill', label: 'Rotas' },
-        { path: '/stops', icon: 'geo-alt-fill', label: 'Pontos' },
-        { path: '/notifications', icon: 'bell-fill', label: 'Avisos' },
-        { path: '/reports', icon: 'graph-up', label: 'Relatórios' },
-        { path: '/settings', icon: 'gear-fill', label: 'Configurações' }
-    ];
+  const menuItems = [
+    { path: '/', icon: 'house-fill', label: 'Início', keybindId: 'sidebar-1', keybindLabel: "Alt+1" },
+    { path: '/passengers', icon: 'people-fill', label: 'Passageiros', keybindId: 'sidebar-2', keybindLabel: "Alt+2" },
+    { path: '/drivers', icon: 'person-fill-gear', label: 'Motoristas', keybindId: 'sidebar-3', keybindLabel: "Alt+3" },
+    { path: '/vehicles', icon: 'car-front-fill', label: 'Veículos', keybindId: 'sidebar-4', keybindLabel: "Alt+4" },
+    { path: '/routes', icon: 'signpost-split-fill', label: 'Rotas', keybindId: 'sidebar-5', keybindLabel: "Alt+5" },
+    { path: '/stops', icon: 'geo-alt-fill', label: 'Pontos', keybindId: 'sidebar-6', keybindLabel: "Alt+6" },
+    { path: '/notifications', icon: 'bell-fill', label: 'Avisos', keybindId: 'sidebar-7', keybindLabel: "Alt+7" },
+    { path: '/reports', icon: 'graph-up', label: 'Relatórios', keybindId: 'sidebar-8', keybindLabel: "Alt+8" },
+    { path: '/settings', icon: 'gear-fill', label: 'Configurações', keybindId: 'sidebar-9', keybindLabel: "Alt+9" }
+  ];
 
     return (
       <aside
@@ -116,6 +117,7 @@ function SideBar() {
               icon={item.icon}
               href={item.path}
               isOpen={isHovered}
+              keybindId={item.keybindId}
             />
           ))}
         </nav>
@@ -127,6 +129,7 @@ function SideBar() {
             icon={menuItems[menuItems.length - 1].icon}
             href={menuItems[menuItems.length - 1].path}
             isOpen={isHovered}
+            keybindId={menuItems[menuItems.length - 1].keybindId}
           />
         </div>
       </aside>

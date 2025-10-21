@@ -9,6 +9,7 @@ export const KeybindProvider = ({ children }) => {
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (keybindMode === "Disabled") return;
+      
       // Simple: 1,2,3... ou Alt+1...Alt+9
       if (["1","2","3","4","5","6","7","8","9"].includes(e.key)) {
         let keybindId = `sidebar-${e.key}`;

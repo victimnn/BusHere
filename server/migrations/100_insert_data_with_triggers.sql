@@ -31,3 +31,16 @@ VALUES
     ('Carlos Eduardo Souza', '34567890123', '34567890123', 'D', '2027-05-20', '11965432109', 'carlos.souza@empresa.com', '2021-06-01', 1),
     ('Ana Paula Costa', '45678901234', '45678901234', 'AE', '2024-11-30', '11954321098', 'ana.costa@empresa.com', '2018-09-12', 2),
     ('Roberto Ferreira Santos', '56789012345', '56789012345', 'D', '2026-03-25', '11943210987', 'roberto.santos@empresa.com', '2022-02-28', 1);
+
+INSERT INTO Rotas (`rota_id`, `codigo_rota`, `nome`, `descricao`, `origem_descricao`, `destino_descricao`, `distancia_km`, `tempo_viagem_estimado_minutos`, `status_rota_id`, `criacao`, `atualizacao`, `ativo`) 
+VALUES
+(1, 'R001', 'Jaguariuna - ETEC Amparo', NULL, 'Ponto Roseira', 'ETEC João Belarmino', 38.98, 47, 1, '2025-10-21 11:58:32', '2025-10-21 11:58:32', 1);
+
+
+INSERT INTO `pontosrota` (`ponto_rota_id`, `rota_id`, `ponto_id`, `ordem`, `horario_previsto_passagem`, `distancia_do_ponto_anterior_km`, `criacao`, `atualizacao`, `ativo`) 
+VALUES
+(5, 1, 5, 5, NULL, NULL, '2025-10-21 11:58:32', '2025-10-21 11:58:32', 1),
+(4, 1, 3, 4, NULL, NULL, '2025-10-21 11:58:32', '2025-10-21 11:58:32', 1),
+(3, 1, 4, 3, NULL, NULL, '2025-10-21 11:58:32', '2025-10-21 11:58:32', 1),
+(2, 1, 1, 2, NULL, NULL, '2025-10-21 11:58:32', '2025-10-21 11:58:32', 1),
+(1, 1, 2, 1, NULL, NULL, '2025-10-21 11:58:32', '2025-10-21 11:58:32', 1);

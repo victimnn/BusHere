@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { useLocation } from "react-router-dom";
 
 
-function SideButton({name, icon, href = "#", isOpen = false, style = {}, keybindId}){
+function SideButton({name, icon, href = "#", isOpen = false, style = {}, keybindId, keybindLabel}) {
     const location = useLocation();
     const isActive = location.pathname === (href.startsWith('/') ? href : `/${href}`);
     const [isButtonHovered, setIsButtonHovered] = useState(false);
@@ -35,10 +35,13 @@ function SideButton({name, icon, href = "#", isOpen = false, style = {}, keybind
               style={{
                   opacity: isOpen ? 1 : 0,
                   transition: "opacity 0.3s ease",
-                  whiteSpace: "nowrap"
+                  whiteSpace: "nowrap",
+                  display: "flex",
+                  width: "100%",
+                  justifyContent: "space-between"
               }}
           > 
-            {name}
+            {name} {/* <span className="border bg-light-subtle pe-1 ps-1" style={{marginRight: "15px"}}>{keybindLabel}</span> */}
           </span>
         </div>
         
@@ -118,6 +121,7 @@ function SideBar() {
               href={item.path}
               isOpen={isHovered}
               keybindId={item.keybindId}
+              keybindLabel={item.keybindLabel}
             />
           ))}
         </nav>
@@ -130,6 +134,7 @@ function SideBar() {
             href={menuItems[menuItems.length - 1].path}
             isOpen={isHovered}
             keybindId={menuItems[menuItems.length - 1].keybindId}
+            keybindLabel={menuItems[menuItems.length - 1].keybindLabel}
           />
         </div>
       </aside>

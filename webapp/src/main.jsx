@@ -125,7 +125,7 @@ function Main() {
   return (
     <StrictMode>
       <AuthProvider>
-        <App />
+        <App isDark={isDark} setIsDark={setIsDark} />
       </AuthProvider>
     </StrictMode>
   );

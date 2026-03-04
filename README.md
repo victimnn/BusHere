@@ -1,4 +1,4 @@
-# 🚌 BusHere! - Sistema Completo de Gestão de Transporte Público
+# 🚌 BusHere! - Sistema Completo de Gestão de Transporte
 
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/React-19.0-blue.svg)](https://reactjs.org/)
